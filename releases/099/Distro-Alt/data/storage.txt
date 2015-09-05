@@ -1,0 +1,33 @@
+#
+#  STORAGE.TXT: Contains bank boxes, vendor inventories, and other data.
+#
+#  This file can safely be deleted to wipe bank boxes and vendor inventories.
+#  Note that scripts may use this for other types of storage as well
+#
+
+StorageArea
+{
+	Name	Merchant Storage
+}
+
+Item
+{
+	Name	AUCTION
+	Serial	0x400001e8
+	ObjType	0xe7c
+	Graphic	0xe7c
+	X	0
+	Y	0
+	Z	0
+	Revision	1
+	Realm	britannia
+	DecayAt	596
+}
+
+
+StorageArea
+{
+	Name	World Bank
+}
+
+

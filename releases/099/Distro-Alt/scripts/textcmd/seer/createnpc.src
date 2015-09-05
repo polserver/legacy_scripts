@@ -1,0 +1,17 @@
+use uo;
+use cfgfile;
+
+// Need to add realms
+
+program textcmd_createnpc( who, template )
+
+    var props := array; // CHANGE BACK TO STRUCT FOR 096
+    var realtemplate;
+    props.+facing := who.facing;
+    var loc := TargetCoordinates(who);
+    var result := CreateNpcFromTemplate( template, loc.x, loc.y, loc.z, 0, who.realm );
+    if (!result)
+        SendSysMessage( who, "NPC Creation Failed: " + result.errortext );
+    endif
+endprogram
+

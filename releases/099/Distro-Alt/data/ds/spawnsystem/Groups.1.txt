@@ -1,0 +1,24 @@
+Element basicreagents
+{
+	Engine sitemFill
+	EntryList d7:S9:bloodmossi1S6:garlici1S7:ginsengi1S12:mandrakerooti1S10:nightshadei1S10:spidersilki1S12:sulfurousashi1
+}
+
+Element forestanimals_1
+{
+	Engine snpcFill
+	EntryList d4:S13::brainai:birdi1S12::brainai:cati1S12::brainai:cowi1S12::brainai:pigi1
+}
+
+Element forestanimals_2
+{
+	Engine snpcFill
+	EntryList d4:S13::brainai:bulli1S13::brainai:deeri1S18::brainai:greatharti1S14::brainai:horsei1
+}
+
+Element simple_swamp
+{
+	Engine snpcFill
+	EntryList d3:S18::brainai:alligatori1S16::brainai:mongbati1S14::brainai:slimei1
+}
+

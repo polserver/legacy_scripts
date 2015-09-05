@@ -1,0 +1,28 @@
+#
+#  Created by Version: POL099beta-2010-01-02
+#  Mobiles:		 0
+#  Top-level Items: 292
+#
+
+System
+{
+	CoreVersion	99
+	CoreVersionString	POL099beta-2010-01-02
+	CompileDate	Jun 11 2011
+	CompileTime	01:08:34
+	LastItemSerialNumber	1073744067
+	LastCharSerialNumber	2
+}
+
+GlobalProperties
+{
+	CProp	DayPhase sDusk
+	CProp	NewDay i10709
+	CProp	SpawnSystemInit i1
+	CProp	SystemTeleportersCreated i1
+	CProp	gameclock s18672
+	CProp	orelist d0:
+	CProp	shelves a0:
+	CProp	storagestart i1
+}
+

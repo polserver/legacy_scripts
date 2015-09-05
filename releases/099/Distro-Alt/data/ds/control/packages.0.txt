@@ -1,0 +1,635 @@
+Element accounts
+{
+	Main t7:S7:C_EmailS23:AustinHeilman@gmail.comS7:CreatorS6:AustinS11:DescriptionS105:Handles account related tasks. Monitoring, creation, etc. [P] Auto-account packet hook thanks to Unreal! S7:M_EmailS20:distro@polserver.comS10:MaintainerS11:Distro TeamS4:NameS8:AccountsS7:Versionr1
+	Scripts a0:
+	TextCommands a2:S34:3 		:accounts:commands/GM/acctinfoS39:4 		:accounts:commands/admin/newaccount
+}
+
+Element alchemy
+{
+	Main t2:S4:NameS7:alchemyS9:NoSupporti1
+}
+
+Element anatomy
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS107:The POL 095 Distro Anatomy skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS7:AnatomyS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element animallore
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS111:The POL 095 Distro Animal Lore skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS11:Animal LoreS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element animaltrainer
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS14:Animal TrainerS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element armslore
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS109:The POL 095 Distro Arms Lore skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS9:Arms LoreS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element auction
+{
+	Main t2:S4:NameS7:auctionS9:NoSupporti1
+}
+
+Element barber
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS6:BarberS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element begging
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS107:The POL 095 Distro Begging skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS7:BeggingS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element bfcommand
+{
+	Main t7:S7:C_EmailS26:muaddib@lostsoulsshard.orgS7:CreatorS7:MuadDibS11:DescriptionS42:PacketHook for handling 0xBF Subcommands. S7:M_EmailS20:distro@polserver.comS10:MaintainerS11:Distro TeamS4:NameS16:0xBF Packet HookS7:Versionr1
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element blacksmithy
+{
+	Main t2:S4:NameS11:blacksmithyS9:NoSupporti1
+}
+
+Element boat
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS4:BoatS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element bountyboard
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS12:Bounty BoardS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element camping
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS108:The POL 095 Distro Camping skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS7:CampingS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element carpentry
+{
+	Main t2:S4:NameS9:carpentryS9:NoSupporti1
+}
+
+Element cartography
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS112:The POL 095 Distro Cartography skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS11:CartographyS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element charprofile
+{
+	Main t7:S7:C_EmailS19:racalac@burdell.orgS7:CreatorS7:RacalacS11:DescriptionS43:PacketHook for handling Character Profile. S7:M_EmailS20:distro@polserver.comS10:MaintainerS11:Distro TeamS4:NameS25:Character Profile HandlerS7:Versionr1
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element chat
+{
+	Main t7:S7:C_EmailS18:tekproxy@gmail.comS7:CreatorS18:tekproxy@gmail.comS11:DescriptionS12:Chat System S7:M_EmailS18:tekproxy@gmail.comS10:MaintainerS18:tekproxy@gmail.comS4:NameS4:ChatS7:Versionr0.2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element combat
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS144:The POL 095 Distro package migrated to Hope Lives. Some additional HitScripts added were craeted by Sigismund. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS6:CombatS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element combathook
+{
+	Main t7:S7:C_EmailS7:unknownS7:CreatorS27:Unknown possibly SigissmundS11:DescriptionS50:Combat hooks package. Contains archery hitscript. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS6:CombatS7:Versionr1
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element commands
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS50:The POL 097 Distro package migrated to Hope Lives S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS8:CommandsS7:Versionr1
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element commcrystals
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS22:Communication CrystalsS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element config
+{
+	Main t7:S7:C_EmailS22:hesinde@elitecoder.netS7:CreatorS12:Hesinde-TeamS11:DescriptionS76:Configures various shard behaviours such as Shard Name, logout timers, etc. S7:M_EmailS20:distro@polserver.comS10:MaintainerS11:Distro TeamS4:NameS12:Shard ConfigS7:Versionr1
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element control
+{
+	Main t7:S7:C_EmailS23:AustinHeilman@gmail.comS7:CreatorS6:AustinS11:DescriptionS106:Gump based package manager. Lists scripts, text commands and itemdesc.cfg objects belonging to a package. S7:M_EmailS23:AustinHeilman@gmail.comS10:MaintainerS6:AustinS4:NameS34:Interface Controller Package (ICP)S7:Versionr2.4
+	Scripts a1:S25:4	 :control:checkpackages
+	TextCommands a1:S37:1 	:control:textcmd/counselor/control
+}
+
+Element cooking
+{
+	Main t2:S4:NameS7:cookingS9:NoSupporti1
+}
+
+Element damage
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS11:Distro TeamS11:DescriptionS16:Handles damages S7:M_EmailS20:distro@polserver.comS10:MaintainerS11:Distro TeamS4:NameS6:DamageS7:Versionr1
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element datafile
+{
+	Main t7:S7:C_EmailS23:AustinHeilman@gmail.comS7:CreatorS14:Austin HeilmanS11:DescriptionS32:Include for handing data files. S7:M_EmailS23:AustinHeilman@gmail.comS10:MaintainerS14:Austin HeilmanS4:NameS9:Data FileS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element daynight
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS9:Day/NightS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element decorations
+{
+	Main t2:S4:NameS11:decorationsS9:NoSupporti1
+}
+
+Element detecthidden
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS114:The POL 095 Distro Detect Hidden skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS13:Detect HiddenS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element doors
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS5:DoorsS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element evalint
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS122:The POL 095 Distro Evaluate Intelligence skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS21:Evaluate IntelligenceS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element farming
+{
+	Main t7:S7:C_EmailS9:<defunct>S7:CreatorS15:Drocket/MyrathiS11:DescriptionS111:The World of Dreams Farming package converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS7:FarmingS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element fishing
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS108:The POL 095 Distro Fishing skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS7:FishingS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element forensicevaluation
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS120:The POL 095 Distro Forensic Evaluation skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS19:Forensic EvaluationS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element gmtools
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS8:GM ToolsS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element gravestones
+{
+	Main t7:S7:C_EmailS23:AustinHeilman@gmail.comS7:CreatorS14:Austin HeilmanS11:DescriptionS58:Item definitions for grave stones and supporting scripts. S7:M_EmailS20:distro@polserver.comS10:MaintainerS11:Distro TeamS4:NameS12:Grave StonesS7:Versionr1
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element guildstone
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS10:GuildstoneS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element gumps
+{
+	Main t7:S7:C_EmailS23:AustinHeilman@gmail.comS7:CreatorS17:Melanius & AustinS11:DescriptionS26:Gump include and examples S7:M_EmailS23:AustinHeilman@gmail.comS10:MaintainerS14:Austin HeilmanS4:NameS5:GumpsS7:Versionr1.5
+	Scripts a0:
+	TextCommands a5:S34:4	:gumps:commands/admin/gumppromptS35:4	:gumps:commands/admin/requestgumpS33:4	:gumps:commands/admin/resizepicS34:4	:gumps:commands/admin/samplegumpS29:4	:gumps:commands/admin/yesno
+}
+
+Element healing
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS108:The POL 095 Distro Healing skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS7:HealingS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element herding
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS108:The POL 095 Distro Herding skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS7:HerdingS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element hiding
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS107:The POL 095 Distro Hiding skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS6:HidingS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element housing
+{
+	Main t2:S4:NameS7:housingS9:NoSupporti1
+}
+
+Element inscription
+{
+	Main t2:S4:NameS11:inscriptionS9:NoSupporti1
+}
+
+Element interiordecorator
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS23:Interior Decorator ToolS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element itemid
+{
+	Main t7:S7:C_EmailS9:<unknown>S7:CreatorS9:SigismundS11:DescriptionS153:Sigismunds Item Identification skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. Additional modifications dome by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS19:Item IdentificationS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element itemutils
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS11:Distro TeamS11:DescriptionS47:Various includes for item handling and checks. S7:M_EmailS20:distro@polserver.comS10:MaintainerS11:Distro TeamS4:NameS14:Item UtilitiesS7:Versionr1
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element job
+{
+	Main t7:S7:C_EmailS26:hopelivesproject@yahoo.comS7:CreatorS6:YukikoS11:DescriptionS78:Job package migrated to Hope Lives from WoD. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS13:Player VendorS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element lifestones
+{
+	Main t7:S7:C_EmailS26:hopelivesproject@yahoo.comS7:CreatorS6:YukikoS11:DescriptionS86:Life Stones for storage of life energies. Life energies are Health, Mana and Stamina. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS11:Life StonesS7:Versionr1
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element lighting
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS8:LightingS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element lockpicking
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS112:The POL 095 Distro Lockpicking skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS11:LockpickingS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element lumberjacking
+{
+	Main t2:S4:NameS13:lumberjackingS9:NoSupporti1
+}
+
+Element magery
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS163:The POL 095 Distro Magery Package converted to POL 097 Spell starter system based on POL 096 'Distro' system Conversion done by Yukiko - Hope Lives Shard Project. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS6:MageryS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element magic
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS5:MagicS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element meditation
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS112:The POL 095 Distro Maeditation skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS10:MeditationS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element merchantnodes
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS14:Merchant NodesS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element mining
+{
+	Main t2:S4:NameS6:miningS9:NoSupporti1
+}
+
+Element misc
+{
+	Main t7:S7:C_EmailS26:hopelivesproject@yahoo.comS7:CreatorS10:Hope LivesS11:DescriptionS44:This package contains miscellaneous items.. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS13:MiscellaneousS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element moongates
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS9:MoongatesS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element motd
+{
+	Main t7:S7:C_EmailS23:AustinHeilman@gmail.comS7:CreatorS6:AustinS11:DescriptionS27:Message of the day system. S7:M_EmailS20:distro@polserver.comS10:MaintainerS11:Distro TeamS4:NameS18:Message Of The DayS7:Versionr1
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element musicianship
+{
+	Main t2:S4:NameS12:musicianshipS9:NoSupporti1
+}
+
+Element oldstyle-gumps
+{
+	Main t2:S4:NameS14:oldstyle-gumpsS9:NoSupporti1
+}
+
+Element packetconfig
+{
+	Main t7:S7:C_EmailS26:muaddib@lostsoulsshard.orgS7:CreatorS7:MuadDibS11:DescriptionS50:Settings for various Packet Hooks used in Distro. S7:M_EmailS20:distro@polserver.comS10:MaintainerS11:Distro TeamS4:NameS24:Packethook ConfigurationS7:Versionr1
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element partysystem
+{
+	Main t7:S7:C_EmailS18:tekproxy@gmail.comS7:CreatorS8:tekproxyS11:DescriptionS60:Package that handles packets for the client's party system. S7:M_EmailS18:tekproxy@gmail.comS10:MaintainerS8:tekproxyS4:NameS12:Party SystemS7:Versionr1.3
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element playervendor
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS13:Player VendorS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element poisoning
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS156:The POL 095 Distro Poisoning skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. Any additional modifications added by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS9:PoisoningS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element poisonwatcher
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS13:PoisonwatcherS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element pushthrough
+{
+	Main t2:S4:NameS11:pushthroughS9:NoSupporti1
+}
+
+Element removetrap
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS158:The POL 095 Distro Remove Trap skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. Any additional modifications added by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS11:Remove TrapS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element runebook
+{
+	Main t7:S7:C_EmailS9:<unknown>S7:CreatorS8:ShilohenS11:DescriptionS92:Based on Runebook 3 package originally created by Shilohen. Converted to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS8:RunebookS7:Versionr4
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element saver
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS5:SaverS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element skilllocks
+{
+	Main t7:S7:C_EmailS18:tekproxy@gmail.comS7:CreatorS8:tekproxyS11:DescriptionS52:Handles send and recieving skill lock state packets S7:M_EmailS18:tekproxy@gmail.comS10:MaintainerS8:tekproxyS4:NameS11:Skill LocksS7:Versionr1
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element skills
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS113:Original Skill Hooks package by POL Distro Team Conversion to POL 097 done by Yukiko - Hope Lives Shard Project. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS6:SkillsS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element spawnpoint
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS10:SpawnpointS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element spawnsystem
+{
+	Main t7:S7:C_EmailS23:AustinHeilman@gmail.comS7:CreatorS6:AustinS11:DescriptionS60:Extremely modular spawner system. Spawning is engine based. S7:M_EmailS23:AustinHeilman@gmail.comS10:MaintainerS6:AustinS4:NameS12:Spawn SystemS7:Versionr1
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element spells
+{
+	Main t7:S7:C_EmailS0:S7:CreatorS6:YukikoS11:DescriptionS38:Standard spell scripts for Hope Lives S7:M_EmailS27:hopelivesprojecft@yahoo.comS10:MaintainerS6:YukikoS4:NameS6:SpellsS7:Versionr0.97
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element spiritspeak
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS159:The POL 095 Distro Spirit Speak skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. Any additional modifications added by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS12:Spirit SpeakS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element stafflist
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS9:StafflistS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element stealing
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS19:No Stealing skill. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS8:StealingS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element stealth
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS153:The POL 095 Distro Sealth skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. Any additional modifications added by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS7:StealthS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element sysbook
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS7:SysbookS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element tailoring
+{
+	Main t2:S4:NameS9:tailoringS9:NoSupporti1
+}
+
+Element taming
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS153:The POL 095 Distro Taming skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. Any additional modifications added by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS6:TamingS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element tasteid
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS167:The POL 095 Distro Taste Identification skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. Any additional modifications added by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS20:Taste IdentificationS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element timer
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS5:TimerS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element timeutils
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS11:Distro TeamS11:DescriptionS49:Package that handles ingame and real world time. S7:M_EmailS20:distro@polserver.comS10:MaintainerS11:Distro TeamS4:NameS10:Time UtilsS7:Versionr1
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element tinkering
+{
+	Main t2:S4:NameS9:tinkeringS9:NoSupporti1
+}
+
+Element tracking
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS155:The POL 095 Distro Tracking skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. Any additional modifications added by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS8:TrackingS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element training
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS8:TrainingS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element traps
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS5:TrapsS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element treasuremap
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS12:Treasure MapS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element unicodeutils
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS110:Unicode Utilities package by POL Distro Team Conversion to POL 097 done by Yukiko - Hope Lives Shard Project. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS13:Unicode UtilsS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element utilsdate
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS22:Date utilities packageS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element veterinary
+{
+	Main t7:S7:C_EmailS20:distro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS157:The POL 095 Distro Veterinary skill converted to POL 097 Conversion done by Yukiko - Hope Lives Shard Project. Any additional modifications added by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS10:VeterinaryS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
+Element wands
+{
+	Main t7:S7:C_EmailS23:poldistro@polserver.comS7:CreatorS15:POL Distro TeamS11:DescriptionS84:The POL 095 Distro package migrated to Hope Lives. Conversion to POL 097 by Yukiko. S7:M_EmailS26:hopelivesproject@yahoo.comS10:MaintainerS6:YukikoS4:NameS5:WandsS7:Versionr2
+	Scripts a0:
+	TextCommands a0:
+}
+
