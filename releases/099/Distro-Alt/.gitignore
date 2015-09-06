@@ -41,3 +41,16 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# POL ecompile generated files
+*.ecl
+*.lst
+*.dbg
+*.dbg.txt
+*.dep
+
+# POL logs
+log/*.log
+
+# POL realms
+realm/*
