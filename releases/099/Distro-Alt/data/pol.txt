@@ -1,16 +1,16 @@
 #
-#  Created by Version: POL099beta-2010-01-02
+#  Created by Version: POL099-2013-09-03 Break Everything Even Rudder
 #  Mobiles:		 0
-#  Top-level Items: 384
+#  Top-level Items: 8
 #
 
 System
 {
 	CoreVersion	99
-	CoreVersionString	POL099beta-2010-01-02
-	CompileDate	Jun 11 2011
-	CompileTime	01:08:34
-	LastItemSerialNumber	1
+	CoreVersionString	POL099-2013-09-03 Break Everything Even Rudder
+	CompileDate	Aug 27 2015
+	CompileTime	16:34:20
+	LastItemSerialNumber	1073741824
 	LastCharSerialNumber	1
 }
 
