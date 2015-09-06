@@ -3,6 +3,7 @@ use uo;
 use os;
 use cfgfile;
 
+include ":timeutils:time";
 include "include/clock";
 include "include/arrays";
 include "nature";
