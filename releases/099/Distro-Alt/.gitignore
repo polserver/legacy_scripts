@@ -54,3 +54,6 @@ log/*.log
 
 # POL realms
 realm/*
+
+# Other files
+objtypes.txt
