@@ -56,4 +56,18 @@ log/*.log
 realm/*
 
 # Other files
+core-changes.txt
 objtypes.txt
+data/
+
+# POL binaries and cfg
+pol.exe
+libmysql.dll
+uoconvert.exe
+uoconvert.cfg
+uoconvert.txt
+uotool.exe
+uotool.txt
+ecompile.exe
+ecompile.cfg
+runecl.exe
