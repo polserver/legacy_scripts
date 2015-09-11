@@ -18,6 +18,20 @@ function FindBankBox( character, bank_obj_name_prefix := "Bankbox of " )
   var bank_obj_name := bank_obj_name_prefix + character.serial;
   var bankbox := FindRootItemInStorageArea( worldbank, bank_obj_name );
   var bankgump := UOBJ_BANKBOX;
+//	case(bank_obj_name_prefix)
+//		"Bankbox of "	: bankgump := UOBJ_BANKBOX;
+//		"magicbag_"		: bankgump:= UOBJ_MAGICBAG;
+//		"gm_backpack_"	: bankgump := UOBJ_GMPACK;
+//	endcase*/
+	if(bank_obj_name_prefix == "Bankbox of ")
+		bankgump := UOBJ_BANKBOX;
+	endif
+	if(bank_obj_name_prefix == "magicbag_")
+		bankgump := UOBJ_MAGICBAG;
+	endif
+	if(bank_obj_name_prefix == "gm_backpack_")
+		bankgump := UOBJ_GMPACK;
+	endif
   if (!bankbox)
     bankbox := CreateRootItemInStorageArea( worldbank, bank_obj_name, bankgump );
   endif
