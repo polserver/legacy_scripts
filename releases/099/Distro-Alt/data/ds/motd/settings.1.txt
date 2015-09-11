@@ -1,6 +1,0 @@
-Element admin
-{
-	FirstLine s<BASEFONT COLOR=\"#FFFFFF\" SIZE="0"><CENTER><B>** Please read these MOTDs **</B></CENTER><BR><U>Welcome to Hope Lives!</U><BR>Hope Lives is back-up. It is under develpopment again.<br><br><B>There is a very good chance that it might shut down or go offline without warning!!! So be prepared for this. If the developers rerstart we will take all necessary precaustions to warn you using broadcast messages as to the time before shutdown. However there are other situations where the server may go offline or shutdown due to circumstances beyond our control.</B>IWe need your help as players to report anything you find that appears to be a bug. There is a Bugs Forum on our message boards.<BR><BR>
-	noshow i1
-}
-

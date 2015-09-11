@@ -74,8 +74,8 @@ program SpawnCycle( params )
                 //SS_ReportText( "Error: Unable to create ("+spawn_object+") for group ("+group_name+") in region ("+region_name+"). ->"+created.errortext, SPAWN_REPORT_SYSLOG );
                 return 0;
         endif
-
-        created.movable := 1;
+        
+        created.movable := 0;
         SS_AddSpawnToRegion( region_name, group_name, created );
 
 	return 1;
@@ -86,7 +86,7 @@ function ValidateSpawns( region_name, group_name )
 	var spawns := SS_GetSpawnsInRegionGroup( region_name, group_name );
 	foreach serial in ( spawns.Keys() )
 		SleepMS(10);
-
+  
 		var object := SystemFindObjectBySerial( serial );
 		if( object.IsA( POLCLASS_ITEM ))
 			var orig_spot := spawns[serial].orig_coords;
@@ -94,7 +94,7 @@ function ValidateSpawns( region_name, group_name )
 				continue;
                         endif
 		endif
-
+  
                 SS_RemoveSpawnFromRegion( region_name, group_name, serial );
 	endforeach
 

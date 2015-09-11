@@ -6,9 +6,9 @@ Account
 	Enabled	1
 	Banned	0
 	DefaultCmdLevel	test
-	UOExpansion	ML
-	CProp	LastIP a1:a2:S9:127.0.0.1S3:bob
-	CProp	LastLogin i10740
-	CProp	lastlogon i10711
+	UOExpansion	T2A
+	CProp	LastIP a1:a2:S9:127.0.0.1S5:Admin
+	CProp	LastLogin i25143837
+	CProp	lastlogon i25143809
 }
 
