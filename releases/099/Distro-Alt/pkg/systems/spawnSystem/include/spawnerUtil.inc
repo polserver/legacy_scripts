@@ -14,6 +14,7 @@ use util;
 
 include ":datafile:datafile";
 include ":spawnsystem:regions";
+include ":housing:housing";
 
 function SS_SelectCoordsInArea( x1, y1, x2, y2 )
 
@@ -39,12 +40,16 @@ function SS_ItemValidLocation( spawn_coords )
 
         var list_near := ListItemsAtLocation( spawn_coords.x, spawn_coords.y, spawn_coords.z, spawn_coords.realm );
         if( list_near.Size() )
-		return 0;
-	endif
+          return 0;
+        endif
  
         var list_statics := ListMultisInBox( spawn_coords.x-4, spawn_coords.y-4, spawn_coords.z, spawn_coords.x+4, spawn_coords.y+4, spawn_coords.z, spawn_coords.realm );
         if( list_statics.Size() )
-		return 0;
+          return 0;
+        endif
+        
+        if(SS_IsInHouse( spawn_coords ))
+          return 0;
         endif
 
 	return 1;
@@ -56,17 +61,17 @@ function SS_NPCValidLocation( spawn_coords )
 		return 0;
 	endif
 
-        var list_statics := ListMultisInBox( spawn_coords.x-4, spawn_coords.y-4, spawn_coords.z, spawn_coords.x+4, spawn_coords.y+4, spawn_coords.z, spawn_coords.realm );
-        if( list_statics.Size() )
-		return 0;
-        endif
+  var list_statics := ListMultisInBox( spawn_coords.x-4, spawn_coords.y-4, spawn_coords.z, spawn_coords.x+4, spawn_coords.y+4, spawn_coords.z, spawn_coords.realm );
+  if( list_statics.Size() )
+      return 0;
+  endif
 
 	return 1;
 endfunction
 
 function SS_IsValidCreationTile( x, y, z, realm )
 
-        var landtiles_cfg := ReadConfigFile( "::landtiles" );
+  var landtiles_cfg := ReadConfigFile( "::landtiles" );
 	var map_info := GetMapInfo( x, y, realm );
 	var tile_elem := landtiles_cfg[Hex( map_info.landtile )];
 
@@ -131,3 +136,31 @@ function SS_IsInBox( mobile, x1, x2, y1, y2, realm )
 
 	return 0;
 endfunction
+
+function SS_IsInHouse( spawn_coords )
+	var isInHouse;
+  
+  // Are we trying to spawn in a static house?
+	isInHouse := FindHouseForLocation (spawn_coords.x, spawn_coords.y, spawn_coords.realm);
+
+	if(IsInHouse)
+		return 0;
+	endif
+
+  // Are we trying to spawn in a multi?
+	var sh := GetStandingHeight(spawn_coords.x, spawn_coords.y, spawn_coords.z, spawn_coords.realm);
+	if ( sh.multi )
+		return 0;
+	endif
+
+  return 1;
+
+endfunction
+
+
+
+
+
+
+
+

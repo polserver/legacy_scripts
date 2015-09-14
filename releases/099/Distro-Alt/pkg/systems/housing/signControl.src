@@ -1,14 +1,17 @@
+
+
 use uo;
 use os;
 use basic;
 
+include ":housing:housing_settings";
 include "include/eventID";
 include "include/attributes";
 include "include/sysEvent";
 include "include/objtype";
 
 program SignListener(sign)
-  var house := GetObjProperty(sign, "house_serial");
+  var house := GetObjProperty(sign, "signserial");
   if (house)
     house := SystemFindObjectBySerial(house);
   endif
@@ -16,7 +19,7 @@ program SignListener(sign)
     return;
   endif
   RegisterForSpeechEvents(sign, 30);
-  var owneracct, who, ev, decaytime;
+  var owneracct, who, ev, friendinfo, decaytime, indf, indc;
   while(sign)
     owneracct := GetObjProperty(house,"owneracct");
     ev := wait_for_event(120);
@@ -36,7 +39,7 @@ program SignListener(sign)
     endif
     decaytime := GetObjProperty(sign,"decay");
     if(!decaytime)
-      decaytime := (ReadGameClock() + 864000);
+      decaytime := (ReadGameClock() + get_abandon_time());
       SetObjProperty(sign, "decay", decaytime);
     endif
     if(!GetObjProperty(sign,"nodecay"))
@@ -112,8 +115,9 @@ function remove(house, sign, event)
       var friend := statuscheck(house, idiot, 2);
       var coown  := statuscheck(house, idiot, 1);
       var staff  := who.cmdlevel;
+      var multi  := who.multi;
       if ((coown == 0) && (friend == 0) && (idiot.serial != who.serial) && (staff < 2))
-        MoveObjectToLocation(idiot, sign.x, sign.y, GetStandingHeight( sign.x, sign.y, sign.z, sign.realm), sign.realm, MOVEOBJECT_FORCELOCATION);
+        MoveObjectToLocation(idiot, sign.x, sign.y, sign.z, sign.realm, MOVEOBJECT_FORCELOCATION);
         SendSysMessage(idiot,"you have been ejected from the house");
         return;
       elseif((friend == 1) || (coown == 1) || (idiot.acctname == GetObjProperty(house,"owneracct")))
@@ -140,6 +144,7 @@ function trashbarrel(house, event)
   var barrelcheck := GetObjProperty(house, "barrelserial");
   if(barrelcheck)
     var exists := 0;
+    var existingbarrel;
     foreach thing in (house.items)
       if(thing.serial == barrelcheck)
         exists := 1;
@@ -151,7 +156,7 @@ function trashbarrel(house, event)
       return;
     endif
   endif
-  var items := ListItemsNearLocation(who.x, who.y, who.z, 1, who.realm);
+  var items := ListItemsNearLocation(who.x, who.y, who.z, 1);
   var check := 0;
   foreach thing in items
     if(thing.objtype == 0x8889)
@@ -159,10 +164,10 @@ function trashbarrel(house, event)
     endif
   endforeach
   if(check == 0)
-    var barrel := CreateItemAtLocation(who.x, who.y, who.z, 0x7007, 1, who.realm);
+    var barrel := CreateItemAtLocation(who.x, who.y, who.z, 0x7007, 1);
     if(barrel)
       SetObjProperty(house, "barrelserial", barrel.serial);
-      SetObjProperty(barrel, "houseserial", house.serial);
+      SetObjProperty(barrel, "signserial", house.serial);
     endif
   else
     SendSysMessage(who, "You cannot place that here.");
@@ -171,6 +176,8 @@ endfunction
 
 function HouseFunction(house, event, num)
   var itemt := Target(event.source, TGTOPT_NOCHECK_LOS);
+	var deedobj := "";
+	var deedserial := 0;
   if(!itemt)
     SendSysMessage(event.source, "Cancelled.");
     return;
@@ -184,13 +191,22 @@ function HouseFunction(house, event, num)
       itemlist.append(thing);
     endforeach
   endforeach
+    var homeinfo := GetObjProperty(house, "footage");
+//    var nwx := homeinfo[2];
+//    var nwy := homeinfo[3];
+//    var sex := homeinfo[4];
+//    var sey := homeinfo[5];
+//	SendSysMessage(event.source, CStr(nwx) + " " + CStr(nwy) + " " + CStr(sex) + " " + CStr(sey), color :=56);
+//	SendSysMessage(event.source, CStr(homeinfo[1,3]), color :=56);
+    var inside := 0;
+    var box := ListObjectsInBox(homeinfo[1,1], homeinfo[1,2], -100, homeinfo[1,4], homeinfo[1,5], 100, itemt.realm);
   if(itemt in itemlist)
     case(num)
       1: if(GetObjProperty(house, "numlockdowns") > 0)
            if(itemt.movable == 1)
                itemt.movable := 0;
                SetObjProperty(itemt, "lockeddown", 1);
-               SetObjProperty(itemt, "houseserial", house.serial);
+               SetObjProperty(itemt, "signserial", house.serial);
                SetObjProperty(house, "numlockdowns", GetObjProperty(house, "numlockdowns") - 1);
                SendSysMessage(event.source, "Locked Down.");
            elseif((itemt.movable == 0) && (GetObjProperty(itemt,"lockeddown") ==1))
@@ -218,11 +234,22 @@ function HouseFunction(house, event, num)
              EraseObjProperty(itemt, "oldscript");
              EraseObjProperty(itemt, "boxserial");
            endif
-           EraseObjProperty(itemt, "houseserial");
+           EraseObjProperty(itemt, "signserial");
            itemt.movable := 1;
            EraseObjProperty(itemt, "lockeddown");
            SetObjProperty(house, "numlockdowns", GetObjProperty(house, "numlockdowns") + 1);
            SendSysMessage(event.source, "Released.");
+			 deedobj:= GetObjProperty(itemt, "deedobjtype");
+			 deedserial := GetObjProperty (itemt, "deedserial");
+			 if (deedobj)
+				foreach item in box
+				  if (CInt(GetObjProperty (item, "deedserial")) == deedserial)
+					DestroyItem(item);
+				  endif
+				endforeach
+				DestroyItem(itemt);
+				CreateItemInBackpack(event.source, CInt(deedobj), 1);
+			 endif
            return;
          elseif ((itemt.movable == 0) &&(GetObjProperty(itemt,"secure") ==1))
            EraseObjProperty(itemt,"secure");
@@ -232,7 +259,7 @@ function HouseFunction(house, event, num)
            endif
            itemt.usescript := oldscript;
            SetObjProperty(house, "numsecure", GetObjProperty(house, "numsecure") + 1);
-           EraseObjProperty(itemt, "houseserial");
+           EraseObjProperty(itemt, "signserial");
            EraseObjProperty(itemt, "oldscript");
            itemt.movable := 1;
            SendSysMessage(event.source, "Released.");
@@ -279,7 +306,7 @@ function secure(house, event)
       endif
       itemt.movable := 0;
       SetObjProperty(itemt, "boxserial", itemt.serial);
-      SetObjProperty(itemt, "houseserial", house.serial);
+      SetObjProperty(itemt, "signserial", house.serial);
       SetObjProperty(itemt, "secure", 1);
       SetObjProperty(itemt,"oldscript", itemt.script);
       itemt.usescript := ":housing:secureCont";
@@ -304,7 +331,7 @@ function unsecure(house, event)
     return;
   endif
   EraseObjProperty(itemt,"secure");
-  if(GetObjProperty(itemt, "houseserial") == house.serial)
+  if(GetObjProperty(itemt, "signserial") == house.serial)
     var lockdowns := GetObjProperty(house, "numlockdowns");
     var oldscript := GetObjProperty(itemt,"oldscript");
     if(oldscript == error)
@@ -312,7 +339,7 @@ function unsecure(house, event)
     endif
     itemt.usescript := oldscript;
     SetObjProperty(house, "numsecure", GetObjProperty(house, "numsecure") + 1);
-    EraseObjProperty(itemt, "houseserial");
+    EraseObjProperty(itemt, "signserial");
     EraseObjProperty(itemt, "oldscript");
     EraseObjProperty(itemt, "boxserial");
     if(lockdowns > 0)
@@ -344,11 +371,11 @@ function housebanning(house, event, sign)
     SendSysMessage(who, "Canceled.");
     return;
   endif
-  if(!(idiot.isA(POLCLASS_NPC) || idiot.acctname))
+  if(!GetStrength(idiot))
     SendSysMessage(who, "That cannot be added to the list.");
     return;
   endif
-  if((InHouse(idiot, house)) or (idiot.multi == house))
+  if((InHouse(idiot, house)) || (idiot.multi == house))
     var friend := statuscheck(house, idiot, 2);
     var coown  := statuscheck(house, idiot, 1);
     var banned := statuscheck(house, idiot, 3);
@@ -357,7 +384,7 @@ function housebanning(house, event, sign)
     var own    := GetObjProperty(house, "owneracct");
     if((coown == 0) && (banned == 0) && (friend == 0) && ( act != own) && (idiot.serial != who.serial) && (staff < 2))
       SendSysMessage(idiot, "you have been ejected from the house");
-      MoveObjectToLocation(idiot, sign.x, sign.y, GetStandingHeight( sign.x, sign.y, sign.z, sign.realm), sign.realm, MOVEOBJECT_FORCELOCATION);
+      MoveObjectToLocation(idiot, sign.x, sign.y, sign.z, sign.realm);
       banlist.append(idiot.serial);
       SetObjProperty(house, "banlist", banlist);
       SendSysMessage(event.source, idiot.name + " was banned from your house");
@@ -367,7 +394,7 @@ function housebanning(house, event, sign)
       return;
     elseif(banned == 1)
       SendSysMessage(who,"that person is already banned");
-      MoveObjectToLocation(idiot, sign.x, sign.y, GetStandingHeight( sign.x, sign.y, sign.z, sign.realm), sign.realm, MOVEOBJECT_FORCELOCATION);
+      MoveObjectToLocation(idiot, sign.x, sign.y, sign.z, sign.realm, MOVEOBJECT_FORCELOCATION);
       return;
     else
       SendSysMessage(who,"you cannot do that!");
@@ -397,13 +424,6 @@ function InHouse(who, house)
 endfunction
 
 function demolish(house)
-  // Find the bantiles and ladders to make sure they get destroyed
-  var bantiles := GetObjProperty(house, "bantiles");
-  var thetile;
-  foreach entry in bantiles
-    thetile := SystemFindObjectBySerial(entry);
-    destroyitem(thetile);
-  endforeach
   var lists := GetObjProperty(house, "footage");
   var itemlist := {};
   foreach entry in lists
@@ -411,6 +431,7 @@ function demolish(house)
       itemlist.append(thing);
     endforeach
   endforeach
+  var chk;
   var builtdeed := GetObjProperty(house, "builtdeed");
   if(builtdeed)
     if(!DestroyItem(SystemFindObjectBySerial(builtdeed)))
@@ -418,22 +439,22 @@ function demolish(house)
     endif
   endif
   foreach thing in itemlist
-    if(GetObjProperty(thing, "houseserial") == house.serial)
+    if(GetObjProperty(thing, "signserial") == house.serial)
       if ((GetObjProperty(thing, "secure") == 1) && (thing.movable == 0))
         EraseObjProperty(thing, "secure");
-        if(GetObjProperty(thing, "houseserial" ) == house.serial)
+        if(GetObjProperty(thing, "signserial" ) == house.serial)
           var oldscript := GetObjProperty(thing, "oldscript");
           if (oldscript == error)
             oldscript := "";
           endif
           thing.usescript := oldscript;
           thing.movable := 1;
-          EraseObjProperty(thing, "houseserial" );
+          EraseObjProperty(thing, "signserial" );
           EraseObjProperty(thing, "oldscript" );
         endif
       elseif ((GetObjProperty(thing, "lockeddown" ) == 1) && (thing.movable == 0))
         thing.movable := 1;
-        EraseObjProperty(thing, "houseserial");
+        EraseObjProperty(thing, "signserial");
         EraseObjProperty(thing, "lockeddown");
       elseif (thing.movable == 0)
         if(thing.objtype == 0xa390)
@@ -467,7 +488,7 @@ function reveal(house, event)
   var holder := 0;
   foreach thing in lists
     foreach thing in ListObjectsInBox(thing[1], thing[2], thing[3], thing[4], thing[5],thing[6], house.realm)
-      if((GetStrength(thing)) and (thing.hidden))
+      if((GetStrength(thing)) && (thing.hidden))
         thing.hidden := 0;
         holder := holder + 1;
       endif

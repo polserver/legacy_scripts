@@ -1,3 +1,4 @@
+
 use uo;
 use os;
 
@@ -5,11 +6,11 @@ include "util/key";
 include "include/yesNo";
 include "util/bank";
 
-Const UOBJECT_DOORS_START := 0x0675;
-Const UOBJECT_DOORS_END   := 0x06f4;
-Const KEYSTART := 0x100e;
-Const KEYEND := 0x1013;
-Const KEYRING := 0x1011;
+const UOBJECT_DOORS_START := 0x0675;
+const UOBJECT_DOORS_END   := 0x06f4;
+const KEYSTART := 0x100e;
+const KEYEND := 0x1013;
+const KEYRING := 0x1011;
 
 var nonlayout := {
  "page 0",
@@ -376,7 +377,7 @@ var layoutfriendremove := {
 "button 150 300 210 211 1 0 21",         // Banned Button
 "text 180 320 0 20",                     // Banned Name
 "button 150 320 210 211 1 0 22",         // Banned Button
-"button 160 363 5223 5223 0 1 30"        // Previous Page
+"button 160 363 5223 5223 0 1 30"       // Previous Page
 
 
 };
@@ -596,7 +597,7 @@ var layoutcownremove := {
 "button 150 300 210 211 1 0 21",         // Banned Button
 "text 180 320 0 20",                     // Banned Name
 "button 150 320 210 211 1 0 22",         // Banned Button
-"button 160 363 5223 5223 0 1 30"        // Previous Page
+"button 160 363 5223 5223 0 1 30"       // Previous Page
 };
 
 var datacownremove := {
@@ -751,7 +752,11 @@ program textcmd_sign(who, sign)
     return;
   endif
   var house := SystemFindObjectBySerial(CInt(hserial));
+    if(!house)
+	SendSysMessage(who, "Cannot find this house in the world data.", color := 33);
+    endif
   var oserial := GetObjProperty(house, "ownerserial");
+
   SetPlaqueName(sign, house);
   if(GetObjProperty(house, "Public"))
     data[31] := "Declare this house Private";
@@ -953,7 +958,8 @@ function ListFriend(house, who)
     endif
   endforeach
   SetObjProperty(house, "friendlist", newlist);
-  SendDialogGump(who, layoutfriendlist, datafriendlist);
+  var retval := SendDialogGump(who, layoutfriendlist, datafriendlist);
+  return retval;
 endfunction
 
 ////////////////////////////
@@ -1060,7 +1066,8 @@ function ListBan(house, who)
     endif
   endforeach
   SetObjProperty(house, "banlist", newlist);
-  SendDialogGump(who, layoutbanlist, databanlist);
+  var retval := SendDialogGump(who, layoutbanlist, databanlist);
+  return retval;
 endfunction
 
 function AddCoowner(house, who)
@@ -1157,7 +1164,8 @@ function ListCoowner(house, who)
     endif
   endforeach
   SetObjProperty(house, "coownlist", newlist);
-  SendDialogGump(who, layoutcownlist, datacownlist);
+  var retval := SendDialogGump(who, layoutcownlist, datacownlist);
+  return retval;
 endfunction
 
 function ChangeHouseOwner(oldowner, who, house)
@@ -1256,7 +1264,7 @@ function DeclarePrivPub(who, house, sign)
 endfunction
 
 function ChangeSign(who, house, sign, result)
-  who := who;
+who := who;
   var signgraph := result[0];
   if(sign.graphic == 3024 || sign.graphic == 3026)
     SetObjProperty(house, "oldsignprop", sign.graphic);
@@ -1276,7 +1284,7 @@ function Eject(house,who,sign)
     SendSysMessage(who,"Canceled.");
     return;
   endif
-  MoveObjectToLocation(targetchr, sign.x, sign.y, GetStandingHeight( sign.x, sign.y, sign.z, sign.realm), sign.realm, MOVEOBJECT_FORCELOCATION);
+  MoveObjectToLocation(targetchr, sign.x, sign.y, 0, sign.realm, MOVEOBJECT_FORCELOCATION);
   SendSysMessage(who,targetchr.name+" was ejected!");
 endfunction
 
@@ -1304,12 +1312,12 @@ function checklists(house, who, list1, list2)
 endfunction
 
 function demolish(house, sign, who)
-  sign := sign;
+sign := sign;
   var lists := GetObjProperty(house, "footage");
   var itemlist := {};
   var holder, chk := 0;
   foreach thing in lists
-    holder := ListObjectsInBox(thing[1], thing[2], thing[3], thing[4], thing[5],thing[6], thing.realm);
+    holder := ListObjectsInBox(thing[1], thing[2], thing[3], thing[4], thing[5],thing[6], house.realm);
     foreach thing in holder
       itemlist.append(thing);
     endforeach
@@ -1331,10 +1339,10 @@ function demolish(house, sign, who)
     return;
   endif
   if(chk == 0)
-    var builtdeed := GetObjProperty(house, "builtdeed");
+    var builtdeed := SystemFindObjectBySerial(GetObjProperty(house, "builtdeed"));
     if(builtdeed)
-      if(!DestroyItem(SystemFindObjectBySerial(builtdeed)))
-         chk := 2;
+      if(!DestroyItem(builtdeed))
+          chk := 2;
       endif
     endif
   endif
@@ -1365,64 +1373,58 @@ function demolish(house, sign, who)
         endif
       endforeach
     endif
-    var retdeed := 0;
     case(house.objtype)
-      0x6060: retdeed := CreateItemInBackpack(who,0x6019,1); //smallstoneandplasterhouse
-      0x6061: retdeed := CreateItemInBackpack(who,0x601a,1); //smallstonehouse
-      0x6062: retdeed := CreateItemInBackpack(who,0x601b,1); //smallwoodenhouse
-      0x6063: retdeed := CreateItemInBackpack(who,0x601c,1); //smallplasterhouse
-      0x6064: retdeed := CreateItemInBackpack(who,0x601d,1); //smallwoodandstrawhouse
-      0x6073: retdeed := CreateItemInBackpack(who,0x601e,1); //smallbrickhouse
-      0x6065: retdeed := CreateItemInBackpack(who,0x6020,1); //largebrickhouse
-      0x6072: retdeed := CreateItemInBackpack(who,0x6026,1); //largepatiohouse
-      0x6066: retdeed := CreateItemInBackpack(who,0x6021,1); //twostorywoodandplasterhouse
-      0x6068: retdeed := CreateItemInBackpack(who,0x6022,1); //twostorystoneandplasterhouse
-      0x6069: retdeed := CreateItemInBackpack(who,0x6023,1); //tower
-      0x6070: retdeed := CreateItemInBackpack(who,0x6024,1); //keep
-      0x6071: retdeed := CreateItemInBackpack(who,0x6025,1); //castle
-      0x6074: retdeed := CreateItemInBackpack(who,0x602D,1); //smalltower
-      0x6075: retdeed := CreateItemInBackpack(who,0x602E,1); //smallmarbleshop
-      0x6076: retdeed := CreateItemInBackpack(who,0x602F,1); //smallstoneshop
-      0x6077: retdeed := CreateItemInBackpack(who,0x6030,1); //largemarblehouse
-      0x6078: retdeed := CreateItemInBackpack(who,0x6031,1); //logcabin
-      0x6079: retdeed := CreateItemInBackpack(who,0x6032,1); //sandstonepatiohouse
-      0x607A: retdeed := CreateItemInBackpack(who,0x6033,1); //twostoryvilla
+      0x6060: CreateItemInBackpack(who,0x6019,1); //smallstoneandplasterhouse
+      0x6061: CreateItemInBackpack(who,0x601a,1); //smallstonehouse
+      0x6062: CreateItemInBackpack(who,0x601b,1); //smallwoodenhouse
+      0x6063: CreateItemInBackpack(who,0x601c,1); //smallplasterhouse
+      0x6064: CreateItemInBackpack(who,0x601d,1); //smallwoodandstrawhouse
+      0x6073: CreateItemInBackpack(who,0x601e,1); //smallbrickhouse
+      0x6065: CreateItemInBackpack(who,0x6020,1); //largebrickhouse
+      0x6072: CreateItemInBackpack(who,0x6026,1); //largepatiohouse
+      0x6066: CreateItemInBackpack(who,0x6021,1); //twostorywoodandplasterhouse
+      0x6068: CreateItemInBackpack(who,0x6022,1); //twostorystoneandplasterhouse
+      0x6069: CreateItemInBackpack(who,0x6023,1); //tower
+      0x6070: CreateItemInBackpack(who,0x6024,1); //keep
+      0x6071: CreateItemInBackpack(who,0x6025,1); //castle
+      0x6074: CreateItemInBackpack(who,0x602d,1); //large marble patio house
+      0x6075: CreateItemInBackpack(who,0x602e,1); //small tower
+      0x6076: CreateItemInBackpack(who,0x602f,1); //log cabin house
+      0x6077: CreateItemInBackpack(who,0x6030,1); //sandstone patio house
+      0x6078: CreateItemInBackpack(who,0x6031,1); //two story villa
+      0x6079: CreateItemInBackpack(who,0x6032,1); //small stone workshop
+      0x607a: CreateItemInBackpack(who,0x6033,1); //small marble workshop
     endcase
-    if(retdeed)
-      var tilelist := GetObjProperty(house, "bantiles");
-      foreach thing in tilelist
-        DestroyItem(SystemFindObjectBySerial(thing));
-      endforeach
-      foreach thing in itemlist
-        if((GetObjProperty(thing,"secure") == 1) && (thing.movable == 0))
-          EraseObjProperty(thing,"secure");
-          if(GetObjProperty(thing, "houseserial" ) == house.serial)
-            var oldscript := GetObjProperty(thing, "oldscript");
-            if (oldscript == error)
-              oldscript := "";
-            endif
-            thing.usescript := oldscript;
-            thing.movable := 1;
-            EraseObjProperty(thing, "houseserial" );
-            EraseObjProperty(thing, "oldscript" );
+    var tilelist := GetObjProperty(house, "bantiles");
+    foreach thing in tilelist
+      DestroyItem(SystemFindObjectBySerial(thing));
+    endforeach
+    foreach thing in itemlist
+      if((GetObjProperty(thing,"secure") == 1) && (thing.movable == 0))
+        EraseObjProperty(thing,"secure");
+        if(GetObjProperty(thing, "houseserial" ) == house.serial)
+          var oldscript := GetObjProperty(thing, "oldscript");
+          if (oldscript == error)
+            oldscript := "";
           endif
-        elseif ((GetObjProperty(thing, "lockeddown" ) == 1) && (thing.movable == 0))
+          thing.usescript := oldscript;
           thing.movable := 1;
           EraseObjProperty(thing, "houseserial" );
-          EraseObjProperty(thing, "lockeddown");
-        elseif (thing.movable == 0)
-          if(thing.objtype == 0xa390)
-             MoveObjectToLocation(thing, thing.x, thing.y, house.z, MOVEOBJECT_FORCELOCATION);
-          else
-            DestroyItem(thing);
-          endif
+          EraseObjProperty(thing, "oldscript" );
         endif
-      endforeach
-      DestroyMulti(house);
-    else
-      SendSysMessage(who, "Could not create deed. Your pack may be too full.");
-      return;
-    endif
+      elseif ((GetObjProperty(thing, "lockeddown" ) == 1) && (thing.movable == 0))
+        thing.movable := 1;
+        EraseObjProperty(thing, "houseserial" );
+        EraseObjProperty(thing, "lockeddown");
+      elseif (thing.movable == 0)
+        if(thing.objtype == 0xa390)
+           MoveObjectToLocation(thing, thing.x, thing.y, house.z, house.realm, MOVEOBJECT_FORCELOCATION);
+        else
+          DestroyItem(thing);
+        endif
+      endif
+    endforeach
+    DestroyMulti(house);
   elseif(chk == 2)
     SendSysMessage(who, "Could not find the built deed, please page a GM.");
     return;
