@@ -498,12 +498,12 @@ function drydock(event)
     endif
     var shiptype;
     case(boat.objtype)
-      0x6040: shiptype := 0x6027;
-      0x6041: shiptype := 0x6028;
-      0x6042: shiptype := 0x6029;
-      0x6043: shiptype := 0x602a;
-      0x6044: shiptype := 0x602b;
-      0x6045: shiptype := 0x602c;
+      0x16040: shiptype := 0x16027;
+      0x16041: shiptype := 0x16028;
+      0x16042: shiptype := 0x16029;
+      0x16043: shiptype := 0x1602a;
+      0x16044: shiptype := 0x1602b;
+      0x16045: shiptype := 0x1602c;
     endcase
     if(!shiptype)
       SendSysMessage(me, "Your boat seems to be malfunctioning. Please page a GM.");

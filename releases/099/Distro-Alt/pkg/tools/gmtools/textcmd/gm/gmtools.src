@@ -165,9 +165,9 @@ function permgate(caster)
   var tox := CInt(GetObjProperty(cast_on, "x"));
   var toy := CInt(GetObjProperty(cast_on, "y"));
   var toz := CInt(GetObjProperty(cast_on, "z"));
-  var gate1 := CreateItemAtLocation(caster.x, caster.y, caster.z, 0x6008, 1, caster.realm);
+  var gate1 := CreateItemAtLocation(caster.x, caster.y, caster.z, 0x16008, 1, caster.realm);
   gate1.movable := 0;
-  var gate2 := CreateItemAtLocation(tox, toy, toz, 0x6008, 1, caster.realm);
+  var gate2 := CreateItemAtLocation(tox, toy, toz, 0x16008, 1, caster.realm);
   gate2.movable := 0;
   SetObjProperty(gate1, "GateDestX", gate2.x);
   SetObjProperty(gate1, "GateDestY", gate2.y);

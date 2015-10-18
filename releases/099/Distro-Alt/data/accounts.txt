@@ -7,8 +7,9 @@ Account
 	Banned	0
 	DefaultCmdLevel	test
 	UOExpansion	T2A
-	CProp	LastIP a1:a2:S9:127.0.0.1S5:Admin
-	CProp	LastLogin i25143837
-	CProp	lastlogon i25143809
+	CProp	LastIP a1:a2:S9:127.0.0.1S4:fred
+	CProp	LastLogin i25334249
+	CProp	email sa@b.com
+	CProp	lastlogon i25334054
 }
 

@@ -3,10 +3,10 @@ use os;
 
 program textcmd_seehidden(caster)
   foreach thing in ListItemsNearLocation(caster.x, caster.y, caster.z, 2, caster.realm)
-    if(thing.objtype == 0x6200)
-      thing.graphic := 3948;
-    elseif(thing.objtype == 0x6203)
-      thing.graphic := 8148;
+    if(thing.objtype == 0x16200)
+      thing.graphic := 0x0F6C;
+    elseif(thing.objtype == 0x16203)
+      thing.graphic := 0x1FD4;
     endif
   endforeach
 endprogram

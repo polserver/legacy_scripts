@@ -2,8 +2,8 @@
 use uo;
 use basic;
 
-const CRYSTALOBJ := 0xC001;
-const RECEIVEROBJ := 0xC002;
+const CRYSTALOBJ := 0x1C001;
+const RECEIVEROBJ := 0x1C002;
 
 program use_commcrystal(who, crystal)
   var CrystalStatus := GetObjProperty(crystal, "Status");

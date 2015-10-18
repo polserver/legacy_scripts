@@ -119,7 +119,7 @@ function TreeNearby(me, axe)
 endfunction
 
 function is_furniture(theobj, thing)
-  var miscobjtypes := { 0x7007, 0xa30, 0xa34, 0xa38, 0xfae, 0x9e40};
+  var miscobjtypes := { 0x17007, 0xA30, 0xA34, 0xA38, 0xFAE, 0x19E40};
   if((theobj >= 0x9a8) && (theobj <= 0x9ab))
     return 1;
   elseif((theobj >= 0xa2a) && (theobj <= 0xa2c))

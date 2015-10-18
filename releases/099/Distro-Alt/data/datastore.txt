@@ -4,6 +4,15 @@
 
 DataFile
 {
+	Descriptor	::BountySystem
+	Name	BountySystem
+	Flags	0
+	Version	1
+	OldVersion	1
+}
+
+DataFile
+{
 	Descriptor	:bountyboard:BountySystem
 	Name	BountySystem
 	Package	bountyboard
@@ -19,7 +28,7 @@ DataFile
 	Package	commands
 	Flags	0
 	Version	1
-	OldVersion	0
+	OldVersion	1
 }
 
 DataFile
@@ -29,7 +38,7 @@ DataFile
 	Package	commands
 	Flags	0
 	Version	1
-	OldVersion	0
+	OldVersion	1
 }
 
 DataFile
@@ -48,8 +57,8 @@ DataFile
 	Name	packages
 	Package	control
 	Flags	0
-	Version	2
-	OldVersion	2
+	Version	75
+	OldVersion	74
 }
 
 DataFile
@@ -58,8 +67,8 @@ DataFile
 	Name	settings
 	Package	motd
 	Flags	0
-	Version	3
-	OldVersion	2
+	Version	30
+	OldVersion	30
 }
 
 DataFile
@@ -68,8 +77,8 @@ DataFile
 	Name	settings
 	Package	skilllocks
 	Flags	0
-	Version	1
-	OldVersion	1
+	Version	4
+	OldVersion	4
 }
 
 DataFile
@@ -80,6 +89,36 @@ DataFile
 	Flags	0
 	Version	1
 	OldVersion	1
+}
+
+DataFile
+{
+	Descriptor	:spawnsystem:Groups
+	Name	Groups
+	Package	spawnsystem
+	Flags	0
+	Version	2
+	OldVersion	2
+}
+
+DataFile
+{
+	Descriptor	:spawnsystem:Realms
+	Name	Realms
+	Package	spawnsystem
+	Flags	0
+	Version	2
+	OldVersion	2
+}
+
+DataFile
+{
+	Descriptor	:spawnsystem:Regions
+	Name	Regions
+	Package	spawnsystem
+	Flags	0
+	Version	80
+	OldVersion	79
 }
 
 DataFile

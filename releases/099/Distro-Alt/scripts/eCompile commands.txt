@@ -33,4 +33,4 @@ NOTE:
   a literal [dir] of '.' (no quotes) or options will not parse correctly.
 
 
-ecompile C:\pol\ -a -A -r -f
+ecompile T:\Distro\ -a -A -r -f

@@ -24,7 +24,7 @@ program use_dyes(who, dyes)
     SendSysMessage(who, "You cannot reach that!");
     return;
   endif
-  if((dyetub.objtype != 0xb00f) && (dyetub.objtype != 0x0fab))
+  if((dyetub.objtype != 0x1B00f) && (dyetub.objtype != 0x0fab))
     SendSysMessage(who, "That is not a dye tub!");
     return;
   endif

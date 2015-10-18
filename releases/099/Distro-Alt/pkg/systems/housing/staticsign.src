@@ -8,10 +8,10 @@ include "util/key";
 include "include/objtype";
 include "include/attributes";
 include ":gumps:gumpprompt";
-include "staticlayout";
-include "coownerlayout";
-include "friendlayout";
-include "defaultlayout";
+include ":housing:staticlayout";
+include ":housing:coownerlayout";
+include ":housing:friendlayout";
+include ":housing:defaultlayout";
 include "include/yesNo";
 include ":housing:housing_settings";
 

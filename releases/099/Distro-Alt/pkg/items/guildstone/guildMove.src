@@ -44,7 +44,7 @@ program packed_stone(who,stone)
   endif
   chk := 0;
   foreach item in (house.items)
-    if(item.objtype == 0xa390)
+    if(item.objtype == 0x1A390)
       chk := 1;
       break;
     endif

@@ -7,7 +7,7 @@ include "util/bank";
 include "include/objtype";
 include "include/findCity";
 include "include/canAccess";
-include "isValidLoc";
+include ":housing:isValidLoc";
 include ":housing:housing";
 include ":housing:housing_settings";
 

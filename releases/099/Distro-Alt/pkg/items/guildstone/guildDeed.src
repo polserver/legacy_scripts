@@ -41,7 +41,7 @@ program use_guild_deed(who, deed)
   endif
   chk := 0;
   foreach item in (house.items)
-    if(item.objtype == 0xa390)
+    if(item.objtype == 0x1A390)
       chk := 1;
       break;
     endif
@@ -51,7 +51,7 @@ program use_guild_deed(who, deed)
     return;
   else
     var pos  := GetStandingHeight(who.x, who.y, who.z, who.realm);
-    var item := CreateItemAtLocation(who.x, who.y, pos.z, 0xa390, 1, who.realm);
+    var item := CreateItemAtLocation(who.x, who.y, pos.z, 0x1A390, 1, who.realm);
     if(item)
       if(setupguild(who, item) == 0)
         DestroyItem(item);

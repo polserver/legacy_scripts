@@ -25,9 +25,9 @@ program onlogon(who)
     RevokePrivilege(who, "hearghosts");
   else
     var oldpack := who.backpack;
-    if(oldpack.objtype != 0x966c)
+    if(oldpack.objtype != 0x1966c)
       MoveObjectToLocation(oldpack, 5851, 1161, 0, "britannia_alt", MOVEOBJECT_FORCELOCATION); // newmap problem
-      var newpack := CreateItemAtLocation(5851, 1162, 0, 0x966c, 1, "britannia_alt"); // newmap problem
+      var newpack := CreateItemAtLocation(5851, 1162, 0, 0x1966c, 1, "britannia_alt"); // newmap problem
       EquipItem(who, newpack);
       foreach thing in ListRootItemsInContainer(oldpack)
         MoveItemToContainer(thing, newpack);

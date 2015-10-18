@@ -73,7 +73,7 @@ function GuildDisband(ev)
       sleep(10);
     endif
   endwhile
-  CreateItemInBackpack(gm, 0xa391, 1);
+  CreateItemInBackpack(gm, 0x1A391, 1);
 endfunction
 
 function GuildCreated(ev)

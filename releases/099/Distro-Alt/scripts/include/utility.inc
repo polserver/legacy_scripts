@@ -13,7 +13,7 @@ function find_or_create_storage( areaname )
   return area;
 endfunction
 
-function find_or_create_item(storage, name, objtype := 0x966a)
+function find_or_create_item(storage, name, objtype := 0x1966a)
   var item := FindRootItemInStorageArea(storage, name);
   if(item)
 	return item;

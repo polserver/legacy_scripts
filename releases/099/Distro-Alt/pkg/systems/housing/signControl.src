@@ -159,12 +159,12 @@ function trashbarrel(house, event)
   var items := ListItemsNearLocation(who.x, who.y, who.z, 1);
   var check := 0;
   foreach thing in items
-    if(thing.objtype == 0x8889)
+    if(thing.objtype == 0x18889)
       check := 1;
     endif
   endforeach
   if(check == 0)
-    var barrel := CreateItemAtLocation(who.x, who.y, who.z, 0x7007, 1);
+    var barrel := CreateItemAtLocation(who.x, who.y, who.z, 0x17007, 1);
     if(barrel)
       SetObjProperty(house, "barrelserial", barrel.serial);
       SetObjProperty(barrel, "signserial", house.serial);
@@ -457,7 +457,7 @@ function demolish(house)
         EraseObjProperty(thing, "signserial");
         EraseObjProperty(thing, "lockeddown");
       elseif (thing.movable == 0)
-        if(thing.objtype == 0xa390)
+        if(thing.objtype == 0x1A390)
            MoveObjectToLocation(thing, thing.x, thing.y, (thing.z - 7), thing.realm, MOVEOBJECT_FORCELOCATION);
         else
           DestroyItem(thing);

@@ -22,9 +22,9 @@ program maketele(who)
 	var toy := CInt(GetObjProperty( rune, "y" ));
 	var toz := CInt(GetObjProperty( rune, "z" ));
 	set_critical( 1 );
-	var gate1 := CreateItemAtLocation( who.x, who.y, who.z, 0x6203, 1, who.realm );
+	var gate1 := CreateItemAtLocation( who.x, who.y, who.z, 0x16203, 1, who.realm );
 	gate1.facing := 29;
-	var gate2 := CreateItemAtLocation( tox, toy, toz, 0x6203, 1, who.realm );
+	var gate2 := CreateItemAtLocation( tox, toy, toz, 0x16203, 1, who.realm );
 	gate2.facing := 29;
 	if (!gate1 || !gate2)
       DestroyItem(gate1);

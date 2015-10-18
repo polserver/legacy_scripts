@@ -96,14 +96,14 @@ function FindPack(myserial)
   var bankbox := FindRootItemInStorageArea(mybank, bank_obj_name);
   if(!bankbox)
     if((me.graphic == 0x123)||(me.graphic == 0x124))
-      bankbox := CreateRootItemInStorageArea(mybank, bank_obj_name, 0x966b);
+      bankbox := CreateRootItemInStorageArea(mybank, bank_obj_name, 0x1966B);
     else
       bankbox := CreateRootItemInStorageArea(mybank, bank_obj_name, UOBJ_BANKBOX);
     endif
   else
     if(((me.graphic == 0x123)||(me.graphic == 0x124))&&((me.backpack).objtype == UOBJ_BANKBOX))
       DestroyItem(bankbox);
-      bankbox := CreateRootItemInStorageArea(mybank, bank_obj_name, 0x966b);
+      bankbox := CreateRootItemInStorageArea(mybank, bank_obj_name, 0x1966B);
     endif
   endif
   return bankbox;

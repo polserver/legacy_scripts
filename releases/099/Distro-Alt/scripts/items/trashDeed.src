@@ -2,7 +2,7 @@ use os;
 use uo;
 
 const SEARCH_RANGE := 10;
-const TRASH_BARREL := 0x7007;
+const TRASH_BARREL := 0x17007;
 
 program maketrash( who, deed )
 

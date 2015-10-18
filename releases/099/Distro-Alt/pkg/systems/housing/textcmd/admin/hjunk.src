@@ -1,0 +1,17 @@
+use cfgfile;
+use uo;
+
+
+Program scratch(who)
+
+UnloadConfigFile( ":housing:settings" );
+var	housing_cfg := ReadConfigFile(":housing:settings");
+if(!housing_cfg)
+	SendSysMessage(who, "No config file found.");
+endif
+var	elem := FindConfigElem( housing_cfg, "Settings" );
+var	decayperiod := GetConfigInt( elem, "Abandoned_Timeout" );
+
+SendSysMessage(who, "Decay time = " + CStr(decayperiod));
+
+endprogram

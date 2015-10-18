@@ -1323,7 +1323,7 @@ sign := sign;
     endforeach
   endforeach
   foreach thing in itemlist
-    if(thing.objtype == 0xa390)
+    if(thing.objtype == 0x1A390)
       chk := 1;
       break;
     endif
@@ -1417,7 +1417,7 @@ sign := sign;
         EraseObjProperty(thing, "houseserial" );
         EraseObjProperty(thing, "lockeddown");
       elseif (thing.movable == 0)
-        if(thing.objtype == 0xa390)
+        if(thing.objtype == 0x1A390)
            MoveObjectToLocation(thing, thing.x, thing.y, house.z, house.realm, MOVEOBJECT_FORCELOCATION);
         else
           DestroyItem(thing);
