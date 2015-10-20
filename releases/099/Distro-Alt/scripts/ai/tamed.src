@@ -640,7 +640,7 @@ function OpenMyPack()
     if(mounttype)
       if(MoveObjectToLocation(master,me.x,me.y,me.z,master.realm,0))
         master.facing := me.facing;
-        var mount := CreateItemAtLocation(5228, 1182, 0, 0xf021,1, "britannia"); // newmap problem
+        var mount := CreateItemAtLocation(5228, 1182, 0, 0x1f021,1, "britannia"); // newmap problem
         if(Cint(GetObjProperty(me, "summoned")) == 1)
           SetObjProperty(mount, "summoned", 1);
         endif
