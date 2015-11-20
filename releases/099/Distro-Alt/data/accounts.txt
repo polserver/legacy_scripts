@@ -6,7 +6,7 @@ Account
 	Enabled	1
 	Banned	0
 	DefaultCmdLevel	test
-	UOExpansion	T2A
+	UOExpansion	HSA
 	CProp	LastIP a1:a2:S9:127.0.0.1S4:fred
 	CProp	LastLogin i25334249
 	CProp	email sa@b.com
