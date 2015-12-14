@@ -1,9 +1,0 @@
-use uo;
-use os;
-
-program textcmd_t( who)
-  SendSysMessage(who,"target the house sign to time advance");
-  var targ := Target(who);
-  GetObjProperty(targ,"decay");
-  SetObjProperty(targ,"decay", (ReadGameClock() + 20));
-endprogram

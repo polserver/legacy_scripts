@@ -1,4 +1,0 @@
-#
-#  PARTIES.TXT: Party Data
-#
-

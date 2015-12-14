@@ -1,8 +1,0 @@
-Distro change log
-
-
-07-Sep-2015	Yukiko	Fixed:	nlootgroup.cfg had the word "Potion" appended to the end of some potions in the "Group Potions" section. The potions defined in \pkg\skills\alchemy don't have "Potion" as part of their name. This was causing "unable to create" errors on console.
-
-07-Sep-2015	Yukiko	Fixed:	In \pkg\commands\include\goText.inc some of the MoveObjectToLocation calls had the realm parameter inside a CInt() function.
-					
-18-Oct-2015	Yukiko	Moved:	Relocated custom defined objects above the 0xFFFF graphic area to prevent conflicts with expanded graphics in the latest (High Seas) client. Basically I just added 0x10000 to the old ObjType number. Added "OldObjType" directive to the definitions of items that were moved. Checked and updated SRC, INC, and CFG files for references ObjType numbers of moved items. There still might be some things I missed.
