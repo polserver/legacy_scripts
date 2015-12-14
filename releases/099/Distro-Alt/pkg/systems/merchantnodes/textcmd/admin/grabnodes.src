@@ -6,7 +6,7 @@ program textcmd_grabnodes(who)
   var x := 0;
   var y := 0;
   foreach thing in ListObjectsInBox(0, 0, -100, 6143, 4095, 100, who.realm)
-    if(thing.objtype == 0x887a)
+    if(thing.objtype == 0x1887a)
       var data := array;
       var holder := array;
       holder.+pname  := "x";
@@ -33,7 +33,7 @@ program textcmd_grabnodes(who)
       AppendConfigFileElem("packedNodes", "MERCHANT", "merchant" + x, data);
       x := x + 1;
       DestroyItem(thing);
-    elseif(thing.objtype == 0x887b)
+    elseif(thing.objtype == 0x1887b)
       var data := array;
       var holder := array;
       holder.+pname  := "x";

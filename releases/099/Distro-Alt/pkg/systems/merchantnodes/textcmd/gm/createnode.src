@@ -45,7 +45,7 @@ program textcnd_createnpode(who)
   var res := SendDialogGump(who, layout, data);
   if(res[0] == 99)
     var where := TargetCoordinates(who);
-    var node := CreateItemAtLocation(where.x, where.y, where.z, 0x887a, 1, who.realm);
+    var node := CreateItemAtLocation(where.x, where.y, where.z, 0x1887a, 1, who.realm);
     if(!node)
       SendSysMessage(who, node.errortext);
       return;

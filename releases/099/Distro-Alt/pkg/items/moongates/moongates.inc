@@ -19,7 +19,7 @@ function CreateMoongates()
   syslog( "Creating moongates." );
   foreach gate in moongates
     foreach thing in ListItemsNearLocation(gate[1], gate[2], gate[3], 0, DEFAULT_REALM);
-      if(thing.objtype != 0x887b)
+      if(thing.objtype != 0x1887b)
         DestroyItem(thing);
       endif
     endforeach

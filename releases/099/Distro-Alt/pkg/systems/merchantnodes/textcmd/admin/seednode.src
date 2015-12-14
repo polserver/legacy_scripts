@@ -8,7 +8,7 @@ program textcmd_seednode(who)
   var cfg := ReadConfigFile("packedNodes");
   foreach thing in GetConfigStringKeys(cfg)
     if(thing["guard"])
-      var node := CreateItemAtLocation(cfg[thing].x, cfg[thing].y, cfg[thing].z, 0x887b, 1);
+      var node := CreateItemAtLocation(cfg[thing].x, cfg[thing].y, cfg[thing].z, 0x1887b, 1);
       var data := unpack(cfg[thing].data);
       foreach entry in data
         var key := entry[1];
@@ -16,7 +16,7 @@ program textcmd_seednode(who)
         SetObjProperty(node, key, val);
       endforeach
     else
-      var node := CreateItemAtLocation(cfg[thing].x, cfg[thing].y, cfg[thing].z, 0x887a, 1);
+      var node := CreateItemAtLocation(cfg[thing].x, cfg[thing].y, cfg[thing].z, 0x1887a, 1);
       var data := unpack(cfg[thing].data);
       foreach entry in data
         var key := entry[1];

@@ -161,7 +161,7 @@ function Lookiehere(who, npc)
   ev.type := SYSEVENT_SPEECH;
   ev.text := "node";
   ev.source := npc;
-  foreach thing in ListItemsNearLocationOfType(who.x, who.y, who.z, 15, 0x887b, who.realm)
+  foreach thing in ListItemsNearLocationOfType(who.x, who.y, who.z, 15, 0x1887b, who.realm)
     SendEvent(thing, ev);
   endforeach
 endfunction
