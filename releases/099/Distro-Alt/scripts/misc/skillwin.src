@@ -1,0 +1,68 @@
+/* $Id: skillwin.src 373 2006-06-17 18:27:33Z austinheilman $
+ *
+ * Purpose
+ * This script is called when a player clicks the skill button in his paperdoll.
+ *
+ * Parameters
+ * who:     Reference to the character who clicked the skill button
+ *
+ * Return value: Ignored
+ *
+ */
+use uo;
+
+include "include/attributes";
+include ":skilllocks:common";
+include "include/packets";
+
+
+program core_skillWin(who)
+
+    SendSkillWindow(who, who);
+
+
+    var packetstring, index, junk;
+    var cmd, blocksize, pactype;
+    var skillinfo := {};
+    skillinfo := GetSkillLockData(who);
+    junk := skillinfo.size();
+    index := 1;
+
+    if(junk)
+	repeat
+	    packetstring := "";
+	    cmd := "3A";
+	    blocksize := "0A";
+	    pactype := "FF";
+	    packetstring := cmd + fixpacketlength(blocksize, 2) + pactype;
+	    packetstring := packetstring + fixpacketlength((Hex(skillinfo[index])), 2);
+	    packetstring := packetstring + fixpacketlength(Hex(GetBaseSkillBaseValue(who, skillinfo[index])), 2);
+	    packetstring := packetstring + fixpacketlength(Hex(GetBaseSkillBaseValue(who, skillinfo[index])), 2);
+	    packetstring := packetstring + fixpacketlength(Hex(skillinfo[index + 1]), 1);
+	    packetstring := packetstring + fixpacketlength("00", 2);
+	    SendPacket(who, packetString);
+	    index := index + 2;
+	until(index == junk + 1);
+
+    endif
+
+    return 1;
+
+endprogram
+
+Function GetSkillLockData(who)
+
+    var skillstates := {};
+    var skill_num, status;
+    
+    foreach attrib in GetAttributeIdsWithoutStatIds()
+	skill_num := GetSkillIdByAttributeId(attrib);
+	status := SLPH_GetLockState(who, skill_num);
+	if(status)
+	    skillstates.append(skill_num);
+	    skillstates.append(status);
+	endif
+    endforeach
+    return skillstates;
+    
+endfunction

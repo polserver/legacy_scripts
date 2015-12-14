@@ -1,0 +1,33 @@
+// housing
+// updated by zulu December 12, 2000
+
+use uo;
+
+include ":housing:housing";
+
+program ownership( who )
+
+	var isInHouse;
+    SendSysMessage( who, "Select the location." );
+    var sign := TargetCoordinates( who );
+	isInHouse := FindHouseForLocation (sign.x, sign.y, sign.realm);
+//	if(!isInHouse)
+//		if(sign.multi)
+//			isInHouse := 1;
+//		endif
+//	endif
+	var sh := GetStandingHeight(sign.x, sign.y, sign.z, sign.realm);
+	if ( sh.multi )
+		SendSysMessage(who, "You targetted a location within a house!", 1, 66);
+		return 0;
+	endif
+
+	if(IsInHouse)
+		SendSysMessage(who, "You targetted a location within a house!", 1, 66);
+	else
+		SendSysMessage(who, "That location is not inside a house", 1, 66);
+	endif
+
+
+ 
+endprogram
