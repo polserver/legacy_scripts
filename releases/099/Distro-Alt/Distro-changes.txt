@@ -6,3 +6,5 @@ Distro change log
 07-Sep-2015	Yukiko	Fixed:	In \pkg\commands\include\goText.inc some of the MoveObjectToLocation calls had the realm parameter inside a CInt() function.
 					
 18-Oct-2015	Yukiko	Moved:	Relocated custom defined objects above the 0xFFFF graphic area to prevent conflicts with expanded graphics in the latest (High Seas) client. Basically I just added 0x10000 to the old ObjType number. Added "OldObjType" directive to the definitions of items that were moved. Checked and updated SRC, INC, and CFG files for references ObjType numbers of moved items. There still might be some things I missed.
+
+19-Dec-2015	Yukiko 	Fixed:	Folder and file name references with mixed (mismatched) case were causing issues on Linux.
