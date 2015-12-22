@@ -9,12 +9,11 @@ use os;
 use uo;
 
 include "include/objtype";
-include "plankUtil";
+include ":boat:plankutil";
 
-set_debug(1);
-
-program plankcontrol( plank )
-    if (plank.locked && IsExtended(plank))
+program plankcontrol (plank)
+    if (plank.locked and IsExtended(plank))
         Retract( plank );
     endif
 endprogram
+

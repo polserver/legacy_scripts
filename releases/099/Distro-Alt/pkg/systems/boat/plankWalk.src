@@ -3,8 +3,9 @@ use uo;
 
 include "include/client";
 include "include/objtype";
-include "util/key";
-include "plankUtil";
+include "include/utility";
+include ":boat:plankutil";
+// include "../pkg/world/weather/weather";
 
 /*
  * the searchoffset matrix is for an east-facing plank.
@@ -17,62 +18,74 @@ include "plankUtil";
  *        15  6  2
  *        16  7  1 N P
  *        17  8  3
- *        18  9 10
+ *        18  9 10 
  *        19 20 21
  *
  */
 
-var searchoffset := {
-   { -2,  0 },          //  1
-   { -2, -1 },
-   { -2, +1 },
-   { -2, -2 },
-   { -3, -2 },          //  5
-   { -3, -1 },
-   { -3,  0 },
-   { -3, +1 },
-   { -3, +2 },
-   { -2, +2 },          // 10
-   { -2, -3 },
-   { -3, -3 },
-   { -4, -3 },
-   { -4, -2 },
-   { -4, -1 },          // 15
-   { -4,  0 },
-   { -4, +1 },
-   { -4, +2 },
-   { -4, +3 },
-   { -3, +3 },          // 20
-   { -2, +3 },
-   { -5,  0 },
-   { -5, +2 },
-   { -5, +3 },
-   { -5, +4 },
-   { -4, +4 },          // 20
-   { -3, +4 },
-   { -6,  0 },
-   { -6, +3 },
-   { -6, +4 },
-   { -6, +5 },
-   { -5, +5 },          // 20
-   { -4, +5 }
+var searchoffset := array{
+   array{ -2,  0 },          //  1
+   array{ -2, -1 },
+   array{ -2, +1 },
+   array{ -2, -2 },
+   array{ -3, -2 },          //  5
+   array{ -3, -1 },
+   array{ -3,  0 },
+   array{ -3, +1 },
+   array{ -3, +2 },
+   array{ -2, +2 },          // 10
+   array{ -2, -3 },
+   array{ -3, -3 },
+   array{ -4, -3 },
+   array{ -4, -2 },
+   array{ -4, -1 },          // 15
+   array{ -4,  0 },
+   array{ -4, +1 },
+   array{ -4, +2 },
+   array{ -4, +3 },
+   array{ -3, +3 },          // 20
+   array{ -2, +3 },
+   array{ -5,  0 },
+   array{ -5, +2 },
+   array{ -5, +3 },
+   array{ -5, +4 },
+   array{ -4, +4 },          // 20
+   array{ -3, +4 },
+   array{ -6,  0 },
+   array{ -6, +3 },
+   array{ -6, +4 },
+   array{ -6, +5 },
+   array{ -5, +5 },          // 20
+   array{ -4, +5 }
 };
 
 program plankwalk( who, plank, lastx, lasty, lastz )
+    // print( "plankwalk last=(" + lastx + "," + lasty + "," + lastz + ")" );
+
+    
+        //
+        // see if someone is walking onto a locked plank from off the boat
+        // if so, bounce them.
+        //
+        // it would be nice if core had a "canwalk" script capability, so
+        // this code could just tell core to reject the walk in the first place.
+        //
     if (!FindKey( who, plank ))
         if (plank.locked)
-            var sh := GetStandingHeight( lastx, lasty, lastz, who.realm );
-            if (!sh || !sh.multi || sh.multi.serial != plank.multi.serial)
-                MoveObjectToLocation( who, lastx, lasty, lastz, plank.realm, MOVEOBJECT_FORCELOCATION );
+            var sh := GetStandingHeight( lastx, lasty, lastz, plank.realm );
+            if (!sh or !sh.multi or sh.multi.serial != plank.multi.serial)
+				MoveObjectToLocation( who, lastx, lasty, lastz, plank.realm, MOVEOBJECT_FORCELOCATION );
+//			SetWeatherForPlayer (who);
                 return;
             endif
         endif
     endif
-
-    if (ListMobilesNearLocation( plank.x, plank.y, plank.z, 0, who.realm ).size() > 1)
-        MoveObjectToLocation( who, lastx, lasty, lastz, plank.realm, MOVEOBJECT_FORCELOCATION );
-        return;
-    endif
+    
+	if (ListMobilesNearLocation( plank.x, plank.y, plank.z, 0, plank.realm ).size() > 1)
+		MoveObjectToLocation( who, lastx, lasty, lastz, plank.realm, MOVEOBJECT_FORCELOCATION );
+//		SetWeatherForPlayer (who);
+		return;
+	endif
 
     var xidx, yidx, xmul, ymul;
 
@@ -85,7 +98,7 @@ program plankwalk( who, plank, lastx, lasty, lastz )
             yidx := 2;
             xmul := 1;
             ymul := 1;
-
+        
         GID_PLANK_EXTENDED_FACING_EAST:
             if (! (who.facing in { DIR_E, DIR_NE, DIR_SE }))
                 return;
@@ -103,7 +116,7 @@ program plankwalk( who, plank, lastx, lasty, lastz )
             yidx := 1;
             xmul := 1;
             ymul := +1;
-
+           
         GID_PLANK_EXTENDED_FACING_SOUTH:
             if (! (who.facing in { DIR_S, DIR_SE, DIR_SW }))
                 return;
@@ -112,10 +125,14 @@ program plankwalk( who, plank, lastx, lasty, lastz )
             yidx := 1;
             xmul := 1;
             ymul := -1; // flip across y-axis
-
-        default:
+        
+        default: 
+            print( "unrecognized plank type" );
             return;
     endcase
+
+    // If the walker can stand one square past the plank, there's no need
+    // to teleport.
     if (CanMove( who,
                  searchoffset[1][xidx] * xmul / 2,
                  searchoffset[1][yidx] * ymul / 2 ))
@@ -126,8 +143,10 @@ program plankwalk( who, plank, lastx, lasty, lastz )
     foreach offset in searchoffset
         if (TryMove( who, offset[xidx] * xmul, offset[yidx] * ymul ))
             return;
-        endif
+        endif        
     endforeach
+
+    // gah, can't get off the ship!
 endprogram
 
 function TryMove( who, dx, dy )
@@ -136,9 +155,11 @@ function TryMove( who, dx, dy )
 
     var tryx := who.x + dx;
     var tryy := who.y + dy;
+    // print( "Trying (" + tryx + "," + tryy + ")" );
     var h := GetStandingHeight( tryx, tryy, who.z, who.realm );
-    if (h && (not h.multi)) // CHECKME should check line of sight?
-        MoveObjectToLocation( who, tryx, tryy, h.z, who.realm, MOVEOBJECT_FORCELOCATION  );
+    if (h and (not h.multi)) // CHECKME should check line of sight?
+		MoveObjectToLocation( who, tryx, tryy, h.z, who.realm, flags := MOVEOBJECT_FORCELOCATION );
+//		SetWeatherForPlayer (who);
         res := 1;
     endif
 
@@ -149,6 +170,7 @@ endfunction
 function CanMove( who, dx, dy )
     var tryx := who.x + dx;
     var tryy := who.y + dy;
+    // print( "CanMove: (" + tryx + "," + tryy + ") ?" );
     var h := GetStandingHeight( tryx, tryy, who.z, who.realm );
     if (h)
         return 1;
