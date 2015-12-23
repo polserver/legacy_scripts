@@ -1,0 +1,9 @@
+use os;
+use uo;
+
+program my_form( who )
+
+		SendSysMessage(who, "You are now back to your true graphic.", color := 88);
+		who.graphic := who.trueobjtype;
+
+endprogram

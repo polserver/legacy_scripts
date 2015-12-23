@@ -18,7 +18,7 @@ program spell_gate(parms)
         SendSysMessage (caster, "Cancelled.", color := 33);
         return 0;
     endif
-  if((cast_on.objtype != UOBJ_RUNE) && (cast_on.objtype != 0x6100))
+  if((cast_on.objtype != UOBJ_RUNE) && (cast_on.objtype != 0x16100))
     SendSysMessage(caster, "You can only cast that on a recall rune!");
 	return;
   endif
@@ -68,7 +68,7 @@ program spell_gate(parms)
     SendSysMessage(caster, "your spell fails and consumes the rune!");
     if(cast_on.objtype == UOBJ_RUNE)
       DestroyItem(cast_on);
-    elseif(cast_on.objtype == 0x6100)
+    elseif(cast_on.objtype == 0x16100)
       removeentry(cast_on);
     endif
     chk := 1;
@@ -79,7 +79,7 @@ program spell_gate(parms)
     SendSysMessage(caster, "Something is blocking the location");
     if(cast_on.objtype == UOBJ_RUNE)
       DestroyItem(cast_on);
-    elseif(cast_on.objtype == 0x6100)
+    elseif(cast_on.objtype == 0x16100)
       removeentry(cast_on);
     endif
     chk := 1;
@@ -88,7 +88,7 @@ program spell_gate(parms)
     SendSysMessage(caster,"something is blocking the location");
     if(cast_on.objtype == UOBJ_RUNE)
       DestroyItem(cast_on);
-    elseif(cast_on.objtype == 0x6100)
+    elseif(cast_on.objtype == 0x16100)
       removeentry(cast_on);
     endif
     chk := 1;
@@ -98,15 +98,15 @@ program spell_gate(parms)
   // Added next 20 lines for Interdictions.
 	success := 0;
 	var j;
-	var interdiction := ListItemsNearLocationOfType(caster.x, caster.y, caster.z, 20, 0xaa07, caster.realm);
+	var interdiction := ListItemsNearLocationOfType(caster.x, caster.y, caster.z, 20, 0x1aa07, caster.realm);
 	foreach i in interdiction
 		if (Distance(caster, i) <= Cint( GetObjProperty(i, "Range"))) 
 			success := 1;
 		endif
 	endforeach
-	interdiction := ListItemsNearLocationOfType(tox, toy, toz, 20, 0xaa07, caster.realm);
+	interdiction := ListItemsNearLocationOfType(tox, toy, toz, 20, 0x1aa07, caster.realm);
 	foreach i in interdiction
-		j := CreateItemAtLocation(tox, toy, toz, 0xaa07, 1, caster.realm);
+		j := CreateItemAtLocation(tox, toy, toz, 0x1aa07, 1, caster.realm);
 		if (Distance(j, i) <= Cint( GetObjProperty(i, "Range") ) )
 			success := 1;
 		endif
@@ -119,7 +119,7 @@ program spell_gate(parms)
 // End interdictions.
 
 // Check for static houses
-    var signs := ListItemsNearLocationOfType( tox, toy, toz, 30, 0x60ff);
+    var signs := ListItemsNearLocationOfType( tox, toy, toz, 30, 0x160ff);
     foreach item in signs
       var infoarr := GetObjProperty( item, "homeinfo" );
       if (infoarr)

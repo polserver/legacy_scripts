@@ -16,7 +16,7 @@ program logofftest(who)
     safelogoff := 1;
   endif
     if(!safelogoff)
-	var signs := ListItemsNearLocationOfType(who.x, who.y, who.z, 30, 0x60ff, who.realm);
+	var signs := ListItemsNearLocationOfType(who.x, who.y, who.z, 30, 0x160ff, who.realm);
 	foreach item in signs
 		var infoarr := GetObjProperty( item, "homeinfo" );
 		if (infoarr)

@@ -127,7 +127,7 @@ function makesign( who, x, y, z, map, price_per_square, levels)
 	if (!selection)
 	  return;
 	endif
-	var sign := CreateItemAtLocation( x, y, z, 0x60ff, 1, map );
+	var sign := CreateItemAtLocation( x, y, z, 0x160ff, 1, map );
 	if (!sign)
 	  return;
 	endif
@@ -160,7 +160,7 @@ function boundaries(who, sign, levels)
 	var homeinfo := { };
 	var coords := 0, xt, yt, area;
 	while ( !coords )
-	  SendSysMessage(who,"Target the North-West corner of the house (Up!)");
+	  SendSysMessage(who,"Target the North-West corner of the house (Upper corner)", color := 88);
 	  coords := TargetCoordinates(who);
 	endwhile
 	homeinfo[1] := coords.x;
@@ -176,7 +176,7 @@ function boundaries(who, sign, levels)
 	Sleep(1);
 	coords := 0;
 	while( !coords )
-	    SendSysMessage(who,"Target the South-East corner of the house (Down!)");
+	    SendSysMessage(who,"Target the South-East corner of the house (Lower corner)", color := 88);
 	    coords := TargetCoordinates(who);
 	endwhile
 	homeinfo[3] := coords.x;
@@ -191,6 +191,7 @@ function boundaries(who, sign, levels)
 	homeinfo[8] := numlockdowns;
 	homeinfo[9] := numsecures;
 	SetObjProperty(sign, "newhomeinfo", homeinfo);
+	SendSysMessage(who,"You gave successfully deeded this house.", color := 66);
 	return area;
 endfunction
 

@@ -1,0 +1,28 @@
+THIS FILE IS A WORK IN PROGRESS. I NEED TO ADD MORE INFO>
+
+Let's talk about nouses on UO. The housing package that came with this Distro was the one most of us are familiar with. It allows players to place the predesigned multi type houses that are packaged with the client software. This is great if you have enough open land available to allow for the addition of more structures in the world. There are some areas that are conducive to expansion of houses but usually the ground has to be almost flat and free of anything like flowers or rocks. That is assuming you want to have houses springing up at random places on your server. Almost every map, even custom maps, come with houses and shops already in place. They are known as [i]static[/i] structures because they are defined in the [i]statics.mul[/i] files. Since they already exist in your world wouldn't it be nice to be able to make those houses available for sale to your players? They are just sitting there so why not?
+
+Well, now you can with the [b]static housing[/b] system included in this version of the Distro. This system allows you, the developer, to make those structures available for your players to purchase. All you need to do is decide which houses your players can buy, tell the system the boundary of the house and the cost per square for the house. The system does not require any staff to be present when a player wishes to buy a designated house. They simply need to have the required gold in their backpack or in their bank.
+
+
+Let's walk through setting-up an existing static house for sale.
+I am going to assume you are using the standard Britannia map on your server. If not it's not a problem. Just go find a static structure on your server to use. I'm going to set-up the house in Britain at X=1360 Y=1776 Z=15. This is a large two storey building. So goxyz to that house or one you have chosen. If the house does not yet have doors in place then you must add them before setting-up the house. This includes interior doors, if there are places for them, and exterior doors. In the case of the house I have chosen there is only one exterior door and no interior doors. The command we are going to use is .staticdeed
+
+The usage is .staticdeed [number of stories] <price per square>
+
+The price per square is optional. If you omit that the command will use the default price of 500 gold coins per square.
+
+The first thing you need to do is place yourself in the GM form by using the .gmform command.  This is so you can walk through any doors that might be in the way as you setup this (and any other) houses. Next, got to the options menu of your client and click on the fourth icon down on the right side of the gump. It's the one that looks like the UO logo. Look for the check box labelled "Use circle of transparency." Make sure it is checked. Now set the radius for about 100. This will allow you to see through any static items so that you will be able to target the floor of the house.
+
+If your house has more than one storey you have the option of charging more for that house. You decide if you want to price the house with the extra levels added in.
+
+Now decide how much you want to charge per square. Let's say you will charge extra based on the number of levels the house has and that the house you have chosen has 2 floors. Now let's decide that the price will be 200 gold per square. 
+
+OK we're ready to "deed" this house.
+Enter the command .staticdeed 2 200
+
+You will be prompted for the location to place the house sign. If this house has a bracket for the sign you should click on the ground under the bracket. If there is no bracket then pick a spot near the front door and target the ground right against the house. Then choose the proper sign graphic from the gump that will appear.
+
+You will now be prompted to select the north-west corner of the house. This is the upper corner. Go inside the house and click there. Now you will be asked to target the south-east corner. Go down and target that square. Assuming all went well you should get a message telling you that you have succeeded.
+
+Now if you go outside and click on the house sign a gump will appear asking if you want to buy the house. If that happens then congratulations! You have set-up that house for purchase by a player.

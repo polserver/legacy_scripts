@@ -5,7 +5,7 @@
 function FindHouseForLocation (x, y, map)
 	foreach item in ListObjectsInBox (x-32, y-32, -128, x+32, y+32, +127, map)
 		case (item.objtype)
-			0x60ff:
+			0x160ff:
 			0x0bd2:
 			0x0bd0:
 				if (IsLocationWithinHouseSign (item, x, y))
