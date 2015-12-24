@@ -5,10 +5,10 @@ use uo;
 use os;
 
 include ":datafile:datafile";
-include ":gumps:include/gumpprompt";
+include ":gumps:include/gumpPrompt";
 include ":gumps:include/gumps";
 include ":gumps:include/gumps_ex";
-include ":gumps:include/yesno";
+include ":gumps:include/yesNo";
 include ":control:include/icp-commands";
 include ":control:include/icp-generalinfo";
 include ":control:include/icp-gumps";

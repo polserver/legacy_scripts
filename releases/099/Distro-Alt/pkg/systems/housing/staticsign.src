@@ -7,7 +7,7 @@ include "util/bank";
 include "util/key";
 include "include/objtype";
 include "include/attributes";
-include ":gumps:gumpprompt";
+include ":gumps:gumpPrompt";
 include ":housing:staticlayout";
 include ":housing:coownerlayout";
 include ":housing:friendlayout";
