@@ -27,3 +27,6 @@ You will be prompted for the location to place the house sign. If this house has
 You will now be prompted to select the north-west corner of the house. This is the upper corner. Go inside the house and click there. Now you will be asked to target the south-east corner. Go down and target that square. Assuming all went well you should get a message telling you that you have succeeded.
 
 Now if you go outside and click on the house sign a gump will appear asking if you want to buy the house. If that happens then congratulations! You have set-up that house for purchase by a player.
+
+
+
