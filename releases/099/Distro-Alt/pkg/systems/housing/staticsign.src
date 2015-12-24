@@ -108,7 +108,7 @@ program use_static_sign( who, sign )
 	//			SendSysMessage(who, "doorcfg entry = " + entry);
 				if(item.IsA(POLCLASS_DOOR))
 					item.locked := 1;
-					var tile :=CreateItemAtLocation(item.x, item.y, item.z, 0x8889, 1, item.realm); // Create a bantile
+					var tile :=CreateItemAtLocation(item.x, item.y, item.z, 0x18889, 1, item.realm); // Create a bantile
 					SetObjProperty(tile,"signserial", signserial);
 					tile.invisible := 1;
 					tile.movable := 0;
@@ -583,7 +583,7 @@ function removeenemy(who, house, information )
 endfunction
 
 function CreateBuiltDeed( who, sign, bankbox)
-    var builtdeed := CreateItemInContainer( bankbox, 0x60fe );
+    var builtdeed := CreateItemInContainer( bankbox, 0x160fe );
     if (!builtdeed)
       PrintTextAbovePrivate( who, "Your backpack is too full!", who );
       return 0; // not built

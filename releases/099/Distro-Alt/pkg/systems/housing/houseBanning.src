@@ -38,6 +38,14 @@ program walk_on_bantile(who, tile)
 		return;
 	endif
 	if(who.serial in banlist)
+		var signarray2 := {0x0bd1, 0x0bd2, 0x0bcf, 0x0bd0};
+		foreach thing in (house.components)
+			if(thing.objtype in signarray2)
+				sign := thing;
+				break;
+			endif
+		endforeach
+
 		MoveObjectToLocation( who, sign.x, sign.y, sign.z, sign.realm, MOVEOBJECT_FORCELOCATION );
 		SendSysMessage(who, "You are banned from that house and cannot enter it!");
 		endif

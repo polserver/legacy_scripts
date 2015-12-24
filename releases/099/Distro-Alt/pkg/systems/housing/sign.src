@@ -1374,26 +1374,26 @@ sign := sign;
       endforeach
     endif
     case(house.objtype)
-      0x6060: CreateItemInBackpack(who,0x6019,1); //smallstoneandplasterhouse
-      0x6061: CreateItemInBackpack(who,0x601a,1); //smallstonehouse
-      0x6062: CreateItemInBackpack(who,0x601b,1); //smallwoodenhouse
-      0x6063: CreateItemInBackpack(who,0x601c,1); //smallplasterhouse
-      0x6064: CreateItemInBackpack(who,0x601d,1); //smallwoodandstrawhouse
-      0x6073: CreateItemInBackpack(who,0x601e,1); //smallbrickhouse
-      0x6065: CreateItemInBackpack(who,0x6020,1); //largebrickhouse
-      0x6072: CreateItemInBackpack(who,0x6026,1); //largepatiohouse
-      0x6066: CreateItemInBackpack(who,0x6021,1); //twostorywoodandplasterhouse
-      0x6068: CreateItemInBackpack(who,0x6022,1); //twostorystoneandplasterhouse
-      0x6069: CreateItemInBackpack(who,0x6023,1); //tower
-      0x6070: CreateItemInBackpack(who,0x6024,1); //keep
-      0x6071: CreateItemInBackpack(who,0x6025,1); //castle
-      0x6074: CreateItemInBackpack(who,0x602d,1); //large marble patio house
-      0x6075: CreateItemInBackpack(who,0x602e,1); //small tower
-      0x6076: CreateItemInBackpack(who,0x602f,1); //log cabin house
-      0x6077: CreateItemInBackpack(who,0x6030,1); //sandstone patio house
-      0x6078: CreateItemInBackpack(who,0x6031,1); //two story villa
-      0x6079: CreateItemInBackpack(who,0x6032,1); //small stone workshop
-      0x607a: CreateItemInBackpack(who,0x6033,1); //small marble workshop
+      0x16060: CreateItemInBackpack(who,0x16019,1); //smallstoneandplasterhouse
+      0x16061: CreateItemInBackpack(who,0x1601a,1); //smallstonehouse
+      0x16062: CreateItemInBackpack(who,0x1601b,1); //smallwoodenhouse
+      0x16063: CreateItemInBackpack(who,0x1601c,1); //smallplasterhouse
+      0x16064: CreateItemInBackpack(who,0x1601d,1); //smallwoodandstrawhouse
+      0x16073: CreateItemInBackpack(who,0x1601e,1); //smallbrickhouse
+      0x16065: CreateItemInBackpack(who,0x16020,1); //largebrickhouse
+      0x16072: CreateItemInBackpack(who,0x16026,1); //largepatiohouse
+      0x16066: CreateItemInBackpack(who,0x16021,1); //twostorywoodandplasterhouse
+      0x16068: CreateItemInBackpack(who,0x16022,1); //twostorystoneandplasterhouse
+      0x16069: CreateItemInBackpack(who,0x16023,1); //tower
+      0x16070: CreateItemInBackpack(who,0x16024,1); //keep
+      0x16071: CreateItemInBackpack(who,0x16025,1); //castle
+      0x16074: CreateItemInBackpack(who,0x1602d,1); //large marble patio house
+      0x16075: CreateItemInBackpack(who,0x1602e,1); //small tower
+      0x16076: CreateItemInBackpack(who,0x1602f,1); //log cabin house
+      0x16077: CreateItemInBackpack(who,0x16030,1); //sandstone patio house
+      0x16078: CreateItemInBackpack(who,0x16031,1); //two story villa
+      0x16079: CreateItemInBackpack(who,0x16032,1); //small stone workshop
+      0x1607a: CreateItemInBackpack(who,0x16033,1); //small marble workshop
     endcase
     var tilelist := GetObjProperty(house, "bantiles");
     foreach thing in tilelist

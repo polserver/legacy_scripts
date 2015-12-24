@@ -86,7 +86,7 @@ program ChangeHouseOwner(who, deed)
 //		Print ("Doorcfg = " + doorcfg.errortext);
 //	endif
     foreach item in box
-		if(item.objtype := 0x8889)
+		if(item.objtype := 0x18889)
 			SetObjProperty(item,"signserial", signserial);
 			tileflag := 1;
 		endif
@@ -97,7 +97,7 @@ program ChangeHouseOwner(who, deed)
 			item.locked := 1;
 			SetObjProperty(item, "lockid", lockid);
 			if(!tileflag)
-				var tile :=CreateItemAtLocation(item.x, item.y, item.z, 0x8889, 1, item.realm);
+				var tile :=CreateItemAtLocation(item.x, item.y, item.z, 0x18889, 1, item.realm);
 				SetObjProperty(tile,"signserial", signserial);
 			endif
 			SetObjProperty(item, "lockid", lockid);
