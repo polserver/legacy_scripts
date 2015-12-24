@@ -4,14 +4,15 @@
 // command is used.
 ////////////////////////////////////////////////////
 
-
+1CFC86A
 
 use uo;
 use os;
 
 program rapiddecay( who)
-  SendSysMessage(who,"target the house sign to time advance");
+  SendSysMessage(who,"Target the house sign you wish to become abandoned:", color := 88);
   var targ := Target(who);
   GetObjProperty(targ,"decay");
   SetObjProperty(targ,"decay", (ReadGameClock() + 20));
+  SendSysMessage(who,"Done! The house will become abandoned soon.", color := 66);
 endprogram

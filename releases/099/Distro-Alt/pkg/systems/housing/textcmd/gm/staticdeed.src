@@ -86,7 +86,7 @@ function Buildhouse( who, p_s_price, lvls )
 endfunction
 
 function CreateBuiltDeed( who, x, y, z, sign)
-    var builtdeed := CreateItemInBackpack( who, 0x60fe );
+    var builtdeed := CreateItemInBackpack( who, 0x160fe );
     if (!builtdeed)
       PrintTextAbovePrivate( who, "My backpack is too full!", who );
       return 0; // not built
