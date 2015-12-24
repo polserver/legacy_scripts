@@ -9,9 +9,9 @@ include ":timeutils:time";
 include ":accounts:settings";
 include ":gumps:gumps";
 include ":gumps:gumps_ex";
-include ":gumps:gumpprompt";
-include ":gumps:requestgump";
-include ":gumps:yesno";
+include ":gumps:gumpPrompt";
+include ":gumps:requestGump";
+include ":gumps:yesNo";
 
 CONST EXPANSION_START	:= 0xB0000;
 CONST CHAR_INFO_START	:= 0xC0000;
