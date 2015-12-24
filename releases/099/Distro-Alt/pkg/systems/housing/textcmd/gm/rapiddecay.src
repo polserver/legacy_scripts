@@ -1,7 +1,15 @@
+////////////////////////////////////////////////////
+// Advances the decay timer to cause the house
+// to become abandoned 20 seconds after the
+// command is used.
+////////////////////////////////////////////////////
+
+
+
 use uo;
 use os;
 
-program textcmd_t( who)
+program rapiddecay( who)
   SendSysMessage(who,"target the house sign to time advance");
   var targ := Target(who);
   GetObjProperty(targ,"decay");
