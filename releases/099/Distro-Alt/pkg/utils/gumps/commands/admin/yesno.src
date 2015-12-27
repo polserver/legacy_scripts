@@ -2,7 +2,7 @@ use uo;
 
 include ":gumps:include/gumps";
 include ":gumps:include/gumps_ex";
-include ":gumps:include/yesno";
+include ":gumps:include/yesNo";
 
 program PromptDemo(who)
 	var prompt := "Are you sure you want to take this course of action?";

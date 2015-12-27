@@ -4,7 +4,7 @@ use util;
 use boat;
 
 include "include/client";
-include ":gumps:yesno";
+include ":gumps:yesNo";
 // include "include/wodinc";
 include "include/eventID";
 include "include/utility";

@@ -2,7 +2,7 @@ use uo;
 
 include ":gumps:include/gumps";
 include ":gumps:include/gumps_ex";
-include ":gumps:include/requestgump";
+include ":gumps:include/requestGump";
 
 program PromptDemo(who)
 	var question := "Type in something that is on your mind. I will try to guess what it is!";

@@ -11,7 +11,7 @@ include "include/dist";
 include "include/toolWear";
 include "include/noto";
 include "include/crafting";
-include ":gumps:requestgump";
+include ":gumps:requestGump";
 
 
 program use_blade(who, blade)
