@@ -2,7 +2,7 @@ use uo;
 
 include ":gumps:include/gumps";
 include ":gumps:include/gumps_ex";
-include ":gumps:include/gumppPompt";
+include ":gumps:include/gumpPrompt";
 
 program PromptDemo(who, text)
 	if ( !text )
