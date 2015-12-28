@@ -5,8 +5,11 @@ use cfgfile;
 
 program textcmd_createnpc( who, template )
 
+	var	npc_config := ReadConfigFile("::npcdesc");
     var props := array; // CHANGE BACK TO STRUCT FOR 096
     var realtemplate;
+	var	mercscripts := {"barber", "banker", "bucsBanker", "bucsTownHealer", "healer", "merchant", "stablemaster", "townguard", "townHealer"};
+	var	guardscripts := {"townGuard", "instakillGuard"};
     props.+facing := who.facing;
     var loc := TargetCoordinates(who);
     var result := CreateNpcFromTemplate( template, loc.x, loc.y, loc.z, 0, who.realm );
