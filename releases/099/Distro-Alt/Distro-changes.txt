@@ -1,20 +1,26 @@
 Distro change log
 
 
-07-Sep-2015	Yukiko	Fixed:	nlootgroup.cfg had the word "Potion" appended to the end of some potions in the "Group Potions" section. The potions defined in \pkg\skills\alchemy don't have "Potion" as part of their name. This was causing "unable to create" errors on console.
+07-Sep-2015	Yukiko		Fixed:	nlootgroup.cfg had the word "Potion" appended to the end of some potions in the "Group Potions" section. The potions defined in \pkg\skills\alchemy don't have "Potion" as part of their name. This was causing "unable to create" errors on console.
 
-07-Sep-2015	Yukiko	Fixed:	In \pkg\commands\include\goText.inc some of the MoveObjectToLocation calls had the realm parameter inside a CInt() function.
+07-Sep-2015	Yukiko	Fixed:		In \pkg\commands\include\goText.inc some of the MoveObjectToLocation calls had the realm parameter inside a CInt() function.
 					
-18-Oct-2015	Yukiko	Moved:	Relocated custom defined objects above the 0xFFFF graphic area to prevent conflicts with expanded graphics in the latest (High Seas) client. Basically I just added 0x10000 to the old ObjType number. Added "OldObjType" directive to the definitions of items that were moved. Checked and updated SRC, INC, and CFG files for references ObjType numbers of moved items. There still might be some things I missed.
+18-Oct-2015	Yukiko	Moved:		Relocated custom defined objects above the 0xFFFF graphic area to prevent conflicts with expanded graphics in the latest (High Seas) client. Basically I just added 0x10000 to the old ObjType number. Added "OldObjType" directive to the definitions of items that were moved. Checked and updated SRC, INC, and CFG files for references ObjType numbers of moved items. There still might be some things I missed.
 
-19-Dec-2015	Yukiko 	Fixed:	Folder and file name references with mixed (mismatched) case were causing issues on Linux.
+19-Dec-2015	Yukiko 	Fixed:		Folder and file name references with mixed (mismatched) case were causing issues on Linux.
 
-21-Dec-2015	Yukiko	Added:	The HSA Galleon ships that were supposed to be included before. Note that there are some incomplete parts that need to be programmed. You are able to command the ships if you can get onboard. However, the ability to get on and get off the ships isn't working correctly. The storage holds are not yet scripted. The weapons slots are not scripted.
+21-Dec-2015	Yukiko	Added:		The HSA Galleon ships that were supposed to be included before. Note that there are some incomplete parts that need to be programmed. You are able to command the ships if you can get onboard. However, the ability to get on and get off the ships isn't working correctly. The storage holds are not yet scripted. The weapons slots are not scripted.
 
-23-Dec-2015	Yukiko	Added:	gmform (changes your graphic to 0x3db - allows you to walk through doors) and myform (returns your graphic to your trueobjtype) commands.
+23-Dec-2015	Yukiko	Added:		gmform (changes your graphic to 0x3db - allows you to walk through doors) and myform (returns your graphic to your trueobjtype) commands.
 
-23-Dec-2015	Yukiko	Added:	Privileges that have been added to the Core since POL 0.97.
+23-Dec-2015	Yukiko	Added:		Privileges that have been added to the Core since POL 0.97.
 
-23-Dec-2015	Yukiko	Fixed:	There were a few scripts that were using the old ObjType number for a static house sign; recall.src, gate.src, staticdeed.src, and housing.inc.
+23-Dec-2015	Yukiko	Fixed:		There were a few scripts that were using the old ObjType number for a static house sign; recall.src, gate.src, staticdeed.src, and housing.inc.
 
-23-Dec-2015	Yukiko	Added: Static housing documentation in the \docs\Additional Docs directory. It's far from complete but for now it explains how to deed out a house.
+23-Dec-2015	Yukiko	Added:		Static housing documentation in the \docs\Additional Docs directory. It's far from complete but for now it explains how to deed out a house.
+
+24-Dec-2015	Yukiko	Fixed:		A lot of file name case mismatch issues for Linux. There were several commits over the next few days fixing more case mismatch issues.
+
+28-Dec-2015	Yukiko	Changed:	The createnpc command to notify the user if they were creating an NPC that requires a listening node. The script now presents a gump telling the user that they are about to create the NPC that requires a node. The script will then create a guard node or start the createnode script as needed.
+
+29-Dec-2015	Yukiko	Fixed:		Static housing package was ignoring the Z coordinate for house commands. This created a problem if a room on an upper or lower floor was deeded out because the house commands would still work if the owner was above or below the part of the structure they actually owned. Also changed the way the staicdeed command works. Now you need to target the North-West corner of the highest floor of a structure when deeding it.
