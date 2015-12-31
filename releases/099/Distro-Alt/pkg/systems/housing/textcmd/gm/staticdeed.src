@@ -56,24 +56,24 @@ program textcmd_staticdeed( who, textline)
 	var unit_price, stories;
 	var	elem := FindConfigElem( housing_cfg, "Settings" );
 	var	default_price := CInt(GetConfigInt( elem, "Price_Per_Square" ));
+	var	multi_level_discount := CInt(GetConfigInt( elem, "Multi_level_Discount" ));
 
 	unit_price := CInt(textline);
 	if(!unit_price)
 		SendSysMessage(who, "Defaulting to " + CStr(default_price) + " gold per square from house settings.", color := 88);
 	    unit_price := default_price;
 	endif
-    Buildhouse( who, unit_price );
+    Buildhouse( who, unit_price, multi_level_discount );
 endprogram
 
-//function Buildhouse( who, p_s_price, lvls )
-function Buildhouse( who, p_s_price )
+function Buildhouse( who, p_s_price, m_level_discount )
 	SendSysMessage(who, "Where shall I create the sign?", color := 88);
 	var where := TargetCoordinates(who);
 	if (!where)
 	    SendSysMessage(who, "Cancelled.", color := 40);
 	    return;
 	endif
-    var createsign  := makesign(who, where.x, where.y, where.z, where.realm, p_s_price);
+    var createsign  := makesign(who, where.x, where.y, where.z, where.realm, p_s_price, m_level_discount);
 	if (!createsign)
 		SendSysMessage( who, "ERROR: Unable to create sign!" );
 		return;
@@ -104,7 +104,7 @@ function CreateBuiltDeed( who, x, y, z, sign)
     return 1; // built ok!
 endfunction
 
-function makesign( who, x, y, z, map, price_per_square)
+function makesign( who, x, y, z, map, price_per_square, m_level_discount)
     var boxmenu := CreateMenu("Select a sign type:");
 	var levels;
     AddMenuItem(boxmenu,0xbd1,"brass");
@@ -141,9 +141,8 @@ function makesign( who, x, y, z, map, price_per_square)
 	// For every storey of a structure we add 1/2 of the base price.
 	// But first we have to take away the first storey because
 	// that's contained in the base price.
-	levels := CInt(area[2]/20);
-	levels := levels - 1;
-	junk := levels * CInt(total_price/2);
+	levels := CInt((area[2] - area[3])/20);
+	junk := levels * CInt(total_price/m_level_discount);
 	// Now we add the storey modifier.
 	total_price := total_price + junk;
 	SetObjProperty(sign, "Price", total_price);
@@ -162,11 +161,11 @@ function boundaries(who, sign)
 	endwhile
 	homeinfo[1] := coords.x;
 	homeinfo[2] := coords.y;
-	homeinfo[6] := coords.z;
+	homeinfo[6] := who.z;		// use who.z incase there is a static item at the targetted loc.
 	Sleep(1);
 	coords := 0;
 	while( !coords )
-	    SendSysMessage(who,"Target the South-East corner of the house (Lower corner)", color := 88);
+	    SendSysMessage(who,"Target the first floor South-East corner of the house (Lower corner)", color := 88);
 	    coords := TargetCoordinates(who);
 	endwhile
 	homeinfo[3] := coords.x;
@@ -174,14 +173,14 @@ function boundaries(who, sign)
 	homeinfo[5] := sign.serial;
 	xt := homeinfo[3]-homeinfo[1];
 	yt := homeinfo[4]-homeinfo[2];
-        area := xt * yt;
-	homeinfo[7] := coords.z;
+	homeinfo[7] := who.z;		// use who.z incase there is a static item at the targetted loc.
+	area := xt * yt;
 	var numlockdowns := figurelockdowns( homeinfo[1], homeinfo[2], homeinfo[6], homeinfo[3], homeinfo[4], homeinfo[7]);
 	var numsecures   := figuresecures( homeinfo[1], homeinfo[2], homeinfo[6], homeinfo[3], homeinfo[4], homeinfo[7]);
 	homeinfo[8] := numlockdowns;
 	homeinfo[9] := numsecures;
 	SetObjProperty(sign, "newhomeinfo", homeinfo);
-	SendSysMessage(who,"You gave successfully deeded this house.", color := 66);
+	SendSysMessage(who,"You have successfully deeded this house.", color := 66);
 	return {area, homeinfo[6], homeinfo[7]};
 endfunction
 

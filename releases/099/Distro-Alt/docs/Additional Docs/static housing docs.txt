@@ -6,27 +6,27 @@ Well, now you can with the [b]static housing[/b] system included in this version
 
 
 Let's walk through setting-up an existing static house for sale.
-I am going to assume you are using the standard Britannia map on your server. If not it's not a problem. Just go find a static structure on your server to use. I'm going to set-up the house in Britain at X=1360 Y=1776 Z=15. This is a large two storey building. So goxyz to that house or one you have chosen. If the house does not yet have doors in place then you must add them before setting-up the house. This includes interior doors, if there are places for them, and exterior doors. In the case of the house I have chosen there is only one exterior door and no interior doors. The command we are going to use is .staticdeed
+I am going to assume you are using the standard Britannia map on your server. If not it's not a problem. Just go find a static structure on your server to use. The house I am going to use is at X=1543, Y=1573, Z=15.It's a large two storey structure. Basically one big square shaped house. So goxyz to that house or one you have chosen. If the house does not yet have doors in place then you must add them before setting-up the house. This includes interior doors and exterior doors. In the case of the house I have chosen there is only one exterior door and several interior doors. The command we are going to use is .staticdeed
 
-The usage is .staticdeed [number of levels] <price per square>
+The usage is .staticdeed <price per square>
 
-The number of levels parameter is not optional. The price per square is optional. If you omit that the command will use the default price of 500 gold coins per square.
+The price per square is optional. If you omit that the command will use the default price to figure the total cost of the building. The default price can be changed by editing the housing settings file located in \pkg\systems\housing\config
 
 There are a couple of things you need to do before setting-up static houses for sale.
-First place yourself in the GM form by using the .gmform command.  This is so you can walk through any doors that might be in the way as you setup this (and any other) house. Next, go to the options menu of your client and click on the fourth icon down on the right side of the gump. It's the one that looks like the UO logo. Look for the check box labelled "Use circle of transparency." Make sure it is checked. Now set the radius for about 100. This will allow you to see through any static items so that you will be able to target the floor of the house.
-
-If your house has more than one storey you have the option of charging more for that house by specifying the true number of levels a building has. You decide if you want to price the house with the extra levels added in. If not then just use 1 for the number of levels. You must provide some number for the levels parameter.
+First place yourself in the GM form by using the .gmform command.  This is so you can walk through any doors that might be in the way as you setup this (and any other) houses. Next, go to the options menu of your client and click on the fourth icon down on the right side of the gump. It's the one that looks like the UO logo. Look for the check box labelled "Use circle of transparency." Make sure it is checked. Now set the radius for about 100. This will allow you to see through any static items so that you will be able to target the floor of the house.
 
 Now decide how much you want to charge per square. Let's say you will charge extra based on the number of levels the house has and that the house you have chosen has 2 floors. Now let's decide that the price will be 200 gold per square. 
 
 OK we're ready to "deed" this house.
-Enter the command .staticdeed 2 200
+Enter the command .staticdeed 200
 
 You will be prompted for the location to place the house sign. If this house has a bracket for the sign you should click on the ground under the bracket. If there is no bracket then pick a spot near the front door and target the ground right against the house. Then choose the proper sign graphic from the gump that will appear.
 
-You will now be prompted to select the north-west corner of the house. This is the upper corner. Go inside the house and click there. Now you will be asked to target the south-east corner. Go down and target that square. Assuming all went well you should get a message telling you that you have succeeded.
+You will now be prompted to select the north-west corner of the top most floor of the house. This is the upper corner. Go inside the house and go to the highest floor and click in the North West corner. Now you will be asked to target the South-East corner on the lowest level. Go down and target that square. Assuming all went well you should get a message telling you that you have succeeded. There might be some instances where the upper floor of a structure doesn't extend as far North as the lower floor. For now, this system cannot handle structures like that. See the house at X=1360 Y=1776 Z=15 in Britain for an example of this kind of house. You could still deed out the lower area but the owner wouldn't be able to lock anything down on the second floor.
 
 Now if you go outside and click on the house sign a gump will appear asking if you want to buy the house. If that happens then congratulations! You have set-up that house for purchase by a player.
+
+For those odd shap
 
 
 

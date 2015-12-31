@@ -2,7 +2,7 @@ use uo;
 
 program textcmd_destroy( who )
   SendSysMessage( who, "Please target something to destroy" );
-  var tgt := Target( who );
+  var tgt := Target( who, TGTOPT_NOCHECK_LOS );
   if(tgt)
     DestroyItem( tgt);
   else

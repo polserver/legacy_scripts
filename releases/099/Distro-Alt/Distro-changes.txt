@@ -1,7 +1,7 @@
 Distro change log
 
 
-07-Sep-2015	Yukiko		Fixed:	nlootgroup.cfg had the word "Potion" appended to the end of some potions in the "Group Potions" section. The potions defined in \pkg\skills\alchemy don't have "Potion" as part of their name. This was causing "unable to create" errors on console.
+07-Sep-2015	Yukiko	Fixed:		nlootgroup.cfg had the word "Potion" appended to the end of some potions in the "Group Potions" section. The potions defined in \pkg\skills\alchemy don't have "Potion" as part of their name. This was causing "unable to create" errors on console.
 
 07-Sep-2015	Yukiko	Fixed:		In \pkg\commands\include\goText.inc some of the MoveObjectToLocation calls had the realm parameter inside a CInt() function.
 					
@@ -23,4 +23,10 @@ Distro change log
 
 28-Dec-2015	Yukiko	Changed:	The createnpc command to notify the user if they were creating an NPC that requires a listening node. The script now presents a gump telling the user that they are about to create the NPC that requires a node. The script will then create a guard node or start the createnode script as needed.
 
-29-Dec-2015	Yukiko	Fixed:		Static housing package was ignoring the Z coordinate for house commands. This created a problem if a room on an upper or lower floor was deeded out because the house commands would still work if the owner was above or below the part of the structure they actually owned. Also changed the way the staicdeed command works. Now you need to target the North-West corner of the highest floor of a structure when deeding it.
+28-Dec-2015	Yukiko	Added:		Intrinsic shield item to the itemdesc.cfg file in \pkg\systems\combat.
+
+29-Dec-2015	Yukiko	Fixed:		The staticSignControl script. It was ignoring the Z coordinate for house commands. This created a problem if a room on an upper or lower floor was deeded out because the house commands would still work if the owner was above or below the part of the structure they actually owned. This change allows for the rooms on different floors of an inn for example to be sold to players. Also changed the way the staticdeed command works. Now you need to target the North-West corner of the highest floor of a structure when deeding it.
+
+30-Dec-2015	Yukiko	Fixed:		A math bug in the staticdeed command that wasn't figuring the price for upper levels correctly.
+
+30-Dec-2015	Yukiko	Moved:		The price modifier for multi-stories to the settings file in the housing package.
