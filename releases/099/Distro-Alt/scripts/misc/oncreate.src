@@ -32,7 +32,7 @@ program oncreate(who, skillids)
   
   Sleep(2);
   
-  MoveObjectToLocation( who, 2953, 922, 0, "britannia", MOVEOBJECT_FORCELOCATION ); //Vesper
+  // MoveObjectToLocation( who, 2953, 922, 0, "britannia", MOVEOBJECT_FORCELOCATION ); //Vesper
   
    CreateStartingEquipment(who, skillids);
 endprogram

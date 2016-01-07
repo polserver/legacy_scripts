@@ -30,3 +30,11 @@ Distro change log
 30-Dec-2015	Yukiko	Fixed:		A math bug in the staticdeed command that wasn't figuring the price for upper levels correctly.
 
 30-Dec-2015	Yukiko	Moved:		The price modifier for multi-stories to the settings file in the housing package.
+
+05-Jan-2016	Yukiko Updated:		I rewrote the createnpc command adding a gump display if the user doesn't specify an NPC template when entering the command. From the user's standpoint it works just like the World of Dreams command. It uses the NPC_Groups.cfg file to look-up the images for the gumps. When adding new NPCs to the server you will have to add them to the NPC_Groups file. I renamed the old createnpc.src file to old_createnpc.src.
+
+05-Jan-2016	Yukiko	Fixed:		The appraiser.src AI program. In making the Distro compatible with High Seas graphics I had moved the ObjType numbers for multi-deeds above the 0xFFFF range by adding 0x10000 to any custom objects that occupied the 0x4000 to 0xFFFF range. In the appraiser AI the numbers for deeds are hard coded and needed updating which I did.
+
+06-Jan-2016	Yukiko	Added:		I added some new NPCs to the Distro. Sorry but I didn't make a list of the new ones.
+
+07-Jan-2016	Yukiko	Removed:	I removed the line in the onCreate.src file that moved a newly created player character to Vesper. I don't remember putting that in there. So I commented it out.
