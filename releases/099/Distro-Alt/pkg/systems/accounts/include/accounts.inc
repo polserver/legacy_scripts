@@ -29,7 +29,7 @@ CONST ACCT_MAX_CHARACTERS	:= 6;
  * Returns an account object on success.
  *
  */
-function CreateNewAccount(username, password, cmdlevel:=0, expansion:="ML", email:="")
+function CreateNewAccount(username, password, cmdlevel:=0, expansion:="HSA", email:="")
 	var account := CreateAccount(username, password, 1);
 	if ( account.errortext )
 		return account;

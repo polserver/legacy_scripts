@@ -38,3 +38,8 @@ Distro change log
 06-Jan-2016	Yukiko	Added:		I added some new NPCs to the Distro. Sorry but I didn't make a list of the new ones.
 
 07-Jan-2016	Yukiko	Removed:	I removed the line in the onCreate.src file that moved a newly created player character to Vesper. I don't remember putting that in there. So I commented it out.
+
+07-Jan-2016	Yukiko	Removed:	I removed the ignoredoors privilege setting from the info command because it has no effect.
+
+07-Jan-2016	Yukiko	Updated:	I upodated the NPC_Groups file to include NPCs that require nodes. Had to make a change to the createnpc command tto accomodate the node NPCs being added to the selection menu.
+
