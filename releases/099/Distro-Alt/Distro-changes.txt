@@ -43,3 +43,4 @@ Distro change log
 
 07-Jan-2016	Yukiko	Updated:	I upodated the NPC_Groups file to include NPCs that require nodes. Had to make a change to the createnpc command tto accomodate the node NPCs being added to the selection menu.
 
+10-Jan-2016	Yukiko	Fixed:		Town Guards were oblivious to baddies if they suddenly appeared within their range of protection, ie. createnpc'ed baddies were ignored. That has been fixed. They will also call for help from other guards to assist.
