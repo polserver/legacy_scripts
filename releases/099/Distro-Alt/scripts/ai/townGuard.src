@@ -329,9 +329,6 @@ function Fight( opponent )
 			ev.source := opponent;
 			ev.type := EVID_ENGAGED;
 			SendEvent(mobile, ev);
-//		elseif (GetObjProperty(mobile, "Devotion") == "Justice")
-//			start_script(":questtools:flagcriminal", {mobile, opponent} );
-//			SendSysMessage(mobile, "A guard is being attacked by " + CStr(opponent.name) + "!");
 		endif
 	endforeach
 
