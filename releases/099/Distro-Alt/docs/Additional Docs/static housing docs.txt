@@ -2,31 +2,67 @@ THIS FILE IS A WORK IN PROGRESS. I NEED TO ADD MORE INFO>
 
 Let's talk about nouses on UO. The housing package that came with this Distro was the one most of us are familiar with. It allows players to place the predesigned multi type houses that are packaged with the client software. This is great if you have enough open land available to allow for the addition of more structures in the world. There are some areas that are conducive to expansion of houses but usually the ground has to be almost flat and free of anything like flowers or rocks. That is assuming you want to have houses springing up at random places on your server. Almost every map, even custom maps, come with houses and shops already in place. They are known as [i]static[/i] structures because they are defined in the [i]statics.mul[/i] files. Since they already exist in your world wouldn't it be nice to be able to make those houses available for sale to your players? They are just sitting there so why not?
 
-Well, now you can with the [b]static housing[/b] system included in this version of the Distro. This system allows you, the developer, to make those structures available for your players to purchase. All you need to do is decide which houses your players can buy, tell the system the boundary of the house and the cost per square for the house. The system does not require any staff to be present when a player wishes to buy a designated house. They simply need to have the required gold in their backpack or in their bank.
+Well, now you can with the [b]static housing[/b] system included in this version of the Distro. This system allows you, the developer, to make those structures available for your players to purchase. All you need to do is decide which houses your players can buy, tell the system the boundary of the house and the cost per square for the house. Once you have set-up a house for sale the system does not require any staff to be present when a player wishes to buy a designated house. They simply need to have the required gold in their backpack or in their bank. In order for this to be a "staff free" operation however the houses must be set-up or "deeded" in advance. The word "deeded" probably isn't the right word to describe the process of setting-up the houses because initially there is no deed created. A deed is only created once a player buys the house. This system requires a bit of work in the beginning setting-up houses but from a player's perspective it makes buying them easy. I played on a shard where you had to page a GM to buy a house and hopefully one would be online to come and set it up for you to buy. Most of the time no one was available.
 
 
-Let's walk through setting-up an existing static house for sale.
-I am going to assume you are using the standard Britannia map on your server. If not it's not a problem. Just go find a static structure on your server to use. The house I am going to use is at X=1543, Y=1573, Z=15.It's a large two storey structure. Basically one big square shaped house. So goxyz to that house or one you have chosen. If the house does not yet have doors in place then you must add them before setting-up the house. This includes interior doors and exterior doors. In the case of the house I have chosen there is only one exterior door and several interior doors. The command we are going to use is .staticdeed
+Let's walk through setting-up an existing static house for sale:
+I am going to assume you are using the standard Britannia map on your server. If not, just go find a static structure on your server to use. The house I am going to use is at X=1543, Y=1573, Z=15 on the standard Felucca map. It's a large two storey structure. Basically one big square shaped house. So goxyz to that house or one you have chosen. If the house does not yet have doors in place then you must add them before proceeding. This includes both interior doors and exterior doors. In the case of the house I have chosen there is only one exterior door and several interior doors.
+
+To set-up a house for sale use the command .staticdeed
 
 The usage is .staticdeed <price per square>
 
-The price per square is optional. If you omit that the command will use the default price to figure the total cost of the building. The default price can be changed by editing the housing settings file located in \pkg\systems\housing\config
+The price per square is optional. If you omit that, the command will use the default price per square to figure the total cost of the building. The default price can be changed by editing the housing settings file located in \pkg\systems\housing\config
 
 There are a couple of things you need to do before setting-up static houses for sale.
-First place yourself in the GM form by using the .gmform command.  This is so you can walk through any doors that might be in the way as you setup this (and any other) houses. Next, go to the options menu of your client and click on the fourth icon down on the right side of the gump. It's the one that looks like the UO logo. Look for the check box labelled "Use circle of transparency." Make sure it is checked. Now set the radius for about 100. This will allow you to see through any static items so that you will be able to target the floor of the house.
 
-Now decide how much you want to charge per square. Let's say you will charge extra based on the number of levels the house has and that the house you have chosen has 2 floors. Now let's decide that the price will be 200 gold per square. 
+First place yourself in the GM form by using the .gmform command.  This is so you can walk through any doors that might be in the way as you setup this (and any other) houses. Next, go to the options menu of your client and click on the fourth icon down on the right side of the gump. It's the one that looks like the UO logo. Look for the check box labelled "Use circle of transparency." Make sure it is checked. Now set the radius for about 100. This will allow you to see through any static walls so that you will be able to target the floor of the house.
+
+Now decide how much you want to charge per square. Let's assume you will charge 200 gold per square. So for the first floor of the house the each square will be priced at 200 gold. The house I have chosen has two stories. I designed the command to price any additional stories based on a modified amount. The command divides the price per square by a modifier (default modifier is 2 - half price) for each additional storey of a building. This modifier is stored in the housing settings file.
 
 OK we're ready to "deed" this house.
 Enter the command .staticdeed 200
 
-You will be prompted for the location to place the house sign. If this house has a bracket for the sign you should click on the ground under the bracket. If there is no bracket then pick a spot near the front door and target the ground right against the house. Then choose the proper sign graphic from the gump that will appear.
+You will be prompted for the location to place the house sign. If this house has a bracket for the sign you should click on the ground under the bracket. If there is no bracket then pick a spot near the front door and target the ground right against the house on the exterior. Then choose the proper sign graphic from the gump that will appear.
 
 You will now be prompted to select the north-west corner of the top most floor of the house. This is the upper corner. Go inside the house and go to the highest floor and click in the North West corner. Now you will be asked to target the South-East corner on the lowest level. Go down and target that square. Assuming all went well you should get a message telling you that you have succeeded. There might be some instances where the upper floor of a structure doesn't extend as far North as the lower floor. For now, this system cannot handle structures like that. See the house at X=1360 Y=1776 Z=15 in Britain for an example of this kind of house. You could still deed out the lower area but the owner wouldn't be able to lock anything down on the second floor.
 
-Now if you go outside and click on the house sign a gump will appear asking if you want to buy the house. If that happens then congratulations! You have set-up that house for purchase by a player.
+Now if you go outside and click on the house sign you will see the price of the house. If you double-click on the sign a gump will appear asking if you want to buy the house. If that happens then congratulations! You have set-up that house for purchase by a player.
 
-For those odd shap
+There are some houses that are not square or rectanglar ("normal"). Some are "L" shaped with a yard located in what would be the rest of the square. This housing system will only allow you to deed out square areas. So for those non-normal houses you will include the yard in the area that will be made available for sale. This means that owners of those houses will be able to lockdown items in the yard area as well as the interior of the house.
 
 
 
+OK. I've explained how a GM can set-up houses for sale. Now I'm going to explain the process of buyimg a house.
+
+This is section intended as documentation for players on the usage of the static housing system.
+
+Once a player has found the house he or she wants to buy they simply use the sign (double-click it). They will be asked if they wish to buy the house. If they choose "Yes" on the gump the system will check their backpack for the total purchase price of the house. If the gold is there they will buy the house. If they don't have the proper amount of gold in their pack the system will check their bankbox. If the proper amount is in their bankbox then they will buy the house. If both tests fail they will be told the proper amount could not be found and they will not buy the house. If they successfully bought the house they will receive a newbified key in their backpack and a spare key in their bankbox along with a deed for the house.
+
+A player has a minimal responsibility when she owns a house. She must visit it periodically to refresh the house. This "prevents the local authorities from declaring the place as abandoned". The default timeout period is 60 real life days. You "visit" or refresh a house when you enter it through an exterior door or when you "use" the house sign. As this system allows you to specify co-owners of a house they can also refresh the house using the afore mentioned methods.
+
+Each house is assigned a maximum number of lockdowns and secures.
+
+As an owner or co-owner you can place items in your house and lock them down. This prevents the items from being deleted during a the normal system decay sweep. Stackable items count as one lockdown even if the stack contains more than one item. Containers count as one lockdown even if they contain items.
+
+As an owner or co-owner you may also place "secured" containers which can only be opened by owners or friends of the house.
+
+Securing and locking down items as well as other important functions are accomplished using speech commands. The commands must be "spoken" within the boundaries of the house. If the house contains a yard they will work there as well.
+
+Here are the current speech commands:
+
+Lockdown related commands are:
+i wish to lock this down
+i wish to release this
+
+Secure container related commands are:
+i wish to secure this
+i wish to unsecure this
+
+Use this one to kick someone out of your house but not ban them:
+remove thyself
+
+This command will ban the person from ever entering the interior of your house:
+i ban thee
+
+The "ban" system works by using an invisible tile placed on the inside of doors. So a person banned from a house won't be able to enter througha door but if your house contains a yard area they will be able to walk into your yard.

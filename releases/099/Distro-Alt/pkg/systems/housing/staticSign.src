@@ -22,7 +22,6 @@ const UOBJECT_WOOD_SIGN := 0x0bd0;
 const KEYSTART := 0x100e;
 const KEYEND := 0x1013;
 const KEYRING := 0x1011;
-CONST ABANDONED_TIMEOUT := 5184000;
 
 program use_static_sign( who, sign )
 
@@ -155,12 +154,12 @@ program use_static_sign( who, sign )
 		
 		// The following sets the decay time for 60 Real Life days.
 		// Would like to move this to a settings.cfg file at some point.
-		SetObjProperty(sign,"decay", (ReadGameClock() + ABANDONED_TIMEOUT));
+		SetObjProperty(sign,"decay", (ReadGameClock() + CInt(get_abandon_time())));
 		return 1;
     endif
     
 
-  SetObjProperty(sign,"decay", (ReadGameClock()+ ABANDONED_TIMEOUT));
+  SetObjProperty(sign,"decay", (ReadGameClock()+ CInt(get_abandon_time())));
   var homeinfo := GetObjProperty(sign,"homeinfo");
   var oserial := homeinfo[1];  // the house owner...
   var nwx     := homeinfo[2];

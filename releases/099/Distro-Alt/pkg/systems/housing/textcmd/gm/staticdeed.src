@@ -138,8 +138,8 @@ function makesign( who, x, y, z, map, price_per_square, m_level_discount)
 	sign.movable := 0;
 	var area := boundaries(who, sign);
 	total_price := area[1] * price_per_square;
-	// For every storey of a structure we add 1/2 of the base price.
-	// But first we have to take away the first storey because
+	// For every additional level of a structure we divide the base price by a multi-level modifier.
+	// But first we have to take away the first level because
 	// that's contained in the base price.
 	levels := CInt((area[2] - area[3])/20);
 	junk := levels * CInt(total_price/m_level_discount);
@@ -188,9 +188,12 @@ function figurelockdowns( nwx, nwy, nwz, sex, sey, sez)
     var x := (sex-nwx);
     var y := (sey-nwy);
     var z := ((nwz-sez)/20);
+	if(z < 1)
+		z := 1;
+	endif
     var a := (x*y*z);
     var l := (a/2);
-    l := l*2;
+//    l := l*2;
     if (l < 25)
       l := 25;
     endif
@@ -201,6 +204,9 @@ function figuresecures( nwx, nwy, nwz, sex, sey, sez)
     var x := (sex-nwx);
     var y := (sey-nwy);
     var z := ((nwz-sez)/20);
+	if(z < 1)
+		z := 1;
+	endif
     var a := (x*y*z);
     var s := (a/24);
     if (s < 1)
