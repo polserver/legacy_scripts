@@ -156,25 +156,6 @@ endprogram
 		
 		return thenpcs [selection2.index];
 	endfunction
-		
-/*		var loc := TargetCoordinates(who);
-		
-		if(!loc)
-			SendSysMessage(who, "Cancelled.", color := 33);
-			return 0;
-		endif
-		
-		var props := struct; // CHANGE BACK TO STRUCT FOR 096
-		props.+facing := who.facing;
-		var result := CreateNpcFromTemplate( thenpcs [selection2.index], loc.x, loc.y, loc.z, props, loc.realm );
-		
-		if (!result)
-			SendSysMessage( who, "NPC Creation Failed: " + result.errortext );
-		endif
-
-		return 1;*/
-		return thenpcs [selection2.index];
-	endfunction
 
 
 
