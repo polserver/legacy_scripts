@@ -5,7 +5,7 @@ use basic;
 use os;
 
 include "include/client";
-include "potion";
+include ":alchemy:potion";
 include "include/canAccess";
 include "include/noto";
 

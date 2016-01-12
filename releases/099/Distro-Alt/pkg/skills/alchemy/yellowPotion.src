@@ -1,7 +1,7 @@
 use os;
 use uo;
 use util;
-include "drinkPotion";
+include ":alchemy:drinkPotion";
 include "include/canAccess";
 
 program drink_blue (who, potion)

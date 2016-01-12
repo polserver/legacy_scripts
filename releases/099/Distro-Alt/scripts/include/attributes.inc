@@ -1806,13 +1806,13 @@ endfunction
  *
  */
 function AP_GetSettingsCfgFile()
-	var cfg := ReadConfigFile(":skills:settings");
+	var settings_cfg := ReadConfigFile(":skills:settings");
 
-	if ( cfg.errortext )
-		SysLog("Error::AP_GetSettingsCfgFile() - Unable to open [:skills:settings.cfg] ->"+cfg.errortext);
+	if ( settings_cfg.errortext )
+		SysLog("Error::AP_GetSettingsCfgFile() - Unable to open [:skills:settings.cfg] ->"+settings_cfg.errortext);
 	endif
 
-	return cfg;
+	return settings_cfg;
 endfunction
 
 /*

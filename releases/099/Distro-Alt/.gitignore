@@ -69,5 +69,9 @@ uoconvert.txt
 uotool.exe
 uotool.txt
 ecompile.exe
+poltool.exe
 ecompile.cfg
 runecl.exe
+
+# Misc files
+eCompile_commands.txt
