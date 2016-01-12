@@ -1,7 +1,7 @@
 use uo;
 use os;
 use cfgfile;
-include "include/hitscriptinc";
+include ":combat:hitScriptInc";
 include "include/attributes";
 include ":damage:damage";
 

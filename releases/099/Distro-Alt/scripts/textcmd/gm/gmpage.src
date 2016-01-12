@@ -6,8 +6,8 @@ include ":gumps:old/old-gumps";
 include "include/gumpUtil";
 include "util/bank";
 include "include/attributes";
-include "../../../pkg/tools/gmtools/textcmd/gm/info";
-include "../../../pkg/tools/gmtools/textcmd/gm/accountLayout";
+include ":gmtools:info";
+include ":gmtools:accountLayout";
 
 var gmpages := GetGlobalProperty("gmpages");
 

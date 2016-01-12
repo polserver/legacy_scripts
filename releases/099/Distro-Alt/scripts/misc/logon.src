@@ -12,7 +12,7 @@ include "include/attributes";
 include "include/clock";
 include "include/accounts";
 include ":timeutils:time";
-include "../../pkg/systems/combat/equip";
+include ":combat:equip";
 
 program onlogon(who)
   TrackIP(who);

@@ -1,14 +1,18 @@
+// HitScript Include
+
 use uo;
 use util;
 use math;
-include "include/attributes";
+use cfgfile;
+use vitals;
+include ":damage:damage";
 
 // DealDamage(defender, attacker, rawdamage)
 // Modifies damage for anatomy, then applies it to the target.
 
 function DealDamage(defender, attacker, rawdamage)
 
-	rawdamage := rawdamage + ( CInt(GetAttribute(attacker, ATTRIBUTEID_ANATOMY) ) / 9);
+	rawdamage := rawdamage + ( CInt(GetAttribute(attacker, "anatomy") ) / 9);
         ApplyRawDamageEX(defender, rawdamage, DMG_PHYSICAL, attacker);
 
 endfunction
@@ -83,10 +87,10 @@ function AdjustDamageFactor(weapon, defender, attacker)
 	endif
 
 //	if (attacker.cmdlevel > 0)
-//		PrintTextAbove(defender, "DC = " + CStr(DamageClass) );
-//		PrintTextAbove(defender, "IL = " + CStr(immune) );
-//		PrintTextAbove(defender, "RL = " + CStr(resists) );
-//		PrintTextAbove(defender, "VL = " + CStr(vulnerable) );
+//		PrintTextAbove(defender, "DC == " + CStr(DamageClass) );
+//		PrintTextAbove(defender, "IL == " + CStr(immune) );
+//		PrintTextAbove(defender, "RL == " + CStr(resists) );
+//		PrintTextAbove(defender, "VL == " + CStr(vulnerable) );
 //	endif
 
 	if ( GetObjProperty(weapon, "Silver") != error)
@@ -119,7 +123,7 @@ function AdjustDamageFactor(weapon, defender, attacker)
 		endif	
 	endif	
 
-	if (factor = 0)
+	if (factor == 0)
 		SendSysMessage(attacker, "Your weapon does not seem to be effective...");
 		return 0;
 	endif
@@ -152,7 +156,7 @@ function CheckTempProtections(attacker, defender, rawdamage)
 			EraseObjProperty(defender, "ProtUndead");
 		endif
 	endif
-	if (rawdamage = 0)
+	if (rawdamage == 0)
 		return 0;
 	endif
 
@@ -168,7 +172,7 @@ function CheckTempProtections(attacker, defender, rawdamage)
 			EraseObjProperty(defender, "Protdemon");
 		endif
 	endif
-	if (rawdamage = 0)
+	if (rawdamage == 0)
 		return 0;
 	endif
 
@@ -184,7 +188,7 @@ function CheckTempProtections(attacker, defender, rawdamage)
 			EraseObjProperty(defender, "ProtEvil");
 		endif
 	endif
-	if (rawdamage = 0)
+	if (rawdamage == 0)
 		return 0;
 	endif
 
