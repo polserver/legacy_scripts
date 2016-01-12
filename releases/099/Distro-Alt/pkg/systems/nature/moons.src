@@ -4,7 +4,7 @@ use os;
 use cfgfile;
 
 include "include/clock";
-include "nature";
+include ":nature:nature";
 
 var TLength := 60;
 var FLength := 20;

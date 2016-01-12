@@ -3,7 +3,7 @@ use os;
 use math;
 use basic;
 
-include "customspells";
+include ":runebook:customspells";
 include "include/attributes";
 
 

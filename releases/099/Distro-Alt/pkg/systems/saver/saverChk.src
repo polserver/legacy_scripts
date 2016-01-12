@@ -1,7 +1,7 @@
 use os;
 use uo;
 
-include "saveOpts";
+include ":saver:saveOpts";
 
 while (1)
   sleep( (MINUTES_BETWEEN_SAVES + 2) * 60 );

@@ -4,7 +4,7 @@ use os;
 use util;
 
 include "include/client";
-include "nature";
+include ":nature:nature";
 
 const SOUND_EFFECT_THUNDER:=  0x002a;
 

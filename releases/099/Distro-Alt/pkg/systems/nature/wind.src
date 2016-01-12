@@ -3,7 +3,7 @@ use uo;
 use cfgfile;
 use util;
 
-include "nature";
+include ":nature:nature";
 
 program wind()
   var timer;

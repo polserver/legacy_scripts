@@ -1,7 +1,7 @@
 
 use uo;
 use os;
-include "nature";
+include ":nature:nature";
 
 program setLight()
   set_critical(1);

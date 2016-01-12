@@ -2,7 +2,7 @@ use uo;
 use os;
 
 include "include/client";
-include "getSpellID";
+include ":magic:getSpellID";
 include "include/canAccess";
 
 program use_chargedspellitem( who, item )

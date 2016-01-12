@@ -3,7 +3,7 @@ use uo;
 use os;
 use util;
 
-include "nature";
+include ":nature:nature";
 
 set_critical(1);
 var wstuff := GetGlobalProperty("Nature");

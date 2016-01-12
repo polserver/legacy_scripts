@@ -6,12 +6,12 @@ use util;
 include "include/objtype";
 include "include/attributes";
 include "include/math";
-include "layout";
-include "goLayout";
-include "info";
-include "gotoLayout";
-include "accountLayout";
-include "spawnerLayout";
+include ":gmtools:layout";
+include ":gmtools:goLayout";
+include ":gmtools:info";
+include ":gmtools:gotoLayout";
+include ":gmtools:accountLayout";
+include ":gmtools:spawnerLayout";
 include "util/bank";
 include "include/gumpUtil"; // Added by Shinigami
 

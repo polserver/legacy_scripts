@@ -2,7 +2,7 @@ use vitals;
 use os;
 use uo;
 
-include "saveOpts";
+include ":saver:saveOpts";
 include "util/bank";
 
 while (1)

@@ -6,7 +6,7 @@ use cfgfile;
 include ":timeutils:time";
 include "include/clock";
 include "include/arrays";
-include "nature";
+include ":nature:nature";
 include "include/std";
 
 var length := (Cint(GetDayLength()) * 60);

@@ -3,7 +3,7 @@ use os;
 use cfgfile;
 
 include "include/client";
-include "getSpellID";
+include ":magic:getSpellID";
 include "include/canAccess";
 
 

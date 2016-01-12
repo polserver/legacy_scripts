@@ -52,3 +52,7 @@ Distro change log
 10-Jan-2016	Yukiko	Updated:	Continuing to update and expand the docs for the Distro. In this case static housing docs were worked on.
 
 10-Jan-2016	Yukiko	Moved:		\pkg\skills\alchemy\potion.inc and \pkg\skills\alchemy\drinkPotion.inc to \pkg\skills\alchemy\include\ directory.
+
+11-Jan-2016	Yukiko	Fixed:		Several "include" statements in programs in the alchemy package had improper path format.
+
+12-Jan-2016	Yukiko	Moved:		Fixed a lot of organizational issues. Config files in main package directories were moved to the config folders in the package. Same with include files moved to include folders in the packages. I think I corrected any issues with include paths in files affected.
