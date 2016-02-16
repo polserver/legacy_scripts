@@ -1,4 +1,4 @@
-THIS FILE IS A WORK IN PROGRESS. I NEED TO ADD MORE INFO>
+THIS FILE IS A WORK IN PROGRESS. I MAY NEED TO ADD MORE INFO.
 
 Let's talk about nouses on UO. The housing package that came with this Distro was the one most of us are familiar with. It allows players to place the predesigned multi type houses that are packaged with the client software. This is great if you have enough open land available to allow for the addition of more structures in the world. There are some areas that are conducive to expansion of houses but usually the ground has to be almost flat and free of anything like flowers or rocks. That is assuming you want to have houses springing up at random places on your server. Almost every map, even custom maps, come with houses and shops already in place. They are known as [i]static[/i] structures because they are defined in the [i]statics.mul[/i] files. Since they already exist in your world wouldn't it be nice to be able to make those houses available for sale to your players? They are just sitting there so why not?
 
@@ -27,13 +27,13 @@ You will be prompted for the location to place the house sign. If this house has
 
 You will now be prompted to select the north-west corner of the top most floor of the house. This is the upper corner. Go inside the house and go to the highest floor and click in the North West corner. Now you will be asked to target the South-East corner on the lowest level. Go down and target that square. Assuming all went well you should get a message telling you that you have succeeded. There might be some instances where the upper floor of a structure doesn't extend as far North as the lower floor. For now, this system cannot handle structures like that. See the house at X=1360 Y=1776 Z=15 in Britain for an example of this kind of house. You could still deed out the lower area but the owner wouldn't be able to lock anything down on the second floor.
 
-Now if you go outside and click on the house sign you will see the price of the house. If you double-click on the sign a gump will appear asking if you want to buy the house. If that happens then congratulations! You have set-up that house for purchase by a player.
+Now if you go outside and single left-click on the house sign you will see the price of the house. If you double-click on the sign a gump will appear asking if you want to buy the house. If that happens then congratulations! You have set-up that house for purchase by a player.
 
 There are some houses that are not square or rectanglar ("normal"). Some are "L" shaped with a yard located in what would be the rest of the square. This housing system will only allow you to deed out square areas. So for those non-normal houses you will include the yard in the area that will be made available for sale. This means that owners of those houses will be able to lockdown items in the yard area as well as the interior of the house.
 
 
 
-OK. I've explained how a GM can set-up houses for sale. Now I'm going to explain the process of buyimg a house.
+I've explained how a GM can set-up houses for sale. Now I'm going to explain the process of buyimg a house.
 
 This is section intended as documentation for players on the usage of the static housing system.
 
@@ -65,4 +65,4 @@ remove thyself
 This command will ban the person from ever entering the interior of your house:
 i ban thee
 
-The "ban" system works by using an invisible tile placed on the inside of doors. So a person banned from a house won't be able to enter througha door but if your house contains a yard area they will be able to walk into your yard.
+The "ban" system works by using an invisible tile placed on the inside of doors. So a person banned from a house won't be able to enter through a door but if your house contains a yard area they will be able to walk into your yard.

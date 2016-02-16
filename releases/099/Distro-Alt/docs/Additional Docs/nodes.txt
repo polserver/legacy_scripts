@@ -1,4 +1,5 @@
 Guard Nodes:
+  Guard nodes are created using the .createat guardnode command.
   The Guard Node is objtype 0x887b.
   Overview:
     guard nodes are items used to control and spawn guards in all the cities.
@@ -17,8 +18,8 @@ Guard Nodes:
       themselves if they reach half health or are poisoned
   Installation:
     guard nodes must be setup in a grid in all guard protected cities..
-    since guard nodes have a listen range of 30 tiles diamater, they should 
-      be placed in the following manner:
+    since guard nodes have a listen range of 30 tiles diamater, they should,
+       in order to completely protect the entire town, be placed in the following manner:
       place nodes from the west side of town to the east.
       find the town border and travel east 30 tiles
       then find the north border and travel south 30 tiles
@@ -33,6 +34,9 @@ Guard Nodes:
       for each node you have placed continue the above grid to the east till you
         hit the east edge of town. once you fill in the grid, your town will be 
         completely covered.
+
+
+
 Merchant Nodes:
   The Merchant Node is objtype 0x887a.
   Overview:

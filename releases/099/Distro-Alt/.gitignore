@@ -55,6 +55,9 @@ log/*.log
 # POL realms
 realm/*
 
+# POL MULs
+MUL/*
+
 # Other files
 core-changes.txt
 objtypes.txt
@@ -74,4 +77,5 @@ ecompile.cfg
 runecl.exe
 
 # Misc files
-eCompile_commands.txt
+
+scripts/eCompile_commands.txt

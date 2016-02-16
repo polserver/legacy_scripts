@@ -1,3 +1,4 @@
+Note: The terms "directory" and "folder" are used interchangably in this document.
 
 For the ease of use of our linux users, we have standardized the file names in POL.
 Windows users will not notice any effect from this, and will not notice when it is
@@ -19,3 +20,12 @@ killAllPCs.src
 
 Exceptions:
 Config files, textcommands, and files in scripts/misc are all lowercase.
+
+
+
+A word about "folder geometry" or folder structure:
+
+There are certain rules which I would like to follow with this release of the Distro.
+
+
+In packages there should be separate directories for certain types of files. Include files and config files should have their own folders. Text commands unique to a package are to be placed in a folder named "textcmd". Within that folder the heiarchy of the commands should be placed in subfolders using the standard names of "player", "coun", "seer", "gm", "admin", and "test".
