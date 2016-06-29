@@ -17,7 +17,7 @@ include ":help:help";
 include ":moongates:moongate";
 include ":timeutils:time";
 include "include/arrays";
-include "include/shardInfo.inc";
+include "include/shardInfo";
 
 CONST CLOSE_BTN			:= 0xA00;
 CONST MAIN_PAGE_BTN		:= 0xA01;

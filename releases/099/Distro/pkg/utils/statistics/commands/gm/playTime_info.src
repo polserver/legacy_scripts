@@ -7,7 +7,7 @@ use uo;
 use os;
 
 include "include/packets";
-include "include/shardInfo.inc";
+include "include/shardInfo";
 
 program command_playTime( mobile )
 

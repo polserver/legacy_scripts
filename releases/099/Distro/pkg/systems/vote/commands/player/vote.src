@@ -13,7 +13,7 @@ include ":datafile:datafile";
 include ":gumps:gumpprompt";
 include ":timeutils:time";
 include ":timeutils:gameTime";
-include "include/shardInfo.inc";
+include "include/shardInfo";
 
 var g_datafile := DFOpenDataFile( ":vote:vote", DF_CREATE );
 

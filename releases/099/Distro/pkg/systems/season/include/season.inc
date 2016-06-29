@@ -14,7 +14,7 @@ use util;
 include "include/packets";
 include ":datafile:datafile";
 include ":season:settings";
-include "include/shardInfo.inc";
+include "include/shardInfo";
 
 var g_datafile := DFOpenDataFile( ":season:season", DF_CREATE );
 
