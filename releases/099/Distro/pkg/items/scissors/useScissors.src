@@ -14,8 +14,6 @@ include "include/facings";
 include "include/itemUtil";
 include ":attributes:attributes";
 include ":autoloop:autoloop";
-include ":botanic:botanic";
-include ":botanic:settings";
 include ":crafting:crafting";
 
 var craft_config := ReadConfigFile( ":tailoring:tailoring" );
@@ -43,8 +41,6 @@ program use_scissors( who, tool )
                 CutForBandages( who, tool, targ );
         elseif( targ.IsHides() )
                 CutForBridle( who, tool, targ );
-        elseif( BOTANIC_GetSettingsCfgElem( targ.objtype ).Product )
-                HarvestBotanic( who, targ );
         else
                 SendSysMessage( who, "Scissors cannot be used on that to produce anything." );
         endif

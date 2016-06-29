@@ -4,16 +4,6 @@
 //
 ////////////////////////////////////////////////////////////////
 
-//Fantasia Shard
-const SHARD_NAME := "POL Server";
-const SHARD_VERSION := "Distro099";
-const SHARD_WEBSITE := "http://polserver.com/";
-const SHARD_LOGINSERVER := "LoginServer=127.0.0.1,2593";
-const SHARD_FORUM := "http://forums.polserver.com/";
-const SHARD_MAINVOTE := "http://polserver.com/";
-const SHARD_IP := "127.0.0.1";
-const SHARD_WWWPORT := "5003";
-
 // CreateMulti flags
 // only for house creation:
 const CRMULTI_IGNORE_MULTIS     := 0x0001;  // ignore intersecting multis
@@ -37,11 +27,14 @@ const FP_IGNORE_DOORS           := 0x02;    // ignore Doors (you've to open door
 
 // Send*Window flags
 const VENDOR_SEND_AOS_TOOLTIP   := 0x01;    // send Item Description using AoS Tooltips
+const VENDOR_BUYABLE_CONTAINER_FILTER := 0x02; // filter items in the SendSellWindow() by what is in the buyable container
 
 const SENDDIALOGMENU_FORCE_OLD  := 0x01;    // send UnCompressed Gump
 
 // RegisterForSpeechEvents flags
 const LISTENPT_HEAR_GHOSTS      := 0x01;    // hear ghost speech in addition to living speech
+const LISTENPT_HEAR_TOKENS      := 0x02;    // hear also speechtokens (only with ssopt.SeperateSpeechTokens)
+const LISTENPT_NO_SPEECH        := 0x04;    // hear no normal speech (only with ssopt.SeperateSpeechTokens)
 
 // List[Statics/Items]* flags
 const ITEMS_IGNORE_STATICS      := 0x01;    // Don't list Static Items
@@ -55,6 +48,8 @@ const LISTEX_FLAG_NORMAL := 0x01;
 const LISTEX_FLAG_HIDDEN := 0x02;
 const LISTEX_FLAG_GHOST := 0x04;
 const LISTEX_FLAG_CONCEALED := 0x08;
+const LISTEX_FLAG_PLAYERS_ONLY := 0x10;
+const LISTEX_FLAG_NPC_ONLY := 0x20;
 
 // ListItemsNearLocationWithFlag( x,y,z, range, flags ); tiledata flags
 // Thanks to Alazane: http://dkbush.cablenet-va.com/alazane/file_formats.html#3.17
@@ -197,15 +192,16 @@ const RACE_GARGOYLE := 2;
 // Don't use these outside this file, use FONT_* from client.inc
 //  (and I don't know what for color)
 const _DEFAULT_TEXT_FONT     := 3;
-const _DEFAULT_TEXT_COLOR    := 1087;
+const _DEFAULT_TEXT_COLOR    := 1000;
 
 // Realms
-const _DEFAULT_REALM  := "britannia";
-const REALM_BRITANNIA := _DEFAULT_REALM;
-const REALM_ILSHENAR  := "ilshenar";
-const REALM_MALAS     := "malas";
-const REALM_TOKUNO    := "tokuno";
-const REALM_TERMUR    := "termur";
+const _DEFAULT_REALM  		:= "britannia";
+const REALM_BRITANNIA 		:= _DEFAULT_REALM;
+const REALM_BRITANNIA_ALT	:= "britannia_alt";
+const REALM_ILSHENAR  		:= "ilshenar";
+const REALM_MALAS     		:= "malas";
+const REALM_TOKUNO    		:= "tokuno";
+const REALM_TERMUR    		:= "termur";
 
 //PerformAction
 const ACTION_DIR_FORWARD  := 0;
@@ -226,6 +222,10 @@ const CLOSE_STATUS    := 2;
 const CLOSE_PROFILE   := 8;
 const CLOSE_CONTAINER := 12;
 
+//SendCharProfile
+const CHARPROFILE_NO_UNEDITABLE_TEXT := array;
+const CHARPROFILE_NO_EDITABLE_TEXT := array;
+
 ////////////////////////////////////////////////////////////////
 //
 //	FUNCTIONS
@@ -244,12 +244,13 @@ CanWalk(movemode, x1, y1, z1, x2_or_dir, y2 := CANWALK_DIR, realm := _DEFAULT_RE
 CheckLineOfSight( object1, object2 );
 CheckLosAt( character, x, y, z );
 CheckLosBetween( x1, y1, z1, x2, y2, z2, realm := _DEFAULT_REALM );
-CloseGump( character, pid, response := 0 );
+CloseGump( character, gumpid, response := 0 );
 CloseTradeWindow( character );
 CloseWindow( character, type, object );
 ConsumeReagents( who, spellid );
 ConsumeSubstance( container, objtype, amount );
 CoordinateDistance(x1, y1, x2, y2);
+CoordinateDistanceEuclidean(x1, y1, x2, y2);
 CreateAccount( acctname, password, enabled );
 CreateItemAtLocation( x, y, z, objtype, amount := 1, realm := _DEFAULT_REALM );
 CreateItemCopyAtLocation(x, y, z, item, realm := _DEFAULT_REALM);
@@ -265,6 +266,7 @@ Detach();
 DisableEvents( eventtype );     // eventtype combination of constants from SYSEVENT.INC
 DisconnectClient( character );
 Distance( obj1, obj2 );
+DistanceEuclidean( obj1, obj2 );
 EnableEvents( eventtype, range := -1);  // eventtype combination of constants from SYSEVENT.INC
 EnumerateItemsInContainer( container, flags := 0 );
 EnumerateOnlineCharacters();
@@ -286,7 +288,7 @@ GetGlobalPropertyNames();
 GetHarvestDifficulty( resource, x, y, tiletype, realm := _DEFAULT_REALM );
 GetMapInfo( x, y, realm := _DEFAULT_REALM );
 GetMenuObjTypes( menuname );
-GetMultiDimensions( graphic );
+GetMultiDimensions( multiid );
 GetObjProperty( object, property_name );
 GetObjPropertyNames( object );
 GetObjType( object );
@@ -313,12 +315,14 @@ ListItemsNearLocationWithFlag( x,y,z, range, flags, realm := _DEFAULT_REALM );
 ListMobilesInLineOfSight( object, range );
 ListMobilesNearLocation( x, y, z, range, realm := _DEFAULT_REALM );
 ListMobilesNearLocationEx( x,y,z, range, flags, realm := _DEFAULT_REALM );
+ListOfflineMobilesInRealm(realm := _DEFAULT_REALM);
 ListMultisInBox( x1,y1,z1, x2,y2,z2, realm := _DEFAULT_REALM );
 ListObjectsInBox( x1,y1,z1, x2,y2,z2, realm := _DEFAULT_REALM );
+ListMobilesInBox( x1,y1,z1, x2,y2,z2, realm := _DEFAULT_REALM );
 ListStaticsAtLocation( x, y, z, flags := 0, realm := _DEFAULT_REALM );
 ListStaticsInBox( x1,y1,z1, x2,y2,z2, flags := 0, realm := _DEFAULT_REALM );
 ListStaticsNearLocation( x, y, z, range, flags := 0, realm := _DEFAULT_REALM );
-MoveItemToContainer( item, container, x := -1, y := -1 );
+MoveItemToContainer( item, container, x := -1, y := -1, add_to_existing_stack := 0 );
 MoveItemToSecureTradeWin( item, character );
 MoveObjectToLocation( object, x, y, z, realm := _DEFAULT_REALM, flags := MOVEOBJECT_NORMAL );
 OpenPaperdoll( towhom, forwhom );
@@ -330,8 +334,8 @@ PlayMovingEffectXYZ( srcx, srcy, srcz, dstx, dsty, dstz, effect, speed, loop := 
 PlayMovingEffectXYZEx( srcx, srcy, srcz, dstx, dsty, dstz, realm := _DEFAULT_REALM, effect, speed, duration := 0, hue := 0, render := 0, fixeddirection := 0, explode := 0, effect3d := 0, effect3dexplode := 0, effect3dsound := 0 );
 PlayObjectCenteredEffect( center, effect, speed, loop := 0 );
 PlayObjectCenteredEffectEx( center, effect, speed, duration := 0, hue := 0, render := 0, layer := 0, effect3d := 0 );
-PlaySoundEffect( character, effect );
-PlaySoundEffectPrivate( character, effect, playfor );
+PlaySoundEffect( object, effect );
+PlaySoundEffectPrivate( object, effect, playfor );
 PlaySoundEffectXYZ( x, y, z, effect, realm := _DEFAULT_REALM );
 PlayMusic( chr, music_id := 0 );
 PlayStationaryEffect( x, y, z, effect, speed, loop := 0, explode := 0, realm := _DEFAULT_REALM );
@@ -351,15 +355,18 @@ SecureTradeWin( character, character2 );
 SelectColor( character, item );
 SelectMenuItem2( character, menuname );
 SendBuyWindow( character, container, vendor, items, flags := 0 );
+SendCharProfile( character, of_who, title, uneditable_text := CHARPROFILE_NO_UNEDITABLE_TEXT, editable_text := CHARPROFILE_NO_EDITABLE_TEXT );
 SendCharacterRaceChanger( character );
-SendDialogGump( who, layout, textlines, x := 0, y := 0, flags := 0 );
+SendDialogGump( who, layout, textlines, x := 0, y := 0, flags := 0, gumpid := 0 );
 SendEvent( npc, event );
-SendHousingTool(who, multi);
+SendHousingTool( who, house );
 SendInstaResDialog( character );
 SendOpenBook( character, book );
 SendOpenSpecialContainer( character, container );
+SendOverallSeason( season_id, playsound := 1 );
 SendPacket( to_whom, packet_hex_string );
-SendQuestArrow( to_whom, x := -1, y := -1); // no params (-1x,-1y) turns the arrow off
+SendPopUpMenu( to_whom, above, menu );
+SendQuestArrow( to_whom, x := -1, y := -1, target := "" ); // no params (-1x,-1y) turns the arrow off, target is required for HSA clients
 SendSellWindow( character, vendor, i1, i2, i3, flags := 0 );
 SendSkillWindow( towhom, forwhom );
 SendStatus( character );
@@ -369,18 +376,21 @@ SendTextEntryGump( who, line1, cancel := TE_CANCEL_ENABLE, style := TE_STYLE_NOR
 SendViewContainer( character, container );
 SetGlobalProperty( propname, propval );
 SetName( object, name );
-SetObjProperty( object, property_name, property_value_string_only );
+SetObjProperty( object, property_name, property_value );
 SetRegionLightLevel( regionname, lightlevel );
 SetRegionWeatherLevel( region, type, severity, aux := 0, lightoverride := -1);
 SetScriptController( who );
+SingleClick( who, what );
 Shutdown();
-SpeakPowerWords( who, spellid );
+SpeakPowerWords( who, spellid, font := _DEFAULT_TEXT_FONT, color := _DEFAULT_TEXT_COLOR );
 StartSpellEffect( who, spellid );
 SubtractAmount( item, amount );
 SystemFindObjectBySerial( serial, sysfind_flags := 0 );
 Target( by_character, options := TGTOPT_CHECK_LOS+TGTOPT_NEUTRAL);
 TargetCoordinates( by_character );
-TargetMultiPlacement( character, objtype, flags := 0, xoffset := 0, yoffset := 0 );
+TargetMultiPlacement( character, objtype, flags := 0, xoffset := 0, yoffset := 0, hue := 0 );
+UpdateItem( item );
 UpdateMobile( mobile, recreate := UPDATEMOBILE_UPDATE );
 UseItem(item, character);
 POLCore();
+GetMidpointCircleCoords(xcenter, ycenter, radius);

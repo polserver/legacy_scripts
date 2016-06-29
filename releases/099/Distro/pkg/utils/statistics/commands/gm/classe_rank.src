@@ -7,6 +7,7 @@ use uo;
 use os;
 
 include "include/packets";
+include "include/shardInfo.inc";
 
 program command_classe_rank( mobile )
 

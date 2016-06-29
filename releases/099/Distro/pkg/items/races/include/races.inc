@@ -8,6 +8,7 @@ use cfgfile;
 
 include ":datafile:datafile";
 include ":races:settings";
+include "include/shardInfo.inc";
 
 function RACE_GetDataFile( source:="" )
 

@@ -8,6 +8,7 @@ DeleteRealm(realm);
 GetCmdLevelName(number);
 GetCmdLevelNumber(name);
 GetItemDescriptor(objtype);
+FormatItemDescription(desc, amount := 1, suffix := "");
 GetPackageByName(name);
 IncRevision(object);
 ListTextCommands();
@@ -18,3 +19,4 @@ ReadMillisecondClock();
 Realms(realm:="");
 ReloadConfiguration(); // reloads pol.cfg and npcdesc.cfg
 SetSysTrayPopupText(text);
+LogCPropProfile();

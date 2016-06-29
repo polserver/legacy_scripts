@@ -22,6 +22,7 @@ const SCRIPTOPT_NO_INTERRUPT := 1;      // if 1, script runs until it sleeps
 const SCRIPTOPT_DEBUG        := 2;      // if 1, prints any debug info included
 const SCRIPTOPT_NO_RUNAWAY   := 3;      // if 1, doesn't warn about runaway conditions
 const SCRIPTOPT_CAN_ACCESS_OFFLINE_MOBILES := 4;
+const SCRIPTOPT_AUXSVC_ASSUME_STRING := 5;
     //
     // set_script_option(SCRIPTOPT_NO_INTERRUPT,1) is the same as set_critical(1)
     // set_script_option(SCRIPTOPT_DEBUG,1) is the same as set_debug(1)
@@ -68,6 +69,7 @@ Set_Debug( debug );
 
 
 Start_Script( script_name, param := 0 );
+Start_Skill_Script( chr, attr_name, script_name := 0, param := 0 );
 Run_Script_To_Completion( script_name, param := 0 );
 Run_Script( script_name, param := 0 );
 
@@ -102,3 +104,5 @@ Set_Event_Queue_Size(size);
 Is_Critical();
 
 OpenURL( character, url );
+OpenConnection( host, port, scriptdef);
+Debugger(); // put script in debug state
