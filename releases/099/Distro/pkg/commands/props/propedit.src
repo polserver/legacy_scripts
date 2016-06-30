@@ -51,6 +51,7 @@ use os;
 
 include ":gumps:old/old-gumps";
 include "include/security";
+include "include/shardInfo";
 
 const GUMP_BACKGROUND := 2520;
 

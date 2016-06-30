@@ -7,6 +7,7 @@ use uo;
 use os;
 
 include "include/packets";
+include "include/shardInfo";
 
 program command_inactiveAccounts( mobile )
 

@@ -8,6 +8,7 @@ use uo;
 include ":gumps:htmlgump";
 include ":help:help";
 include "include/arrays";
+include "include/shardInfo";
 
 program helpfile_help( who, helpfile )
 

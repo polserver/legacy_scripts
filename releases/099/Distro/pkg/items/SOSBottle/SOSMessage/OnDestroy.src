@@ -14,4 +14,3 @@ program OnDestroy( item )
 	
 	return 1;
 endprogram
-		

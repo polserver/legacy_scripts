@@ -8,6 +8,7 @@ use os;
 
 include "include/packets";
 include "include/security";
+include "include/shardInfo";
 
 program command_serverstats( mobile )
 
