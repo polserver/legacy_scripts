@@ -156,9 +156,6 @@ REM -- %UOCNVRT_PATH% map     realm=britannia_alt mapid=1 usedif=0 width=6144 he
 %UOCNVRT_PATH% maptile realm=termur
 GOTO :RETURN_TO_MENU()
 
-
-GOTO :RETURN_TO_MENU()
-
 REM -- COPY_CLIENT_FILES() FUNCTION
 :COPY_CLIENT_FILES()
 SET /p UOPATH=Full path to UO directory:
