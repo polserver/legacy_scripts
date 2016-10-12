@@ -22,7 +22,8 @@ ECHO  [ f ] - Build 'Britannia Alt' realm (mapid=1)
 ECHO  [ g ] - Build 'Ilshenar' realm      (mapid=2)
 ECHO  [ h ] - Build 'Malas' realm         (mapid=3)
 ECHO  [ i ] - Build 'Tokuno' realm        (mapid=4)
-ECHO  [ j ] - Build all realms - Takes a very long time!
+ECHO  [ j ] - Build 'Ternur' realm        (mapid=5)
+ECHO  [ k ] - Build all realms - Takes a very long time!
 ECHO.
 ECHO  [ o ] - Copy needed client files to pol\MUL\
 ECHO.
@@ -39,7 +40,8 @@ IF /i "%CMD%" == "f" GOTO :REALM_BRITTANIA_ALT()
 IF /i "%CMD%" == "g" GOTO :REALM_ILSHENAR()
 IF /i "%CMD%" == "h" GOTO :REALM_MALAS()
 IF /i "%CMD%" == "i" GOTO :REALM_TOKUNO()
-IF /i "%CMD%" == "j" GOTO :BUILD_ALL_REALMS()
+IF /i "%CMD%" == "j" GOTO :BUILD_TERMUR()
+IF /i "%CMD%" == "k" GOTO :BUILD_ALL_REALMS()
 IF /i "%CMD%" == "o" GOTO :COPY_CLIENT_FILES()
 
 IF "%CMD%" == "x" GOTO :QUIT()
@@ -118,6 +120,13 @@ REM -- REALM_TOKUNO FUNCTION
 %UOCNVRT_PATH% maptile realm=tokuno
 GOTO :RETURN_TO_MENU()
 
+REM -- REALM_TERMUR FUNCTION
+:REALM_TERMUR()
+%UOCNVRT_PATH% map     realm=termur mapid=5 usedif=1 width=1280 height=4096
+%UOCNVRT_PATH% statics realm=termur
+%UOCNVRT_PATH% maptile realm=termur
+GOTO :RETURN_TO_MENU()
+
 REM -- BUILD_ALL_REALMS() FUNCTION
 :BUILD_ALL_REALMS()
 REM -- %UOCNVRT_PATH% map     realm=britannia mapid=0 usedif=0 width=6144 height=4096
@@ -141,6 +150,13 @@ REM -- %UOCNVRT_PATH% map     realm=britannia_alt mapid=1 usedif=0 width=6144 he
 %UOCNVRT_PATH% map     realm=tokuno mapid=4 usedif=1 width=1448 height=1448
 %UOCNVRT_PATH% statics realm=tokuno
 %UOCNVRT_PATH% maptile realm=tokuno
+@ECHO ----
+%UOCNVRT_PATH% map     realm=termur mapid=5 usedif=1 width=1280 height=4096
+%UOCNVRT_PATH% statics realm=termur
+%UOCNVRT_PATH% maptile realm=termur
+GOTO :RETURN_TO_MENU()
+
+
 GOTO :RETURN_TO_MENU()
 
 REM -- COPY_CLIENT_FILES() FUNCTION
