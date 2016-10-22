@@ -1,4 +1,0 @@
-The onLogin.zip file is an auto account creation hook which will automatically create an account if it doesn't exist on the server using the username and password entered in the client's log-in screen. If this is a feature you would like to add to your shard then unzip the source file to this directory and compile it.
-
-
-Yukiko
