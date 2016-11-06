@@ -22,10 +22,9 @@ program Logon( mobile )
         else
                 mobile.SetLightLevel( 0, -1 );
         endif
-        
-        SendPacket( mobile, "B9801B" );
+
         GrantPrivilege( mobile, "seeghosts" );
-	mobile.Enable( "seeghosts" );
+		mobile.Enable( "seeghosts" );
         EraseObjProperty( mobile, "#AuthCodeGiven" );
         EraseObjProperty( mobile, "#SpeedBoost" );
         mobile.Deaf(0);
