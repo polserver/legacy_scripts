@@ -89,7 +89,7 @@ function CounterCheatingProfText( who )
                 SleepMS(5);
 	endforeach
         
-        if( stat_total > 80 )
+        if( stat_total > 90 )
                 return 1;
         elseif( skill_total > 100 )
                 return 1;
