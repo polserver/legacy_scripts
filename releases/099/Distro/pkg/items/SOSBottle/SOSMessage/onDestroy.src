@@ -5,7 +5,7 @@
 */
 use uo;
 
-program OnDestroy( item )
+program onDestroy( item )
 
 	var SOSTile := SystemFindObjectBySerial( CInt( GetObjProperty( item, "SOSTileSerial" )));
         if( SOSTile )
