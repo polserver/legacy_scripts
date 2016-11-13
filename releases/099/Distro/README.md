@@ -152,7 +152,7 @@ DisplayUpToDateScripts 	0
 
       --> In your primary UO directory:
           Open the file named 'login.cfg' with notepad. 
-          Replace all text by 'LoginServer=127.0.0.1,2594'.
+          Replace all text by 'LoginServer=127.0.0.1,2593'.
 
 
 -----------------------------------------------------------------------
