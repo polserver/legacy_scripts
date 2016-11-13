@@ -41,6 +41,7 @@ program export_statics( mobile )
 			item.movable := 0;
 			item.decayat := 0;
 			item.color := elem.color;
+			counter += 1;
 		endif
   		SleepMS(5);
 	endforeach
