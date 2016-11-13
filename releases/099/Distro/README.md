@@ -152,7 +152,7 @@ DisplayUpToDateScripts 	0
 
       --> In your primary UO directory:
           Open the file named 'login.cfg' with notepad. 
-          Replace all text by 'LoginServer=127.0.0.1,2593'.
+          Replace all text by 'LoginServer=127.0.0.1,2594'.
 
 
 -----------------------------------------------------------------------
@@ -162,7 +162,7 @@ Step 4: THE FINALE!
       --> Get back to your 'MyShard' folder and start pol.exe program:
           Lines will scroll and it should end all dandy with a line like:
 
-		Listening for HTTP requests on port 5000
+		Listening for HTTP requests on port 5003
 
           This means as it says.. it's waiting for people to login. 
           Minimize this window.
