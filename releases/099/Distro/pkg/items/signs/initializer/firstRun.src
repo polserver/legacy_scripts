@@ -36,7 +36,7 @@ program InitializeSigns()
 				
 		var list_items := ListItemsAtLocation( chest.x, chest.y, chest.z, chest.realm );
         if( list_items.Size() )
-            oreach item in list_items
+            foreach item in list_items
                 DestroyItem( item );
                 SleepMS(5);
             endforeach
