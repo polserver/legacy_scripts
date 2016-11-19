@@ -27,19 +27,27 @@ program InitializeSigns()
 
 		var cfg_elem := FindConfigElem( cfg, entry );
 
-	        var objtype := CInt( cfg_elem.ObjType ),
-                    name := CStr( cfg_elem.Name ),
-                    realm := CStr( cfg_elem.Realm ),
-	            x := CInt( cfg_elem.X ),
-	            y := CInt( cfg_elem.Y ),
-	            z := CInt( cfg_elem.Z );
+	    var objtype := CInt( cfg_elem.ObjType ),
+            name := CStr( cfg_elem.Name ),
+            realm := CStr( cfg_elem.Realm ),
+	        x := CInt( cfg_elem.X ),
+	        y := CInt( cfg_elem.Y ),
+	        z := CInt( cfg_elem.Z );
+				
+		var list_items := ListItemsAtLocation( chest.x, chest.y, chest.z, chest.realm );
+        if( list_items.Size() )
+            oreach item in list_items
+                DestroyItem( item );
+                SleepMS(5);
+            endforeach
+        endif
 
 		var sign := CreateItemAtLocation( x, y, z, objtype, 1, realm );
 		if( !sign )
 			SysLog( "Error: Could not create sign x: "+x+" y: "+y+" z: "+z+" realm: "+realm+" -->"+sign.errortext );
 		endif
   
-                SetName( sign, name );
+        SetName( sign, name );
 
 		SleepMS(2);
 	endforeach
