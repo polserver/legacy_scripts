@@ -34,7 +34,7 @@ program InitializeSigns()
 	        y := CInt( cfg_elem.Y ),
 	        z := CInt( cfg_elem.Z );
 				
-		var list_items := ListItemsAtLocation( chest.x, chest.y, chest.z, chest.realm );
+		var list_items := ListItemsAtLocation( x, y, z, realm );
         if( list_items.Size() )
             foreach item in list_items
                 DestroyItem( item );
