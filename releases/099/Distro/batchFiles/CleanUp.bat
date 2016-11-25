@@ -1,14 +1,12 @@
 @ECHO OFF
 
-REM - $Id: CleanUp.bat 373 2006-06-17 18:27:33Z austinheilman $
-
 GOTO :MENU()
 
 REM -- MENU FUNCTION
 :MENU()
 CLS
-ECHO CleanUp.bat (v 1.0) by Austin
-ECHO =============================
+ECHO CleanUp.bat by Austin
+ECHO ========================
 ECHO Command        Purpose
 ECHO  [ a ] - Remove *.ecl files. (Will need to recompile scripts)
 ECHO  [ b ] - Remove *.bak files
@@ -16,6 +14,7 @@ ECHO  [ c ] - Remove *.dep files
 ECHO  [ d ] - Remove *.log files
 ECHO  [ e ] - Remove *.lst files
 ECHO  [ f ] - Remove *.dbg files
+ECHO  [ g ] - Remove *.dbg.txt
 ECHO  [ h ] - Remove other
 ECHO.
 ECHO  [ x ] - Back
@@ -29,6 +28,7 @@ IF /i "%CMD%" == "c" SET REMOVE_TYPE=*.dep
 IF /i "%CMD%" == "d" SET REMOVE_TYPE=*.log
 IF /i "%CMD%" == "e" SET REMOVE_TYPE=*.lst
 IF /i "%CMD%" == "f" SET REMOVE_TYPE=*.dbg
+IF /i "%CMD%" == "g" SET REMOVE_TYPE=*.dbg.txt
 IF /i "%CMD%" == "h" GOTO DELETE_CUSTOM()
 IF /i "%CMD%" == "x" GOTO :QUIT()
 

@@ -1,18 +1,27 @@
 @ECHO OFF
 
-REM - $Id: StartHere.bat 841 2006-09-21 06:27:56Z austinheilman $
-
 REM -- If a special path is needed to the batch files set it here
-SET BATCH_PATH=batchFiles\
+SET BATCH_PATH=batchfiles\
 REM ----------
 
+GOTO :INTRODUCTION()
+
 GOTO :MENU()
+
+REM -- INTRODUCTION FUNCTION
+:INTRODUCTION()
+ECHO THE 096 DISTRO IS CURRENTLY IN DEVELOPMENT.
+ECHO THIS IS NOT A FINISHED PROJECT.
+ECHO.
+ECHO POST ANY ISSUES YOU HAVE TO THE DISTRO FORUM AT
+ECHO HTTP://WWW.POLSERVER.COM
+PAUSE
 
 REM -- MENU FUNCTION
 :MENU()
 CLS
-ECHO StartHere.bat (v 1.0) by Austin
-ECHO ===============================
+ECHO StartHere.bat by Austin
+ECHO ========================
 ECHO Command        Purpose
 ECHO  [ a ] - RealmGen menu        (Realm building tools)
 ECHO  [ b ] - Ecompiler menu       (Ecompile tools)
@@ -42,27 +51,27 @@ GOTO :MENU()
 
 REM -- REALM_GEN() FUNCTION
 :REALM_GEN()
-CALL %BATCH_PATH%RealmGen.bat
+CALL %BATCH_PATH%realmgen.bat
 GOTO RETURN_TO_MENU()
 
 REM -- ECOMPILE() FUNCTION
 :ECOMPILE()
-CALL %BATCH_PATH%Ecompile.bat
+CALL %BATCH_PATH%ecompile.bat
 GOTO :RETURN_TO_MENU()
 
 REM -- CLEANUP() FUNCTION
 :CLEANUP()
-CALL %BATCH_PATH%CleanUp.bat
+CALL %BATCH_PATH%cleanup.bat
 GOTO :RETURN_TO_MENU()
 
 REM -- POL() FUNCTION
 :POL()
-CALL %BATCH_PATH%POL.bat
+CALL %BATCH_PATH%pol.bat
 GOTO :RETURN_TO_MENU()
 
 REM -- ECOMPILE() FUNCTION
 :POL_LOOP()
-CALL %BATCH_PATH%LoopPOL.bat
+CALL %BATCH_PATH%loopPOL.bat
 GOTO :RETURN_TO_MENU()
 
 REM -- QUIT FUNCTION
