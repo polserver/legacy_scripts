@@ -67,6 +67,10 @@ data/
 landtiles.cfg
 multis.cfg
 tiles.cfg
+ecompile.log
+leftovers.txt
+orphans.txt
+
 
 
 # POL binaries and cfg
