@@ -64,6 +64,9 @@ objtypes.txt
 packethooks.txt
 packets.zip
 data/
+landtiles.cfg
+multis.cfg
+tiles.cfg
 
 # POL binaries and cfg
 pol.exe
