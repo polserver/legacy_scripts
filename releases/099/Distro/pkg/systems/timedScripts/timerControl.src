@@ -76,7 +76,7 @@ function StartUp( mobile, byref timer_list )
 		event.+amount := timer.duration;
 		event.+level := timer.level;
 
-                AddNewTimer( mobile, event, timer_list, elem_info );
+                AddExistingTimer( mobile, event, timer_list, elem_info );
 		SleepMS(5);
 	endforeach
 
