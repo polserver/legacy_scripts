@@ -173,10 +173,10 @@ function ChangePlantGraphic(plant)
 		//hops
 		0x1a9e:	plant.graphic := 0x1a9f;
 		//lettuce
-		0x708e:	plant.graphic := 0x0c93;
+		0x1708e:	plant.graphic := 0x0c93;
 				plant.color := 270;
 		//cabbage
-		0x708f:	plant.graphic := 0x0c93;
+		0x1708f:	plant.graphic := 0x0c93;
 				plant.color := 276;
 		//apple tree
 		0x0d9a:	plant.graphic := 0x0d99;

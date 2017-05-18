@@ -378,15 +378,15 @@ function GetOre(who, location, info, tool)
   var points := skill + 1;
   var name;
   case(oretype)
-    1: diff :=  -1;   objtype := 0x6300;   name := "iron";
-    2: diff :=  65;   objtype := 0x6301;   name := "dull copper";
-    3: diff :=  70;   objtype := 0x6302;   name := "shadow";
-    4: diff :=  75;   objtype := 0x6303;   name := "copper";
-    5: diff :=  80;   objtype := 0x6304;   name := "bronze";
-    6: diff :=  85;   objtype := 0x6305;   name := "golden";
-    7: diff :=  90;   objtype := 0x6306;   name := "agapite";
-    8: diff :=  95;   objtype := 0x6307;   name := "verite";
-    9: diff :=  99;   objtype := 0x6308;   name := "valorite";
+    1: diff :=  -1;   objtype := 0x16300;   name := "iron";
+    2: diff :=  65;   objtype := 0x16301;   name := "dull copper";
+    3: diff :=  70;   objtype := 0x16302;   name := "shadow";
+    4: diff :=  75;   objtype := 0x16303;   name := "copper";
+    5: diff :=  80;   objtype := 0x16304;   name := "bronze";
+    6: diff :=  85;   objtype := 0x16305;   name := "golden";
+    7: diff :=  90;   objtype := 0x16306;   name := "agapite";
+    8: diff :=  95;   objtype := 0x16307;   name := "verite";
+    9: diff :=  99;   objtype := 0x16308;   name := "valorite";
   endcase
   var diffi := GetHarvestDifficulty( "ore", location.x, location.y, info.landtile, location.realm );
   if(diffi == error)
@@ -399,7 +399,7 @@ function GetOre(who, location, info, tool)
       diffi := diff;
     else
       oretype := 1;
-      objtype := 0x6300;
+      objtype := 0x16300;
       name := "iron";
     endif
   endif

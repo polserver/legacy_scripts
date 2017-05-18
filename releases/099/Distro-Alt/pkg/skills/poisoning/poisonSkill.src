@@ -116,8 +116,8 @@ program do_poisoning( who )
 		    endif
 		    var objtype;
 		    case(obj)
-			0xf3f:   objtype := 0x999a;
-			0x1bfb:  objtype := 0x999b;
+			0xf3f:   objtype := 0x1999a;
+			0x1bfb:  objtype := 0x1999b;
 		    endcase 
 		    CreateItemInBackpack( who, objtype, 10 );
 		    PlaySoundEffect(who, 0x248);

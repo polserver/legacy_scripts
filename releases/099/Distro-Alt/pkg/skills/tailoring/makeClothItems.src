@@ -628,7 +628,7 @@ function ComposeClothSubMenu(who)
           GFTextLine(240, 175, color, "fancy dress");
           GFTilePic( 235, 200, 7935);
           color := 0;
-          if(skill >= CInt(cfg[0x9945]."skill"))
+          if(skill >= CInt(cfg[0x19945]."skill"))
             color := 900;
             GFButtonIDC(150, 295, 210, 211, 1, 39237);
           endif

@@ -278,14 +278,21 @@ function FindBoxArray(housetype, house)
     0x16062: footage := smallhousearray(house, house.x, house.y, house.z); //smallstonehousetwo
     0x16063: footage := smallhousearray(house, house.x, house.y, house.z); //smallwoodenhouse
     0x16064: footage := smallhousearray(house, house.x, house.y, house.z); //smallplasterhouse
-    0x16073: footage := smallhousearray(house, house.x, house.y, house.z); //smallwoodandstrawhouse
     0x16065: footage := largehousearray(house, house.x, house.y, house.z); //largebrickhouse
-    0x16072: footage := largehousearray(house, house.x, house.y, house.z); //largepatiohouse
     0x16066: footage := twostoryarray(house, house.x, house.y, house.z); //twostorywoodandplasterhouse
     0x16068: footage := twostoryarray(house, house.x, house.y, house.z); //twostorystoneandplasterhouse
     0x16069: footage := bigtowerarray(house, house.x, house.y, house.z); //tower
     0x16070: footage := keeparray(house, house.x, house.y, house.z); //keep
     0x16071: footage := castlearray(house, house.x, house.y, house.z); //castle
+    0x16072: footage := largehousearray(house, house.x, house.y, house.z); //largepatiohouse
+    0x16073: footage := smallhousearray(house, house.x, house.y, house.z); //smallwoodandstrawhouse
+	0x16074: footage := largehousearray(house, house.x, house.y, house.z); //large?MarblePatioHouse
+	0x16075: footage := twostoryarray(house, house.x, house.y, house.z); //Small Stone Tower
+	0x16076: footage := twostoryarray(house, house.x, house.y, house.z); // Log Cabin
+	0x16077: footage := smallhousearray(house, house.x, house.y, house.z); // Sandstone Patio House
+	0x16078: footage := twostoryarray(house, house.x, house.y, house.z); // Two Storey Villa with Patio
+	0x16079: footage := smallhousearray(house, house.x, house.y, house.z); // Small Stone Workshop
+	0x1607A: footage := smallhousearray(house, house.x, house.y, house.z); // Small Marble Workshop
   endcase
   return footage;
 endfunction

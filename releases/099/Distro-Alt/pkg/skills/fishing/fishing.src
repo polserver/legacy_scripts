@@ -252,7 +252,7 @@ function GetSOSTreasure(who, targetsquare, sosmsg)
       SendSysMessage(who, "You caught something interesting!");
     else
       SendSysMessage(who, "You catch a sunken treasure!");
-      var chest := CreateItemInBackpack(who, 0x9e40, 1);
+      var chest := CreateItemInBackpack(who, 0x1A340, 1);
       case(RandomInt(4) + 1)
         1: chest.graphic := 0xe40;
         2: chest.graphic := 0xe41;
@@ -275,7 +275,7 @@ function isSOS(who, targetsquare)
   packitems := EnumerateItemsInContainer(who.backpack);
   var i, sosx, sosy;
   for(i := 1; i <= len(packitems); i := i + 1)
-    if((packitems[i].objtype == 0xa363))
+    if((packitems[i].objtype == 0x1A363))
       sosx := GetObjProperty(packitems[i], "tileX");
       sosy := GetObjProperty(packitems[i], "tileY");
       var xd, yd;

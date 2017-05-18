@@ -187,7 +187,7 @@ function chopfurniture(me, theobj)
     SendSysMessage(me, "You cannot destroy secure or locked down items.");
     return;
   endif
-  if(theobj.objtype == 0x7007)
+  if(theobj.objtype == 0x17007)
     var houseserial := GetObjProperty(theobj, "houseserial");
     sign := SystemFindObjectBySerial(houseserial);
     if(GetObjProperty(sign, "barrelserial") == theobj.serial)
@@ -301,7 +301,7 @@ endfunction
 function process_wool(who, blade, sheep)
   if(sheep.graphic == 207)
     sheep.graphic := 223;
-    CreateItemInContainer(who.backpack, 0xf125, 3);
+    CreateItemInContainer(who.backpack, 0x1f125, 3);
     CheckToolWear (who, blade, SKILLID_TAILORING);
   else
     SendSysMessage(who,"That sheep is not yet ready to be shorn.");

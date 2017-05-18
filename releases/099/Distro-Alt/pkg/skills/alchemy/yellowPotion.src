@@ -20,9 +20,9 @@ program drink_blue (who, potion)
   var obj := potion.objtype;
   empty_bottle(who, potion);
   case(obj)
-    0xdc01: HealDamage(who, (RandomInt(7)  + 3));
-    0xdc02: HealDamage(who, (RandomInt(14) + 6));
-    0xdc03: HealDamage(who, (RandomInt(21) + 9));
+    0x1DC: HealDamage(who, (RandomInt(7)  + 3));
+    0x1DC02: HealDamage(who, (RandomInt(14) + 6));
+    0x1DC03: HealDamage(who, (RandomInt(21) + 9));
   endcase
   PlaySoundEffect( who,  SOUND_EFFECT_HEAL );
   PlayObjectCenteredEffect(who, EFFECT_SPARKLE, 10,10);

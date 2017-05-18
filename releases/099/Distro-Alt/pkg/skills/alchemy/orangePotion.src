@@ -21,9 +21,9 @@ program drink_orange (who, potion)
   endif
   var potion_strength := 1;
   case(potion.objtype)
-    0xdc14: potion_strength := 1;
-    0xdc15: potion_strength := 2;
-    0xdc16: potion_strength := 3;
+    0x1DC14: potion_strength := 1;
+    0x1DC15: potion_strength := 2;
+    0x1DC16: potion_strength := 3;
   endcase
   empty_bottle(who, potion);
   if( ListPoisonsByType(who, "DefaultPoison").size() > 0 )

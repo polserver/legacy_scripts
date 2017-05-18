@@ -24,9 +24,9 @@ program drink_blue (who, potion)
     return;
   endif
   case(potion.objtype)
-    0xdc0c:  empty_bottle(who, potion);
+    0x1DC0c:  empty_bottle(who, potion);
              DoTempMod(who, "dex", 10,  60);
-    0xdc0d:  empty_bottle(who, potion);
+    0x1DC0d:  empty_bottle(who, potion);
              DoTempMod(who, "dex", 20, 180);
   endcase
 endprogram

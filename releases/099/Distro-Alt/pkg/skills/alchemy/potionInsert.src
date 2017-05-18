@@ -90,7 +90,7 @@ function GetFullness( pkeg )
 endfunction
 
 function is_potion(obj)
-  if((obj.objtype >= 0xdc01) && (obj.objtype <= 0xdce6))
+  if((obj.objtype >= 0x1DC01) && (obj.objtype <= 0x1DCe6))
     return 1;
   endif
   return 0;

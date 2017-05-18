@@ -7,8 +7,8 @@ include "include/objtype";
 include "include/canAccess";
 
 const UOBJ_POTIONKEG := 0xf022;
-const POTION_START   := 0xdc01;
-const POTION_END     := 0xdce6;
+const POTION_START   := 0x1DC01;
+const POTION_END     := 0x1DCe6;
 
 program use_potionkeg(ch, keg)
   EraseObjProperty(ch, "IsMeditating");
@@ -150,7 +150,7 @@ function GetFullness( pkeg )
 endfunction
 
 function is_potion(obj)
-  if((obj.objtype >= 0xdc01) && (obj.objtype <= 0xdce6))
+  if((obj.objtype >= 0x1DC01) && (obj.objtype <= 0x1DCe6))
     return 1;
   endif
   return 0;

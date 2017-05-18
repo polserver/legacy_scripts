@@ -17,15 +17,15 @@ program smelt_that_ore (who, ore)
     return;
   endif
   case(ore.objtype)
-    0x6300:  SmeltOre(who, ore, 0x6309,  15);
-    0x6301:  SmeltOre(who, ore, 0x630a,  65);
-    0x6302:  SmeltOre(who, ore, 0x630b,  70);
-    0x6303:  SmeltOre(who, ore, 0x630c,  75);
-    0x6304:  SmeltOre(who, ore, 0x630d,  80);
-    0x6305:  SmeltOre(who, ore, 0x630e,  85);
-    0x6306:  SmeltOre(who, ore, 0x630f,  90);
-    0x6307:  SmeltOre(who, ore, 0x6310,  95);
-    0x6308:  SmeltOre(who, ore, 0x6311,  99);
+    0x16300:  SmeltOre(who, ore, 0x16309,  15);
+    0x16301:  SmeltOre(who, ore, 0x1630a,  65);
+    0x16302:  SmeltOre(who, ore, 0x1630b,  70);
+    0x16303:  SmeltOre(who, ore, 0x1630c,  75);
+    0x16304:  SmeltOre(who, ore, 0x1630d,  80);
+    0x16305:  SmeltOre(who, ore, 0x1630e,  85);
+    0x16306:  SmeltOre(who, ore, 0x1630f,  90);
+    0x16307:  SmeltOre(who, ore, 0x16310,  95);
+    0x16308:  SmeltOre(who, ore, 0x16311,  99);
     default: SendSysMessage(who,"You can't smelt that.");
   endcase
 endprogram

@@ -250,20 +250,20 @@ function MakeCarpentryItems(who, tool, objtype, cont, item1, item2)
   var carpentryskill := CInt(GetEffectiveSkill(who, SKILLID_CARPENTRY));
   var cfg := ReadConfigFile( "carpentry" );
   case(objtype)
-    0x0faf: objtype := 0xb000;
-    0x0fb1: objtype := 0xb001;
-    0x1070: objtype := 0xb002;
-    0x1ec0: objtype := 0xb003;
-    0x1019: objtype := 0xb004;
-    0x0fea: objtype := 0xb005;
-    0x1216: objtype := 0xb006;
-    0x197a: objtype := 0xb007;
-    0x105f: objtype := 0xb008;
-    0x0a81: objtype := 0xb009;
-    0x0b42: objtype := 0xb00a;
-    0x1920: objtype := 0xb00b;
-    0x092b: objtype := 0xb00c;
-    0x0461: objtype := 0xb00d;
+    0x0faf: objtype := 0x1b000;
+    0x0fb1: objtype := 0x1b001;
+    0x1070: objtype := 0x1b002;
+    0x1ec0: objtype := 0x1b003;
+    0x1019: objtype := 0x1b004;
+    0x0fea: objtype := 0x1b005;
+    0x1216: objtype := 0x1b006;
+    0x197a: objtype := 0x1b007;
+    0x105f: objtype := 0x1b008;
+    0x0a81: objtype := 0x1b009;
+    0x0b42: objtype := 0x1b00a;
+    0x1920: objtype := 0x1b00b;
+    0x092b: objtype := 0x1b00c;
+    0x0461: objtype := 0x1b00d;
   endcase
   elm          := FindConfigElem(cfg, objtype);
   skill        := elm.skill;
@@ -706,99 +706,99 @@ function ComposeSubMenu(who)
           GFTilePic( 360, 295, 7034);
           color := 0;
        9: GFPage(9);        //Page 9 (add-ons)
-          skill2 := GetEffectiveSkill(who, CInt(cfg[0xb002]."skillID"));
-          if((skill >= CInt(cfg[0xb002]."skill")) && (skill2 >= CInt(cfg[0xb002]."skill2")))
+          skill2 := GetEffectiveSkill(who, CInt(cfg[0x1b002]."skillID"));
+          if((skill >= CInt(cfg[0x1b002]."skill")) && (skill2 >= CInt(cfg[0x1b002]."skill2")))
             color := 900;
             GFButtonIDC( 20, 175, 210, 211, 1, 45058);
           endif
           GFTextLine( 45, 175, color, "training dummy deed");
           color := 0;
-          skill2 := GetEffectiveSkill(who, CInt(cfg[0xb003]."skillID"));
-          if((skill >= CInt(cfg[0xb003]."skill")) && (skill2 >= CInt(cfg[0xb003]."skill2")))
+          skill2 := GetEffectiveSkill(who, CInt(cfg[0x1b003]."skillID"));
+          if((skill >= CInt(cfg[0x1b003]."skill")) && (skill2 >= CInt(cfg[0x1b003]."skill2")))
             color := 900;
             GFButtonIDC( 20, 200, 210, 211, 1, 45059);
           endif
           GFTextLine( 45, 200, color, "pickpocket dip deed");
           color := 0;
-          skill2 := GetEffectiveSkill(who, CInt(cfg[0xb004]."skillID"));
-          if((skill >= CInt(cfg[0xb004]."skill")) && (skill2 >= CInt(cfg[0xb004]."skill2")))
+          skill2 := GetEffectiveSkill(who, CInt(cfg[0x1b004]."skillID"));
+          if((skill >= CInt(cfg[0x1b004]."skill")) && (skill2 >= CInt(cfg[0x1b004]."skill2")))
             color := 900;
             GFButtonIDC( 20, 225, 210, 211, 1, 45060);
           endif
           GFTextLine( 45, 225, color, "spinning wheel deed");
           color := 0;
-          skill2 := GetEffectiveSkill(who, CInt(cfg[0xb008]."skillID"));
-          if((skill >= CInt(cfg[0xb008]."skill")) && (skill2 >= CInt(cfg[0xb008]."skill2")))
+          skill2 := GetEffectiveSkill(who, CInt(cfg[0x1b008]."skillID"));
+          if((skill >= CInt(cfg[0x1b008]."skill")) && (skill2 >= CInt(cfg[0x1b008]."skill2")))
             color := 900;
             GFButtonIDC( 20, 250, 210, 211, 1, 45064);
           endif
           GFTextLine( 45, 250, color, "loom deed");
           color := 0;
-          skill2 := GetEffectiveSkill(who, CInt(cfg[0xb009]."skillID"));
-          if((skill >= CInt(cfg[0xb009]."skill")) && (skill2 >= CInt(cfg[0xb009]."skill2")))
+          skill2 := GetEffectiveSkill(who, CInt(cfg[0x1b009]."skillID"));
+          if((skill >= CInt(cfg[0x1b009]."skill")) && (skill2 >= CInt(cfg[0x1b009]."skill2")))
             color := 900;
             GFButtonIDC( 20, 275, 210, 211, 1, 45065);
           endif
           GFTextLine( 45, 275, color, "large bed deed");
           color := 0;
-          skill2 := GetEffectiveSkill(who, CInt(cfg[0xb006]."skillID"));
-          if((skill >= CInt(cfg[0xb006]."skill")) && (skill2 >= CInt(cfg[0xb006]."skill2")))
+          skill2 := GetEffectiveSkill(who, CInt(cfg[0x1b006]."skillID"));
+          if((skill >= CInt(cfg[0x1b006]."skill")) && (skill2 >= CInt(cfg[0x1b006]."skill2")))
             color := 900;
             GFButtonIDC( 20, 300, 210, 211, 1, 45062);
           endif
           GFTextLine( 45, 300, color, "abbatoir deed");
           color := 0;
-          skill2 := GetEffectiveSkill(who, CInt(cfg[0xb005]."skillID"));
-          if((skill >= CInt(cfg[0xb005]."skill")) && (skill2 >= CInt(cfg[0xb005]."skill2")))
+          skill2 := GetEffectiveSkill(who, CInt(cfg[0x1b005]."skillID"));
+          if((skill >= CInt(cfg[0x1b005]."skill")) && (skill2 >= CInt(cfg[0x1b005]."skill2")))
             color := 900;
             GFButtonIDC( 20, 325, 210, 211, 1, 45061);
           endif
           GFTextLine( 45, 325, color, "pentagram deed");
           color := 0;
-          skill2 := GetEffectiveSkill(who, CInt(cfg[0xb00a]."skillID"));
-          if((skill >= CInt(cfg[0xb00a]."skill")) && (skill2 >= CInt(cfg[0xb00a]."skill2")))
+          skill2 := GetEffectiveSkill(who, CInt(cfg[0x1b00a]."skillID"));
+          if((skill >= CInt(cfg[0x1b00a]."skill")) && (skill2 >= CInt(cfg[0x1b00a]."skill2")))
             color := 900;
             GFButtonIDC(260, 175, 210, 211, 1, 45066);
           endif
           GFTextLine(285, 175, color, "water trough deed");
           color := 0;
-          skill2 := GetEffectiveSkill(who, CInt(cfg[0xb00b]."skillID"));
-          if((skill >= CInt(cfg[0xb00b]."skill")) && (skill2 >= CInt(cfg[0xb00b]."skill2")))
+          skill2 := GetEffectiveSkill(who, CInt(cfg[0x1b00b]."skillID"));
+          if((skill >= CInt(cfg[0x1b00b]."skill")) && (skill2 >= CInt(cfg[0x1b00b]."skill2")))
             color := 900;
             GFButtonIDC(260, 200, 210, 211, 1, 45067);
           endif
           GFTextLine(285, 200, color, "mill deed");
           color := 0;
-          skill2 := GetEffectiveSkill(who, CInt(cfg[0xb00c]."skillID"));
-          if((skill >= CInt(cfg[0xb00c]."skill")) && (skill2 >= CInt(cfg[0xb00c]."skill2")))
+          skill2 := GetEffectiveSkill(who, CInt(cfg[0x1b00c]."skillID"));
+          if((skill >= CInt(cfg[0x1b00c]."skill")) && (skill2 >= CInt(cfg[0x1b00c]."skill2")))
             color := 900;
             GFButtonIDC(260, 225, 210, 211, 1, 45068);
           endif
           GFTextLine(285, 225, color, "stone oven deed");
           color := 0;
-          skill2 := GetEffectiveSkill(who, CInt(cfg[0xb000]."skillID"));
-          if((skill >= CInt(cfg[0xb000]."skill")) && (skill2 >= CInt(cfg[0xb000]."skill2")))
+          skill2 := GetEffectiveSkill(who, CInt(cfg[0x1b000]."skillID"));
+          if((skill >= CInt(cfg[0x1b000]."skill")) && (skill2 >= CInt(cfg[0x1b000]."skill2")))
             color := 900;
             GFButtonIDC(260, 250, 210, 211, 1, 45056);
           endif
           GFTextLine(285, 250, color, "anvil deed");
           color := 0;
-          skill2 := GetEffectiveSkill(who, CInt(cfg[0xb001]."skillID"));
-          if((skill >= CInt(cfg[0xb001]."skill")) && (skill2 >= CInt(cfg[0xb001]."skill2")))
+          skill2 := GetEffectiveSkill(who, CInt(cfg[0x1b001]."skillID"));
+          if((skill >= CInt(cfg[0x1b001]."skill")) && (skill2 >= CInt(cfg[0x1b001]."skill2")))
             color := 900;
             GFButtonIDC(260, 275, 210, 211, 1, 45057);
           endif
           GFTextLine(285, 275, color, "small forge deed");
           color := 0;
-          skill2 := GetEffectiveSkill(who, CInt(cfg[0xb007]."skillID"));
-          if((skill >= CInt(cfg[0xb007]."skill")) && (skill2 >= CInt(cfg[0xb007]."skill2")))
+          skill2 := GetEffectiveSkill(who, CInt(cfg[0x1b007]."skillID"));
+          if((skill >= CInt(cfg[0x1b007]."skill")) && (skill2 >= CInt(cfg[0x1b007]."skill2")))
             color := 900;
             GFButtonIDC(260, 300, 210, 211, 1, 45063);
           endif
           GFTextLine(285, 300, color, "large forge deed");
           color := 0;
-          skill2 := GetEffectiveSkill(who, CInt(cfg[0xb011]."skillID"));
-          if((skill >= CInt(cfg[0xb011]."skill")) && (skill2 >= CInt(cfg[0xb011]."skill2")))
+          skill2 := GetEffectiveSkill(who, CInt(cfg[0x1b011]."skillID"));
+          if((skill >= CInt(cfg[0x1b011]."skill")) && (skill2 >= CInt(cfg[0x1b011]."skill2")))
             color := 900;
             GFButtonIDC(260, 325, 210, 211, 1, 45073);
           endif

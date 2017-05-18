@@ -196,7 +196,7 @@ function IsBow(byref weapon)
 		return 1;
 	elseif (weapon.objtype >= 0x13fc && weapon.objtype <= 0x13fd)
 		return 1;
-	elseif (weapon.objtype == 0x6050)
+	elseif (weapon.objtype == 0x16050)
 		return 1;
 	elseif (weapon.objtype == 0x26c2)
 		return 1;
@@ -381,7 +381,7 @@ endfunction
 
 function IsLog(byref item)
 
-	if (item.objtype >= 0x6351 && item.objtype <= 0x6367)
+	if (item.objtype >= 0x16351 && item.objtype <= 0x16367)
 		return 1;
         elseif(item.objtype == 0x1BDD)
 	        return 1;
@@ -447,8 +447,8 @@ endfunction
 ///////////////////
 
 function IsOre(byref use_on)
-  if ((use_on.objtype >= 0x6300 && use_on.objtype <= 0x6308 || 
-  use_on.objtype >= 0x6205 && use_on.objtype <= 0x6213))
+  if ((use_on.objtype >= 0x16300 && use_on.objtype <= 0x16308 || 
+  use_on.objtype >= 0x16205 && use_on.objtype <= 0x16213))
     return 1;
   else
     return 0;
@@ -460,8 +460,8 @@ endfunction
 ///////////////////
 
 function IsIngot(use_on)
-  if ((use_on.objtype >= 0x6309 && use_on.objtype <= 0x6311 || 
-  use_on.objtype >= 0x6245 && use_on.objtype <= 0x6254))
+  if ((use_on.objtype >= 0x16309 && use_on.objtype <= 0x16311 || 
+  use_on.objtype >= 0x16245 && use_on.objtype <= 0x16254))
     return 1;
   else
     return 0;
@@ -625,7 +625,7 @@ function IsSteedContainer(item)
 		return 1;
 	elseif (item.objtype == 0x09b1)                  //SmallBasket
 		return 1;
-	elseif (item.objtype == 0x6100)                  //Runebook
+	elseif (item.objtype == 0x16100)                  //Runebook
 		return 1;
 	elseif (item.objtype == 0x09aa)                  //WoodenBox
 		return 1;
@@ -736,7 +736,7 @@ function IsABoard(byref use_on)
     if (use_on.objtype == 0x1bd7)
 	return 1;
     endif
-    if ((use_on.objtype >= 0x6370 && use_on.objtype <= 0x6386))
+    if ((use_on.objtype >= 0x16370 && use_on.objtype <= 0x61386))
 	return 1;
     else
 	return 0;

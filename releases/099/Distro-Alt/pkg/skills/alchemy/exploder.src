@@ -30,15 +30,15 @@ program exploder(parms)
     PlayObjectCenteredEffect( critter, 0x36b0, 7, 0x10 );
     PlaySoundEffect( critter, 0x208);
     case(location.objtype)
-      0xdc08: dmg := (RandomInt(4) + 1 );
-      0xdc09: dmg := (RandomInt(4) + 6 );
-      0xdc07: dmg := (RandomInt(9) + 11 );
+      0x1DC08: dmg := (RandomInt(4) + 1 );
+      0x1DC09: dmg := (RandomInt(4) + 6 );
+      0x1DC07: dmg := (RandomInt(9) + 11 );
     endcase
     ApplyRawDamage(critter, dmg);
   endforeach
 
   // Then everything near it goes out in a bang
-  var potions := {0xdc08, 0xdc09, 0xdc07};
+  var potions := {0x1DC08, 0x1DC09, 0x1DC07};
   foreach item in ListItemsNearLocation(location.x, location.y, location.z, 1, location.realm)
     if(item.objtype in potions)
       var passparms := {item, who};

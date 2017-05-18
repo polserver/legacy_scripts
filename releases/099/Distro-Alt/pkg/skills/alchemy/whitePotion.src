@@ -28,7 +28,7 @@ program drink_blue (who, potion)
   PlaySoundEffect(who, 0x1ef);
   PlayObjectCenteredEffect(who, 0x373a, 7,7);
   case(obj)
-    0xdc11: DoTempMod(who, "str", 10,  60);
-    0xdc12: DoTempMod(who, "str", 20, 180);
+    0x1DC11: DoTempMod(who, "str", 10,  60);
+    0x1DC12: DoTempMod(who, "str", 20, 180);
   endcase
 endprogram

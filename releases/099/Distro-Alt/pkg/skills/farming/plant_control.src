@@ -52,10 +52,10 @@ program control_plant (plant)
 				//hops
 				0x1a9e:	plant.graphic := 0x1a9e;
 				//lettuce
-				0x708e:	plant.graphic := 0x0ca7;
+				0x1708e:	plant.graphic := 0x0ca7;
 						plant.color := 270;
 				//cabbage
-				0x708f:	plant.graphic := 0x0d04;
+				0x1708f:	plant.graphic := 0x0d04;
 						plant.color := 276;
 				//apple tree bottom
 				0x0d98:
@@ -200,13 +200,13 @@ function GrowPlant(byref plant)
 				sleep(NEW_PLANT_GROW_TIME);
 				plant.graphic := 0x1a9f;
 		//lettuce
-		0x708e:	plant.graphic := 0x0cb5;
+		0x1708e:	plant.graphic := 0x0cb5;
 				plant.name := "lettuce";
 				sleep(NEW_PLANT_GROW_TIME);
 				plant.graphic := 0x0c93;
 				plant.color := 270;
 		//cabbage
-		0x708f:	plant.graphic := 0x0cb5;
+		0x1708f:	plant.graphic := 0x0cb5;
 				plant.name := "cabbage";
 				sleep(NEW_PLANT_GROW_TIME);
 				plant.graphic := 0x0c93;
@@ -330,8 +330,8 @@ function IsAPlant(byref item)
 		0x1a9f:
 		0x1aa0:
 		0x1aa1:
-		0x708e:
-		0x708f:
+		0x1708e:
+		0x1708f:
 			return 1;
 	endcase
 	return 0;

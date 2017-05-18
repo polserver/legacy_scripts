@@ -23,7 +23,7 @@ program use_key(who, key)
   if(!thetarget)
     SendSysMessage(who, "Cancelled.");
   elseif(!Accessible(who, thetarget))
-    if(thetarget.objtype != 0xf010)
+    if(thetarget.objtype != 0x1F010)
       PrintTextAbovePrivate(who, "You can't reach that.", who);
     endif
   elseif(GetObjProperty(thetarget, "Owner"))

@@ -19,7 +19,7 @@ program drink_blue (who, potion)
   if(!checkifcandrink(who, "red"))
     return;
   endif
-  if(potion.objtype == 0xdc0f)
+  if(potion.objtype == 0x1DC0f)
 	SetStamina(who, GetMaxStamina(who));
   else
 	var heal_amount := RandomDiceRoll("5d6+3");

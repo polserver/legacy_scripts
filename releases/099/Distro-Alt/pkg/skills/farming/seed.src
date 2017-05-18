@@ -16,16 +16,16 @@ program plant_seed(character, seed)
 	endif
 
 	case (seed.objtype)
-		0xda09:		//flower seeds
+		0x1DA09:		//flower seeds
 			PlantFlowers(character, seed);
 			return;
-		0xda0d:		//banana tree
-		0xda0a:		//apple tree
-		0xda0b:		//peach tree
-		0xda0c:		//pear tree
+		0x1DA0d:		//banana tree
+		0x1DA0a:		//apple tree
+		0x1DA0b:		//peach tree
+		0x1DA0c:		//pear tree
 			PlantATree(character, seed);
 			return;
-		0xda10:		//Beehives get placed where they are
+		0x1DA10:		//Beehives get placed where they are
 			PlaceBeehive(character, seed);
 			return;
 	endcase

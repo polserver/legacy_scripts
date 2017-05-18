@@ -26,7 +26,7 @@ function MakeLoot(corpse, lootgroup)
     madj  := CInt(GetConfigInt(elem, "MagicAdjustment"));
   else
     mprop := 1;
-    if(corpse.objtype == 0x9e40)
+    if(corpse.objtype == 0x1A340)
       case(CInt(GetObjProperty(corpse,"level")))
         1: madj := 0;
         2: madj := 2;
@@ -58,7 +58,7 @@ function MakeLoot(corpse, lootgroup)
   if(mprop)
     magicspawnchance := 1;
   else
-    if((corpse.objtype == 0x9e40) || (corpse.objtype == 0xe40))
+    if((corpse.objtype == 0x1A340) || (corpse.objtype == 0xe40))
       magicspawnchance := 1;
     else
       magicspawnchance := 0;

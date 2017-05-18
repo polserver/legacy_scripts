@@ -55,10 +55,10 @@ program do_tasteid( character )
 		endif
 	
 		case(the_item.objtype)
-			0xdc04: poison_descr := "a lesser poison.";
-			0xdc05: poison_descr := "a regular poison.";
-			0xdc06: poison_descr := "a greater poison.";
-			0xdc17: poison_descr := "a deadly poison.";
+			0x1DC04: poison_descr := "a lesser poison.";
+			0x1DC05: poison_descr := "a regular poison.";
+			0x1DC06: poison_descr := "a greater poison.";
+			0x1DC17: poison_descr := "a deadly poison.";
 			default: poison_descr := "nothing out of the ordinary.";
 		endcase
 	else
@@ -109,10 +109,10 @@ program do_tasteid(who)
   var content_descr := "";
   if(SkillCheck(who, ATTRIBUTEID_TASTEID, -1, CInt(GetAttribute(who, ATTRIBUTEID_TASTEID))))
     case(the_item.objtype)
-      0xdc04: poison_descr := "a lesser poison.";
-      0xdc05: poison_descr := "a regular poison.";
-      0xdc06: poison_descr := "a greater poison.";
-      0xdc17: poison_descr := "a deadly poison.";
+      0x1DC04: poison_descr := "a lesser poison.";
+      0x1DC05: poison_descr := "a regular poison.";
+      0x1DC06: poison_descr := "a greater poison.";
+      0x1DC17: poison_descr := "a deadly poison.";
       default: poison_descr := "nothing out of the ordinary.";
     endcase
     var itemdesc := alchemcfg[the_item.objtype].sname;

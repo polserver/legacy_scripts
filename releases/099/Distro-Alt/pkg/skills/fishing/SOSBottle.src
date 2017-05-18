@@ -33,7 +33,7 @@ program use_bottle( who, bottle )
   UnloadConfigFile("sosarea");
   SetObjProperty(bottle, "tileX", X);
   SetObjProperty(bottle, "tileY", Y);
-  var message := CreateItemInContainer(who.backpack, 0xa363);
+  var message := CreateItemInContainer(who.backpack, 0x1A363);
   if(!message)
     DestroyItem(bottle);
     SendSysMessage(who, "You cannot make out the writing on the message!");

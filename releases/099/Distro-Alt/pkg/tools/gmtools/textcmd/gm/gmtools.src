@@ -109,18 +109,18 @@ function chestspawner(who)
       SendSysMessage(who,"Duration Error: Aborting");
       return;
     endif
-    var item := CreateItemAtLocation(targ.x, targ.y, targ.z, 0x888b, 1, who.realm);
+    var item := CreateItemAtLocation(targ.x, targ.y, targ.z, 0x1888b, 1, who.realm);
     SetObjProperty(item,"level", level);
     SetObjProperty(item,"range", range);
     SetObjProperty(item,"amount", amount);
     SetObjProperty(item,"duration", CInt(newduration));
     EraseObjProperty(item,"waiting");
   elseif(res[0] == 89)
-    foreach item in ListItemsNearLocationOfType(who.x, who.y, who.z, 5, 0x888b, who.realm);
+    foreach item in ListItemsNearLocationOfType(who.x, who.y, who.z, 5, 0x1888b, who.realm);
       item.graphic := 4483;
     endforeach
   else
-    foreach item in ListItemsNearLocationOfType(who.x, who.y, who.z, 5, 0x888b, who.realm);
+    foreach item in ListItemsNearLocationOfType(who.x, who.y, who.z, 5, 0x1888b, who.realm);
       item.graphic := 1;
     endforeach
   endif
@@ -228,7 +228,7 @@ endfunction
 
 function hideinferno(who, range)
   var i := 0;
-  foreach x in ListItemsNearLocationOfType(who.x, who.y, who.z, range, 0x888a, who.realm)
+  foreach x in ListItemsNearLocationOfType(who.x, who.y, who.z, range, 0x1888a, who.realm)
     x.graphic := 0x0001;
     x.movable := 0;
 	i := i + 1;
@@ -239,7 +239,7 @@ endfunction
 
 function showinferno(who, range)
   var i := 0;
-  foreach x in ListItemsNearLocationOfType(who.x, who.y, who.z, range, 0x888a, who.realm)
+  foreach x in ListItemsNearLocationOfType(who.x, who.y, who.z, range, 0x1888a, who.realm)
     x.graphic := 0x1ea7;
 	PrintTextAbove(x, "Hello, I am bringer of DOOM!");
 	i := i + 1;
@@ -285,7 +285,7 @@ endfunction
 
 function hidespawn(who, range)
   var i := 0;
-  foreach x in ListItemsNearLocationOfType(who.x, who.y, who.z, range, 0xa401, who.realm)
+  foreach x in ListItemsNearLocationOfType(who.x, who.y, who.z, range, 0x1A401, who.realm)
     x.graphic := 0x0001;
 	i := i + 1;
   endforeach
@@ -295,7 +295,7 @@ endfunction
 
 function showspawn(who, range)
   var i := 0;
-  foreach x in ListItemsNearLocationOfType(who.x, who.y, who.z, range, 0xa401, who.realm)
+  foreach x in ListItemsNearLocationOfType(who.x, who.y, who.z, range, 0x1A401, who.realm)
     x.graphic := 0x1ea7;
 	PrintTextAbove(x, "Hello, I am a spawnpoint!");
 	i := i + 1;
@@ -310,7 +310,7 @@ function spawnpoint(who)
   if(!tar)
     SendSysMessage(who,"canceled");
   else
-    var doodad := CreateItemAtLocation(tar.x, tar.y, tar.z, 0xa401, 1, who.realm);
+    var doodad := CreateItemAtLocation(tar.x, tar.y, tar.z, 0x1A401, 1, who.realm);
     doodad.movable := 0;
   endif
   maintaingump(who);
@@ -319,7 +319,7 @@ endfunction
 function setinfernotrap(who)
   SendSysMessage(who,"set it where");
   var where := TargetCoordinates(who);
-  var landmine := CreateItemAtLocation(where.x, where.y, where.z, 0x888a, 1, who.realm);
+  var landmine := CreateItemAtLocation(where.x, where.y, where.z, 0x1888a, 1, who.realm);
   Detach();
   maintaingump(who);
 endfunction

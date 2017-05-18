@@ -36,7 +36,7 @@ const UOBJ_BLANK_SCROLL := 0x0e34;
 
 const UOBJ_BANKBOX      := 0x0e40;
 const UOBJ_MAGICBAG     := 0x6698;
-const UOBJ_GMPACK		:= 0x9669;
+const UOBJ_GMPACK		:= 0x19669;
 
 
 const UOBJ_SPELLBOOK        := 0x0efa;
@@ -88,9 +88,9 @@ const UOBJ_SULFUROUS_ASH                := 0x0f8c; // CHECKME spelling
 const UOBJ_SPIDER_SILK                  := 0x0f8d;
 const UOBJ_SULPHUROUS_ASH               := 0x0f8c;
 
-const UOBJ_REAPER_HEARTWOOD	        := 0x706f;
-const UOBJ_ENT_HEARTWOOD	        := 0x706e;
-const UOBJ_ENCHANTED_BONE	        := 0xa153;
+const UOBJ_REAPER_HEARTWOOD	        := 0x1706f;
+const UOBJ_ENT_HEARTWOOD	        := 0x1706e;
+const UOBJ_ENCHANTED_BONE	        := 0x1a153;
 
 ///////////
 //  Gems //
@@ -180,22 +180,22 @@ const UOBJ_CLOTH_BOLT                   := 0x0f95;
 const UOBJ_CLOTH			:= 0x1765;
 const UOBJ_WOOL			        := 0x0df8;
 const UOBJ_HIDE			        := 0x1078;
-const UOBJ_BROWN_HIDE		        := 0x7050;
-const UOBJ_RED_HIDE			:= 0x7051;
-const UOBJ_BLUE_HIDE		        := 0x7052;
-const UOBJ_GREEN_HIDE		        := 0x7053;
-const UOBJ_SILVER_HIDE		        := 0x7054;
-const UOBJ_GREYDRAGON_HIDE		:= 0x705a;
-const UOBJ_WHITEDRAGON_HIDE		:= 0x705b;
-const UOBJ_BLACKDRAGON_HIDE		:= 0x705c;
-const UOBJ_GREENDRAGON_HIDE		:= 0x705d;
-const UOBJ_REDDEMON_HIDE		:= 0x705e;
-const UOBJ_BLACKDEMON_HIDE		:= 0x705f;
-const UOBJ_NIGHTMARE_HIDE		:= 0x7061;
-const UOBJ_SEASERPENT_HIDE		:= 0x7062;
-const UOBJ_POLERBEAR_HIDE		:= 0x7063;
-const UOBJ_ICEFIEND_HIDE		:= 0x7064;
-const UOBJ_ROYALDRAGON_HIDE		:= 0x704f;
+const UOBJ_BROWN_HIDE		        := 0x17050;
+const UOBJ_RED_HIDE			:= 0x17051;
+const UOBJ_BLUE_HIDE		        := 0x17052;
+const UOBJ_GREEN_HIDE		        := 0x17053;
+const UOBJ_SILVER_HIDE		        := 0x17054;
+const UOBJ_GREYDRAGON_HIDE		:= 0x1705a;
+const UOBJ_WHITEDRAGON_HIDE		:= 0x1705b;
+const UOBJ_BLACKDRAGON_HIDE		:= 0x1705c;
+const UOBJ_GREENDRAGON_HIDE		:= 0x1705d;
+const UOBJ_REDDEMON_HIDE		:= 0x1705e;
+const UOBJ_BLACKDEMON_HIDE		:= 0x1705f;
+const UOBJ_NIGHTMARE_HIDE		:= 0x17061;
+const UOBJ_SEASERPENT_HIDE		:= 0x17062;
+const UOBJ_POLERBEAR_HIDE		:= 0x17063;
+const UOBJ_ICEFIEND_HIDE		:= 0x17064;
+const UOBJ_ROYALDRAGON_HIDE		:= 0x1704f;
 
 const UOBJ_THREAD_START                 := 0x0fa0;
 const UOBJ_THREAD_END                   := 0x0fa1;
@@ -207,8 +207,8 @@ const UOBJ_BOLT_START		        := 0x0f95;
 const UOBJ_BOLT_END			:= 0x0f9c;
 const UOBJ_CLOTH_START		        := 0x175d;
 const UOBJ_CLOTH_END		        := 0x1768;
-const UOBJ_COLORED_HIDE_START	        := 0x7050;
-const UOBJ_COLORED_HIDE_END	        := 0x7054;
+const UOBJ_COLORED_HIDE_START	        := 0x17050;
+const UOBJ_COLORED_HIDE_END	        := 0x17054;
 const UOBJ_TGOLD_INGOT                  := 0x1be9;
 const UOBJ_LOOM_START                   := 0x105f;
 const UOBJ_LOOM_END                     := 0x1066;
@@ -228,7 +228,7 @@ const UOBJ_BOW                          := 0x13b2;
 const UOBJ_HEAVY_XBOW                   := 0x13fd;
 const UOBJ_ARROW			:= 0x0f3f;
 const UOBJ_BOLT		        	:= 0x1bfb;
-const UOBJ_FIRE_ARROW		        := 0x6051;
+const UOBJ_FIRE_ARROW		        := 0x16051;
 
 
 const UOBJ_MAP1                         := 0x14eb;
@@ -243,11 +243,11 @@ const UOBJ_SHIP_DEED2                   := 0x14f2;
 const UOBJ_CHEST                        := 0x1940;
 
 
-const UOBJ_WOOD_YEW                     := 0x6351;
-const UOBJ_WOOD_ASH                     := 0x6352;
-const UOBJ_WOOD_CYPRESS                 := 0x6353;
-const UOBJ_WOOD_OAK                     := 0x6354;
-const UOBJ_WOOD_WORMWOOD                := 0x6355;
+const UOBJ_WOOD_YEW                     := 0x16351;
+const UOBJ_WOOD_ASH                     := 0x16352;
+const UOBJ_WOOD_CYPRESS                 := 0x16353;
+const UOBJ_WOOD_OAK                     := 0x16354;
+const UOBJ_WOOD_WORMWOOD                := 0x16355;
 
 const UOBJ_FEATHER                      := 0x1bd1;
 const UOBJ_SHAFTS                       := 0x1bd4;
@@ -259,55 +259,55 @@ const UOBJ_SHAFT	                := 0x1bd4;
 ////////////////////////////////////////////////
 
 const UOBJ_LOG                         := 0x1bdd;
-const UOBJ_YEW_LOG                      := 0x6351;
-const UOBJ_ASH_LOG                      := 0x6352;
-const UOBJ_CYPRESS_LOG                  := 0x6353;
-const UOBJ_OAK_LOG                      := 0x6354;
-const UOBJ_WALNUT_LOG                   := 0x6358;
-const UOBJ_CEDAR_LOG                    := 0x6359;
-const UOBJ_MAPLE_LOG                    := 0x6361;
-const UOBJ_PINE_LOG                     := 0x6364;
-const UOBJ_GOSSAMER_LOG                 := 0x6365;
-const UOBJ_WILLOW_LOG                   := 0x6363;
-const UOBJ_BANANA_LOG                   := 0x6362;
-const UOBJ_SPIDER_LOG                   := 0x6366;
-const UOBJ_JUNIPER_LOG                  := 0x6367;
+const UOBJ_YEW_LOG                      := 0x16351;
+const UOBJ_ASH_LOG                      := 0x16352;
+const UOBJ_CYPRESS_LOG                  := 0x16353;
+const UOBJ_OAK_LOG                      := 0x16354;
+const UOBJ_WALNUT_LOG                   := 0x16358;
+const UOBJ_CEDAR_LOG                    := 0x16359;
+const UOBJ_MAPLE_LOG                    := 0x16361;
+const UOBJ_PINE_LOG                     := 0x16364;
+const UOBJ_GOSSAMER_LOG                 := 0x16365;
+const UOBJ_WILLOW_LOG                   := 0x16363;
+const UOBJ_BANANA_LOG                   := 0x16362;
+const UOBJ_SPIDER_LOG                   := 0x16366;
+const UOBJ_JUNIPER_LOG                  := 0x16367;
 
 // These logs are not naturally occurring logs.
-const UOBJ_VENOMOUS_LOG                 := 0x635B;
-const UOBJ_WORMWOOD_LOG                 := 0x6355;
+const UOBJ_VENOMOUS_LOG                 := 0x1635B;
+const UOBJ_WORMWOOD_LOG                 := 0x16355;
 
 /////////////////////////////////////////////////////////////////////////
 // Types of boards are available from various trees when logs are sawn //
 /////////////////////////////////////////////////////////////////////////
 
 const UOBJ_BOARD                          := 0x1bd7;
-const UOBJ_YEW_BOARD                      := 0x6370;
-const UOBJ_ASH_BOARD                      := 0x6371;
-const UOBJ_CYPRESS_BOARD                  := 0x6372;
-const UOBJ_OAK_BOARD                      := 0x6373;
-const UOBJ_WALNUT_BOARd                   := 0x6377;
-const UOBJ_CEDAR_BOARD                    := 0x6378;
-const UOBJ_MAPLE_BOARD                    := 0x6380;
-const UOBJ_PINE_BOARD                     := 0x6381;
-const UOBJ_GOSSAMER_BOARD                 := 0x6382;
-const UOBJ_WILLOW_BOARD                   := 0x6383;
-const UOBJ_BANANA_BOARD                   := 0x6384;
-const UOBJ_SPIDER_BOARD                   := 0x6385;
-const UOBJ_JUNIPER_BOARD                  := 0x6386;
+const UOBJ_YEW_BOARD                      := 0x16370;
+const UOBJ_ASH_BOARD                      := 0x16371;
+const UOBJ_CYPRESS_BOARD                  := 0x16372;
+const UOBJ_OAK_BOARD                      := 0x16373;
+const UOBJ_WALNUT_BOARd                   := 0x16377;
+const UOBJ_CEDAR_BOARD                    := 0x16378;
+const UOBJ_MAPLE_BOARD                    := 0x16380;
+const UOBJ_PINE_BOARD                     := 0x16381;
+const UOBJ_GOSSAMER_BOARD                 := 0x16382;
+const UOBJ_WILLOW_BOARD                   := 0x16383;
+const UOBJ_BANANA_BOARD                   := 0x16384;
+const UOBJ_SPIDER_BOARD                   := 0x16385;
+const UOBJ_JUNIPER_BOARD                  := 0x16386;
 
 // These boards are not naturally occurring boards.
 // That is to say they cannont be found on standard trees.
-const UOBJ_WORMWOOD_BOARD                 := 0x6374;
-const UOBJ_HEARTWOOD_BOARD                := 0x6375;
-const UOBJ_BONEWOOD_BOARD                 := 0x6376;
-const UOBJ_IRONWOOD_BOARD                 := 0x6379;
-const UOBJ_VENOMOUS_BOARD                 := 0x637A;
-const UOBJ_SPIRITWOOD_BOARD               := 0x637B;
-const UOBJ_SILVERWOOD_BOARD               := 0x637C;
-const UOBJ_ROSEWOOD_BOARD                 := 0x637D;
-const UOBJ_REAPERWOOD_BOARD               := 0x637E;
-const UOBJ_ENTHEARTWOOD_BOARD             := 0x637F;
+const UOBJ_WORMWOOD_BOARD                 := 0x16374;
+const UOBJ_HEARTWOOD_BOARD                := 0x16375;
+const UOBJ_BONEWOOD_BOARD                 := 0x16376;
+const UOBJ_IRONWOOD_BOARD                 := 0x16379;
+const UOBJ_VENOMOUS_BOARD                 := 0x1637A;
+const UOBJ_SPIRITWOOD_BOARD               := 0x1637B;
+const UOBJ_SILVERWOOD_BOARD               := 0x1637C;
+const UOBJ_ROSEWOOD_BOARD                 := 0x1637D;
+const UOBJ_REAPERWOOD_BOARD               := 0x1637E;
+const UOBJ_ENTHEARTWOOD_BOARD             := 0x1637F;
 
 
 //////////////////////////////////////////
@@ -329,59 +329,59 @@ const UOBJ_FORGE9       := 0x198a;
 const UOBJ_ANVIL1       := 0x0faf;
 const UOBJ_ANVIL2       := 0x0fb0;
 
-const UOBJ_IRON_ORE             := 0x6300;
-const UOBJ_DULLCOPPER_ORE       := 0x6301;
-const UOBJ_SHADOW_ORE		:= 0x6302;
-const UOBJ_COPPER_ORE		:= 0x6303;
-const UOBJ_BRONZE_ORE           := 0x6304;
-const UOBJ_KINDRED_ORE          := 0x6305;
-const UOBJ_AGAPITE_ORE          := 0x6306;
-const UOBJ_VERITE_ORE           := 0x6307;
-const UOBJ_VALORITE_ORE         := 0x6308;
+const UOBJ_IRON_ORE             := 0x16300;
+const UOBJ_DULLCOPPER_ORE       := 0x16301;
+const UOBJ_SHADOW_ORE		:= 0x16302;
+const UOBJ_COPPER_ORE		:= 0x16303;
+const UOBJ_BRONZE_ORE           := 0x16304;
+const UOBJ_KINDRED_ORE          := 0x16305;
+const UOBJ_AGAPITE_ORE          := 0x16306;
+const UOBJ_VERITE_ORE           := 0x16307;
+const UOBJ_VALORITE_ORE         := 0x16308;
 
-const UOBJ_IRON_INGOT           := 0x6309;
-const UOBJ_DULLCOPPER_INGOT     := 0x630a;
-const UOBJ_SHADOW_INGOT		:= 0x630b;
-const UOBJ_COPPER_INGOT		:= 0x630c;
-const UOBJ_BRONZE_INGOT         := 0x630d;
-const UOBJ_KINDRED_INGOT        := 0x630e;
-const UOBJ_AGAPITE_INGOT        := 0x630f;
-const UOBJ_VERITE_INGOT         := 0x6310;
-const UOBJ_VALORITE_INGOT       := 0x6311;
+const UOBJ_IRON_INGOT           := 0x16309;
+const UOBJ_DULLCOPPER_INGOT     := 0x1630a;
+const UOBJ_SHADOW_INGOT		:= 0x1630b;
+const UOBJ_COPPER_INGOT		:= 0x1630c;
+const UOBJ_BRONZE_INGOT         := 0x1630d;
+const UOBJ_KINDRED_INGOT        := 0x1630e;
+const UOBJ_AGAPITE_INGOT        := 0x1630f;
+const UOBJ_VERITE_INGOT         := 0x16310;
+const UOBJ_VALORITE_INGOT       := 0x16311;
 
-const UOBJ_VELVITE_ORE      	:= 0x6205;
-const UOBJ_CRIMSONITE_ORE	:= 0x6206;
-const UOBJ_CORAL_ORE         	:= 0x6207;
-const UOBJ_FLESH_ORE		:= 0x6208;
-const UOBJ_TEKRHAN_ORE		:= 0x6209;
-const UOBJ_ROYAL_ORE            := 0x620a;
-const UOBJ_MALACHITE_ORE        := 0x620b;
-const UOBJ_MOONSTONE_ORE	:= 0x620c;
-const UOBJ_SUNSTONE_ORE		:= 0x620d;
-const UOBJ_ELVEN_ORE		:= 0x620e;
-const UOBJ_GLACIAL_ORE          := 0x620f;
-const UOBJ_SILVER_ORE           := 0x6210;
-const UOBJ_GOLD_ORE          	:= 0x6211;
-const UOBJ_VOLCANIC_ORE		:= 0x6212;
-const UOBJ_ONYX_ORE             := 0x6213;
-const UOBJ_PYRITE_ORE           := 0x6214;
+const UOBJ_VELVITE_ORE      	:= 0x16205;
+const UOBJ_CRIMSONITE_ORE	:= 0x16206;
+const UOBJ_CORAL_ORE         	:= 0x16207;
+const UOBJ_FLESH_ORE		:= 0x16208;
+const UOBJ_TEKRHAN_ORE		:= 0x16209;
+const UOBJ_ROYAL_ORE            := 0x1620a;
+const UOBJ_MALACHITE_ORE        := 0x1620b;
+const UOBJ_MOONSTONE_ORE	:= 0x1620c;
+const UOBJ_SUNSTONE_ORE		:= 0x1620d;
+const UOBJ_ELVEN_ORE		:= 0x1620e;
+const UOBJ_GLACIAL_ORE          := 0x1620f;
+const UOBJ_SILVER_ORE           := 0x16210;
+const UOBJ_GOLD_ORE          	:= 0x16211;
+const UOBJ_VOLCANIC_ORE		:= 0x16212;
+const UOBJ_ONYX_ORE             := 0x16213;
+const UOBJ_PYRITE_ORE           := 0x16214;
 
-const UOBJ_VELVITE_INGOT      	:= 0x6245;
-const UOBJ_CRIMSONITE_INGOT	:= 0x6246;
-const UOBJ_CORAL_INGOT         	:= 0x6247;
-const UOBJ_FLESH_INGOT		:= 0x6248;
-const UOBJ_TEKRHAN_INGOT	:= 0x6249;
-const UOBJ_ROYAL_INGOT          := 0x624a;
-const UOBJ_MALACHITE_INGOT      := 0x624b;
-const UOBJ_LUNAR_INGOT		:= 0x624c;
-const UOBJ_SOLAR_INGOT		:= 0x624d;
-const UOBJ_ELVEN_INGOT		:= 0x624e;
-const UOBJ_GLACIAL_INGOT        := 0x624f;
-const UOBJ_SILVER_INGOT         := 0x6250;
-const UOBJ_GOLD_INGOT        	:= 0x6251;
-const UOBJ_VOLCANIC_INGOT	:= 0x6252;
-const UOBJ_ONYX_INGOT           := 0x6253;
-const UOBJ_PYRITE_INGOT         := 0x6254;
+const UOBJ_VELVITE_INGOT      	:= 0x16245;
+const UOBJ_CRIMSONITE_INGOT	:= 0x16246;
+const UOBJ_CORAL_INGOT         	:= 0x16247;
+const UOBJ_FLESH_INGOT		:= 0x16248;
+const UOBJ_TEKRHAN_INGOT	:= 0x16249;
+const UOBJ_ROYAL_INGOT          := 0x1624a;
+const UOBJ_MALACHITE_INGOT      := 0x1624b;
+const UOBJ_LUNAR_INGOT		:= 0x1624c;
+const UOBJ_SOLAR_INGOT		:= 0x1624d;
+const UOBJ_ELVEN_INGOT		:= 0x1624e;
+const UOBJ_GLACIAL_INGOT        := 0x1624f;
+const UOBJ_SILVER_INGOT         := 0x16250;
+const UOBJ_GOLD_INGOT        	:= 0x16251;
+const UOBJ_VOLCANIC_INGOT	:= 0x16252;
+const UOBJ_ONYX_INGOT           := 0x16253;
+const UOBJ_PYRITE_INGOT         := 0x16254;
 
 
 /////////////////////////
@@ -469,7 +469,7 @@ const UOBJ_CHAINMAIL_LEGGINGS	        := 0x13be;
 const UOBJ_CHAINMAIL_LEGGINGS2          := 0x13c3;
 const UOBJ_CHAINMAIL_TUNIC	        := 0x13bf;
 const UOBJ_CHAINMAIL_TUNIC2	        := 0x13c4;
-const UOBJ_CHAINMAIL_GLOVES	        := 0x7066;
+const UOBJ_CHAINMAIL_GLOVES	        := 0x17066;
 
 
 
@@ -585,7 +585,7 @@ const UOBJ_BASKET			:= 0x0990;
 const UOBJ_PICNIC_BASKET		:= 0x0e7a;
 const UOBJ_WOODEN_BOX_1		        := 0x0e7d;
 const UOBJ_WOODEN_BOX_2		        := 0x09aa;
-const UOBJ_TRASHBARREL		        := 0x7057;
+const UOBJ_TRASHBARREL		        := 0x17057;
 
 const UOBJ_TINKER_TOOLS := 0x1ebc;
 
@@ -601,7 +601,7 @@ const UOBJ_ENDHAIR			:= 0x204d;
 
 const UOBJ_RUNE                 := 0x1f14;
 const UOBJ_RECALL_RUNE          := 0x1f14;
-const UOBJ_RUNEBOOK             := 0x6100;
+const UOBJ_RUNEBOOK             := 0x16100;
 
 const UOBJ_PARAFIELD_NS := 0x3967;
 const UOBJ_PARAFIELD_EW := 0x3979;
@@ -646,7 +646,7 @@ const UOBJ_HUMAN_FEMALE := 0x191;
 	//
 	// Ship Components
 	//
-const EXTOBJ_TILLERMAN       := 0xf010;
-const EXTOBJ_PORT_PLANK      := 0xf011;
-const EXTOBJ_STARBOARD_PLANK := 0xf012;
-const EXTOBJ_HOLD            := 0xf013;
+const EXTOBJ_TILLERMAN       := 0x1F010;
+const EXTOBJ_PORT_PLANK      := 0x1F011;
+const EXTOBJ_STARBOARD_PLANK := 0x1F012;
+const EXTOBJ_HOLD            := 0x1F013;

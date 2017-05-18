@@ -177,13 +177,13 @@ function CreateRunebook(who, the_item)
         ExceptionalFameMod(who, myskill, 90, 45);
 	    PlaySoundEffect(who, 0x24a);
 	    SendSysMessage(who, "You create an exceptional runebook.");
-        var book := CreateItemInBackpack(who, 0x6100);
+        var book := CreateItemInBackpack(who, 0x16100);
         SetObjProperty(book,"charges", 10);
         SetObjProperty(book, "maxcharges", 10);
       else
 	    PlaySoundEffect(who, 0x24a);
 	    SendSysMessage(who, "You create a runebook.");
-        var book := CreateItemInBackpack(who, 0x6100);
+        var book := CreateItemInBackpack(who, 0x16100);
         SetObjProperty(book,"charges", 5);
         SetObjProperty(book, "maxcharges", 5);
       endif

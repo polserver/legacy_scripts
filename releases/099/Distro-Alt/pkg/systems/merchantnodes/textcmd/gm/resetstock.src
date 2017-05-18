@@ -16,7 +16,7 @@ program textcmd_restock_from_cfg(who, type)
   var count := 0;
   var counter := 0;
   foreach thing in ListObjectsInBox(0, 0, -100, 6143, 4095, 100, who.realm);
-    if(thing.objtype == 0x887a)
+    if(thing.objtype == 0x1887a)
       sendsysmessage(who, "processing node: " + (count + 1));
       sendsysmessage(who, "total vendors reset: " + counter);
       var cratelist := GetObjProperty(thing, "Type");

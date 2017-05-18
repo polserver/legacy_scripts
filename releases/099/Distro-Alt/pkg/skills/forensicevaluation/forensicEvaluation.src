@@ -5,7 +5,7 @@ include "include/noto";
 include "include/trainingskill";
 
 
-const UOBJ_PROOF := 0xbe34;
+const UOBJ_PROOF := 0x1BE34;
 
 program forensic(who)
         var data := {};
