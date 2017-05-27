@@ -20,7 +20,7 @@ program drink_blue (who, potion)
   var obj := potion.objtype;
   empty_bottle(who, potion);
   case(obj)
-    0x1DC: HealDamage(who, (RandomInt(7)  + 3));
+    0x1DC01: HealDamage(who, (RandomInt(7)  + 3));
     0x1DC02: HealDamage(who, (RandomInt(14) + 6));
     0x1DC03: HealDamage(who, (RandomInt(21) + 9));
   endcase
