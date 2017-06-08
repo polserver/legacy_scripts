@@ -91,10 +91,8 @@ program merchantnode(itm)
 	var gc := 0;
 	RegisterForSpeechEvents(item, rng);
 	EnableEvents(SYSEVENT_SPEECH, rng);
-	var ev;
 	var nxt := CInt(GetObjProperty(item, "Restock")) * 60;
 	var next_restock	:= ReadGameClock() + nxt;
-	var text;
 	if(!GetObjProperty(item, "Status"))
 		SetObjProperty(item, "Status", "on");
 	endif
@@ -150,6 +148,7 @@ program merchantnode(itm)
 			// hang out here until it gets turned back on again.
 			while((GetObjProperty(item, "Status") == "off") or (GetGlobalProperty("nomerchants")))
 				var ev := os::wait_for_event(120);
+				ev := ev;
 			endwhile
 			
 			// Things have turned back on, so this stuff gets moving
@@ -189,7 +188,7 @@ function ValidateSpawns()
 						chk.append(npc);
 					endif
 				else
-					MoveObjectToLocation(npc, 5279, 1184, 0, "britannia", MOVEOBJECT_FORCELOCATION); // New Map Problem
+					MoveObjectToLocation(npc, 6066, 1, 0, "britannia", MOVEOBJECT_FORCELOCATION);
 					RevokePrivilege(npc, "invul");
 					ApplyRawDamage(npc, GetHP(npc) + 100);
 				endif
@@ -202,7 +201,7 @@ function ValidateSpawns()
 		if(npc in chk)
 			// do nothing;
 		else
-			MoveObjectToLocation(npc, 5279, 1184, 0, "britannia", MOVEOBJECT_FORCELOCATION); // New Map Problem
+			MoveObjectToLocation(npc, 6066, 1, 0, "britannia", MOVEOBJECT_FORCELOCATION);
 			RevokePrivilege(npc, "invul");
 			ApplyRawDamage(npc, GetHP(npc) + 100);
 		endif
@@ -221,7 +220,7 @@ function DespawnAll()
 	foreach thing in npclist
 		var hp := GetHP(thing);
 		if(hp)
-			MoveObjectToLocation(thing, 5279, 1184, 0, "britannia", MOVEOBJECT_FORCELOCATION); // New Map Problem
+			MoveObjectToLocation(thing, 6066, 1, 0, "britannia", MOVEOBJECT_FORCELOCATION);
 			RevokePrivilege(thing, "invul");
 			ApplyRawDamage(thing, Cint(hp + 100));
 		endif
@@ -266,7 +265,7 @@ function ProcessBankerText(ev)
 	evnt.+ type;
 	evnt.+ source;
 	evnt.+ text;
-	if(text["bank"] || text["balance"])
+	if(text["bankers note"] || text["banker's note"] || text["bankers order"] || text["banker's order"] || text["bank draft"] || text["balance"] || text["bank"])
 		var dis := 15;
 		foreach mob in npclist
 			if(CheckLineOfSight(ev.source, mob))
@@ -278,7 +277,7 @@ function ProcessBankerText(ev)
 			endif
 		endforeach
 		evnt.type := EVID_NODE;
-		evnt.source := who;
+		evnt.source := ev.source;
 		evnt.text := ev.text;
 		if (npc)
 			SendEvent(npc, evnt);
@@ -334,7 +333,7 @@ function ProcessMerchantText(ev)
 
 	if(Distance(who, npc) <= 4)
 		evnt.type := EVID_NODE;
-		evnt.source := who;
+		evnt.source := ev.source;
 		evnt.text := ev.text;
 		SendEvent(npc, evnt);
 	endif
