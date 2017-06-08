@@ -15,7 +15,7 @@ include ":gumps:gumps";
 include ":gumps:gumps_ex";
 
 /* 
- * GumpPrompt(mobile, text)
+ * GumpPrompt(mobile, text, movable:=0, hue:=1153)
  *
  * Purpose
  * Template to create a simple prompt window.

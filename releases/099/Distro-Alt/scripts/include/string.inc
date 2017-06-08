@@ -6,6 +6,9 @@
 //
 // History:
 //
+//  Version 1.4
+//  - Yukiko
+//    added SearchStr()
 //	Version 1.3
 //	- Austin
 //		added SetString()
@@ -29,6 +32,8 @@
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 use os;
+use basic;
+use basicio;
 
 const CONST_EMPTY := { };
 const CONST_NULL := "";
@@ -350,4 +355,84 @@ function ArrayAppend(x, y)
 
 	return x;
 
+endfunction
+
+
+////////////////////////////////////////////////////
+//
+//  Function SearchStr
+//
+//  Parameters:
+//    strng - string to search
+//    substring - information to search for
+//
+//  Return value:
+//    position of <substring> within <strng>
+//          or
+//    0 - If not found
+//
+///////////////////////////////////////////////////////
+
+function SearchStr(strng, substring)
+var sublen := Len(substring);
+var fragment;
+	if(Len(strng) >= sublen)
+		for i := 1 to Len(strng)
+//		for i := 1 to Len(strng)-Len(substring)
+			fragment := SubStr(strng, i, sublen);
+			if(fragment == substring)
+				return i;
+			endif
+		endfor
+	endif
+	return 0;
+endfunction
+
+
+//////////////////////////////////////////////////////////////////////
+//
+//  Purpose:  To return a string representation
+//            of an integer formatted with commas
+//            at three digit intervals.
+//
+//  AddCommas(number)
+//
+//  Input:    An integer in the range 0 to 2147483647 decimal
+//            or 0x0 to 0x7FFFFFFF hex.
+//
+//  Returns   A string representaton of a decimal integer with
+//            commas inserted appropriately. Example: 2,147,483,647
+//            or -1 if the integer exceeds 2147483647 decimal.
+//
+//////////////////////////////////////////////////////////////////////
+function AddCommas(number)
+
+  var strng := CStr(number);
+  var newstring := "";
+  var tempstring := "";
+  var modstrlen := len(strng) %3;
+  var setsof3digits := 1;
+  if(len(strng) < 4)
+    return strng;
+  endif
+  if(modstrlen)
+    newstring := strng[1, modstrlen] + ",";
+//  else
+//    modstrlen := modstrlen + 2;
+  endif
+  setsof3digits := CInt((Len(strng) - modstrlen) / 3);
+  tempstring := strng[modstrlen + 1, Len(strng)];
+  for i := 1 to setsof3digits
+    
+    if(Len(tempstring) > 3)
+      newstring := newstring + tempstring[1,3] + ",";
+      tempstring := tempstring[4, Len(tempstring)];
+    else
+      newstring := newstring + tempstring[1,3];
+    endif
+
+  endfor
+  
+  
+  return newstring;
 endfunction

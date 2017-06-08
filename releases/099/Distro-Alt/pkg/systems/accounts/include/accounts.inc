@@ -29,7 +29,7 @@ CONST ACCT_MAX_CHARACTERS	:= 6;
  * Returns an account object on success.
  *
  */
-function CreateNewAccount(username, password, cmdlevel:=0, expansion:="HSA", email:="")
+function CreateNewAccount(username, password, cmdlevel:=0, expansion:="ML", email:="")
 	var account := CreateAccount(username, password, 1);
 	if ( account.errortext )
 		return account;
@@ -237,4 +237,45 @@ function ACCT_DeleteAccount(account)
 	ACCT_DeleteAllCharacters(account);
 
 	return account.Delete();
+endfunction
+
+
+//////////////////////////////////////////////////////
+// FindValidPlayer(player)
+//
+// Purpose: To validate that the player named actually
+//          exists on an account.
+//
+// Input: A string containing the name of a possible player
+//
+// Returns: The player's serial if they exist.
+//          or 0 if they do not belong to an account.
+//
+//////////////////////////////////////////////////////
+
+
+
+
+function FindValidPlayer(player)
+  var playerserial := 0;
+	var acctlist := ListAccounts();
+  var i := 1;
+  
+	// Stuff for verifying that the player exists
+	foreach acctnam in acctlist
+		var acctref := FindAccount(acctnam);
+		for ( i := 1; i<=5; i:=i+1 )
+			var playername := CStr(acctref.GetCharacter(i).name);
+			if(!playername)
+				continue;
+			endif 
+			if ( Lower(playername) == Lower(player) )
+				playerserial := acctref.GetCharacter(i).serial;
+				break;
+			endif
+		endfor
+	endforeach
+
+  return playerserial;
+  
 endfunction

@@ -26,6 +26,7 @@ use cfgfile;
  *
  */
 function ACCT_GetSettingsCfgFile()
+	UnloadConfigFile(":accounts:config/settings");
 	var cfg := ReadConfigFile(":accounts:config/settings");
 
 	if ( cfg.errortext )

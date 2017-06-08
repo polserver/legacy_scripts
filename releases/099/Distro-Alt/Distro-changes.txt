@@ -31,7 +31,7 @@ Distro change log
 
 30-Dec-2015	Yukiko	Moved:		The price modifier for multi-stories to the settings file in the housing package.
 
-05-Jan-2016	Yukiko Updated:		I rewrote the createnpc command adding a gump display if the user doesn't specify an NPC template when entering the command. From the user's standpoint it works just like the World of Dreams command. It uses the NPC_Groups.cfg file to look-up the images for the gumps. When adding new NPCs to the server you will have to add them to the NPC_Groups file. I renamed the old createnpc.src file to old_createnpc.src.
+05-Jan-2016	Yukiko Updated:		I rewrote the createnpc command adding a gump display if the user doesn't specify an NPC template when entering the command. From the user's standpoint it works just like the World of Dreams command. It uses the NPC_Groups.cfg file to look-up the images for the gumps. When adding new NPCs to the server you will have to add them to the NPC_Groups file. I renamed the old createnpc.src file to old_createnpc.src. This is not completed as of June 2017.
 
 05-Jan-2016	Yukiko	Fixed:		The appraiser.src AI program. In making the Distro compatible with High Seas graphics I had moved the ObjType numbers for multi-deeds above the 0xFFFF range by adding 0x10000 to any custom objects that occupied the 0x4000 to 0xFFFF range. In the appraiser AI the numbers for deeds are hard coded and needed updating which I did.
 
@@ -56,3 +56,48 @@ Distro change log
 11-Jan-2016	Yukiko	Fixed:		Several "include" statements in programs in the alchemy package had improper path format.
 
 12-Jan-2016	Yukiko	Moved:		Fixed a lot of organizational issues. Config files in main package directories were moved to the config folders in the package. Same with include files moved to include folders in the packages. I think I corrected any issues with include paths in files affected.
+
+08-Dec-2016	Yukiko	Added		Realmgen support for Termur.
+
+10-Dec-2016	Yukiko	Added		Linux shell files added. starthere.sh and a folder containing additional *.sh files.
+
+15-Apr-2017	Yukiko	Fixed		Some boat items and mount objtype numbers were still in the 0xFFxx range.
+
+15-Apr-2017	Yukiko	Fixed		Boat hold objtype needed moved to 0x1FFxx range.
+
+07-May-2017	Yukiko	Added		Ridables to be TOL compliant. Still need to add proper stats and skill to them.
+
+16-May-2017	Yukiko	Changed		All custom items have been moved to the 0x10000-0xiFFFF range. Scripts that used the old objtype numbers have been updated.
+
+26-May-2017	Yukiko	Fixed		I missed one reference in Alchemy pkg to an item that was in the 0xDCxx range that now exists in the 0x1DCxx range.
+
+08-Jun-2017	Yukiko	Added		Elements to regions.cfg to specify currency used in a city. Also added the 'Type' element to specify the type of the region.
+					Currently only 'Type city' is used. Currency types are 0xEED - gold, 0xEF0 - silver, and 0xEEA - copper.
+
+08-Jun-2017	Yukiko	Added		A new package called 'currency'. Added silver and copper coin definitions and moved gold coins from blacksmithy itemdesc to
+					currency package. Added Banker's Draft item to currency/config/itemdesc.cfg. This is an ingame cheque actually but I was
+					trying to find an old fashioned name for cheques :).
+08--Jun-2017	Yukiko	Added		Functionality to findCity.inc to read regions.cfg for city boundaries, the Type, and Currency elements.
+
+08-Jun-2017	Yukiko	Added		Some additional functions to a few includes, some of which are :accounts:accounts.inc, scripts/include/string.inc,
+					findCity.inc in the same directory. I think that covers it.
+
+08-Jun-2017	Yukiko	Added		New features to banker.src in scripts/ai. When you request your balance it is no longer delivered as text but is displayed
+					in a gump. The gump shows the balance of gold coins, silver ocoins (if you have any), and copper coins (if you have any)
+					in your account. The other feature is the banker can now sell Banker's Orders (cheques) that you buy to use instead of
+					carrying around huge amounts of coin. The speech command is "bankers order" or "banker's order". He will ask you to wait
+					a moment(2 seconds) while he pulls out the ledger. That wait time can be removed if you want to but I thought it added
+					to the RP value. Then you are presented with a gump to enter the amount of the cheque. The maximum is 500,000,000 coins.
+					You can cancel by leaving it blank or the usual right-click method. Then you are asked to enter the payee's name.
+					Be sure to spell it correctly. The script will then search to see if there is a player by that name. Assuming there is
+					you will be presented with a 'yes/no' gump telling you that it will cost an additional ten coins for the cheque. If you
+					agrre the cheque will be put in your backpack and the coins extracted from your bank box. The total amount of coins,
+					including the 10 additional for the cost of the Banker's Order must be in your bank.
+
+					The process of redeeming a cheque is easy. The payee simply drops it on the banker. They get a gump asking if they wish
+					to redeem it and if so the coins are deposited in their bank. The purchaser also has the option of cancelling the cheque
+					if they have it in their possession by the same method. If you cancel it the 10 coins you used to purchase it are not
+					refundable. :) All approprite checks are made against full backpacks and bank boxes and the transactions will be cancelled
+					if there is no room for the cheque in the purchaser's pack or the coins to be deposited in the bank. No money will be
+					taken in that case and if redeeming the cheque fails because the bank box is full the cheque will be return to the player's
+					backpack.

@@ -22,6 +22,9 @@
  * GFTextEntry(byref gump, x, y, width, height, txt_color, ini_text:="")
  * GFTextLine(byref gump, x, y, hue:=0, text:="")
  * GFTilePic(byref gump, x, y, tile_id, hue := 0)
+ * GFTooltip(byref gump, cliloc_id)
+ *
+ *
  *
  * Private Function List
  * XGFError(text)
@@ -505,10 +508,9 @@ function GFGumpPic(byref gump, x, y, gump_id, hue := 0)
 
 	hue := CInt(hue);
 	if ( hue )
-		text := " hue="+CStr(hue);
+		text := text + " hue="+CStr(hue);
 	endif
 	(gump.layout).Append(text);
-
 	return 1;
 endfunction
 
@@ -538,7 +540,7 @@ function GFTilePic(byref gump, x, y, tile_id, hue := 0)
 
 	hue := CInt(hue);
 	if ( hue )
-		text := text+" hue="+CStr(hue);
+		text := text + " hue="+CStr(hue);
 	endif
 
 	(gump.layout).Append(text);
@@ -869,17 +871,6 @@ function GFButtonID( x, y, release, press, close, id := 0 )
 	return XGFRetVal( GFlayout.size(), -1, id );
 endfunction
 
-// Call this to display/use the defined gump
-//
-// Returns: an array of keys and values
-//          (ie. what the SendDialogGump() returns)
-//
-// NOTE: This WILL crash the client if you've created duff arrays!!
-//
-function GFSendGumpO( who )
-	return SendDialogGump( who, GFlayout, GFdata );
-endfunction
-
 /////////////////////////////////////////////////////////////////
 //
 // INTERNAL FUNCTIONS
@@ -1006,6 +997,21 @@ function GFCheckerTrans( x, y, w, h )
 	return XGFRetVal( GFlayout.size() );
 endfunction
 
+//////////////////////////////////
+// End of old-gump stuff I think
+//////////////////////////////////
+
+// Call this to display/use the defined gump
+//
+// Returns: an array of keys and values
+//          (ie. what the SendDialogGump() returns)
+//
+// NOTE: This WILL crash the client if you've created duff arrays!!
+//
+function GFSendGumpO( who )
+	return SendDialogGump( who, GFlayout, GFdata );
+endfunction
+
 // Sets the top-left co-ordinate origin (absolute)
 //
 // Returns: A structure {x,y} containing the old origin
@@ -1079,3 +1085,57 @@ function GFButtonPage( x, y, release, press, page )
 	return XGFRetVal( GFlayout.size(), -1, page );
 endfunction
 
+/*
+ * GFTooltip(byref gump, cliloc_id)
+ *
+ * Purpose
+ * Adds a tooltip to the previous layoutarray entry
+ *
+ * Parameters
+ * gump:	Reference to the gump
+ * cliloc_id:		The decimal number reference to the cliloc entry which will be used as the tooltip.
+ *
+ *
+ * Return value
+ * No return value.
+ *
+ */
+function GFTooltip(byref gump, cliloc_id)
+	var text := "Tooltip " + CStr(CInt(cliloc_id)) + "'";
+	(gump.layout).Append(text);
+
+	return 1;
+endfunction
+
+/*
+ * GFPicTiled(byref gump, x, y, width, height, gump_id)
+ *
+ * Purpose
+ * Adds a pic tiled gump to the gump.
+ *
+ * Parameters
+ * gump: Reference to the gump.
+ * x:  The top-left spot of the X axis.
+ * y:  The top-left spot of the Y axis.
+ * width: The width (pixels) of the gump from position X.
+ * height: The height (pixels) of how far to scale the gump downwards from position Y.
+ * gump_id: The decimal number representing the gump.
+ *
+ * Return value
+ * No return value.
+ *
+ */
+function GFPicTiled(byref gump, x, y, width, height, gump_id)
+ width := CInt(width);
+ height := CInt(height);
+ if ( !width )
+  width := gump.base.width;
+ endif
+ if ( !height )
+  height := gump.base.width;
+ endif
+  
+ (gump.layout).Append("gumppictiled "+CStr(CInt(x))+" "+CStr(CInt(y))+" "
+    + CStr(width)+" "+CStr(height) +" "+ CStr(CInt(gump_id)));
+ return 1;
+endfunction
