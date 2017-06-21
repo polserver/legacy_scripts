@@ -3,7 +3,7 @@ use uo;
 include "include/startEqp";
 include ":timeutils:time";
 
-program oncreate(who, skillids)
+program oncreate(who, skillids, profession)
    var dmy, hms;
 
   Sleep(1);

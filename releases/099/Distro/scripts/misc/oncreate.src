@@ -7,7 +7,7 @@
 use uo;
 use os;
 
-program core_onCreate(mobile, skillids)
+program core_onCreate(mobile, skillids, profession)
 	var script := Start_Script(":newcharacter:oncreate", array{mobile, skillids});
 
 	if ( script.errortext )

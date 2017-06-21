@@ -77,7 +77,7 @@ function SS_IsValidCreationTile( x, y, z, realm )
 
 	if( !tile_elem.MoveLand )
 		var tiles_cfg := ReadConfigFile( "::tiles" );
-		foreach static in ( ListStaticsAtLocation( x, y, z, realm ))
+		foreach static in ( ListStaticsAtLocation( x, y, z, 0, realm ))
 			if( static.z == z )
 				if( tiles_cfg[Hex( static.objtype )].MoveLand )
 					return 1;
