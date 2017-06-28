@@ -39,7 +39,7 @@ function CloseDistance( opponent )
   endcase
 endfunction
 
-function herding(ev)
+function Herd(ev)
   var holder := ev.data;
   var lx := holder[1];
   var ly := holder[2];

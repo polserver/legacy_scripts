@@ -25,7 +25,7 @@ program cast_archprot( parms )
     
 
   PlaySoundEffect(caster, SFX_SPELL_PROTECTION);
-  var magery := GetAttribute(caster, ATTRIBUTEID_MAGERY);
+  var magery := GetAttribute(caster, MAGERY);
   var mod_amount := CInt(RandomInt(6) + 5);
   var duration := GetModDuration( magery );
   foreach cast_on in ListMobilesNearLocation( cast_on.x, cast_on.y, cast_on.z, CInt(magery/15), caster.realm );

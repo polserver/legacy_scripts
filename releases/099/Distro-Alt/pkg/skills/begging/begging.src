@@ -113,9 +113,9 @@ program skill_begging( who )
     return;
   endif
 
-  var pts := CInt(GetAttribute(who, ATTRIBUTEID_BEGGING)) + 15;
+  var pts := CInt(GetAttribute(who, BEGGING)) + 15;
 
-  if(!SkillCheck(who,ATTRIBUTEID_BEGGING, -1, pts/3))
+  if(!SkillCheck(who,BEGGING, -1, pts/3))
     PrintRandomMessage( tgt, zFails );
     return;
   endif

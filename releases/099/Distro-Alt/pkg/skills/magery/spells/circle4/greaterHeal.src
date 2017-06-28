@@ -24,7 +24,7 @@ program cast_heal( parms )
     endif
     
 	// Amount healed: 40% Magery + (1 to 10)
-	var points := CInt(AP_GetSkill(caster, ATTRIBUTEID_MAGERY) * 0.4) + RandomDiceRoll("1d10");
+	var points := CInt(AP_GetSkill(caster, MAGERY) * 0.4) + RandomDiceRoll("1d10");
 	
 	var healed := AP_GetVital(cast_on, HITS);
 	HealDamage(cast_on, points);
@@ -39,7 +39,7 @@ program cast_heal( parms )
 	return 1;
 /*
   var healed := RandomDiceRoll("1d3");
-  healed := CInt(GetAttribute(caster, ATTRIBUTEID_MAGERY)/2) + healed;
+  healed := CInt(GetAttribute(caster, MAGERY)/2) + healed;
   SendSysMessage(caster, "You healed " + healed + " damage.");
   if(cast_on.isA(POLCLASS_NPC))
     healed := healed * 2;

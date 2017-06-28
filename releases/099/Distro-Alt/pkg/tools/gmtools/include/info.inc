@@ -331,9 +331,9 @@ var infodata := array(
        "",
        "DETECTHIDDEN",         //58
        "",
-       "ENTICEMENT",           //60
+       "DISCORDANCE",           //60
        "",
-       "EVALINT",              //62
+       "EVALUATING_INTELLIGENCE",              //62
        "",
        "HEALING",              //64
        "",

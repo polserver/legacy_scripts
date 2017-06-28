@@ -32,7 +32,7 @@ program cast_mind_blast( parms )
 	var base_damage := min_damage + (CDbl(RandomInt(CInt((max_damage - min_damage) * 10)) + 1) / 10);
 
 	// damage: Base Damage + ((Magery + Intelligence) / 5) (Drop decimals from result)
-	var damage := base_damage + CInt((AP_GetSkill(caster, ATTRIBUTEID_MAGERY) + AP_GetStat(caster, ATTRIBUTEID_INTELLIGENCE)) / 5);
+	var damage := base_damage + CInt((AP_GetSkill(caster, MAGERY) + AP_GetStat(caster, ATTRIBUTEID_INTELLIGENCE)) / 5);
         if(Reflected(cast_on))
             SendSysMessage (caster, "The spell was reflected back onto you!!!", color := 33);
             cast_on := caster;

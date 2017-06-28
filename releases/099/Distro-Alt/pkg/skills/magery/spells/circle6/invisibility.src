@@ -28,6 +28,6 @@ program cast_invis( parms )
 	
   cast_on.hidden := 1;
   Detach();
-  sleep(CInt(GetAttribute(caster, ATTRIBUTEID_MAGERY)*3));
+  sleep(CInt(GetAttribute(caster, MAGERY)*3));
   cast_on.hidden := 0;
 endprogram

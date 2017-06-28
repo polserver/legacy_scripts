@@ -18,7 +18,7 @@ program cast_incognito(parms)
   PlaySoundEffect(caster, 0x1e1);
   Detach();
   set_critical(1);
-  sleep( 60 * CInt(GetAttribute( caster, ATTRIBUTEID_MAGERY )/10 ) );
+  sleep( 60 * CInt(GetAttribute( caster, MAGERY )/10 ) );
   SetName( caster, GetObjProperty( caster, "realname" ) );
   EraseObjProperty( caster, "realname" );
 endprogram

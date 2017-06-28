@@ -39,7 +39,7 @@ program Anatomy(who)
   var streng := getStreng(GetStrength(subject), subject.graphic, subject.gender);
   var dext := getDext(GetDexterity(subject), subject.graphic, subject.gender);
   var endur := getEnd(CInt(CInt(GetStamina(subject))/CDbl(GetMaxStamina(subject))*100));
-  var skill := GetAttribute(who, ATTRIBUTEID_ANATOMY);
+  var skill := GetAttribute(who, ANATOMY);
   // adjust succeed and fail msgs here
   var strMsg, strFail;
   if(subject.graphic != 0x190 && subject.graphic != 0x191)
@@ -53,11 +53,11 @@ program Anatomy(who)
       strFail := subject.name + "' physical characteristics."; 
     endif
   endif
-  var pts := CInt(GetAttribute(who, ATTRIBUTEID_ANATOMY)+ 15);
+  var pts := CInt(GetAttribute(who, ANATOMY)+ 15);
   if(CInt(pts < 30))
 	  pts := 30;
   endif
-  if(SkillCheck(who,ATTRIBUTEID_ANATOMY, -1, pts/3))
+  if(SkillCheck(who,ANATOMY, -1, pts/3))
     PrintTextAbovePrivateUC(subject, CAscZ(strMsg + " looks " + streng + " and " + dext + "."), "ENG", who);
     // player's anatomy skill equal/greater than 65 can get endurance info
     if(skill >= 65)

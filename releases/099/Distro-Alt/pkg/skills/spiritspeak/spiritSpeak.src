@@ -21,13 +21,13 @@ program spiritspeak(who)
        
   EraseObjProperty(who, "IsMeditating");
   EraseObjProperty(who, "HealTimer");
-//  var pts := (CInt(GetAttribute(who, ATTRIBUTEID_SPIRITSPEAK)) * 2) + 20;
-	var pts := CInt(GetAttribute(who, ATTRIBUTEID_SPIRITSPEAK) / 10) + 15;
+//  var pts := (CInt(GetAttribute(who, SPIRITSPEAK)) * 2) + 20;
+	var pts := CInt(GetAttribute(who, SPIRITSPEAK) / 10) + 15;
 	if(pts > 35)
 		pts := 35;
 	endif
 	
-  if(SkillCheck(who, ATTRIBUTEID_SPIRITSPEAK, -1,  pts))
+  if(SkillCheck(who, SPIRITSPEAK, -1,  pts))
     SendSysMessage(who, "You contact the netherworld.", color := 66);
     Detach();
     GrantPrivilege(who, "hearghosts");

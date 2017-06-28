@@ -24,7 +24,7 @@ function main_AI_loop()
           SYSEVENT_ENTEREDAREA:
           SYSEVENT_ENGAGED:
           SYSEVENT_DAMAGED:     Fight(ev.source);
-          EVID_HERDING:         Herding(ev);
+          EVID_HERDING:         Herd(ev);
         endcase
       until(!(ev := os::wait_for_event(1)));
     endif
@@ -47,7 +47,7 @@ function DisableMainEvents()
   DisableEvents(SYSEVENT_ENGAGED + SYSEVENT_DAMAGED + SYSEVENT_ENTEREDAREA);
 endfunction
 
-function herding(ev)
+function Herd(ev)
   var holder := ev.data;
   var lx := holder[1];
   var ly := holder[2];

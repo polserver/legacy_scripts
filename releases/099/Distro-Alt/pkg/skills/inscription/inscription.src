@@ -77,7 +77,7 @@ program do_inscription(who)
     endif
     if((ConsumeReagents(who, spellnum)) && (GetMana(who) >= themana))
       SetMana(who, GetMana(who) - themana);
-      if(SkillCheck(who, ATTRIBUTEID_INSCRIPTION, skill, points))
+      if(SkillCheck(who, INSCRIPTION, skill, points))
         PlaySoundEffect(who, 0x24a);
         if(SubtractAmount(the_item,1))
           var thescroll := CreateItemInBackpack(who, product);
@@ -165,7 +165,7 @@ function CreateRunebook(who, the_item)
     SendSysMessage(who,"That is not a gate scroll.");
     return;
   endif
-  if(SkillCheck(who, ATTRIBUTEID_INSCRIPTION, 70, 900))
+  if(SkillCheck(who, INSCRIPTION, 70, 900))
     if(SubtractAmount(the_item, 1) && SubtractAmount(scrolls, 8) && SubtractAmount(recall, 1) && SubtractAmount(gate, 1))
       var myskill := CInt(GetEffectiveSkill(who, SKILLID_CARPENTRY));
       var modpts := 0;

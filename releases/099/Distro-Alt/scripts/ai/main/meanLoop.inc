@@ -19,7 +19,7 @@ function main_AI_loop(next_wander := 0)
         SYSEVENT_ENTEREDAREA: if((!(ev.source).npctemplate) ||(((ev.source).script == "employed") ||((ev.source).script == "tamed")))
                                 fight(ev.source);
                               endif
-        EVID_HERDING:           Herding(ev);
+        EVID_HERDING:           Herd(ev);
       endcase
     until(!(ev := os::wait_for_event(1)));
       if(ReadGameClock() > next_wander)
@@ -59,7 +59,7 @@ function DisableMainEvents()
   cleareventque();
 endfunction
 
-function herding(ev)
+function Herd(ev)
   var holder := ev.data;
   var lx := holder[1];
   var ly := holder[2];

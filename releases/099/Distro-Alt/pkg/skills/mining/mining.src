@@ -231,18 +231,18 @@ program use_picktool(who, tool)
 	  var maplevel := CInt(GetObjProperty(map, "level") );
 	  SetObjProperty(chest, "level", maplevel);
       SetObjProperty(chest, "trap_type", "3");
-      var strength := 0;
+      var strngth := 0;
       case (maplevel)
-        1: strength :=  20;
-        2: strength :=  40;
-        3: strength :=  60;
-        4: strength :=  80;
-        5: strength := 100;
+        1: strngth :=  20;
+        2: strngth :=  40;
+        3: strngth :=  60;
+        4: strngth :=  80;
+        5: strngth := 100;
       endcase
-      if ((strength == 0) || (strength == error))
-        strength := 20;
+      if ((strngth == 0) || (strngth == error))
+        strngth := 20;
       endif
-      SetObjProperty(chest, "trap_strength", strength);
+      SetObjProperty(chest, "trap_strength", strngth);
       chest.usescript := ":tinkering:tinkerTraps";
       var lockid := AllocLockId();
       SetObjProperty( chest, "lockid", lockid );
@@ -403,7 +403,7 @@ function GetOre(who, location, info, tool)
       name := "iron";
     endif
   endif
-  if(SkillCheck(who, ATTRIBUTEID_MINING, diffi, 10))
+  if(SkillCheck(who, MINING, diffi, 10))
   	var num := HarvestResource( "ore", location.x, location.y, 1, 1, location.realm);
     if(num == error)
       SendSysMessage(who,"there is no more ore here to mine.");

@@ -146,7 +146,7 @@ program buildkeg(who, item)
     SendSysMessage(who, "you do not have all the required pieces");
     return;
   endif
-  if(SkillCheck(who, ATTRIBUTEID_TINKERING, 52, GetEffectiveSkill(who, ATTRIBUTEID_TINKERING)))
+  if(SkillCheck(who, TINKERING, 52, GetEffectiveSkill(who, TINKERING)))
     var checker := 0;
     if(!SubtractAmount(bottles, 10))
       checker := 1;

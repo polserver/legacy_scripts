@@ -26,11 +26,11 @@ program mass_dispel ( parms )
         return 0;
   endif
 
-  var magery := GetAttribute(caster, ATTRIBUTEID_MAGERY);
+  var magery := GetAttribute(caster, MAGERY);
   var range := CInt(magery / 20);
   var targets := ListMobilesNearLocation( cast_on.x, cast_on.y, cast_on.z, range, caster.realm );
   PlaySoundEffect( caster, 0x202 );
-  var ei := GetAttribute(caster, ATTRIBUTEID_EVALINT)/10;
+  var ei := GetAttribute(caster, EVALUATING_INTELLIGENCE)/10;
   foreach mobile in targets
 	SetObjProperty(mobile, "LastHit", {caster.name, caster.serial, "mass dispel"});
     if(Reflected(mobile))
@@ -42,7 +42,7 @@ program mass_dispel ( parms )
       PlayStationaryEffect( mobile.x, mobile.y, mobile.z, FX_HEAL_EFFECT, 0xa, 0xa, 0, mobile.realm );
       var master := SystemFindObjectBySerial(CInt(GetObjProperty(mobile, "master")));
       if(master)
-        var resist := GetAttribute(master, ATTRIBUTEID_MAGICRESISTANCE);
+        var resist := GetAttribute(master, RESISTING_SPELLS);
         if((RandomInt(99) + 1) < resist)
           MoveObjectToLocation(mobile,0,0,0,"britannia_alt",MOVEOBJECT_FORCELOCATION); // problem for new map
           ApplyRawDamage(mobile, GetMaxHp(mobile) + 3);

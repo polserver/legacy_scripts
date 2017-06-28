@@ -627,7 +627,7 @@ function make_something( who, item, what, use_on, ct)
     sleep(2);
     PlaySoundEffect(who, 0x22d);
     sleep(2);
-    if(SkillCheck(who, ATTRIBUTEID_TINKERING, skill, thepoints))
+    if(SkillCheck(who, TINKERING, skill, thepoints))
       if(!SubtractAmount(use_on, material))
         sendsysmessage(who, "Cancelled.");
         break;
@@ -748,7 +748,7 @@ function make_jewelry(who, item, stuff, what, ct)
       if(!SubtractAmount(thegem, 1))
         break;
       endif
-      if(SkillCheck(who, ATTRIBUTEID_TINKERING, skill, thepoints))
+      if(SkillCheck(who, TINKERING, skill, thepoints))
         if(!SubtractAmount(stuff, material))
           break;
         endif
@@ -840,7 +840,7 @@ function dart_trap(who, item, ingot, ct)
     endif
     var myskill := GetEffectiveSkill(who, SKILLID_TINKERING);
     sleep(2);
-    if(SkillCheck(who, ATTRIBUTEID_TINKERING, -1, Cint(myskill / 2)))
+    if(SkillCheck(who, TINKERING, -1, Cint(myskill / 2)))
       var modpts := 10;
       var rint := RandomInt(100);
       if(modpts >= rint)
@@ -874,7 +874,7 @@ function poison_trap(who, item, ingot, ct)
   var counter := 0;
   var x := who.x;
   var y := who.y;
-  var theitem, chest, resource_check, points, strength, results, plevel, passparms;
+  var theitem, chest, resource_check, points, strngth, results, plevel, passparms;
   while(counter < 1)
     SendSysMessage(who,"select the container you wish to place a trap on");
     chest := Target(who);
@@ -920,29 +920,29 @@ function poison_trap(who, item, ingot, ct)
     endif
     var myskill := CInt(GetEffectiveSkill(who, SKILLID_TINKERING));
     if(myskill <= 20)
-      strength := 1;
+      strngth := 1;
     elseif(myskill <= 40)
-      strength := 2;
+      strngth := 2;
     elseif(myskill <= 60)
-      strength := 3;
+      strngth := 3;
     elseif(myskill <= 60)
-      strength := 4;
+      strngth := 4;
     else
-      strength := 5;
+      strngth := 5;
     endif
-    if(SkillCheck(who, ATTRIBUTEID_TINKERING, -1, myskill))
+    if(SkillCheck(who, TINKERING, -1, myskill))
       var modpts := 10;
       var rint := RandomInt(100);
       if(modpts >= rint)
         ExceptionalFameMod(who, myskill, myskill, Cint(myskill / 2));
-        if(strength < 5)
-          strength := strength + 1;
+        if(strngth < 5)
+          strngth := strngth + 1;
         else
-          strength := 5;
+          strngth := 5;
         endif
-        SetObjProperty(chest, "trap_strength", strength);
+        SetObjProperty(chest, "trap_strength", strngth);
       else
-        SetObjProperty(chest, "trap_strength", strength);
+        SetObjProperty(chest, "trap_strength", strngth);
       endif
       SetObjProperty(chest, "trap_type", "2");
       SetObjProperty(chest, "oldscript", chest.usescript);
@@ -954,7 +954,7 @@ function poison_trap(who, item, ingot, ct)
       results := RandomInt(9) + 1;
       if (results == 1)
         SendSysMessage(who, "You fail, and poison yourself!");
-        start_script(":spells:poisonDamage", {who, who, "poison trap", strength});
+        start_script(":spells:poisonDamage", {who, who, "poison trap", strngth});
         break;
       else
         SendSysMessage(who,"You fail to properly place the trap.");
@@ -1011,7 +1011,7 @@ function explosion_trap(who, item,  ingot, ct)
     endif
     SubtractAmount(ingot, 1);
     var myskill := CInt(GetEffectiveSkill(who, SKILLID_TINKERING));
-    if (SkillCheck( who, ATTRIBUTEID_TINKERING, -1, myskill*2 ))
+    if (SkillCheck( who, TINKERING, -1, myskill*2 ))
       var modpts := 10;
       var rint := RandomInt(100);
       if(modpts >= rint)

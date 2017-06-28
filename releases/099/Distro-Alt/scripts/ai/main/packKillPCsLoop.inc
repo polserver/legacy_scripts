@@ -53,7 +53,7 @@ function main_AI_loop()
                                   endif
                                 endforeach
                                 Fight(ev.source);
-          EVID_HERDING:           Herding(ev);
+          EVID_HERDING:           Herd(ev);
         endcase
       until(!(ev := os::wait_for_event(2)));
     endif
@@ -105,7 +105,7 @@ function get_help(opponent)
     endforeach
 endfunction
 
-function herding(ev)
+function Herd(ev)
   var holder := ev.data;
   var lx := holder[1];
   var ly := holder[2];

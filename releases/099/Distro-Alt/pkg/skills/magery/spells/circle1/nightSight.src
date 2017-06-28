@@ -24,7 +24,7 @@ program cast_nightsight(parms)
     
 
   PlaySoundEffect(cast_on, SFX_SPELL_NIGHT_SIGHT );
-  var magery := GetAttribute(caster, ATTRIBUTEID_MAGERY);
+  var magery := GetAttribute(caster, MAGERY);
   cast_on.setlightlevel( 0, magery * 60 );
   PlayObjectCenteredEffect( cast_on, FX_BLESS_EFFECT, 10,10);
 endprogram

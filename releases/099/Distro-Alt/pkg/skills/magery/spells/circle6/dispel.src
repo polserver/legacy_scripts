@@ -26,14 +26,14 @@ program dispel ( parms )
         return 0;
     endif
 
-  var magery := GetAttribute(caster, ATTRIBUTEID_MAGERY);
+  var magery := GetAttribute(caster, MAGERY);
   var summoned := GetObjProperty( cast_on, "summoned");
   if(summoned == 1)
     PlaySoundEffect( caster, 0x202 );
     PlayStationaryEffect( cast_on.x, cast_on.y, cast_on.z, FX_HEAL_EFFECT, 0xa, 0xa, 0, cast_on.realm );
     var master := SystemFindObjectBySerial(CInt(GetObjProperty(cast_on, "master")));
     if(master)
-      var resist := GetAttribute(master, ATTRIBUTEID_MAGICRESISTANCE);
+      var resist := GetAttribute(master, RESISTING_SPELLS);
       if((RandomInt(99) + 1) < resist)
         MoveObjectToLocation(cast_on,0,0,0, "britannia", MOVEOBJECT_FORCELOCATION); // newmap problem
         ApplyRawDamage(cast_on, GetMaxHp(cast_on) + 3);

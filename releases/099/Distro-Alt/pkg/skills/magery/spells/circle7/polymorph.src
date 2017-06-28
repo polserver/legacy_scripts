@@ -9,9 +9,9 @@ program cast_poly( parms )
   var cast_on := caster;
 	
   var origform := caster.graphic;
-  var magery     := CInt(GetAttribute(caster, ATTRIBUTEID_MAGERY));
-  var meditation := CInt(GetAttribute(caster, ATTRIBUTEID_MEDITATION));
-  var evalint    := CInt(GetAttribute(caster, ATTRIBUTEID_EVALINT));
+  var magery     := CInt(GetAttribute(caster, MAGERY));
+  var meditation := CInt(GetAttribute(caster, MEDITATION));
+  var evalint    := CInt(GetAttribute(caster, EVALUATING_INTELLIGENCE));
   var critgroup;
   var thecreature;
   if (magery < 70)

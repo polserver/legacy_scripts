@@ -19,7 +19,7 @@ program dispel_field( parms )
         return 0;
     endif
 
-  var magery := GetAttribute(caster, ATTRIBUTEID_MAGERY);
+  var magery := GetAttribute(caster, MAGERY);
   var therange := CInt(magery / 10 );
   var items := ListItemsNearLocation(cast_on.x, cast_on.y, cast_on.z, therange, caster.realm);
   PlaySoundEffect( caster, SFX_SPELL_DISPEL );

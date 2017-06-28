@@ -25,7 +25,7 @@ function main_AI_loop()
         case(ev.type)
           SYSEVENT_DAMAGED: RunLikeHell(ev.source);
           SYSEVENT_ENGAGED: RunLikeHell(ev.source);
-          EVID_HERDING:     Herding(ev);
+          EVID_HERDING:     Herd(ev);
         endcase
       until(!(ev := os::wait_for_event(5)));
     endif
@@ -63,7 +63,7 @@ function DisableMainEvents()
   DisableEvents(SYSEVENT_SPEECH + SYSEVENT_ENGAGED + SYSEVENT_DAMAGED + SYSEVENT_ENTEREDAREA);
 endfunction
 
-function herding(ev)
+function Herd(ev)
   var holder := ev.data;
   var lx := holder[1];
   var ly := holder[2];

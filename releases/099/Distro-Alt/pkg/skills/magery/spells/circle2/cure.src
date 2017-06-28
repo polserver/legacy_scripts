@@ -31,7 +31,7 @@ program cast_cure( parms )
 
   PlaySoundEffect(caster, SFX_SPELL_CURE);
   PlayObjectCenteredEffect( cast_on, FX_BLESS_EFFECT, 10,10);
-  var potency := CInt(GetAttribute(caster, ATTRIBUTEID_MAGERY) / 33) +1;
+  var potency := CInt(GetAttribute(caster, MAGERY) / 33) +1;
   if(cast_on.isA(POLCLASS_NPC))
     var element := npccfg[cast_on.npctemplate].elemental;
     if(element == "poison")

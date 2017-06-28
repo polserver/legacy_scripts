@@ -36,7 +36,7 @@ program spell_firefield( parms )
   endcase
   PlaySoundEffect(caster, 0x20d);
   Detach();
-  var duration := 20 + ( CInt(GetAttribute( caster, ATTRIBUTEID_MAGERY ) ) / 3 );
+  var duration := 20 + ( CInt(GetAttribute( caster, MAGERY ) ) / 3 );
   sleep(duration);
   foreach fieldpart in fields
     DestroyItem(fieldpart);

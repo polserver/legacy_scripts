@@ -26,7 +26,7 @@ function summon_creature( caster, circle := 8, npctemplate, cast_loc, gate)
   SetObjProperty(thecritter, "happiness",100);
   SetObjProperty(thecritter, "summoned",1);
   RestartScript(thecritter);
-  SetBaseSkillBaseValue( thecritter, SKILLID_MAGICRESISTANCE,  magery*10  );
+  SetBaseSkillBaseValue( thecritter, SKILLID_RESISTING_SPELLS,  magery*10  );
   PlaySoundEffect(caster, SFX_SPELL_SUMMON_ELEMENTAL);
   sleep(duration);
   PlaySoundEffect( thecritter, SFX_SPELL_MANA_VAMPIRE );

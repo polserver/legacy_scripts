@@ -241,8 +241,8 @@ function Resisted(circle, caster, cast_on, amt)
 	// returns: amount of damage not resisted?
 
         var magery := CInt(GetEffectiveSkill(caster, SKILLID_MAGERY));
-        var evalint := CInt(GetEffectiveSkill(caster, SKILLID_EVALINT));
-        var resist := CInt(GetEffectiveSkill(cast_on, SKILLID_MAGICRESISTANCE));
+        var evalint := CInt(GetEffectiveSkill(caster, SKILLID_EVALUATING_INTELLIGENCE));
+        var resist := CInt(GetEffectiveSkill(cast_on, SKILLID_RESISTING_SPELLS));
         
         // chk1 relates to the resist ability.
         var chk1 := (resist / 5);
@@ -265,11 +265,11 @@ function Resisted(circle, caster, cast_on, amt)
                 diff := chk2;
         endif
         
-        var points := getresistpoints(circle, cast_on, SKILLID_MAGICRESISTANCE);
+        var points := getresistpoints(circle, cast_on, SKILLID_RESISTING_SPELLS);
         if(cast_on.dead)
                 return 0;
         endif
-        if(SkillCheck(cast_on, ATTRIBUTEID_MAGICRESISTANCE, diff, points))
+        if(SkillCheck(cast_on, RESISTING_SPELLS, diff, points))
                 SendSysMessage(cast_on, "You feel yourself resisting magical energy!");
                 PlaySoundEffect(cast_on, SFX_SPELL_WEAKEN);
                 PlayObjectCenteredEffect(cast_on, FX_CURSE_EFFECT, 5,5);
@@ -378,7 +378,7 @@ function spellcast(me, circle, scroll, id)
       sleepms(slp * 100);
     endif
     me.frozen :=0;
-    if (SkillCheck(me,ATTRIBUTEID_MAGERY, diff, 0))
+    if (SkillCheck(me,MAGERY, diff, 0))
       if((mhp > GetHp(me)) && ((RandomInt(99)+1) > (GetEffectiveSkill(me, SKILLID_WRESTLING)/2)))
         SendSysMessage(me,"You lost your concentration.", 3, 40);
         return 0;
@@ -456,7 +456,7 @@ function mobspellcast(me, circle, scroll)
     return 0;
   endif
   if(can_cast(me))
-    if(SkillCheck(me, ATTRIBUTEID_MAGERY, (diff - 10), points))
+    if(SkillCheck(me, MAGERY, (diff - 10), points))
       return 1;
     else
       return 0;

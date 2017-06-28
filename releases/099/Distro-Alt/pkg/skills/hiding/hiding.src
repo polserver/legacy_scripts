@@ -14,8 +14,8 @@ program skill_hide(who)
 
   EraseObjProperty(who, "IsMeditating");
   EraseObjProperty(who, "HealTimer");
-//  var pts := CInt(GetAttribute(who, ATTRIBUTEID_HIDING) / 10) + 15;
-  var pts := CInt(GetAttribute(who, ATTRIBUTEID_HIDING)) + 15;
+//  var pts := CInt(GetAttribute(who, HIDING) / 10) + 15;
+  var pts := CInt(GetAttribute(who, HIDING)) + 15;
 //  if(pts > 35)
 //    pts := 35;
 //  endif
@@ -23,13 +23,13 @@ program skill_hide(who)
     PrintTextAbovePrivate(who, "You cannot hide while in War Mode.", who);
     return 0;
   endif
-  var range := getwhoange(GetAttribute(who, ATTRIBUTEID_HIDING));
+  var range := getwhorange(GetAttribute(who, HIDING));
   var bystanders := ListHostiles(who, range, LH_FLAG_LOS);
   if(len(bystanders) > 0)
     PrintTextAbovePrivate(who, "You cannot hide as there are hostiles in view!", who);
     return 0;
   endif
-  if(SkillCheck(who,ATTRIBUTEID_HIDING, -1, pts/3))
+  if(SkillCheck(who,HIDING, -1, pts/3))
     who.hidden := 1;
     PrintTextAbovePrivate(who, "You have hidden yourself well", who);
   else
@@ -38,7 +38,7 @@ program skill_hide(who)
   endif
 endprogram
 
-function getwhoange( skill )
+function getwhorange( skill )
   if( skill >= 100 )
     return 4;
   elseif( skill >= 90 )

@@ -75,7 +75,7 @@ program use_fishpole(who, fishingpole)
         SendSysMessage(who, "There doesn't seem to be any fish here");
         return 0;
       endif
-      var successrate := SkillCheck(who, ATTRIBUTEID_FISHING, difficulty, 30);
+      var successrate := SkillCheck(who, FISHING, difficulty, 30);
       if(successrate > 0)
         var fishreturned := HarvestResource("fish", targetsquare.x, targetsquare.y, 1, 1, who.realm);
         if(!fishreturned)
@@ -101,7 +101,7 @@ endprogram
 
 function skillgain(who, points)
   var diff := points / 10;
-  var skill := GetAttribute(who, ATTRIBUTEID_FISHING);
+  var skill := GetAttribute(who, FISHING);
   if(skill > (diff - 20))
     if((skill - diff) <= 5)
       points := points;
@@ -170,7 +170,7 @@ endfunction
 
 function GetTheCatch(who)
   var fishtype;
-  var currentskill := GetAttribute(who, ATTRIBUTEID_FISHING);
+  var currentskill := GetAttribute(who, FISHING);
   var thisone := RandomInt(100)+ 1;
   if(thisone <= 94)
     fishtype := RandomInt(UOBJ_FISH_END - UOBJ_FISH_START)+ UOBJ_FISH_START;
@@ -193,7 +193,7 @@ function GetTheCatch(who)
       SendSysMessage(who, "You catch a nice fish!");
     endif
   else
-    if(GetAttribute(who, ATTRIBUTEID_FISHING) >= 95)
+    if(GetAttribute(who, FISHING) >= 95)
       fishtype := "sosbottle";
       SendSysMessage(who, "You find a message in a bottle!");
     else
@@ -229,7 +229,7 @@ endfunction
 
 function GetSOSTreasure(who, targetsquare, sosmsg)
   targetsquare := targetsquare;
-  if(SkillCheck(who, ATTRIBUTEID_FISHING, 80, 200))
+  if(SkillCheck(who, FISHING, 80, 200))
     var itemcfg := ReadConfigFile(":*:itemdesc");
     var it, oldname;
     if(RandomInt(100)< 75)

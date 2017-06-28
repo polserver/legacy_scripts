@@ -80,7 +80,7 @@ function checkforammunition( who, ammunitiontype )
 endfunction
 
 function theshot( who, panim, butte, effect )
-    if( SkillCheck( who, ATTRIBUTEID_ARCHERY, 10, 40 ) )
+    if( SkillCheck( who, ARCHERY, 10, 40 ) )
         PerformAction( who, panim );
                 sleep(1);
                 PlayMovingEffectXYZ( who.x, who.y, who.z+9,

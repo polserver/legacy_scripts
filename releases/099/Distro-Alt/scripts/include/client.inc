@@ -15,6 +15,7 @@
 //      1999/01/27 Ignatius found out that I got the sounds all wrong
 //                 it seems, fixed up a lot of things there. Started
 //                 to map out the T2A sounds. Added some creature IDs.
+//      2017/06/25 Yukiko added skill ids for ToL compliance.
 ////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////
 
@@ -690,13 +691,13 @@ const SFX_SPELL_EARTHQUAKE          :=  SFX_20E;
 const SFX_SPELL_ENERGY_VORTEX       :=  SFX_213;
 const SFX_SPELL_RESSURECTION        :=  SFX_215;
 const SFX_SPELL_SUMMON_ELEMENTAL    :=  SFX_218;
-const SFX_SPELL_SUMMON_DEMON        :=  SFX_217;
+const SFX_SPELL_SUMMON_DAEMON        :=  SFX_217;
 
 // * skills *
 const SFX_SKILL_SPIRITSPEAK         :=  SFX_24B;
 const SFX_SKILL_LUMBERJACK          :=  SFX_13F;
-const SFX_TAILORING			:= 0x0249;
-const SFX_CARPENTRY		        := 0x023e;
+const SFX_TAILORING		              := 0x0249;
+const SFX_CARPENTRY		              := 0x023e;
 
 // * items *
 const SFX_TRAP_NEEDLE               :=  SFX_225;
@@ -861,8 +862,8 @@ const CID_EAGLE			:= 0x005;
 const CID_BIRD				:= 0x006;
 const CID_ORC_LORD			:= 0x007;
 const CID_CORPSER			:= 0x008;
-const CID_DEMON			:= 0x009;
-const CID_DEMON_SWORD		:= 0x00a;
+const CID_DAEMON			:= 0x009;
+const CID_DAEMON_SWORD		:= 0x00a;
 const CID_DRAGON_GREY		:= 0x00c;
 const CID_AIR_ELEMENTAL		:= 0x00d;
 const CID_EARTH_ELEMENTAL	:= 0x00e;
@@ -1029,9 +1030,9 @@ const FONTCOLOR_YELLOW := 53;
 const SKILLID_ALCHEMY           := 0;
 const SKILLID_ANATOMY           := 1;
 const SKILLID_ANIMALLORE        := 2;
-const SKILLID_ITEMID            := 3;
+const SKILLID_ITEM_IDENTIFICATION            := 3;
 const SKILLID_ARMSLORE          := 4;
-const SKILLID_PARRY		:= 5;
+const SKILLID_PARRYING		          := 5;
 const SKILLID_BEGGING           := 6;
 const SKILLID_BLACKSMITHY       := 7;
 const SKILLID_BOWCRAFT          := 8;
@@ -1040,19 +1041,19 @@ const SKILLID_CAMPING           := 10;
 const SKILLID_CARPENTRY         := 11;
 const SKILLID_CARTOGRAPHY       := 12;
 const SKILLID_COOKING           := 13;
-const SKILLID_DETECTINGHIDDEN   := 14;
-const SKILLID_ENTICEMENT        := 15;
-const SKILLID_EVALINT           := 16;
+const SKILLID_DETECTING_HIDDEN   := 14;
+const SKILLID_DISCORDANCE        := 15;
+const SKILLID_EVALUATING_INTELLIGENCE           := 16;
 const SKILLID_HEALING           := 17;
 const SKILLID_FISHING           := 18;
-const SKILLID_FORENSICS         := 19;
+const SKILLID_FORENSIC_EVALUATION         := 19;
 const SKILLID_HERDING           := 20;
 const SKILLID_HIDING            := 21;
 const SKILLID_PROVOCATION       := 22;
 const SKILLID_INSCRIPTION       := 23;
 const SKILLID_LOCKPICKING       := 24;
 const SKILLID_MAGERY            := 25;
-const SKILLID_MAGICRESISTANCE   := 26;
+const SKILLID_RESISTING_SPELLS   := 26;
 const SKILLID_TACTICS           := 27;
 const SKILLID_SNOOPING          := 28;
 const SKILLID_MUSICIANSHIP      := 29;
@@ -1062,7 +1063,7 @@ const SKILLID_SPIRITSPEAK       := 32;
 const SKILLID_STEALING          := 33;
 const SKILLID_TAILORING         := 34;
 const SKILLID_TAMING            := 35;
-const SKILLID_TASTEID           := 36;
+const SKILLID_TASTE_IDENTIFICATION           := 36;
 const SKILLID_TINKERING         := 37;
 const SKILLID_TRACKING          := 38;
 const SKILLID_VETERINARY        := 39;
@@ -1076,12 +1077,15 @@ const SKILLID_MEDITATION        := 46;
 const SKILLID_STEALTH           := 47;
 const SKILLID_REMOVETRAP        := 48;
 const SKILLID_NECROMANCY        := 49;
-const SKILLID_BATTLEFOCUS       := 50;
+const SKILLID_FOCUS             := 50;
 const SKILLID_CHIVALRY          := 51;
-const SKILLID_POLEARMS          := 52;
-const SKILLID_ARTISTRY           := 53;
-const SKILLID_WIZARDRY      := 54;
-const SKILLID__HIGHEST          := 54;
+const SKILLID_BUSHIDO           := 52;
+const SKILLID_NINJITSU          := 53;
+const SKILLID_SPELLWEAVING      := 54;
+const SKILLID_MYSTICISM         := 55;
+const SKILLID_IMBUING           := 56;
+const SKILLID_THROWING          := 57;
+const SKILLID__HIGHEST          := 57;
 
 //////////////////////////////////////
 // Realm constants                  //
@@ -1091,6 +1095,7 @@ const BRITANNIA_ALT_REALM       := "britannia_alt";
 const ILSHENAR_REALM            := "ilshenar";
 const MALAS_REALM               := "malas";
 const TOKUNO_REALM              := "tokuno";
+const TERMUR_REALM              := "termur";
 
 // Aliases
 const HOPE                      := "britannia";

@@ -24,8 +24,8 @@ program poisonhit(param)
       var defenderplevel := CInt(GetObjProperty(defender,"poison_level"));
       var potion_strength := (RandomInt(8) + 3);
       var newplevel := (CInt(potion_strength));
-      var value := (GetAttribute(attacker, ATTRIBUTEID_POISONING)+2);
-      if(SkillCheck( attacker, ATTRIBUTEID_POISONING, value, 20))
+      var value := (GetAttribute(attacker, POISONING)+2);
+      if(SkillCheck( attacker, POISONING, value, 20))
         if(defender.npctemplate)
           var element := npccfg[defender.npctemplate].elemental;
           if(element == "poison")
@@ -59,8 +59,8 @@ program poisonhit(param)
       var defenderplevel := CInt(GetObjProperty(defender,"poison_level"));
       var potion_strength := (RandomInt(20) + 10);
       var newplevel := (CInt(potion_strength));
-      var value := (GetAttribute(attacker, ATTRIBUTEID_POISONING)+2);
-      if(SkillCheck( attacker, ATTRIBUTEID_POISONING, value, 20))
+      var value := (GetAttribute(attacker, POISONING)+2);
+      if(SkillCheck( attacker, POISONING, value, 20))
         if(defender.npctemplate)
           var element := npccfg[defender.npctemplate].elemental;
           if(element == "poison")
@@ -107,8 +107,8 @@ program poisonhit(param)
 	var potion_strength := GetObjProperty(weapon, "poison_level");
 	var defenderplevel := CInt(GetObjProperty(defender,"poison_level"));
 	var newplevel := (CInt(potion_strength));
-        var value := (GetAttribute(attacker, ATTRIBUTEID_POISONING)+2);
-	  if(SkillCheck( attacker, ATTRIBUTEID_POISONING, value, 20))
+        var value := (GetAttribute(attacker, POISONING)+2);
+	  if(SkillCheck( attacker, POISONING, value, 20))
         if(defender.npctemplate)
           var element := npccfg[defender.npctemplate].elemental;
           if(element == "poison")

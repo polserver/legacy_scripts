@@ -52,7 +52,7 @@ function SmeltOre(who, ore, ingot, difficulty)
       SendSysMessage(who,"that is too far away.");
       return;
     endif
-    if(SkillCheck(who, ATTRIBUTEID_MINING, difficulty, ((difficulty / 2) + 10)))
+    if(SkillCheck(who, MINING, difficulty, ((difficulty / 2) + 10)))
       var ingots := CreateItemInBackpack(who, ingot, (GetAmount(ore) * 2));
       ReserveItem(ingots);
       if(ingots)

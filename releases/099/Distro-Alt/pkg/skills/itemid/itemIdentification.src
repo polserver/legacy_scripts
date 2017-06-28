@@ -19,7 +19,7 @@ program do_itemid( who )
 
   EraseObjProperty(who, "IsMeditating");
   EraseObjProperty(who, "HealTimer");
-  var thepoints := get_default_points(SKILLID_ITEMID);
+  var thepoints := get_default_points(SKILLID_ITEM_IDENTIFICATION);
   var the_item;
   var ncharges;
   SendSysMessage( who, "Select an object to identify." );
@@ -32,7 +32,7 @@ program do_itemid( who )
     SendSysMessage(who, "That's not an item!");
     return;
   endif
-  if(SkillCheck(who,ATTRIBUTEID_ITEMID, -1, thepoints))
+  if(SkillCheck(who,ITEM_IDENTIFICATION, -1, thepoints))
     var name := "";
     var itsname := the_item.name;
     if (!itsname)
@@ -94,7 +94,7 @@ program do_itemid( who )
   	  endif
     endif
     if(GetObjProperty(the_item, "type") == "cursed")
-	  if(SkillCheck(who,ATTRIBUTEID_ITEMID, 65, 0) )
+	  if(SkillCheck(who,ITEM_IDENTIFICATION, 65, 0) )
 	    SendSysMessage(who, "* This item is cursed! *");
 	  endif
     endif

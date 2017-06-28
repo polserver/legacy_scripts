@@ -34,7 +34,7 @@ program UseWood( who, wood )
 		return;
 	endif
 	
-	if(SkillCheck(who, ATTRIBUTEID_CAMPING, -1, 50))
+	if(SkillCheck(who, CAMPING, -1, 50))
 		var x := wood.x;
 		var y := wood.y;
 		var z := wood.z;

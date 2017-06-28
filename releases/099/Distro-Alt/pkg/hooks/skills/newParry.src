@@ -16,6 +16,6 @@ exported function NewParryAdvancement( attacker, weapon, defender, shield )
 	weapon := weapon;		// as above
 	shield := shield;		// as above
 
-	AwardPoints( defender, SKILLID_PARRY, 20 );
+	AwardPoints( defender, SKILLID_PARRYING, 20 );
 
 endfunction

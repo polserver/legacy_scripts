@@ -44,12 +44,12 @@ function Process_Mods(who, item);
     "strength":     ModifyAttributeTemporaryMod(who, ATTRIBUTEID_STRENGTH, gain);
     "invisibility": who.hidden := 1;
     "sight":        who.setlightlevel(0, 70);
-    "protection":   ModifyAttributeTemporaryMod(who, ATTRIBUTEID_PARRY, gain);
+    "protection":   ModifyAttributeTemporaryMod(who, PARRYING, gain);
     "reflect":      SetObjProperty(who, "mr", 2);
     "bless":        ModifyAttributeTemporaryMod(who, ATTRIBUTEID_STRENGTH,     gain);
                     ModifyAttributeTemporaryMod(who, ATTRIBUTEID_INTELLIGENCE, gain);
                     ModifyAttributeTemporaryMod(who, ATTRIBUTEID_DEXTERITY,    gain);
-                    ModifyAttributeTemporaryMod(who, ATTRIBUTEID_PARRY,        (gain *3 ));
+                    ModifyAttributeTemporaryMod(who, PARRYING,        (gain *3 ));
   endcase
   RecalcVitals(who);
   EraseObjProperty(item, "HoldMods");
@@ -120,12 +120,12 @@ function Process_Unmods(who, item, mods, loff)
     "strength":     ModifyAttributeTemporaryMod(who, ATTRIBUTEID_STRENGTH, (0 - gain));
     "invisibility": who.hidden := 0;
     "sight":        who.setlightlevel(0, 1);
-    "protection":   ModifyAttributeTemporaryMod(who, ATTRIBUTEID_PARRY, (0 - gain));
+    "protection":   ModifyAttributeTemporaryMod(who, PARRYING, (0 - gain));
     "reflect":      EraseObjProperty(who, "mr");
     "bless":        ModifyAttributeTemporaryMod(who, ATTRIBUTEID_STRENGTH,     (0 - gain));
                     ModifyAttributeTemporaryMod(who, ATTRIBUTEID_INTELLIGENCE, (0 - gain));
                     ModifyAttributeTemporaryMod(who, ATTRIBUTEID_DEXTERITY,    (0 - gain));
-                    ModifyAttributeTemporaryMod(who, ATTRIBUTEID_PARRY,        (0 - (gain *3)));
+                    ModifyAttributeTemporaryMod(who, PARRYING,        (0 - (gain *3)));
   endcase
   RecalcVitals(who);
   EraseObjProperty(item, "HoldMods");

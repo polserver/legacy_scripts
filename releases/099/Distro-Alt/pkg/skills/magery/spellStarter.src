@@ -160,7 +160,7 @@ program SpellStarter(params)
 	var attribute := Lower(spell_elem.Attribute);
 
 	if ( !attribute )
-		attribute := ATTRIBUTEID_MAGERY;
+		attribute := MAGERY;
 	endif
 
 	var difficulty := CInt(spell_elem.Difficulty);

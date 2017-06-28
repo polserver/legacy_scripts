@@ -22,7 +22,7 @@ program cast_strength(parms)
     endif
 
   if((cast_on.isa(POLCLASS_DOOR)) || (cast_on.objtype == 0xe79) || ((cast_on.graphic<=0x9ab) &&(cast_on.graphic>=0x9a8)) ||((cast_on.graphic<=0xe43) &&(cast_on.graphic>=0xe3c)) ||((cast_on.graphic<=0xe80) &&(cast_on.graphic>=0xe7c)))
-    var magery := GetAttribute(caster, ATTRIBUTEID_MAGERY);
+    var magery := GetAttribute(caster, MAGERY);
     var trapstr := CInt(magery/5);
     /* Will add this later. Assume crim if cast within a city.
     if(findcity(cast_on) != "no city")

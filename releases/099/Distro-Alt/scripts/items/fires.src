@@ -37,7 +37,7 @@ program mfirefield( character, item )
   send_attack(character, boss, 46);
   ApplyRawDamage(character, 1);
   HealDamage(character, 1);
-  var dmg := CInt(GetAttribute(boss, ATTRIBUTEID_MAGERY)/10);
+  var dmg := CInt(GetAttribute(boss, MAGERY)/10);
   fieldstrength := RandomInt(dmg);
   PlaySoundEffect(character, 0x209);
   if(!character.dead)

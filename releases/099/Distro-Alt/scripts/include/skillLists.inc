@@ -10,27 +10,27 @@ function getskilllist(me)
     "weaponsmith":      return { "swordsmanship", "arms lore", "blacksmithy", "mining", "parrying", "tactics" };
     "blacksmith":       return { "swordsmanship", "arms lore", "blacksmithy", "mining", "parrying", "tactics" };
     "Armorer":          return { "mace fighting", "arms lore", "blacksmithy", "mining", "parrying", "tactics" };
-    "barkeep":          return { "mace fighting", "polearms", "tactics" };
+    "barkeep":          return { "mace fighting", "tactics" };
     "barmaid":          return { "fencing", "tactics" };
     "baker":            return { "wrestling", "cooking" };
     "tinker":           return { "fencing", "alchemy", "lockpicking", "tinkering" };
-    "bard":             return { "fencing", "enticement", "musicianship", "provocation", "peacemaking" };
+    "bard":             return { "fencing", "discordance", "musicianship", "provocation", "peacemaking" };
     "butcher":          return { "mace fighting", "cooking", "taste identification" };
     "cobbler":          return { "swordsmanship", "tailoring" };
     "jeweler":          return { "fencing", "item identification" };
-    "mage":             return { "polearms", "magic resistance", "inscription", "magery", "meditation", "wrestling" };
-    "wizard":           return { "polearms", "magic resistance", "inscription", "wizardry", "meditation", "wrestling" };
-    "necromance":       return { "polearms", "magic resistance", "inscription", "necromancy", "meditation", "wrestling" };
-    "Alchemist":        return { "magic resistance", "taste identification", "alchemy", "wrestling" };
-    "herbalist":        return { "magic resistance", "alchemy", "cooking", "taste identification", "wrestling" };
+    "mage":             return { "mace fighting", "resisting spells", "inscription", "magery", "meditation", "wrestling" };
+    "wizard":           return { "mace fighting", "resisting spells", "inscription", "wizardry", "meditation", "wrestling" };
+    "necromance":       return { "mace fighting", "resisting spells", "inscription", "necromancy", "meditation", "wrestling" };
+    "Alchemist":        return { "resisting spells", "taste identification", "alchemy", "wrestling" };
+    "herbalist":        return { "resisting spells", "alchemy", "cooking", "taste identification", "wrestling" };
     "tailor":           return { "tailoring", "fencing" };
     "weaver":           return { "tailoring", "fencing" };
     "leatherworker":    return { "parrying", "mace fighting" };
     "provisioner":      return { "tactics", "parrying", "fencing" };
     "carpenter":        return { "carpentry", "lumberjacking", "swordsmanship" };
-    "bowyer":           return { "archery", "bowcraft", "polearms" };
-    "architect":        return { "magic resistance", "wrestling" };
-    "scribe":           return { "magic resistance", "inscription", "evaluating intelligence", "wrestling" };
+    "bowyer":           return { "archery", "bowcraft", "mace fighting" };
+    "architect":        return { "resisting spells", "wrestling" };
+    "scribe":           return { "resisting spells", "inscription", "evaluating intelligence", "wrestling" };
     "mapmaker":         return { "cartography", "wrestling" };
     "vetrinarian":      return { "animal lore", "wrestling", "veterinary" };
     "townguard":        return { "anatomy", "tactics", "swordsmanship", "detect hidden", "arms lore" };
@@ -42,7 +42,7 @@ function getskilllist(me)
     "fighter4":         return { "anatomy", "tactics", "swordsmanship", "arms lore" };
     "paladin":          return { "anatomy", "tactics", "swordsmanship", "detect hidden", "arms lore" };
     "assassin":          return { "poisoning", "hiding", "stealth" };
-    "artist":           return {"tailoring", "artistry", "fencing", "item identification"};
+    "artist":           return {"tailoring", "fencing", "item identification"};
   endcase
 endfunction
 
@@ -63,7 +63,7 @@ function FindSkillId(name)
     "cartography":              return 12;
     "cooking":                  return 13;
     "detect hidden":            return 14;
-    "enticement":               return 15;
+    "discordance":               return 15;
     "evaluating intelligence":  return 16;
     "healing":                  return 17;
     "fishing":                  return 18;
@@ -74,7 +74,7 @@ function FindSkillId(name)
     "inscription":              return 23;
     "lockpicking":              return 24;
     "magery":                   return 25;
-    "magic resistance":         return 26;
+    "resisting spells":         return 26;
     "tactics":                  return 27;
     "snooping":                 return 28;
     "musicianship":             return 29;
@@ -98,11 +98,14 @@ function FindSkillId(name)
     "stealth":                  return 47;
     "remove trap":              return 48;
     "necromancy":               return 49;
-    "battlefocus":              return 50;
+    "focus":                    return 50;
     "chivalry":                 return 51;
-    "polearms":                 return 52;
-    "artistry":                 return 53;
-    "wizardry":                 return 54;
+    "bushido":                  return 52;
+    "ninjitsu":                 return 53;
+    "spellweaving":             return 54;
+    "mysticism":                return 55;
+    "imbuing":                  return 56;
+    "throwing":                 return 57;
   endcase
 endfunction
  

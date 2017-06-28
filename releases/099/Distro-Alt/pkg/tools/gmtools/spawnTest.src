@@ -48,7 +48,7 @@ endfunction
 function CreateTreasureChests(item, amt)
   var lvl := GetObjProperty(item, "level");
   var rng := GetObjProperty(item, "range");
-  var newx, newy, newz, checker, type, gfx, lootgroup, chest, lockid, strength, traptype;
+  var newx, newy, newz, checker, type, gfx, lootgroup, chest, lockid, strngth, traptype;
   if(rng > 10)
     rng := 10;
   endif
@@ -86,13 +86,13 @@ function CreateTreasureChests(item, amt)
     lockid := AllocLockId();
     SetObjProperty(chest, "lockid", lockid);
     SetObjProperty(chest, "level", lvl);
-    strength := 0;
+    strngth := 0;
     case(lvl)
-      1: lootgroup := 69;    strength :=  20;
-      2: lootgroup := 70;    strength :=  40;
-      3: lootgroup := 71;    strength :=  60;
-      4: lootgroup := 72;    strength :=  80;
-      5: lootgroup := 73;    strength := 100;
+      1: lootgroup := 69;    strngth :=  20;
+      2: lootgroup := 70;    strngth :=  40;
+      3: lootgroup := 71;    strngth :=  60;
+      4: lootgroup := 72;    strngth :=  80;
+      5: lootgroup := 73;    strngth := 100;
     endcase
     traptype := RandomInt(10)+1;
     if(traptype > 3)
@@ -101,8 +101,8 @@ function CreateTreasureChests(item, amt)
       traptype := 2;
     endif
     SetObjProperty(chest, "trap_type", (CStr(traptype)));
-    SetObjProperty(chest, "LockPickDiff", (strength - RandomInt(20)));
-    SetObjProperty(chest, "trap_strength", strength);
+    SetObjProperty(chest, "LockPickDiff", (strngth - RandomInt(20)));
+    SetObjProperty(chest, "trap_strength", strngth);
     makeloot(chest, lootgroup);
     CreateFromGroup(chest, lootgroup);
     chestarray.append(chest);

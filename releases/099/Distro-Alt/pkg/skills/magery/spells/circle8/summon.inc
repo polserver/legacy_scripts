@@ -7,7 +7,7 @@ include "include/attributes";
 function summon_creature( caster, circle := 8, npctemplate, cast_loc, controldiff := 50, summontype := "undefined" )
     var thecreature;
     var thecritter;
-    var magery := GetAttribute(caster, ATTRIBUTEID_MAGERY);
+    var magery := GetAttribute(caster, MAGERY);
     var duration := 20 + (magery * 2);
     var attributelist := { "None" };
     var parms := {}, totem, totemtype;
@@ -37,7 +37,7 @@ function summon_creature( caster, circle := 8, npctemplate, cast_loc, controldif
 		controldiff := controldiff - 20;
 	endif
 
-	if (SkillCheck(caster, ATTRIBUTEID_MEDITATION, controldiff, (circle * 50) ) )
+	if (SkillCheck(caster, MEDITATION, controldiff, (circle * 50) ) )
 		parms .+ script := "tamed";
 		thecritter := CreateNpcFromTemplate(npctemplate, cast_loc.x, cast_loc.y,cast_loc.z, parms, caster.realm);
 		SetObjProperty(thecritter,"master", caster.serial);
@@ -55,7 +55,7 @@ function summon_creature( caster, circle := 8, npctemplate, cast_loc, controldif
 		thecritter.setMurderer(1);
 	endif
 
-	SetBaseSkillBaseValue( thecritter, SKILLID_MAGICRESISTANCE,  magery*10  );
+	SetBaseSkillBaseValue( thecritter, SKILLID_RESISTING_SPELLS,  magery*10  );
 	PlaySoundEffect(caster, SFX_SPELL_SUMMON_ELEMENTAL);
 
 	if ("Longevity" in attributelist)

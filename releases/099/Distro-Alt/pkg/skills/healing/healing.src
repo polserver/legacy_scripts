@@ -17,8 +17,8 @@ var healing;
 var Anatomy;
 
 program use_bandages(who, item)
-	healing := GetAttribute(who, ATTRIBUTEID_HEALING);
-	Anatomy := GetAttribute(who, ATTRIBUTEID_ANATOMY);
+	healing := GetAttribute(who, HEALING);
+	Anatomy := GetAttribute(who, ANATOMY);
 	EraseObjProperty(who, "IsMeditating");
 	if(!can_access(who, item))
 		return;
@@ -245,7 +245,7 @@ function heal(who, patient, counter, healing)
 		// The last cycle of the loop.  All actual healing is done here.
 		elseif(counter >= cycles)
 		    var diff := 100 - Cint((GetHP(patient) * 100.0) / GetMaxHP(patient));
-		    if((SkillCheck(who, ATTRIBUTEID_HEALING, diff, 100)) and (healamt != -1))
+		    if((SkillCheck(who, HEALING, diff, 100)) and (healamt != -1))
 			    var chkamt := Cint(GetMaxHP(patient) - GetHP(patient));
 			    if(healamt > chkamt)
 				    healamt := chkamt;
@@ -329,7 +329,7 @@ function cure(who, patient, counter, healing)
 			endif
 		endif
 		if(counter >= cycles)
-			if(SkillCheck(who, ATTRIBUTEID_HEALING, 48, 100))
+			if(SkillCheck(who, HEALING, 48, 100))
 				if(!healamt)
 				    healamt := 1;
 				endif
@@ -383,7 +383,7 @@ function resurrect_pc(who, patient, counter)
 			break;
 		endif
 		if(counter >= 10)
-			if(SkillCheck(who, ATTRIBUTEID_HEALING, healamt, 100))
+			if(SkillCheck(who, HEALING, healamt, 100))
 				AwardPoints(who, SKILLID_HEALING, 400);
 				if(do_res(who, patient))
 					SendSysMessage(who, "You have resurrected " + patient.name + ".");

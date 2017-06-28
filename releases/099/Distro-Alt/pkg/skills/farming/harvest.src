@@ -77,11 +77,11 @@ program harvest (who, plant)
 		PlaySoundEffect(who, SFX_58);
 		PerformAction(who, ANIM_BOW);
 		sleep(2);
-				pts := CInt(GetAttribute(who, ATTRIBUTEID_LUMBERJACKING) / 10) + 15;
+				pts := CInt(GetAttribute(who, LUMBERJACKING) / 10) + 15;
 				if(pts > 35)
 					pts := 35;
 				endif
-				if(SkillCheck(who,ATTRIBUTEID_LUMBERJACKING, -1, pts/3))
+				if(SkillCheck(who,LUMBERJACKING, -1, pts/3))
                     if (RandomInt(100) == 0)
                             SendSysMessage(who, "You have found some fertile dirt!", color :=66);
                             CreateItemInContainer(craftingbag, UOBJ_FERTILE_DIRT, 1);

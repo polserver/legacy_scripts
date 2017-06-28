@@ -1,3 +1,9 @@
+/*
+ * Increases caster's Physical Resistance by ((Inscription / 20) + 15) points,
+ * and decreases caster's Fire, Cold, Energy and Poison Resistance by 5 points each.
+ * Lasts until cast again.
+ */
+
 use uo;
 use os;
 
@@ -19,7 +25,7 @@ program cast_reactivearmor( parms )
 	if ( GetObjProperty(cast_on, "ReactiveArmor") )
 		RemoveReactiveArmor(cast_on);
 	else
-		var points := (AP_GetSkill(cast_on, ATTRIBUTEID_INSCRIPTION) / 20) + 15;
+		var points := (AP_GetSkill(cast_on, INSCRIPTION) / 20) + 15;
 		ApplyReactiveArmor(cast_on, points);
 	endif
 
@@ -28,20 +34,6 @@ program cast_reactivearmor( parms )
 	
 	return 1;
   
-/*  if(GetObjProperty(cast_on, "ar"))
-	SendSysMessage(caster,"Already under the influence!");
-	return;
-  endif
-  var magery := GetAttribute(caster, ATTRIBUTEID_MAGERY);
-  var mod_amount := magery / 10;
-  var duration := CInt(RandomInt(10) + (magery / 2));
-  SetObjProperty(cast_on, "ReactiveArmor", mod_amount);
-  Detach();
-  sleep(duration);
-  if(GetObjProperty(cast_on, "ReactiveArmor"))
-    PlaySoundEffect(cast_on, 0x1eb);
-    EraseObjProperty(cast_on,"ReactiveArmor");
-  endif */
 endprogram
 
 

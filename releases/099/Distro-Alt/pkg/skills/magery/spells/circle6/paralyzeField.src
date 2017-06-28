@@ -32,7 +32,7 @@ program parafield( parms )
 	"EW" : fields:= CreateEastWestField(caster, UOBJ_PARAFIELD_EW, x, y, z, 5);
   endcase
   Detach();
-  var duration := CInt((AP_GetSkill(caster, ATTRIBUTEID_MAGERY) * 1.33) + 3);
+  var duration := CInt((AP_GetSkill(caster, MAGERY) * 1.33) + 3);
   if (duration < 20)
     duration := 20;
   endif

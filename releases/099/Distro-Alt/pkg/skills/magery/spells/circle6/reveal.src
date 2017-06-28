@@ -26,7 +26,7 @@ program reveal_hider ( parms )
         return 0;
   endif
   
-  var range := ( GetAttribute( caster, ATTRIBUTEID_MAGERY  )/10 ) - 5;
+  var range := ( GetAttribute( caster, MAGERY  )/10 ) - 5;
   if (range < 1)
 	range := 1;
   endif
@@ -50,8 +50,8 @@ program reveal_hider ( parms )
 endprogram
 
 function Found( finder, hider )
-  var magic_skill := Resisted(6, finder, hider, GetAttribute( finder, ATTRIBUTEID_MAGERY ));
-  var resist := (GetAttribute( finder, ATTRIBUTEID_MAGICRESISTANCE)/1.5);
+  var magic_skill := Resisted(6, finder, hider, GetAttribute( finder, MAGERY ));
+  var resist := (GetAttribute( finder, RESISTING_SPELLS)/1.5);
   if ( magic_skill > resist )
 	return 1;
   else

@@ -23,8 +23,8 @@ program animal_lore(who)
 	return;
   endif
   var elem := cfg[targ.npctemplate];
-  var tameskill := GetAttribute( who, ATTRIBUTEID_TAMING );
-  var lore :=      GetAttribute( who, ATTRIBUTEID_ANIMALLORE );
+  var tameskill := GetAttribute( who, TAMING );
+  var lore :=      GetAttribute( who, ANIMALLORE );
   var tamedif := elem.tameskill -20;
   var phisical := "";
   var health := "";
@@ -35,8 +35,8 @@ program animal_lore(who)
   if(!foodtype)
     foodtype := "all";
   endif
-  var pts := CInt(GetAttribute(who, ATTRIBUTEID_ANIMALLORE)) + 15;
-  if(SkillCheck(who,ATTRIBUTEID_ANIMALLORE, -1, pts/3))
+  var pts := CInt(GetAttribute(who, ANIMALLORE)) + 15;
+  if(SkillCheck(who,ANIMALLORE, -1, pts/3))
     phisical := GetStr(GetStrength(targ)/20);
     health := GetHealth(10*GetHp(targ)/GetMaxHp(targ));
     if (ListPoisonsByType(targ, "defaultPoison").size() > 0 )

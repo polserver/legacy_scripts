@@ -61,7 +61,7 @@ program troll_for_sea_creatures (parms)
 	SubtractAmount (targetted, 1);
 	PrintTextAbove (tillerman, "Let'us see wha' we git...");
 	
-	var skill := GetAttribute (player, ATTRIBUTEID_FISHING);
+	var skill := GetAttribute (player, FISHING);
 	var timedelay := 60 - CINT (skill/2);
 	if (timedelay < 10)
 		timedelay := 10;

@@ -33,7 +33,7 @@ program cast_protection(parms)
 	SendSysMessage(caster,"Already under the influence!");
 	return;
   endif
-  var magery := GetAttribute(caster, ATTRIBUTEID_MAGERY);
+  var magery := GetAttribute(caster, MAGERY);
   var mod_amount := (GetModAmount(magery) * 2);
   var duration := GetModDuration(magery);
   var itmcfg := ReadConfigFile(":*:itemdesc");

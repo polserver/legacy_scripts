@@ -30,8 +30,8 @@ program cast_archcure(parms)
     
 
   PlaySoundEffect(caster, SFX_SPELL_ARCH_CURE);
-  var magery := GetAttribute(caster, ATTRIBUTEID_MAGERY);
-  var potency := CInt(GetAttribute( caster, ATTRIBUTEID_MAGERY ) /33)+1;
+  var magery := GetAttribute(caster, MAGERY);
+  var potency := CInt(GetAttribute( caster, MAGERY ) /33)+1;
   foreach cast_on in ListMobilesNearLocation( cast_on.x, cast_on.y, cast_on.z, CInt(magery/15), caster.realm );
     if((CheckLineOfSight(cast_on, caster)) and (cast_on.cmdlevel < 2))
 	  PlayObjectCenteredEffect( cast_on, FX_BLESS_EFFECT, 10,10);

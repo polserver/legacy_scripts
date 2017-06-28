@@ -67,7 +67,7 @@ program do_poisoning( who )
 				point := 290;
 		    endcase
 // Didn't mess with the skill gains here until we see how it pans out 08-05-2011
-		    if (SkillCheck( who, ATTRIBUTEID_POISONING, skill, point/10) + 20)
+		    if (SkillCheck( who, POISONING, skill, point/10) + 20)
 			SetObjProperty(the_item, "poison_level", stren*2);
 			SetObjProperty(the_item, "d", 25 - (stren));
 			var hitscripts := GetObjProperty(the_item, "OnHit");
@@ -86,7 +86,7 @@ program do_poisoning( who )
 			SendSysMessage(who, "You have successfully applied the poison.");
 			SetObjProperty(the_item, "phit", 1);
 		    else
-			if (RandomInt(100) > GetAttribute(who, ATTRIBUTEID_POISONING))
+			if (RandomInt(100) > GetAttribute(who, POISONING))
 			    SendSysMessage(who, "You fail, and poison yourself!");
 			    SetObjProperty(who, "poison_level", stren);
 			    start_script(":spells:poisondamage", who);
@@ -107,8 +107,8 @@ program do_poisoning( who )
 		    SendSysMessage(who,"Those must be poisoned in groups of 10.");
 		    return;
 		endif
-//		if (SkillCheck( who, ATTRIBUTEID_POISONING, -1, 100))
-		if (SkillCheck( who, ATTRIBUTEID_POISONING, -1, 10))
+//		if (SkillCheck( who, POISONING, -1, 100))
+		if (SkillCheck( who, POISONING, -1, 10))
 		    var obj := the_item.objtype;
 		    if(!SubtractAmount(the_item, 10))
 			SendSysMessage(who,"Those must be poisoned in groups of 10.");
@@ -123,7 +123,7 @@ program do_poisoning( who )
 		    PlaySoundEffect(who, 0x248);
 		    SendSysMessage(who, "You poison some arrows and put them in your backpack");
 		else
-		    if (RandomInt(100) > GetAttribute(who, ATTRIBUTEID_POISONING))
+		    if (RandomInt(100) > GetAttribute(who, POISONING))
 			SendSysMessage(who, "You fail, and poison yourself!");
 			SetObjProperty(who, "poison_level", (RandomInt(20) + 10));
 			start_script(":spells:poisondamage", who);

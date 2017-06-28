@@ -38,7 +38,7 @@ program cast_strength( parms )
   if(((cast_on.graphic<=0x9ab) &&(cast_on.graphic>=0x9a8)) ||((cast_on.graphic<=0xe43) &&(cast_on.graphic>=0xe3c)) ||((cast_on.graphic<=0xe80) &&(cast_on.graphic>=0xe7c)) ||(checkfordoors(cast_on)))
     PlaySoundEffect(caster, SFX_SPELL_MAGIC_LOCK);
     PrintTextAbovePrivate(cast_on, "*Locked!*", caster);
-    var magery := CInt(GetAttribute(caster, ATTRIBUTEID_MAGERY) / 4);
+    var magery := CInt(GetAttribute(caster, MAGERY) / 4);
     SetObjProperty(cast_on, "MLockPickDiff", magery);
     cast_on.locked := 1;
   else

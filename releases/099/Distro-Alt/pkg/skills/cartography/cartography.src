@@ -33,21 +33,21 @@ program go_go_gadget_map(who)
   endif
   var props;
   case(choice.index)
-	1: if(SkillCheck(who, ATTRIBUTEID_CARTOGRAPHY, 20, 70))
+	1: if(SkillCheck(who, CARTOGRAPHY, 20, 70))
 	     props := array("local", who.x - 265, who.y - 260, who.x + 265, who.y + 260, 200, 200);
 		 makemap(who, props, blank);
 	   else
          SendSysMessage(who, "You are not familiar enough with the area to draw the map");
 	     DestroyItem(blank);
 	   endif
-	2: if(SkillCheck(who, ATTRIBUTEID_CARTOGRAPHY, 50, 100))
+	2: if(SkillCheck(who, CARTOGRAPHY, 50, 100))
 		 props := array("regional", who.x - 850, who.y - 800, who.x + 850, who.y + 800, 400, 400);
 	     makemap(who, props, blank);
 	   else
 		 SendSysMessage(who, "You are not familiar enough with the area to draw the map");
 	   	 DestroyItem(blank);
 	   endif
-	3: if(SkillCheck(who, ATTRIBUTEID_CARTOGRAPHY, 80, 150))
+	3: if(SkillCheck(who, CARTOGRAPHY, 80, 150))
 	   	 props := array("world", 0, 0, 5119, 4095, 500, 400);
 		 makemap(who, props, blank);
 	   else

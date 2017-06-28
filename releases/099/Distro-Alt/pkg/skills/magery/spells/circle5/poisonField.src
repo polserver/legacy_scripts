@@ -35,7 +35,7 @@ program poisonfield( parms )
 	"EW" : fields:= CreateEastWestField(caster, UOBJ_POISONFIELD_EW, x, y, z, 5);
   endcase
   Detach();
-  var duration := 20 + ( CInt(GetAttribute( caster, ATTRIBUTEID_MAGERY ) ) / 3 );
+  var duration := 20 + ( CInt(GetAttribute( caster, MAGERY ) ) / 3 );
   sleep(duration);
   foreach fieldpart in fields
     DestroyItem(fieldpart);

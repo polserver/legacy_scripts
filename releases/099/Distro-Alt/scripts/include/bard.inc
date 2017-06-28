@@ -15,8 +15,8 @@ function play(character, theskill, item, attrib)
     0x0e9d:  success := 0x53;  fail := 0x54;
     0x0e9e:  success := 0x53;  fail := 0x54;
   endcase
-  var thepoints := GetAttribute(character, ATTRIBUTEID_MUSICIANSHIP);
-  if(SkillCheck(character, ATTRIBUTEID_MUSICIANSHIP, theskill, thepoints))
+  var thepoints := GetAttribute(character, MUSICIANSHIP);
+  if(SkillCheck(character, MUSICIANSHIP, theskill, thepoints))
     if(SkillCheck(character, attrib, theskill, thepoints * 2))
       PlaySoundEffect( character, success);
       return 1;
@@ -63,7 +63,7 @@ function PlayNoise(me, instrument, difficulty)
 	if (!difficulty)
 		MakeSound (me, elem.succeed);
 		return 1;
-	elseif (  SkillCheck(me, instrument, ATTRIBUTEID_MUSICIANSHIP, difficulty) )
+	elseif (  SkillCheck(me, instrument, MUSICIANSHIP, difficulty) )
 		MakeSound (me, elem.succeed);
 		return 1;
 	else
@@ -198,9 +198,9 @@ function BardResisted(caster, cast_on, amt, circle := 0)
 	// called by: most spells
 	// returns: amount of damage not resisted?
 
-        var musicianship := CInt(GetAttribute(caster, ATTRIBUTEID_MUSICIANSHIP));
-        var evalint := CInt(GetAttribute(caster, ATTRIBUTEID_EVALINT));
-        var resist := CInt(GetAttribute(cast_on, ATTRIBUTEID_MAGICRESISTANCE));
+        var musicianship := CInt(GetAttribute(caster, MUSICIANSHIP));
+        var evalint := CInt(GetAttribute(caster, EVALUATING_INTELLIGENCE));
+        var resist := CInt(GetAttribute(cast_on, RESISTING_SPELLS));
         
         // chk1 relates to the resist ability.
         var chk1 := (resist / 5);
@@ -223,11 +223,11 @@ function BardResisted(caster, cast_on, amt, circle := 0)
                 diff := chk2;
         endif
         
-        var points := getbardresistpoints(circle, cast_on, ATTRIBUTEID_MAGICRESISTANCE);
+        var points := getbardresistpoints(circle, cast_on, RESISTING_SPELLS);
         if(cast_on.dead)
                 return 0;
         endif
-        if(SkillCheck(cast_on, ATTRIBUTEID_MAGICRESISTANCE, diff, points))
+        if(SkillCheck(cast_on, RESISTING_SPELLS, diff, points))
                 SendSysMessage(cast_on, "You feel yourself resisting magical energy!");
                 PlaySoundEffect(cast_on, SFX_SPELL_WEAKEN);
                 PlayObjectCenteredEffect(cast_on, FX_CURSE_EFFECT, 5,5);

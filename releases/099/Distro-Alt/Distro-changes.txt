@@ -101,3 +101,8 @@ Distro change log
 					if there is no room for the cheque in the purchaser's pack or the coins to be deposited in the bank. No money will be
 					taken in that case and if redeeming the cheque fails because the bank box is full the cheque will be return to the player's
 					backpack.
+					
+25-Jun-2017			Yukiko removed the prefix "ATTRIBUTEID_" from the skill attributes and changed the names of some like EVALINT and ITEMID to 
+					longer names, EVALUATING_INTELLIGENCE and ITEM_IDENTIFICATION. See \scripts\include\attributes.inc for the new naming convention.
+					Updated the skills to include Bushido, Ninjitsu, Spellweaving,Mysticism, Imbuing, and Throwing bringing the skill count to 57 snd 
+					in line with ToL. Those skills aren't usable yet but I'm working on it.

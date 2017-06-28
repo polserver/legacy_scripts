@@ -23,12 +23,12 @@ program forensic(who)
     SendSysMessage(who, "Targetting cancelled");
     return;
   endif
-//  var pts := CInt(GetAttribute(who, ATTRIBUTEID_FORENSICS)*2);
-  var pts := CInt(GetAttribute(who, ATTRIBUTEID_FORENSICS) / 10) + 20;
+//  var pts := CInt(GetAttribute(who, FORENSIC_EVALUATION)*2);
+  var pts := CInt(GetAttribute(who, FORENSIC_EVALUATION) / 10) + 20;
   if(pts < 10)
     pts := 10;
   endif
-  if (SkillCheck(who, ATTRIBUTEID_FORENSICS, -1, pts))
+  if (SkillCheck(who, FORENSIC_EVALUATION, -1, pts))
     var lastHit := array;
     var kname, kserial, kweapon, strmessage;
     lastHit := GetObjProperty(what, "LastHit");

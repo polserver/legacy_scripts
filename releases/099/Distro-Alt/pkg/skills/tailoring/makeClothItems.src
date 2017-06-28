@@ -260,7 +260,7 @@ function MakeClothItems(who, cloth, kit)
         dif := 50;
       endif
       makenoise(who);
-      if(SkillCheck(who, ATTRIBUTEID_TAILORING, skill, skill*6))
+      if(SkillCheck(who, TAILORING, skill, skill*6))
         if(SubtractAmount(mainclothused, material))
           theitem := CreateItemInContainer(cont, objtype, 1);
           CheckToolWear (who, kit, SKILLID_TAILORING);
@@ -458,7 +458,7 @@ function MakeLeatherItems(who, cloth, kit)
         dif := 50;
       endif
       makenoise(who);
-      if(SkillCheck(who, ATTRIBUTEID_TAILORING, skill, skill*6))
+      if(SkillCheck(who, TAILORING, skill, skill*6))
         if(SubtractAmount(cloth, material))
           theitem := CreateItemInContainer(cont, objtype, 1);
           CheckToolWear (who, kit, SKILLID_TAILORING);

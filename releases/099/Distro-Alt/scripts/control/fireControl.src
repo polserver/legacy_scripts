@@ -26,7 +26,7 @@ program field_control( item )
     boss := SystemFindObjectBySerial(creater, SYSFIND_SEARCH_OFFLINE_MOBILES);
   endif
   SetScriptController(boss);
-  var dmg := CInt(GetAttribute(boss, ATTRIBUTEID_MAGERY)/10);
+  var dmg := CInt(GetAttribute(boss, MAGERY)/10);
   if((!dmg) || (dmg == 0))
     dmg := 5;
   endif

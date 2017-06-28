@@ -49,7 +49,7 @@ program spell_resurrect( parms )
       ev.type := EVID_ENGAGED;
       SendEvent(cast_on, ev);
       PlayObjectCenteredEffect(cast_on, 0x37b9,0x03, 0x0a);
-      if(SkillCheck(cast_on, ATTRIBUTEID_MAGICRESISTANCE, 70, 800))
+      if(SkillCheck(cast_on, RESISTING_SPELLS, 70, 800))
         var dmg := CalcSpellDamage(info.circle,caster,cast_on) + (RandomInt(20));
         ApplyRawDamageEX(cast_on, dmg, DMG_FORCED, caster);
       else

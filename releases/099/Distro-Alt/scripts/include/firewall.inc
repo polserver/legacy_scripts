@@ -50,7 +50,7 @@ foreach fire in fires
         PlaySoundEffect(fire, SOUND_EFFECT_FIREFIELD);
 endforeach
 var counter := 0;
-duration := CInt(GetAttribute( caster, ATTRIBUTEID_MAGERY ) );
+duration := CInt(GetAttribute( caster, MAGERY ) );
 for (counter := 1; counter <= duration; counter := counter + 1)
 foreach fire in fires
 	if (fire)

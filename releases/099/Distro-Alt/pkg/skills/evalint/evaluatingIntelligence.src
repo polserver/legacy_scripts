@@ -36,7 +36,7 @@ program EvaluatingIntelligence(who)
   // variables for sys messages
   var intell := getIntell(GetIntelligence(subject), subject.graphic, subject.gender);
   var mentalStreng := getMentalStreng(CInt(CInt(GetMana(subject))/CDbl(GetMaxMana(subject))*100));
-  var skill := GetAttribute(who, ATTRIBUTEID_EVALINT);
+  var skill := GetAttribute(who, EVALUATING_INTELLIGENCE);
   // adjust succeed and fail msgs here
   var strMsg, strFail;
   if(subject.graphic != 0x190 && subject.graphic != 0x191)
@@ -50,17 +50,17 @@ program EvaluatingIntelligence(who)
       strFail := subject.name + "' mental abilities."; 
     endif
   endif
-/*  var pts := CInt(GetAttribute(who, ATTRIBUTEID_EVALINT) + 1) *3;
+/*  var pts := CInt(GetAttribute(who, EVALUATING_INTELLIGENCE) + 1) *3;
   if (pts < 30) 
     pts := 30;
   endif */
-  var pts := CInt(GetAttribute(who, ATTRIBUTEID_EVALINT) / 10) + 15;
+  var pts := CInt(GetAttribute(who, EVALUATING_INTELLIGENCE) / 10) + 15;
   if(pts > 35)
     pts := 35;
   endif
-  if(SkillCheck(who,ATTRIBUTEID_EVALINT, -1, pts/3))
+  if(SkillCheck(who,EVALUATING_INTELLIGENCE, -1, pts/3))
     PrintTextAbovePrivateUC(subject, CAscZ(strMsg + " looks " + intell + "." ), "ENG", who);	
-    // player's evalint skill equal/greater than 76 can get mental strength info
+    // player's EVALUATING_INTELLIGENCE skill equal/greater than 76 can get mental strength info
     if(skill >= 76)
       PrintTextAbovePrivateUC(subject, CAscZ(strMsg + " is at " + mentalStreng + " mental strength."), "ENG", who);
     endif

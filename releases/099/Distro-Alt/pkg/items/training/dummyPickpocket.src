@@ -30,7 +30,7 @@ program pickpocket_dummy( who, dummy )
         	return;
 	endif
 
-	if( SkillCheck( who, ATTRIBUTEID_STEALING, 10, 40 ))
+	if( SkillCheck( who, STEALING, 10, 40 ))
 
 		PlaySoundEffect( who, SFX_58 );
 		SendSysMessage( who, "You unnoticedly grip into the bag." );

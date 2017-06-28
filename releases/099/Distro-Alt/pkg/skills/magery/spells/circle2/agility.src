@@ -28,7 +28,7 @@ program cast_AGILITY( parms )
     SendSysMessage(caster,"Another existing effect negates your spell!");
     return;
   endif
-  var magery := GetAttribute(caster, ATTRIBUTEID_MAGERY);
+  var magery := GetAttribute(caster, MAGERY);
   var mod_amount := GetModAmount( magery );
   var duration := GetModDuration( magery );
   DoTempMod(cast_on, "dex", mod_amount, duration);

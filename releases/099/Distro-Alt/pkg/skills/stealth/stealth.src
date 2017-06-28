@@ -15,7 +15,7 @@ program skill_stealth( who )
 
   EraseObjProperty(who, "IsMeditating");
   EraseObjProperty(who, "HealTimer");
-  if(GetAttribute(who, ATTRIBUTEID_HIDING) < 80)
+  if(GetAttribute(who, HIDING) < 80)
     PrintTextAbovePrivate( who, "You are not good enough at Hiding to do that", who );
     return;
   endif
@@ -29,13 +29,13 @@ program skill_stealth( who )
     PrintTextAbovePrivate( who, "You cant stealth while riding a horse!", who );
     return;
   endif
-//  var skill := CInt(GetAttribute(who, ATTRIBUTEID_STEALTH) / 10) + 20;
+//  var skill := CInt(GetAttribute(who, STEALTH) / 10) + 20;
 
-  var skill := CInt(GetAttribute(who, ATTRIBUTEID_ARMSLORE) / 10) + 15;
+  var skill := CInt(GetAttribute(who, ARMSLORE) / 10) + 15;
   if(skill > 35)
     skill := 35;
   endif
-  if(SkillCheck(who, ATTRIBUTEID_STEALTH, -1, skill))
+  if(SkillCheck(who, STEALTH, -1, skill))
     skill := (skill / 10);
     who.stealthsteps := skill + RandomInt(skill);
     PrintTextAbovePrivate( who, "You are now moving stealthily", who );

@@ -22,11 +22,11 @@ program training_dummy(who, dummy)
   endif
   var chk := 0;
   case(attribid)
-    "Wrestling": CheckSwing(who, ATTRIBUTEID_WRESTLING, anim, dummy);
-    "Swords":    CheckSwing(who, ATTRIBUTEID_SWORDSMANSHIP, anim, dummy);
-    "Mace":      CheckSwing(who, ATTRIBUTEID_MACEFIGHTING, anim, dummy);
-    "Fencing":   CheckSwing(who, ATTRIBUTEID_FENCING, anim, dummy);
-    "Macefighting":   CheckSwing(who, ATTRIBUTEID_MACEFIGHTING, anim, dummy);
+    "Wrestling": CheckSwing(who, WRESTLING, anim, dummy);
+    "Swords":    CheckSwing(who, SWORDSMANSHIP, anim, dummy);
+    "Mace":      CheckSwing(who, MACEFIGHTING, anim, dummy);
+    "Fencing":   CheckSwing(who, FENCING, anim, dummy);
+    "Macefighting":   CheckSwing(who, MACEFIGHTING, anim, dummy);
     "Archery":   SendSysMessage(who, "You must use an archery butte to train archery");
     default:     chk := 1;
   endcase
@@ -43,8 +43,8 @@ function CheckSwing(who, attribid, action, dummy)
     SendSysMessage(who, "You cannot learn any more from simply hitting a dummy.");
   else
     SkillCheck(who, attribid, 10, 40);
-    if(GetAttribute(who, ATTRIBUTEID_TACTICS) < 25)
-      SkillCheck(who, ATTRIBUTEID_TACTICS, 10, 20);
+    if(GetAttribute(who, TACTICS) < 25)
+      SkillCheck(who, TACTICS, 10, 20);
     endif
   endif
   PlaySoundEffect(who, SFX_13C);

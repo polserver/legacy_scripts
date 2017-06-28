@@ -9,8 +9,8 @@ program track(who)
   EraseObjProperty(who, "IsMeditating");
   EraseObjProperty(who, "HealTimer");
   UnloadConfigFile(":tracking:tracking");
-//  if(SkillCheck(who, ATTRIBUTEID_TRACKING, -1, (GetEffectiveSkill(who, SKILLID_TRACKING) + 30)))
-  if(SkillCheck(who, ATTRIBUTEID_TRACKING, -1, (GetEffectiveSkill(who, SKILLID_TRACKING))))
+//  if(SkillCheck(who, TRACKING, -1, (GetEffectiveSkill(who, SKILLID_TRACKING) + 30)))
+  if(SkillCheck(who, TRACKING, -1, (GetEffectiveSkill(who, SKILLID_TRACKING))))
     var tracker := ReadGameClock();
     SetObjProperty(who, "TrackingCounter", tracker);
     var range := CInt((GetEffectiveSkill(who, SKILLID_TRACKING)/3));

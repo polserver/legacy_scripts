@@ -203,7 +203,7 @@ function SkillGainForGold(npc_level, pc_level, trainskillid, goldreceived)
   return (goldreceived/10) + pc_level;
 endfunction
 
-function herding(ev)
+function Herd(ev)
   var holder := ev.data;
   var lx := holder[1];
   var ly := holder[2];

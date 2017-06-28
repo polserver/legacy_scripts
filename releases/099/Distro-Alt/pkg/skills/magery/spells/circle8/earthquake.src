@@ -50,7 +50,7 @@ program earthquake( parms )
 
 //////////////////////////////////////////////////////////////////////////////
 /*
-  var magery := GetAttribute(caster, ATTRIBUTEID_MAGERY);
+  var magery := GetAttribute(caster, MAGERY);
   var range := 12;
   var victims := ListMobilesNearLocationEx( caster.x, caster.y, caster.z, range, LISTEX_FLAG_NORMAL + LISTEX_FLAG_HIDDEN, caster.realm );
   var dmg;

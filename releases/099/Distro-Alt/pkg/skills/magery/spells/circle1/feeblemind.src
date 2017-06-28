@@ -35,7 +35,7 @@ program cast_FEEBLEMIND( parms )
 	SendSysMessage(caster,"Already under the influence!");
 	return;
   endif
-  var magery := GetAttribute(caster, ATTRIBUTEID_MAGERY);
+  var magery := GetAttribute(caster, MAGERY);
   var mod_amount := Resisted(info.circle,caster,cast_on,(GetModAmount( magery )));
   var duration := GetModDuration( magery );
   DoTempMod(cast_on, "int", 0 - mod_amount, duration);

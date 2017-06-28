@@ -43,11 +43,11 @@ program herd(who)
                 SendSysMessage(who, "You can't herd that!");
                 return;
         endif
-		var pts := CInt(GetAttribute(who, ATTRIBUTEID_HERDING) / 10) + 15;
+		var pts := CInt(GetAttribute(who, HERDING) / 10) + 15;
 		if(pts > 35)
 			pts := 35;
 		endif
-		if(SkillCheck(who,ATTRIBUTEID_HERDING, herdskill, pts/3))
+		if(SkillCheck(who,HERDING, herdskill, pts/3))
 
                 SendSysMessage(who, "Where do you want to move "+ npc.name +" to?");
                 var location := TargetCoordinates(who);

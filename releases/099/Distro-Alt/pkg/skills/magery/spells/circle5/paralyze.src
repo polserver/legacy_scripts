@@ -31,7 +31,7 @@ program cast_paralyze( parms )
             SendSysMessage (caster, "The spell was reflected back opnto you!!!", color := 33);
             cast_on := caster;
         endif
-        var amt := 10 + RandomInt(CInt(GetAttribute(caster, ATTRIBUTEID_MAGERY)/5));
+        var amt := 10 + RandomInt(CInt(GetAttribute(caster, MAGERY)/5));
 	var duration := CInt((AP_GetSkill(caster, EVALUATING_INTELLIGENCE) / 10) * 1500);
         duration := pararesist(2, caster, cast_on, amt, info);
 	cast_on.SetParalyzed(1);
@@ -59,16 +59,16 @@ program cast_paralyze( parms )
   if (Reflected(cast_on))
 	cast_on := caster;
   endif
-  var amt := 10 + RandomInt(CInt(GetAttribute(caster, ATTRIBUTEID_MAGERY)/5));
+  var amt := 10 + RandomInt(CInt(GetAttribute(caster, MAGERY)/5));
   var duration := pararesist(2, caster, cast_on, amt, info);
   DoTempMod(cast_on, "p", 1, duration);
   */
 endprogram
 
 function pararesist(circle, caster, cast_on, amt, info)
-  var magery := CInt(GetAttribute(caster, ATTRIBUTEID_MAGERY));
-  var evalint := CInt(GetAttribute(caster, ATTRIBUTEID_EVALINT));
-  var resist := CInt(GetAttribute(cast_on, ATTRIBUTEID_MAGICRESISTANCE));
+  var magery := CInt(GetAttribute(caster, MAGERY));
+  var evalint := CInt(GetAttribute(caster, EVALUATING_INTELLIGENCE));
+  var resist := CInt(GetAttribute(cast_on, RESISTING_SPELLS));
   var chk1 := (resist / 5);
   var chk2 := resist - (((magery - 20) / 5) + (circle * 5));
   if(chk1 < 1)
@@ -83,7 +83,7 @@ function pararesist(circle, caster, cast_on, amt, info)
   else
     diff := chk2;
   endif
-  var points := getresistpoints(info.circle, cast_on, SKILLID_MAGICRESISTANCE);
+  var points := getresistpoints(info.circle, cast_on, SKILLID_RESISTING_SPELLS);
   if(cast_on.dead)
     return 0;
   endif
@@ -91,7 +91,7 @@ function pararesist(circle, caster, cast_on, amt, info)
 	SendSysMessage(cast_on, "You feel yourself resisting magical energy!");
 	PlaySoundEffect(cast_on, SFX_SPELL_WEAKEN);
 	PlayObjectCenteredEffect(cast_on, FX_CURSE_EFFECT, 5,5);
-	AwardRawSkillPoints(cast_on, SKILLID_MAGICRESISTANCE, points);
+	AwardRawSkillPoints(cast_on, SKILLID_RESISTING_SPELLS, points);
 	amt := 0;
 	return amt;
   endif

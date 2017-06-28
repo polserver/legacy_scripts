@@ -68,7 +68,7 @@ program resmelt(who)
         sleep(1);
         PlaySoundEffect(who, 0x22);
         if(DestroyItem(thing))
-          if(SkillCheck(who, ATTRIBUTEID_BLACKSMITHY, skill, 10))
+          if(SkillCheck(who, BLACKSMITHY, skill, 10))
             SendSysMessage(who, "You manage to get a bit of material out of that");
             CreateItemInBackpack(who, ingot, amt);
           else
@@ -112,7 +112,7 @@ program resmelt(who)
     sleep(1);
     PlaySoundEffect(who, 0x22);
     if(DestroyItem(use_on))
-      if(SkillCheck(who, ATTRIBUTEID_BLACKSMITHY, skill, 10))
+      if(SkillCheck(who, BLACKSMITHY, skill, 10))
         SendSysMessage(who, "You manage to get a bit of material out of that");
         CreateItemInBackpack(who, ingot, amt);
       else

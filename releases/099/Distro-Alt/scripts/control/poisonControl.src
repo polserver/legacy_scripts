@@ -13,7 +13,7 @@ program field_control(item)
   var npccfg := ReadConfigFile("::npcdesc");
   var boss := SystemFindObjectBySerial(GetObjProperty(item, "creater"), SYSFIND_SEARCH_OFFLINE_MOBILES);
   SetScriptController(boss);
-  var dmg := CInt(GetAttribute(boss, ATTRIBUTEID_MAGERY) / 25);
+  var dmg := CInt(GetAttribute(boss, MAGERY) / 25);
   if(!dmg)
     dmg := 1;
   endif

@@ -418,8 +418,8 @@ function Resisted(circle, caster, cast_on, amt)
 	// returns: amount of damage not resisted?
 
         var magery := CInt(GetEffectiveSkill(caster, SKILLID_MAGERY));
-        var evalint := CInt(GetEffectiveSkill(caster, SKILLID_EVALINT));
-        var resist := CInt(GetEffectiveSkill(cast_on, SKILLID_MAGICRESISTANCE));
+        var evalint := CInt(GetEffectiveSkill(caster, SKILLID_EVALUATING_INTELLIGENCE));
+        var resist := CInt(GetEffectiveSkill(cast_on, SKILLID_RESISTING_SPELLS));
         
         // chk1 relates to the resist ability.
         var chk1 := (resist / 5);
@@ -442,11 +442,11 @@ function Resisted(circle, caster, cast_on, amt)
                 diff := chk2;
         endif
         
-        var points := getresistpoints(circle, cast_on, SKILLID_MAGICRESISTANCE);
+        var points := getresistpoints(circle, cast_on, SKILLID_RESISTING_SPELLS);
         if(cast_on.dead)
                 return 0;
         endif
-        if(SkillCheck(cast_on, ATTRIBUTEID_MAGICRESISTANCE, diff, points))
+        if(SkillCheck(cast_on, RESISTING_SPELLS, diff, points))
                 SendSysMessage(cast_on, "You feel yourself resisting magical energy!");
                 PlaySoundEffect(cast_on, SFX_SPELL_WEAKEN);
                 PlayObjectCenteredEffect(cast_on, FX_CURSE_EFFECT, 5,5);

@@ -32,7 +32,7 @@ program cast_curse( parms )
         
   PlaySoundEffect(cast_on, SFX_SPELL_CURSE);
   PlayObjectCenteredEffect( cast_on, FX_CURSE_EFFECT, 10,10);
-  var magery := GetAttribute(caster, ATTRIBUTEID_MAGERY);
+  var magery := GetAttribute(caster, MAGERY);
   var mod_amount := Resisted(info.circle,caster,cast_on,GetModAmount( magery ));
   var duration := GetModDuration( magery );
 	SetObjProperty(cast_on, "LastHit", {caster.name,caster.serial, "curse" });

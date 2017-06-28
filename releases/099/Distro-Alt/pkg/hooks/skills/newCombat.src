@@ -38,7 +38,6 @@ function FindSkillidByIdentifier(skid)
     "Swords":    retval := SKILLID_SWORDSMANSHIP;
     "Mace":      retval := SKILLID_MACEFIGHTING;
     "Archery":    retval := SKILLID_ARCHERY;
-    "Polearms": retval := SKILLID_POLEARMS;
   endcase
   Return retval;
 endfunction

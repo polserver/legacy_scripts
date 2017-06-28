@@ -75,11 +75,11 @@ function accuracy(who,item)
     var cfg := ReadConfigFile(":combat:itemdesc");
     var attrib := cfg[item.objtype].Attribute;
     case(attrib)
-      "Wrestling": ModifyAttributeTemporaryMod(who, ATTRIBUTEID_WRESTLING,     amt);
-      "Fencing":   ModifyAttributeTemporaryMod(who, ATTRIBUTEID_FENCING,       amt);
-      "Archery":   ModifyAttributeTemporaryMod(who, ATTRIBUTEID_ARCHERY,       amt);
-      "Swords":    ModifyAttributeTemporaryMod(who, ATTRIBUTEID_SWORDSMANSHIP, amt);
-      "Mace":      ModifyAttributeTemporaryMod(who, ATTRIBUTEID_MACEFIGHTING,  amt);
+      "Wrestling": ModifyAttributeTemporaryMod(who, WRESTLING,     amt);
+      "Fencing":   ModifyAttributeTemporaryMod(who, FENCING,       amt);
+      "Archery":   ModifyAttributeTemporaryMod(who, ARCHERY,       amt);
+      "Swords":    ModifyAttributeTemporaryMod(who, SWORDSMANSHIP, amt);
+      "Mace":      ModifyAttributeTemporaryMod(who, MACEFIGHTING,  amt);
     endcase
     EraseObjProperty(item, "#equipped");
     return 1;

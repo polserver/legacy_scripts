@@ -26,7 +26,7 @@ program cast_bless( parms )
   PlayObjectCenteredEffect( cast_on, FX_BLESS_EFFECT, 10,10);
 
 
-  var magery := GetAttribute(caster, ATTRIBUTEID_MAGERY);
+  var magery := GetAttribute(caster, MAGERY);
   var mod_amount := GetModAmount(magery);
   var duration := GetModDuration(magery);
   if(CanMod(cast_on, "str"))

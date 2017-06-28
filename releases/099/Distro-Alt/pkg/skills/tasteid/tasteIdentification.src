@@ -40,7 +40,7 @@ program do_tasteid( character )
    
     content_descr := "";
 
-    if (SkillCheck(character, ATTRIBUTEID_TASTEID, -1, thepoints ))
+    if (SkillCheck(character, TASTE_IDENTIFICATION, -1, thepoints ))
    
 		var itemdesc := alchemcfg[the_item.objtype].sname;   
 		if (itemdesc)
@@ -107,7 +107,7 @@ program do_tasteid(who)
     return;
   endif
   var content_descr := "";
-  if(SkillCheck(who, ATTRIBUTEID_TASTEID, -1, CInt(GetAttribute(who, ATTRIBUTEID_TASTEID))))
+  if(SkillCheck(who, TASTE_IDENTIFICATION, -1, CInt(GetAttribute(who, TASTE_IDENTIFICATION))))
     case(the_item.objtype)
       0x1DC04: poison_descr := "a lesser poison.";
       0x1DC05: poison_descr := "a regular poison.";

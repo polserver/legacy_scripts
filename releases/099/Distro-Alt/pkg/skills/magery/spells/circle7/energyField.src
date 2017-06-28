@@ -35,7 +35,7 @@ program efield( parms )
   endcase
   PlaySoundEffect(caster,0x20c);
   Detach();
-  var duration := 20 + ( CInt(GetAttribute( caster, ATTRIBUTEID_MAGERY ) ) / 3 );
+  var duration := 20 + ( CInt(GetAttribute( caster, MAGERY ) ) / 3 );
   var i;
   sleep(duration);
   foreach fieldpart in fields

@@ -80,7 +80,7 @@ function cookit(who,item);
     points := GetEffectiveSkill(who, SKILLID_COOKING) * 2;
   endif
   if(skill_needed)
-    if(SkillCheck( who, ATTRIBUTEID_COOKING, skill_needed, 0));
+    if(SkillCheck( who, COOKING, skill_needed, 0));
       var amt := item.amount;
       if(DestroyItem(item))
         newitem := CreateItemInBackpack(who, product, amt);

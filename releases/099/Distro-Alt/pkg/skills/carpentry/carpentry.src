@@ -330,13 +330,13 @@ function MakeCarpentryItems(who, tool, objtype, cont, item1, item2)
   PlaySoundEffect(who, 0x23e);
   sleep(2);
   var chk := 0;
-  if(SkillCheck(who, ATTRIBUTEID_CARPENTRY, skill, (skill * 2)))
+  if(SkillCheck(who, CARPENTRY, skill, (skill * 2)))
     if(skillid)
       if(SkillCheck(who, skillid, CInt(skill2), (skill2 * 2)))
         if(SubtractAmount(item1, material) && SubtractAmount(item2, material2))
           theitem := CreateItemInContainer(cont, objtype, 1);
           if(theitem)
-            CheckToolWear (who, tool, ATTRIBUTEID_CARPENTRY);
+            CheckToolWear (who, tool, CARPENTRY);
             chk := 1;
           endif
         endif
@@ -345,7 +345,7 @@ function MakeCarpentryItems(who, tool, objtype, cont, item1, item2)
       if(SubtractAmount(item1, material))
         theitem := CreateItemInContainer(cont, objtype, 1);
         if(theitem)
-          CheckToolWear (who, tool, ATTRIBUTEID_CARPENTRY);
+          CheckToolWear (who, tool, CARPENTRY);
           chk := 1;
         endif
       endif
@@ -396,7 +396,7 @@ function MakeCarpentryItems(who, tool, objtype, cont, item1, item2)
     endif
   endif
   if((theitem.objtype in array( UOBJ_CHEST, UOBJ_BOX, 0x0e77, 0x0e3c, 0x0e3f, 0x09a9, 0x0e43, 0x0e42, 0x0e80, 0x09aa )) || (cfg[theitem.objtype].lockable))
-    var tinker:= SkillCheck(who, ATTRIBUTEID_TINKERING, 40, 40);
+    var tinker:= SkillCheck(who, TINKERING, 40, 40);
     if(tinker)
       SetObjProperty(theitem, "lockable","1");
       var lockid := AllocLockId();
@@ -884,7 +884,7 @@ function makewooditems(who, tool, objtype, lop, cont)
         sleep(2);
         PlaySoundEffect(who, 0x23e);
         sleep(2);
-        if(SkillCheck(who, ATTRIBUTEID_CARPENTRY, CInt(skill), CInt(skill*4)))
+        if(SkillCheck(who, CARPENTRY, CInt(skill), CInt(skill*4)))
           checker := 0;
           foreach thing in stavearray
             if(!DestroyItem(thing))
@@ -949,13 +949,13 @@ function makewooditems(who, tool, objtype, lop, cont)
     PlaySoundEffect(who, 0x23e);
     sleep(2);
     var chk := 0;
-    if(SkillCheck(who, ATTRIBUTEID_CARPENTRY, CInt(skill), 0))
+    if(SkillCheck(who, CARPENTRY, CInt(skill), 0))
       var amt := item1.amount;
       if(SubtractAmount(item1, amt))
         theitem := CreateItemInContainer(cont, objtype, amt);
         if(theitem)
           AwardRawSkillPoints(who, SKILLID_CARPENTRY, getpoints(who, GetEffectiveSkill(who, SKILLID_CARPENTRY), (skill * 4)));
-          CheckToolWear (who, tool, ATTRIBUTEID_CARPENTRY);
+          CheckToolWear (who, tool, CARPENTRY);
           chk := 1;
         endif
       endif

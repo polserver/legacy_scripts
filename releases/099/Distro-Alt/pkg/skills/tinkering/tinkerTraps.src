@@ -102,7 +102,7 @@ function Resist(cast_on, amt)
   if(cast_on.dead)
     return 0;
   endif
-  if(SkillCheck(cast_on, ATTRIBUTEID_MAGICRESISTANCE, amt, (amt * 2)))
+  if(SkillCheck(cast_on, RESISTING_SPELLS, amt, (amt * 2)))
     SendSysMessage(cast_on, "You feel yourself resisting magical energy!");
     PlaySoundEffect(cast_on, SFX_SPELL_WEAKEN);
     PlayObjectCenteredEffect(cast_on, FX_CURSE_EFFECT, 5,5);

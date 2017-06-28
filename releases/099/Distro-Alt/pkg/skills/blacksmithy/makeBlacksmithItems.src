@@ -663,7 +663,7 @@ function makeBlacksmithItems(who, what, amt, cont, hammer)
 		sleep(1);
 		PlaySoundEffect(who, SFX_ANVIL);
       pts := CInt(points + ptmod);
-      if(SkillCheck(who, ATTRIBUTEID_BLACKSMITHY, skil, 0))
+      if(SkillCheck(who, BLACKSMITHY, skil, 0))
         nme := "";
         theitem := CreateItemInContainer(cont, what, 1);
         if(theitem)
@@ -933,7 +933,7 @@ function resmelt(who, tongs)
   PlaySoundEffect(who, 0x2c);
   sleep(1);
   if(DestroyItem(use_on))
-	if(SkillCheck(who, ATTRIBUTEID_BLACKSMITHY, skill, 10))
+	if(SkillCheck(who, BLACKSMITHY, skill, 10))
 	  SendSysMessage(who, "You manage to get a bit of material out of that");
 	  CreateItemInBackpack(who, ingot, amt);
 	else

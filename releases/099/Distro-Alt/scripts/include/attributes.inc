@@ -1,3 +1,14 @@
+/////////////////////////////////////////////////////
+// 06/25/2017 Yukiko removed ATTRIBUTEID_ from the
+// atribute constant declarations. I left SKILLID_
+// and VITALID_ alone to avoid ambiguities, 
+// especially with skills else there would have been
+// naming conflicts. I removed attribute aliases as
+// well such as evalint. I expanded the attribute
+// constant names to their full name, example
+// TESTEID is now TASTE_IDENTIFICATION.
+/////////////////////////////////////////////////////
+
 use vitals;
 use attributes;
 use uo;
@@ -21,69 +32,64 @@ const CPROP_NAME_PREFIX_REGEN_RATE := "NewRegenRateFor";
 const DEFAULT_SETTING_SKILL_ALWAYS_GAIN_UNTIL  := 10.0;
 const DEFAULT_SETTING_SKILL_CHECK_MAX_CHANCE  := 100;
 const DEFAULT_SETTING_SKILL_CHECK_MIN_CHANCE  := 0;
-const ATTRIBUTEID_ALCHEMY          := "alchemy";
-const ATTRIBUTEID_ANATOMY          := "anatomy";
-const ATTRIBUTEID_ANIMALLORE       := "animallore";
-const ATTRIBUTEID_ARCHERY          := "archery";
-const ATTRIBUTEID_ARMSLORE         := "armslore";
-const ATTRIBUTEID_BEGGING          := "begging";
-const ATTRIBUTEID_BLACKSMITHY      := "blacksmithy";
-const ATTRIBUTEID_BOWCRAFT         := "bowcraft";
-const ATTRIBUTEID_CAMPING          := "camping";
-const ATTRIBUTEID_CARPENTRY        := "carpentry";
-const ATTRIBUTEID_CARTOGRAPHY      := "cartography";
-const ATTRIBUTEID_COOKING          := "cooking";
-const ATTRIBUTEID_DETECTINGHIDDEN  := "detectinghidden";
-const ATTRIBUTEID_DETECTINGHIDDENALIAS := "detecthidden";
-const ATTRIBUTEID_ENTICEMENT       := "enticement";
-const ATTRIBUTEID_EVALINT    	   := "evaluatingintelligence";
-const ATTRIBUTEID_EVALINTALIAS1    := "evaluatingint";
-const ATTRIBUTEID_EVALINTALIAS2    := "evalint";
-const EVALUATING_INTELLIGENCE      := ATTRIBUTEID_EVALINT;
-const ATTRIBUTEID_FENCING          := "fencing";
-const ATTRIBUTEID_FISHING          := "fishing";
-const ATTRIBUTEID_FORENSICS        := "forensicevaluation";
-const ATTRIBUTEID_FORENSICSALIAS1  := "forensiceval";
-const ATTRIBUTEID_FORENSICSALIAS2  := "forensics";
-const ATTRIBUTEID_HEALING          := "healing";
-const ATTRIBUTEID_HERDING          := "herding";
-const ATTRIBUTEID_HIDING           := "hiding";
-const ATTRIBUTEID_INSCRIPTION      := "inscription";
-const INSCRIPTION                  := ATTRIBUTEID_INSCRIPTION;
-const ATTRIBUTEID_ITEMID           := "itemidentification";
-const ATTRIBUTEID_ITEMIDALIAS1     := "ItemId";
-const ATTRIBUTEID_LOCKPICKING      := "lockpicking";
-const ATTRIBUTEID_LUMBERJACKING    := "lumberjacking";
-const ATTRIBUTEID_MACEFIGHTING     := "macefighting";
-const ATTRIBUTEID_MACEFIGHTINGALIAS := "mace";
-const ATTRIBUTEID_MAGERY           := "magery";
-const ATTRIBUTEID_MAGICRESISTANCE  := "resistingspells";
-const RESISTING_SPELLS             := ATTRIBUTEID_MAGICRESISTANCE;
-const ATTRIBUTEID_MAGICRESISTANCEALIAS1 := "magicresist";
-const ATTRIBUTEID_MAGICRESISTANCEALIAS2 := "magicresistance";
-const ATTRIBUTEID_MAGICRESISTANCEALIAS3 := "resist";
-const ATTRIBUTEID_MEDITATION       := "meditation";
-const ATTRIBUTEID_MINING           := "mining";
-const ATTRIBUTEID_MUSICIANSHIP     := "musicianship";
-const ATTRIBUTEID_PARRY            := "parry";
-const ATTRIBUTEID_PEACEMAKING      := "peacemaking";
-const ATTRIBUTEID_POISONING        := "poisoning";
-const ATTRIBUTEID_PROVOCATION      := "provocation";
-const ATTRIBUTEID_REMOVETRAP       := "removetrap";
-const ATTRIBUTEID_SNOOPING         := "snooping";
-const ATTRIBUTEID_SPIRITSPEAK      := "spiritspeak";
-const ATTRIBUTEID_STEALING         := "stealing";
-const ATTRIBUTEID_STEALTH          := "stealth";
-const ATTRIBUTEID_SWORDSMANSHIP    := "swordsmanship";
-const ATTRIBUTEID_SWORDSMANSHIPALIAS := "swords";
-const ATTRIBUTEID_TACTICS          := "tactics";
-const ATTRIBUTEID_TAILORING        := "tailoring";
-const ATTRIBUTEID_TAMING           := "animaltaming";
-const ATTRIBUTEID_TASTEID          := "tasteidentification";
-const ATTRIBUTEID_TINKERING        := "tinkering";
-const ATTRIBUTEID_TRACKING         := "tracking";
-const ATTRIBUTEID_VETERINARY       := "veterinary";
-const ATTRIBUTEID_WRESTLING        := "wrestling";
+const ALCHEMY          := "alchemy";
+const ANATOMY          := "anatomy";
+const ANIMALLORE       := "animallore";
+const ARCHERY          := "archery";
+const ARMSLORE         := "armslore";
+const BEGGING          := "begging";
+const BLACKSMITHY      := "blacksmithy";
+const BOWCRAFT         := "bowcraft";
+const CAMPING          := "camping";
+const CARPENTRY        := "carpentry";
+const CARTOGRAPHY      := "cartography";
+const COOKING          := "cooking";
+const DETECTING_HIDDEN  := "detectinghidden";
+const DISCORDANCE          := "discordance";
+const EVALUATING_INTELLIGENCE    	   := "evaluatingintelligence";
+const FOCUS             := "focus";
+const FENCING          := "fencing";
+const FISHING          := "fishing";
+const FORENSIC_EVALUATION        := "forensicevaluation";
+const HEALING          := "healing";
+const HERDING           := "herding";
+const HIDING           := "hiding";
+const IMBUING           := "imbuing";
+const INSCRIPTION      := "inscription";
+const ITEM_IDENTIFICATION           := "itemidentification";
+const LOCKPICKING      := "lockpicking";
+const LUMBERJACKING    := "lumberjacking";
+const MACEFIGHTING     := "macefighting";
+const MAGERY           := "magery";
+const RESISTING_SPELLS             := "resistingspells";
+const MEDITATION       := "meditation";
+const MINING           := "mining";
+const MUSICIANSHIP     := "musicianship";
+const PARRYING           := "parry";
+const PEACEMAKING      := "peacemaking";
+const POISONING        := "poisoning";
+const PROVOCATION      := "provocation";
+const REMOVETRAP       := "removetrap";
+const SNOOPING         := "snooping";
+const SPIRITSPEAK      := "spiritspeak";
+const STEALING         := "stealing";
+const STEALTH          := "stealth";
+const SWORDSMANSHIP    := "swordsmanship";
+const TACTICS          := "tactics";
+const TAILORING        := "tailoring";
+const TAMING           := "animaltaming";
+const TASTE_IDENTIFICATION          := "tasteidentification";
+const TINKERING        := "tinkering";
+const TRACKING         := "tracking";
+const VETERINARY       := "veterinary";
+const WRESTLING        := "wrestling";
+const CHIVALRY          := "chivalry";
+const NECROMANCY       := "necromancy";
+const NINJITSU         := "ninjitsu";
+const BUSHIDO          := "bushido";
+const SPELLWEAVING     := "spellweaving";
+const THROWING         := "throwing";
+const MYSTICISM         := "mysticism";
 const ATTRIBUTEID_DEXTERITY        := "dexterity";
 const ATTRIBUTEID_INTELLIGENCE     := "intelligence";
 const ATTRIBUTEID_STRENGTH         := "strength";
@@ -269,55 +275,64 @@ endfunction
 
 function GetAttributeIdBySkillId(skillid)
   case(skillid)
-    SKILLID_ALCHEMY:    return ATTRIBUTEID_ALCHEMY;
-    SKILLID_ANATOMY:    return ATTRIBUTEID_ANATOMY;
-    SKILLID_ANIMALLORE:    return ATTRIBUTEID_ANIMALLORE;
-    SKILLID_ITEMID:      return ATTRIBUTEID_ITEMID;
-    SKILLID_ARMSLORE:    return ATTRIBUTEID_ARMSLORE;
-    SKILLID_PARRY:      return ATTRIBUTEID_PARRY;
-    SKILLID_BEGGING:    return ATTRIBUTEID_BEGGING;
-    SKILLID_BLACKSMITHY:    return ATTRIBUTEID_BLACKSMITHY;
-    SKILLID_BOWCRAFT:    return ATTRIBUTEID_BOWCRAFT;
-    SKILLID_PEACEMAKING:    return ATTRIBUTEID_PEACEMAKING;
-    SKILLID_CAMPING:    return ATTRIBUTEID_CAMPING;
-    SKILLID_CARPENTRY:    return ATTRIBUTEID_CARPENTRY;
-    SKILLID_CARTOGRAPHY:    return ATTRIBUTEID_CARTOGRAPHY;
-    SKILLID_COOKING:    return ATTRIBUTEID_COOKING;
-    SKILLID_DETECTINGHIDDEN:  return ATTRIBUTEID_DETECTINGHIDDEN;
-    SKILLID_ENTICEMENT:    return ATTRIBUTEID_ENTICEMENT;
-    SKILLID_EVALINT:    return ATTRIBUTEID_EVALINT;
-    SKILLID_HEALING:    return ATTRIBUTEID_HEALING;
-    SKILLID_FISHING:    return ATTRIBUTEID_FISHING;
-    SKILLID_FORENSICS:    return ATTRIBUTEID_FORENSICS;
-    SKILLID_HERDING:    return ATTRIBUTEID_HERDING;
-    SKILLID_HIDING:      return ATTRIBUTEID_HIDING;
-    SKILLID_PROVOCATION:    return ATTRIBUTEID_PROVOCATION;
-    SKILLID_INSCRIPTION:    return ATTRIBUTEID_INSCRIPTION;
-    SKILLID_LOCKPICKING:    return ATTRIBUTEID_LOCKPICKING;
-    SKILLID_MAGERY:      return ATTRIBUTEID_MAGERY;
-    SKILLID_MAGICRESISTANCE:  return ATTRIBUTEID_MAGICRESISTANCE;
-    SKILLID_TACTICS:    return ATTRIBUTEID_TACTICS;
-    SKILLID_SNOOPING:    return ATTRIBUTEID_SNOOPING;
-    SKILLID_MUSICIANSHIP:    return ATTRIBUTEID_MUSICIANSHIP;
-    SKILLID_POISONING:    return ATTRIBUTEID_POISONING;
-    SKILLID_ARCHERY:    return ATTRIBUTEID_ARCHERY;
-    SKILLID_SPIRITSPEAK:    return ATTRIBUTEID_SPIRITSPEAK;
-    SKILLID_STEALING:    return ATTRIBUTEID_STEALING;
-    SKILLID_TAILORING:    return ATTRIBUTEID_TAILORING;
-    SKILLID_TAMING:      return ATTRIBUTEID_TAMING;
-    SKILLID_TASTEID:    return ATTRIBUTEID_TASTEID;
-    SKILLID_TINKERING:    return ATTRIBUTEID_TINKERING;
-    SKILLID_TRACKING:    return ATTRIBUTEID_TRACKING;
-    SKILLID_VETERINARY:    return ATTRIBUTEID_VETERINARY;
-    SKILLID_SWORDSMANSHIP:    return ATTRIBUTEID_SWORDSMANSHIP;
-    SKILLID_MACEFIGHTING:    return ATTRIBUTEID_MACEFIGHTING;
-    SKILLID_FENCING:    return ATTRIBUTEID_FENCING;
-    SKILLID_WRESTLING:    return ATTRIBUTEID_WRESTLING;
-    SKILLID_LUMBERJACKING:    return ATTRIBUTEID_LUMBERJACKING;
-    SKILLID_MINING:      return ATTRIBUTEID_MINING;
-    SKILLID_MEDITATION:    return ATTRIBUTEID_MEDITATION;
-    SKILLID_STEALTH:    return ATTRIBUTEID_STEALTH;
-    SKILLID_REMOVETRAP:    return ATTRIBUTEID_REMOVETRAP;
+    SKILLID_ALCHEMY:              return ALCHEMY;
+    SKILLID_ANATOMY:              return ANATOMY;
+    SKILLID_ANIMALLORE:           return ANIMALLORE;
+    SKILLID_ITEM_IDENTIFICATION:               return ITEM_IDENTIFICATION;
+    SKILLID_ARMSLORE:             return ARMSLORE;
+    SKILLID_PARRYING:                return PARRYING;
+    SKILLID_BEGGING:              return BEGGING;
+    SKILLID_BLACKSMITHY:          return BLACKSMITHY;
+    SKILLID_BOWCRAFT:             return BOWCRAFT;
+    SKILLID_PEACEMAKING:          return PEACEMAKING;
+    SKILLID_CAMPING:              return CAMPING;
+    SKILLID_CARPENTRY:            return CARPENTRY;
+    SKILLID_CARTOGRAPHY:          return CARTOGRAPHY;
+    SKILLID_COOKING:              return COOKING;
+    SKILLID_DETECTING_HIDDEN:      return DETECTING_HIDDEN;
+    SKILLID_DISCORDANCE:           return DISCORDANCE;
+    SKILLID_EVALUATING_INTELLIGENCE:              return EVALUATING_INTELLIGENCE;
+    SKILLID_HEALING:              return HEALING;
+    SKILLID_FISHING:              return FISHING;
+    SKILLID_FORENSIC_EVALUATION:            return FORENSIC_EVALUATION;
+    SKILLID_HERDING:              return HERDING;
+    SKILLID_HIDING:               return HIDING;
+    SKILLID_PROVOCATION:          return PROVOCATION;
+    SKILLID_INSCRIPTION:          return INSCRIPTION;
+    SKILLID_LOCKPICKING:          return LOCKPICKING;
+    SKILLID_MAGERY:               return MAGERY;
+    SKILLID_RESISTING_SPELLS:      return RESISTING_SPELLS;
+    SKILLID_TACTICS:              return TACTICS;
+    SKILLID_SNOOPING:             return SNOOPING;
+    SKILLID_MUSICIANSHIP:         return MUSICIANSHIP;
+    SKILLID_POISONING:            return POISONING;
+    SKILLID_ARCHERY:              return ARCHERY;
+    SKILLID_SPIRITSPEAK:          return SPIRITSPEAK;
+    SKILLID_STEALING:             return STEALING;
+    SKILLID_TAILORING:            return TAILORING;
+    SKILLID_TAMING:               return TAMING;
+    SKILLID_TASTE_IDENTIFICATION:              return TASTE_IDENTIFICATION;
+    SKILLID_TINKERING:            return TINKERING;
+    SKILLID_TRACKING:             return TRACKING;
+    SKILLID_VETERINARY:           return VETERINARY;
+    SKILLID_SWORDSMANSHIP:        return SWORDSMANSHIP;
+    SKILLID_MACEFIGHTING:         return MACEFIGHTING;
+    SKILLID_FENCING:              return FENCING;
+    SKILLID_WRESTLING:            return WRESTLING;
+    SKILLID_LUMBERJACKING:        return LUMBERJACKING;
+    SKILLID_MINING:               return MINING;
+    SKILLID_MEDITATION:           return MEDITATION;
+    SKILLID_STEALTH:              return STEALTH;
+    SKILLID_REMOVETRAP:           return REMOVETRAP;
+    SKILLID_NECROMANCY:           return NECROMANCY;
+    SKILLID_FOCUS:                return FOCUS;
+    SKILLID_CHIVALRY:              return CHIVALRY;
+    SKILLID_BUSHIDO:               return BUSHIDO;
+    SKILLID_NINJITSU:              return NINJITSU;
+    SKILLID_SPELLWEAVING:          return SPELLWEAVING;
+    SKILLID_MYSTICISM:             return MYSTICISM;
+    SKILLID_IMBUING:               return IMBUING;
+    SKILLID_THROWING:              return THROWING;
   endcase
   var ret        := error;
   ret.+errortext := "No equivalent attributeid found for skillid " + skillid;
@@ -325,58 +340,67 @@ function GetAttributeIdBySkillId(skillid)
 endfunction
 
 function GetAttributeIds()
-  return { ATTRIBUTEID_ALCHEMY,
-     ATTRIBUTEID_ANATOMY,
-     ATTRIBUTEID_ANIMALLORE,
-     ATTRIBUTEID_ARCHERY,
-     ATTRIBUTEID_ARMSLORE,
-     ATTRIBUTEID_BEGGING,
-     ATTRIBUTEID_BLACKSMITHY,
-     ATTRIBUTEID_BOWCRAFT,
-     ATTRIBUTEID_CAMPING,
-     ATTRIBUTEID_CARPENTRY,
-     ATTRIBUTEID_CARTOGRAPHY,
-     ATTRIBUTEID_COOKING,
-     ATTRIBUTEID_DETECTINGHIDDEN,
+  return { ALCHEMY,
+     ANATOMY,
+     ANIMALLORE,
+     ARCHERY,
+     ARMSLORE,
+     BEGGING,
+     BLACKSMITHY,
+     BOWCRAFT,
+     BUSHIDO,
+     CAMPING,
+     CARPENTRY,
+     CARTOGRAPHY,
+     CHIVALRY,
+     COOKING,
+     DETECTING_HIDDEN,
      ATTRIBUTEID_DEXTERITY,
-     ATTRIBUTEID_ENTICEMENT,
-     ATTRIBUTEID_EVALINT,
-     ATTRIBUTEID_FENCING,
-     ATTRIBUTEID_FISHING,
-     ATTRIBUTEID_FORENSICS,
-     ATTRIBUTEID_HEALING,
-     ATTRIBUTEID_HERDING,
-     ATTRIBUTEID_HIDING,
-     ATTRIBUTEID_INSCRIPTION,
+     DISCORDANCE,
+     EVALUATING_INTELLIGENCE,
+     FENCING,
+     FISHING,
+     FOCUS,
+     FORENSIC_EVALUATION,
+     HEALING,
+     HERDING,
+     HIDING,
+     IMBUING,
+     INSCRIPTION,
      ATTRIBUTEID_INTELLIGENCE,
-     ATTRIBUTEID_ITEMID,
-     ATTRIBUTEID_LOCKPICKING,
-     ATTRIBUTEID_LUMBERJACKING,
-     ATTRIBUTEID_MACEFIGHTING,
-     ATTRIBUTEID_MAGERY,
-     ATTRIBUTEID_MAGICRESISTANCE,
-     ATTRIBUTEID_MEDITATION,
-     ATTRIBUTEID_MINING,
-     ATTRIBUTEID_MUSICIANSHIP,
-     ATTRIBUTEID_PARRY,
-     ATTRIBUTEID_PEACEMAKING,
-     ATTRIBUTEID_POISONING,
-     ATTRIBUTEID_PROVOCATION,
-     ATTRIBUTEID_REMOVETRAP,
-     ATTRIBUTEID_SNOOPING,
-     ATTRIBUTEID_SPIRITSPEAK,
-     ATTRIBUTEID_STEALING,
-     ATTRIBUTEID_STEALTH,
+     ITEM_IDENTIFICATION,
+     LOCKPICKING,
+     LUMBERJACKING,
+     MACEFIGHTING,
+     MAGERY,
+     RESISTING_SPELLS,
+     MEDITATION,
+     MINING,
+     MUSICIANSHIP,
+     MYSTICISM,
+     NECROMANCY,
+     NINJITSU,
+     PARRYING,
+     PEACEMAKING,
+     POISONING,
+     PROVOCATION,
+     REMOVETRAP,
+     SNOOPING,
+     SPELLWEAVING,
+     SPIRITSPEAK,
+     STEALING,
+     STEALTH,
      ATTRIBUTEID_STRENGTH,
-     ATTRIBUTEID_SWORDSMANSHIP,
-     ATTRIBUTEID_TACTICS,
-     ATTRIBUTEID_TAILORING,
-     ATTRIBUTEID_TAMING,
-     ATTRIBUTEID_TASTEID,
-     ATTRIBUTEID_TINKERING,
-     ATTRIBUTEID_TRACKING,
-     ATTRIBUTEID_VETERINARY,
-     ATTRIBUTEID_WRESTLING
+     SWORDSMANSHIP,
+     TACTICS,
+     TAILORING,
+     TAMING,
+     TASTE_IDENTIFICATION,
+     THROWING,
+     TINKERING,
+     TRACKING,
+     VETERINARY,
+     WRESTLING
 };
 endfunction
 
@@ -514,55 +538,64 @@ function GetSkillConfigElem(skillid)
 endfunction
 
 function GetAttributeIdsWithoutStatIds()
-  return { ATTRIBUTEID_ALCHEMY,
-     ATTRIBUTEID_ANATOMY,
-     ATTRIBUTEID_ANIMALLORE,
-     ATTRIBUTEID_ARCHERY,
-     ATTRIBUTEID_ARMSLORE,
-     ATTRIBUTEID_BEGGING,
-     ATTRIBUTEID_BLACKSMITHY,
-     ATTRIBUTEID_BOWCRAFT,
-     ATTRIBUTEID_CAMPING,
-     ATTRIBUTEID_CARPENTRY,
-     ATTRIBUTEID_CARTOGRAPHY,
-     ATTRIBUTEID_COOKING,
-     ATTRIBUTEID_DETECTINGHIDDEN,
-     ATTRIBUTEID_ENTICEMENT,
-     ATTRIBUTEID_EVALINT,
-     ATTRIBUTEID_FENCING,
-     ATTRIBUTEID_FISHING,
-     ATTRIBUTEID_FORENSICS,
-     ATTRIBUTEID_HEALING,
-     ATTRIBUTEID_HERDING,
-     ATTRIBUTEID_HIDING,
-     ATTRIBUTEID_INSCRIPTION,
-     ATTRIBUTEID_ITEMID,
-     ATTRIBUTEID_LOCKPICKING,
-     ATTRIBUTEID_LUMBERJACKING,
-     ATTRIBUTEID_MACEFIGHTING,
-     ATTRIBUTEID_MAGERY,
-     ATTRIBUTEID_MAGICRESISTANCE,
-     ATTRIBUTEID_MEDITATION,
-     ATTRIBUTEID_MINING,
-     ATTRIBUTEID_MUSICIANSHIP,
-     ATTRIBUTEID_PARRY,
-     ATTRIBUTEID_PEACEMAKING,
-     ATTRIBUTEID_POISONING,
-     ATTRIBUTEID_PROVOCATION,
-     ATTRIBUTEID_REMOVETRAP,
-     ATTRIBUTEID_SNOOPING,
-     ATTRIBUTEID_SPIRITSPEAK,
-     ATTRIBUTEID_STEALING,
-     ATTRIBUTEID_STEALTH,
-     ATTRIBUTEID_SWORDSMANSHIP,
-     ATTRIBUTEID_TACTICS,
-     ATTRIBUTEID_TAILORING,
-     ATTRIBUTEID_TAMING,
-     ATTRIBUTEID_TASTEID,
-     ATTRIBUTEID_TINKERING,
-     ATTRIBUTEID_TRACKING,
-     ATTRIBUTEID_VETERINARY,
-     ATTRIBUTEID_WRESTLING
+  return { ALCHEMY,
+     ANATOMY,
+     ANIMALLORE,
+     ARCHERY,
+     ARMSLORE,
+     BEGGING,
+     BLACKSMITHY,
+     BOWCRAFT,
+     CAMPING,
+     CARPENTRY,
+     CARTOGRAPHY,
+     COOKING,
+     DETECTING_HIDDEN,
+     DISCORDANCE,
+     EVALUATING_INTELLIGENCE,
+     FENCING,
+     FISHING,
+     FORENSIC_EVALUATION,
+     HEALING,
+     HERDING,
+     HIDING,
+     INSCRIPTION,
+     ITEM_IDENTIFICATION,
+     LOCKPICKING,
+     LUMBERJACKING,
+     MACEFIGHTING,
+     MAGERY,
+     RESISTING_SPELLS,
+     MEDITATION,
+     MINING,
+     MUSICIANSHIP,
+     PARRYING,
+     PEACEMAKING,
+     POISONING,
+     PROVOCATION,
+     REMOVETRAP,
+     SNOOPING,
+     SPIRITSPEAK,
+     STEALING,
+     STEALTH,
+     SWORDSMANSHIP,
+     TACTICS,
+     TAILORING,
+     TAMING,
+     TASTE_IDENTIFICATION,
+     TINKERING,
+     TRACKING,
+     VETERINARY,
+     WRESTLING,
+      NECROMANCY,
+      FOCUS,
+      CHIVALRY,
+      BUSHIDO,
+      NINJITSU,
+      SPELLWEAVING,
+      MYSTICISM,
+      IMBUING,
+      THROWING
 };
 endfunction
 
@@ -576,72 +609,64 @@ endfunction
 
 function GetSkillIdByAttributeId(attributeid)
   case(Lower(attributeid))
-    ATTRIBUTEID_ALCHEMY:    return SKILLID_ALCHEMY;
-    ATTRIBUTEID_ANATOMY:    return SKILLID_ANATOMY;
-    ATTRIBUTEID_ANIMALLORE:    return SKILLID_ANIMALLORE;
-    ATTRIBUTEID_ITEMID:    return SKILLID_ITEMID;
-    ATTRIBUTEID_ARMSLORE:    return SKILLID_ARMSLORE;
-    ATTRIBUTEID_PARRY:    return SKILLID_PARRY;
-    ATTRIBUTEID_BEGGING:    return SKILLID_BEGGING;
-    ATTRIBUTEID_BLACKSMITHY:  return SKILLID_BLACKSMITHY;
-    ATTRIBUTEID_BOWCRAFT:    return SKILLID_BOWCRAFT;
-    ATTRIBUTEID_PEACEMAKING:  return SKILLID_PEACEMAKING;
-    ATTRIBUTEID_CAMPING:    return SKILLID_CAMPING;
-    ATTRIBUTEID_CARPENTRY:    return SKILLID_CARPENTRY;
-    ATTRIBUTEID_CARTOGRAPHY:  return SKILLID_CARTOGRAPHY;
-    ATTRIBUTEID_COOKING:    return SKILLID_COOKING;
-    ATTRIBUTEID_DETECTINGHIDDEN:
-    ATTRIBUTEID_DETECTINGHIDDENALIAS:
-      return SKILLID_DETECTINGHIDDEN;
-    ATTRIBUTEID_ENTICEMENT:    return SKILLID_ENTICEMENT;
-    ATTRIBUTEID_EVALINT:
-    ATTRIBUTEID_EVALINTALIAS1:
-    ATTRIBUTEID_EVALINTALIAS2:
-      return SKILLID_EVALINT;
-    ATTRIBUTEID_HEALING:    return SKILLID_HEALING;
-    ATTRIBUTEID_FISHING:    return SKILLID_FISHING;
-    ATTRIBUTEID_FORENSICS:
-    ATTRIBUTEID_FORENSICSALIAS1:
-    ATTRIBUTEID_FORENSICSALIAS2:
-      return SKILLID_FORENSICS;
-    ATTRIBUTEID_HERDING:    return SKILLID_HERDING;
-    ATTRIBUTEID_HIDING:    return SKILLID_HIDING;
-    ATTRIBUTEID_PROVOCATION:  return SKILLID_PROVOCATION;
-    ATTRIBUTEID_INSCRIPTION:  return SKILLID_INSCRIPTION;
-    ATTRIBUTEID_LOCKPICKING:  return SKILLID_LOCKPICKING;
-    ATTRIBUTEID_MAGERY:    return SKILLID_MAGERY;
-    ATTRIBUTEID_MAGICRESISTANCE:
-    ATTRIBUTEID_MAGICRESISTANCEALIAS1:
-    ATTRIBUTEID_MAGICRESISTANCEALIAS2:
-    ATTRIBUTEID_MAGICRESISTANCEALIAS3:
-      return SKILLID_MAGICRESISTANCE;
-    ATTRIBUTEID_TACTICS:    return SKILLID_TACTICS;
-    ATTRIBUTEID_SNOOPING:    return SKILLID_SNOOPING;
-    ATTRIBUTEID_MUSICIANSHIP:  return SKILLID_MUSICIANSHIP;
-    ATTRIBUTEID_POISONING:    return SKILLID_POISONING;
-    ATTRIBUTEID_ARCHERY:    return SKILLID_ARCHERY;
-    ATTRIBUTEID_SPIRITSPEAK:  return SKILLID_SPIRITSPEAK;
-    ATTRIBUTEID_STEALING:    return SKILLID_STEALING;
-    ATTRIBUTEID_TAILORING:    return SKILLID_TAILORING;
-    ATTRIBUTEID_TAMING:    return SKILLID_TAMING;
-    ATTRIBUTEID_TASTEID:    return SKILLID_TASTEID;
-    ATTRIBUTEID_TINKERING:    return SKILLID_TINKERING;
-    ATTRIBUTEID_TRACKING:    return SKILLID_TRACKING;
-    ATTRIBUTEID_VETERINARY:    return SKILLID_VETERINARY;
-    ATTRIBUTEID_SWORDSMANSHIP:
-    ATTRIBUTEID_SWORDSMANSHIPALIAS:
-      return SKILLID_SWORDSMANSHIP;
-    ATTRIBUTEID_MACEFIGHTING:
-    ATTRIBUTEID_MACEFIGHTINGALIAS:
-      return SKILLID_MACEFIGHTING;
-    ATTRIBUTEID_FENCING:    return SKILLID_FENCING;
-    ATTRIBUTEID_WRESTLING:    return SKILLID_WRESTLING;
-    ATTRIBUTEID_LUMBERJACKING:  return SKILLID_LUMBERJACKING;
-    ATTRIBUTEID_MINING:    return SKILLID_MINING;
-    ATTRIBUTEID_MEDITATION:    return SKILLID_MEDITATION;
-    ATTRIBUTEID_STEALTH:    return SKILLID_STEALTH;
-    ATTRIBUTEID_REMOVETRAP:    return SKILLID_REMOVETRAP;
-
+    ALCHEMY:                    return SKILLID_ALCHEMY;
+    ANATOMY:                    return SKILLID_ANATOMY;
+    ANIMALLORE:                 return SKILLID_ANIMALLORE;
+    ITEM_IDENTIFICATION:        return SKILLID_ITEM_IDENTIFICATION;
+    ARMSLORE:                   return SKILLID_ARMSLORE;
+    PARRYING:                   return SKILLID_PARRYING;
+    BEGGING:                    return SKILLID_BEGGING;
+    BLACKSMITHY:                return SKILLID_BLACKSMITHY;
+    BOWCRAFT:                   return SKILLID_BOWCRAFT;
+    PEACEMAKING:                return SKILLID_PEACEMAKING;
+    CAMPING:                    return SKILLID_CAMPING;
+    CARPENTRY:                  return SKILLID_CARPENTRY;
+    CARTOGRAPHY:                return SKILLID_CARTOGRAPHY;
+    COOKING:                    return SKILLID_COOKING;
+    DETECTING_HIDDEN:           return SKILLID_DETECTING_HIDDEN;
+    DISCORDANCE:                return SKILLID_DISCORDANCE;
+    EVALUATING_INTELLIGENCE:    return SKILLID_EVALUATING_INTELLIGENCE;
+    HEALING:                    return SKILLID_HEALING;
+    FISHING:                    return SKILLID_FISHING;
+    FORENSIC_EVALUATION:        return SKILLID_FORENSIC_EVALUATION;
+    HERDING:                    return SKILLID_HERDING;
+    HIDING:                     return SKILLID_HIDING;
+    PROVOCATION:                return SKILLID_PROVOCATION;
+    INSCRIPTION:                return SKILLID_INSCRIPTION;
+    LOCKPICKING:                return SKILLID_LOCKPICKING;
+    MAGERY:                     return SKILLID_MAGERY;
+    RESISTING_SPELLS:           return SKILLID_RESISTING_SPELLS;
+    TACTICS:                    return SKILLID_TACTICS;
+    SNOOPING:                   return SKILLID_SNOOPING;
+    MUSICIANSHIP:               return SKILLID_MUSICIANSHIP;
+    POISONING:                  return SKILLID_POISONING;
+    ARCHERY:                    return SKILLID_ARCHERY;
+    SPIRITSPEAK:                return SKILLID_SPIRITSPEAK;
+    STEALING:                   return SKILLID_STEALING;
+    TAILORING:                  return SKILLID_TAILORING;
+    TAMING:                     return SKILLID_TAMING;
+    TASTE_IDENTIFICATION:       return SKILLID_TASTE_IDENTIFICATION;
+    TINKERING:                  return SKILLID_TINKERING;
+    TRACKING:                   return SKILLID_TRACKING;
+    VETERINARY:                 return SKILLID_VETERINARY;
+    SWORDSMANSHIP:              return SKILLID_SWORDSMANSHIP;
+    MACEFIGHTING:               return SKILLID_MACEFIGHTING;
+    FENCING:                    return SKILLID_FENCING;
+    WRESTLING:                  return SKILLID_WRESTLING;
+    LUMBERJACKING:              return SKILLID_LUMBERJACKING;
+    MINING:                     return SKILLID_MINING;
+    MEDITATION:                 return SKILLID_MEDITATION;
+    STEALTH:                    return SKILLID_STEALTH;
+    REMOVETRAP:                 return SKILLID_REMOVETRAP;
+    NECROMANCY:                  return SKILLID_NECROMANCY;
+    FOCUS:                       return SKILLID_FOCUS;
+    CHIVALRY:                    return SKILLID_CHIVALRY;
+    BUSHIDO:                     return SKILLID_BUSHIDO;
+    NINJITSU:                   return SKILLID_NINJITSU;
+    SPELLWEAVING:               return SKILLID_SPELLWEAVING;
+    MYSTICISM:                  return SKILLID_MYSTICISM;
+    IMBUING:                    return SKILLID_IMBUING;
+    THROWING:                   return SKILLID_THROWING;
   endcase
   var ret        := error;
   ret.+errortext := "No equivalent skillid found for attributeid " + attributeid;
@@ -652,9 +677,9 @@ function GetSkillIds()
   return { SKILLID_ALCHEMY,
      SKILLID_ANATOMY,
      SKILLID_ANIMALLORE,
-     SKILLID_ITEMID,
+     SKILLID_ITEM_IDENTIFICATION,
      SKILLID_ARMSLORE,
-     SKILLID_PARRY,
+     SKILLID_PARRYING,
      SKILLID_BEGGING,
      SKILLID_BLACKSMITHY,
      SKILLID_BOWCRAFT,
@@ -663,19 +688,19 @@ function GetSkillIds()
      SKILLID_CARPENTRY,
      SKILLID_CARTOGRAPHY,
      SKILLID_COOKING,
-     SKILLID_DETECTINGHIDDEN,
-     SKILLID_ENTICEMENT,
-     SKILLID_EVALINT,
+     SKILLID_DETECTING_HIDDEN,
+     SKILLID_DISCORDANCE,
+     SKILLID_EVALUATING_INTELLIGENCE,
      SKILLID_HEALING,
      SKILLID_FISHING,
-     SKILLID_FORENSICS,
+     SKILLID_FORENSIC_EVALUATION,
      SKILLID_HERDING,
      SKILLID_HIDING,
      SKILLID_PROVOCATION,
      SKILLID_INSCRIPTION,
      SKILLID_LOCKPICKING,
      SKILLID_MAGERY,
-     SKILLID_MAGICRESISTANCE,
+     SKILLID_RESISTING_SPELLS,
      SKILLID_TACTICS,
      SKILLID_SNOOPING,
      SKILLID_MUSICIANSHIP,
@@ -685,7 +710,7 @@ function GetSkillIds()
      SKILLID_STEALING,
      SKILLID_TAILORING,
      SKILLID_TAMING,
-     SKILLID_TASTEID,
+     SKILLID_TASTE_IDENTIFICATION,
      SKILLID_TINKERING,
      SKILLID_TRACKING,
      SKILLID_VETERINARY,
@@ -697,8 +722,17 @@ function GetSkillIds()
      SKILLID_MINING,
      SKILLID_MEDITATION,
      SKILLID_STEALTH,
-     SKILLID_REMOVETRAP
-     };
+     SKILLID_REMOVETRAP,
+    SKILLID_NECROMANCY,
+    SKILLID_FOCUS,
+    SKILLID_CHIVALRY,
+    SKILLID_BUSHIDO,
+    SKILLID_NINJITSU,
+    SKILLID_SPELLWEAVING,
+    SKILLID_MYSTICISM,
+    SKILLID_IMBUING,
+    SKILLID_THROWING
+  };
 endfunction
 
 function GetSkillTemporaryMod(who, skillid)
@@ -887,25 +921,25 @@ function SetBaseAttributeBaseValue(who, attribid, skill)
   return SetAttributeBaseValue(who, attribid, Cint(skill_tenth));
 endfunction
 
-function SetBaseStrength(who, strength)
-  strength := Cint(strength * 10);
-  if(strength < 10)
-    strength := 10;
-  elseif(strength > CORE_SETTINGS_MAX_ATTRIBUTE)
-    strength := CORE_SETTINGS_MAX_ATTRIBUTE;
+function SetBaseStrength(who, strngth)
+  strngth := Cint(strngth * 10);
+  if(strngth < 10)
+    strngth := 10;
+  elseif(strngth > CORE_SETTINGS_MAX_ATTRIBUTE)
+    strngth := CORE_SETTINGS_MAX_ATTRIBUTE;
   endif
-  var ret := SetAttributeBaseValue(who, ATTRIBUTEID_STRENGTH, strength);
+  var ret := SetAttributeBaseValue(who, ATTRIBUTEID_STRENGTH, strngth);
   if(ret)
     DoRecalcVitals(who);
   endif
   return ret;
 endfunction
 
-function SetBaseStrengthBaseValue(who, strength)
-  if(strength < 0)
-    strength := 0;
+function SetBaseStrengthBaseValue(who, strngth)
+  if(strngth < 0)
+    strngth := 0;
   endif
-  if(SetAttributeBaseValue(who, ATTRIBUTEID_STRENGTH, Cint(strength)))
+  if(SetAttributeBaseValue(who, ATTRIBUTEID_STRENGTH, Cint(strngth)))
     DoRecalcVitals(who);
     return 1;
   else
