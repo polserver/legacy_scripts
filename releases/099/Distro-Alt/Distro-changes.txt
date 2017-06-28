@@ -106,3 +106,4 @@ Distro change log
 					longer names, EVALUATING_INTELLIGENCE and ITEM_IDENTIFICATION. See \scripts\include\attributes.inc for the new naming convention.
 					Updated the skills to include Bushido, Ninjitsu, Spellweaving,Mysticism, Imbuing, and Throwing bringing the skill count to 57 snd 
 					in line with ToL. Those skills aren't usable yet but I'm working on it.
+					
