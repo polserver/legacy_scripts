@@ -630,6 +630,7 @@ function OpenMyPack()
 		0x579:  mounttype := 0x3ECA;  // Giant Tarantula
 		0x42d:  mounttype := 0x3ec9;  // Hell Hound
 		0x4E7:  mounttype := 0x3ec8;  // Etherial Tiger
+		0x582:	mounttype := 0c3ECC; // Windrunner
     endcase
     if (mounttype == 0x3eb4 and master.graphic == 0x190) // male attempting to ride a unicorn
         SendSysMessage (master, "The unicorn only allows females to mount it.", color := 88);
