@@ -207,7 +207,7 @@ function PlayAttackAnimations( attacker, defender, weaponElem )
                         endif
 	        endif
         else
-                attackAnim := ANIM_WALK_ARMED;
+            //    attackAnim := ANIM_WALK_ARMED;
                 if( attacker.IsA( POLCLASS_NPC ))
                         attackAnim := NPC_GetHitGraphic( attacker );
                 endif
@@ -217,7 +217,7 @@ function PlayAttackAnimations( attacker, defender, weaponElem )
  
         var defenderAnim := ANIM_HIT;
         if( defender.graphic != 400 && defender.graphic != 401 )
-                defenderAnim := ANIM_WALK_UNARMED;
+                //defenderAnim := ANIM_WALK_UNARMED;
                 if( defender.IsA( POLCLASS_NPC ))
                         defenderAnim := NPC_GetDamagedGraphic( defender );
                 endif
