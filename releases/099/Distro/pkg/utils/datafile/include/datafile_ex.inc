@@ -1,15 +1,35 @@
+/* $Id: datafile_ex.inc 375 2006-06-17 19:26:32Z austinheilman $
+ *
+ */
+
 use uo;
 use os;
 use datafile;
 
 include ":datafile:datafile";
 
+/*
+ * ConfigToDataFile(cfg_file, data_file)
+ *
+ * Purpose
+ * Converts a config file to a data file.
+ *
+ * *** WARNING ***
+ * This will purge the data file you are writing to!!
+ *
+ * Parameters
+ * cfg_file: 	Can be a reference to a config file or a path to one.
+ * data_file:	Can be a reference to a data file or a path to one.
+ *
+ * Return Value
+ * Returns 1 on success.
+ * Returns error on failure.
+ *
+ */
 function ConfigToDataFile(cfg_file, data_file)
-
 	if ( Lower(TypeOf(cfg_file)) == "string" )
 		cfg_file := ReadConfigFile(cfg_file);
 	endif
- 
 	if ( Lower(TypeOf(data_file)) == "string" )
 		data_file := DFOpenDataFile(data_file, DF_CREATE);
 	endif
@@ -46,6 +66,21 @@ function ConfigToDataFile(cfg_file, data_file)
 	return 1;
 endfunction
 
+/*
+ * DataFileToConfig(data_file, cfg_path)
+ *
+ * Purpose
+ * Converts a data file to a config file.
+ *
+ * Parameters
+ * data_file:	Can be a reference to a data file or a path to one.
+ * cfg_file: 	Must be a path to a config file (not a reference).
+ *
+ * Return Value
+ * Returns 1 on success.
+ * Returns error on failure.
+ *
+ */
 function DataFileToConfig(data_file, cfg_path)
 	if ( Lower(TypeOf(data_file)) == "string" )
 		data_file := DFOpenDataFile(data_file, DF_CREATE);

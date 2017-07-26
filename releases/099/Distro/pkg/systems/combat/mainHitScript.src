@@ -1,277 +1,143 @@
-/*
-        Created by *Edwards
-
-        Great thanks to ZuluHotel, UnrealLegend and PolDistroTeam.
-*/
 use uo;
 use os;
 use cfgfile;
-use util;
-use basic;
-
-include "include/client";
-include "include/facings";
-include "include/security";
-include "include/sounds";
-include ":areas:managment";
-include ":attributes:attributes";
-include ":brainAI:npcEffects";
-include ":brainai:npcUtil";
-include ":classes:classes";
-include ":combat:combat_math";
+include ":combat:hitScriptInc";
+include "include/attributes";
 include ":damage:damage";
-include ":itemutils:itemdesc";
 
-program Attack( parms )
+var speech;
 
-        var attacker := parms[1],
-            defender := parms[2];
-        
-        var cfg              := ReadConfigFile( ":*:itemdesc" ),
-            attackerWeapon   := attacker.weapon,
-            weaponElem       := cfg[attackerWeapon.objtype],
-            attri            := weaponElem.Attribute,
-            typeSkill,
-            typeVital;
+program MainHitScript(attacker, defender, weapon, armor, basedamage, rawdamage)
 
-        if( !Primary_Check( attacker, defender ))
-                defender := FindNewOpponent( attacker, weaponElem );
-                if( !defender )
-                        return 0;
-                endif
-        elseif( !Check_Distance( attacker, defender, weaponElem ))
-                defender := FindNewOpponent( attacker, weaponElem );
-                if( !defender )
-                        return 0;
-                endif
-        endif
-        
-        PlayAttackAnimations( attacker, defender, weaponElem );
-
-        //We have a rule limiting to spar max 8 creatures
-        if( !defender.IsA( POLCLASS_NPC ))
-                if( ListHostiles( defender, 2, LH_FLAG_LOS ).Size() > 8 )
-                        NotifyStaffOnline( defender, "has above 8 hostiles creatures in a range of 2 tiles." );
-                endif
-        endif
-        
-        var damageType := CInt( weaponElem.DamageType );
-        if( !damageType )
-                damageType := 1;
-        endif
-        
-        case( damageType )
-             //Physical
-             1: SkillCheck( attacker, attri, -1 );
-                if( SkillCheck( attacker, TACTICS, -1 ) > 0 )
-
-                         typeSkill := AP_GetSkill( attacker, ANATOMY );
-                         if( attacker.IsA( POLCLASS_NPC ))
-                               typeSkill := AP_GetSkill( attacker, TACTICS );
-                         endif
-
-                         typeVital := CInt( AP_GetStat( attacker, STRENGTH ));
-
-                         Damage_Modification( damageType, attacker, defender, weaponElem, typeSkill, typeVital );
-                else
-                         PlayMissSound( attacker, weaponElem );
-                endif
-                break;
-
-             //Ranged
-       	     2: if( attacker.enabled( "firewhilemoving" ))
-                         if( !AP_ConsumeVital( attacker, STAMINA, 30 ))
-                                  return 0;
-                         endif
-                endif
-                
-                if( !AmmoChecks( attacker, defender, weaponElem ))
-                         return 1;
-                elseif( SkillCheck( attacker, attri, -1 ) > 0 )
-                         typeSkill  := AP_GetSkill( attacker, attri );
-                         typeVital  := CInt( AP_GetStat( attacker, STRENGTH ));
-
-                         Damage_Modification( damageType, attacker, defender, weaponElem, typeSkill, typeVital );
-                else
-                         PlayMissSound( attacker, weaponElem );
-                endif
-                break;
-
-             //Astral
-             3: if( SkillCheck( attacker, attri, -1, "", ADV_DISABLE ) > 0 )
-                         typeSkill  := AP_GetSkill( attacker, attri );
-                         typeVital  := CInt( AP_GetStat( attacker, INTELLIGENCE ));
-
-                         Damage_Modification( damageType, attacker, defender, weaponElem, typeSkill, typeVital );
-                else
-                         PlayMissSound( attacker, weaponElem );
-                endif
-                break;
-       endcase
-       
-       return 1;
-endprogram
-
-function Primary_Check( attacker, defender )
-
-	if( attacker.serial == defender.serial )
-		return 0;
-    	elseif( attacker.dead || defender.dead )
-		return 0;
-        elseif( defender.hidden || defender.concealed  )
-		return 0;
-        elseif( attacker.hidden || attacker.concealed )
-		return 0;
-        elseif( defender.cmdlevel > attacker.cmdlevel && attacker.cmdlevel < 4 )
-                return 0;
-        elseif( !attacker.IsA( POLCLASS_NPC ) && GetObjProperty( defender, "IsEthereal" ))
-                return 0;
-  	elseif( !CheckLosAt( attacker, defender.x, defender.y, defender.z ))
-		return 0;
-        elseif( A_IsIn( defender, AREAS_NO_DAMAGE ) && attacker.cmdlevel <= 4 )
-                if( attacker.IsA( POLCLASS_NPC ))
-                         var x;
-                         for( x:=1; x<7; x+=1 )
-                                  PlayLightningBoltEffect( attacker );
-                                  SleepMS(5);
-                         endfor
-
-                         SetObjProperty( attacker, "GuardKill", 1 );
-		         attacker.Kill();
-           
-                         SendSysMessage( defender, "The city guards have come to your rescue!" );
-                endif
-                return 0;
+	var bloodoath := GetObjProperty(defender, "bloodoath");
+	if(bloodoath)
+		if(bloodoath  == defender.serial)
+			rawdamage := rawdamage * 0.9;
+			PlayObjectCenteredEffect(attacker, 0x374a, 20,15 );
+			PlayObjectCenteredEffect( defender, 0x374a, 20,15 );
+			ApplyDamageEX(attacker, rawdamage, DMG_FORCED);
+		endif
 	endif
- 
-        return 1;
-endfunction
-
-function Check_Distance( attacker, defender, weaponElem )
-
-	var maxRange := weaponElem.MaxRange;
-	if( !maxRange )
-                maxRange := 1;
+	var attune := getobjproperty(defender, "#attune");
+	if(attune)
+		rawdamage := rawdamage * 0.85;
+		PlayObjectCenteredEffect(attacker, 0x374a, 20,15 );
+		PlayObjectCenteredEffect( defender, 0x374a, 20,15 );
+	endif
+	var wraithform := GetObjProperty(defender, "wraith");
+	if(wraithform)
+		rawdamage := rawdamage * 1.2;
 	endif
 
-        var minRange := weaponElem.MinRange;
-	if( !minRange )
-                minRange := 0;
+
+
+	if (!CheckLineOfSight(attacker, defender) )
+		return 0;
 	endif
 
-	var range := Distance( attacker, defender );
-	if( range > maxRange )
+	if (defender.isA(POLCLASS_NPC))
+		basedamage := CInt(basedamage * 1.3);
+		rawdamage := rawdamage * 1.3;
+		rawdamage := CInt(rawdamage * ( AdjustDamageFactor(weapon, defender, attacker) ) );
+		if (rawdamage == 0)
+			return 0;
+		endif
+	endif
+
+
+
+	if (GetObjProperty(defender, "#BLINKING") != error )
+		if ( (GetObjProperty(defender, "#BLINKING") <= ReadGameClock() ) && (RandomInt(2) == 1) )
+			PrintTextAbove(defender, CStr(defender.name) + " evades the attack!");
+			return 0;
+		endif
+	endif
+
+        var x := CheckTempProtections(attacker, defender, rawdamage);
+	if (x == 0)
 		return 0;
-	elseif( range < minRange )
-		return 0;
-        endif
-
-        return 1;
-endfunction
-
-function AmmoChecks( attacker, defender, weaponElem )
-
-        var ammoType := weaponElem.ProjectileType;
-        if( !ammoType )
-               return 1;
-        endif
-
-        if( !attacker.IsA( POLCLASS_NPC ))
-                if( !ConsumeSubstance( attacker.backpack, ammoType, 1 ))
-                        SendSysMessage( attacker, "You do not have any "+GetObjTypeDesc( ammoType, 1 )+"!" );
-	                return 0;
-                endif
-        endif
-
-        PlaySoundEffect( attacker, weaponElem.ProjectileSound );
-        PlayMovingEffect( attacker, defender, weaponElem.ProjectileAnim, 10 );
-
-        return 1;
-endfunction
-
-function PlayAttackAnimations( attacker, defender, weaponElem )
-
-        var attackAnim := weaponElem.Anim;
-        if( attacker.graphic == 400 || attacker.graphic == 401 )
-                var xlate := ReadConfigFile( "::animxlate" ),
-                    cfg_elem,
-                    change;
-
-	        if( GetEquipmentbyLayer( attacker, LAYER_MOUNT ))
-                        cfg_elem := xlate["OnMount"];
-                        if( cfg_elem )
-			        change := GetConfigInt( cfg_elem, Hex( attackAnim ));
-			        if( change )
-				        attackAnim := change;
-			        endif
-                        endif
-	        endif
-        else
-            //    attackAnim := ANIM_WALK_ARMED;
-                if( attacker.IsA( POLCLASS_NPC ))
-                        attackAnim := NPC_GetHitGraphic( attacker );
-                endif
-        endif
-        
-	PerformAction( attacker, CInt( attackAnim ));
- 
-        var defenderAnim := ANIM_HIT;
-        if( defender.graphic != 400 && defender.graphic != 401 )
-                //defenderAnim := ANIM_WALK_UNARMED;
-                if( defender.IsA( POLCLASS_NPC ))
-                        defenderAnim := NPC_GetDamagedGraphic( defender );
-                endif
-        endif
-
-        PerformAction( defender, CInt( defenderAnim ));
-
-	return 1;
-endfunction
-
-function PlayHitSound( attacker, defender, weaponElem )
-
-	var hitSound := weaponElem.HitSound;
-	if( attacker.IsA( POLCLASS_NPC ))
-		hitSound := NPC_GetHitSound( attacker );
-        endif
-
-	PlaySoundEffect( attacker, CInt( hitSound ));
- 
-	var damagedSound;
-	if( defender.IsA( POLCLASS_NPC ))
-		damagedSound := NPC_GetDamagedSound( defender );
 	else
-                damagedSound := GetHumanDamagedSounds( defender );
+		rawdamage := x;
 	endif
- 
-	PlaySoundEffect( defender, CInt( damagedSound ));
 
-	return 1;
-endfunction
+	SetObjProperty(defender, "LastHit", {attacker.name, attacker.serial, weapon });
 
-function PlayMissSound( attacker, weaponElem )
-
-	var missSound := weaponElem.MissSound;
-	if( attacker.IsA( POLCLASS_NPC ))
-		missSound := NPC_GetMissSound( attacker );
-        endif
-
-	PlaySoundEffect( attacker, CInt( missSound ));
-
-	return 1;
-endfunction
-
-function FindNewOpponent( attacker, weaponElem )
-
-	var maxRange := weaponElem.MaxRange;
-	if( !maxRange )
-                maxRange := 1;
+	var armorhit;
+	if ( (armor == 0) || (!armor) )
+	  armorhit := GetObjProperty(defender, "OnArmorHit");
+	else
+	  armorhit := GetObjProperty(armor, "OnHit");
 	endif
- 
-        var hostiles := ListHostiles( attacker, CInt( maxRange ));
-        if( hostiles.Size() > 0 )
-                return hostiles[1];
-        endif
-        
-        return 0;
-endfunction
+
+	var weaponhit := GetObjProperty(weapon, "OnHit");
+	if (!weaponhit)
+		weaponhit := GetObjProperty(attacker, "OnHit");
+	endif
+
+	var gloves := GetEquipmentByLayer(attacker, 0x07);
+	var gloves_hit := 0;
+	if (gloves)
+		gloves_hit := GetObjProperty(gloves, "OnHit");
+	endif
+
+	if (armorhit)
+	    SetObjProperty(defender, "TempDamage", rawdamage);
+		foreach x in armorhit
+		  Detach();
+		  run_script_to_completion(x, { attacker, defender, weapon, armor, basedamage, rawdamage } );
+		  rawdamage := CInt(GetObjProperty(defender, "TempDamage") );
+		endforeach
+		EraseObjProperty(defender, "TempDamage");
+		if (rawdamage > 0)
+		  DealDamage(defender, attacker, rawdamage);
+		  return;
+		else
+		  return;
+		endif
+	endif
+
+	if (!weaponhit)
+		if (!gloves_hit)
+			DealDamage(defender, attacker, rawdamage);
+			return;
+		else
+		  foreach x in gloves_hit
+			Detach();
+			run_script_to_completion(CStr(x), { attacker, defender, gloves, armor, basedamage, rawdamage } );
+			rawdamage := GetObjProperty(gloves, "TempDamage");
+		  endforeach
+		  EraseObjProperty(weapon, "TempDamage");
+		  if (rawdamage < 1)
+        		rawdamage := 1;
+		  endif
+  	  	  DealDamage(defender, attacker, rawdamage);
+		  return;
+		endif
+	else
+	  foreach x in weaponhit
+		Detach();
+		run_script_to_completion(CStr(x), { attacker, defender, weapon, armor, basedamage, rawdamage } );
+		rawdamage := GetObjProperty(weapon, "TempDamage");
+	  endforeach
+	  EraseObjProperty(weapon, "TempDamage");
+	  if (rawdamage < 1)
+            rawdamage := 1;
+          endif
+	        if (!gloves_hit)
+			DealDamage(defender, attacker, rawdamage);
+			return;
+		else
+		  foreach x in gloves_hit
+			Detach();
+			run_script_to_completion(CStr(x), { attacker, defender, gloves, armor, basedamage, rawdamage } );
+			rawdamage := GetObjProperty(gloves, "TempDamage");
+		  endforeach
+		  EraseObjProperty(weapon, "TempDamage");
+		  if (rawdamage < 1)
+        		rawdamage := 1;
+		  endif
+		endif
+		DealDamage(defender, attacker, rawdamage);
+	  return;
+	endif
+endprogram

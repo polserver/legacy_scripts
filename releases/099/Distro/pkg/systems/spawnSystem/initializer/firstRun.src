@@ -1,10 +1,12 @@
 /*
-        Maintened by *Edwards
 
-        2009-02-10
-        
-        Last Modifications 2009-09-30
-             * Now init will save Difficulty
+	spawnSystem originally created by Austin for the 0.97 Distro
+	
+	Bugs fixed by Edwards
+	
+	Adapted for the Basic Distro by Yukiko 10-Sep-2015
+
+
 */
 use uo;
 use os;
@@ -14,7 +16,6 @@ use polsys;
 include ":spawnsystem:groups";
 include ":spawnsystem:realms";
 include ":spawnsystem:regions";
-include ":security:report";
 
 program FirstRun()
 
@@ -36,7 +37,7 @@ function SetupDefaultGroups()
  
 	var cfg_file := ReadConfigFile( ":spawnsystem:defaultGroups" );
 	if( !cfg_file )
-		ReportText( "Error: Could not load defaultGroups.cfg ->"+cfg_file.errortext, REPORT_SYSLOG );
+		Broadcast( "Error: Could not load defaultGroups.cfg ->"+cfg_file.errortext, color := 33 );
 		return 0;
 	endif
 
@@ -44,7 +45,7 @@ function SetupDefaultGroups()
                 
 		var group_info := cfg_file[group_name];
 		if( !group_info.Engine )
-			ReportText( "Error: No engine name was set for group ("+group_name+").", REPORT_SYSLOG );
+			Broadcast( "Error: No engine name was set for group ("+group_name+").", color := 33 );
 			continue;
 		endif
   
@@ -96,7 +97,7 @@ function SetupRealm( realm_name )
 			var max_amt := CInt( entry[2] );
 			
 			if( !SS_GetGroupDataElem( group_name ))
-				ReportText( "Adding group ("+group_name+") to region ("+region_name+")... failed!", REPORT_SYSLOG );
+				Broadcast( "Adding group ("+group_name+") to region ("+region_name+")... failed!", color := 33 );
 			else
 				SS_AddGroupToRegion( region_name, group_name, max_amt, 1 );
 			endif

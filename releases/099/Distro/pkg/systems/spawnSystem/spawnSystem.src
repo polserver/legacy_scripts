@@ -1,7 +1,12 @@
 /*
-        Maintened by *Edwards
 
-        2009-02-10
+	spawnSystem originally created by Austin for the 0.97 Distro
+	
+	Bugs fixed by Edwards
+	
+	Adapted for the Basic Distro by Yukiko 10-Sep-2015
+
+
 */
 use uo;
 use os;
@@ -10,7 +15,6 @@ include ":spawnsystem:engines";
 include ":spawnsystem:groups";
 include ":spawnsystem:realms";
 include ":spawnsystem:regions";
-include ":security:report";
 
 program SpawnSystem()
 
@@ -48,7 +52,7 @@ function SpawnTheRegions()
 			var engine_name := SS_GetGroupEngine( group_name );
 			var script := SS_StartSpawnEngine( engine_name, realm_name, region_name, group_name );
 			if( script.errortext )
-				ReportText( "Error: Unable to start engine ("+engine_name+") for group ("+group_name+") in region ("+region_name+"). ->"+script.errortext, REPORT_SYSLOG );
+				Broadcast( "Error: Unable to start engine ("+engine_name+") for group ("+group_name+") in region ("+region_name+"). ->"+script.errortext, color := 33 );
 			endif
 
 			SS_SetRegionSpawnTime( region_name, POLCore().systime );
@@ -97,9 +101,9 @@ endfunction
 
 function Initialize()
 
-	var script := Start_Script( ":spawnsystem:initializer/firstRun", REPORT_SYSLOG );
+	var script := Start_Script( ":spawnsystem:initializer/firstRun" );
 	if( script.errortext )
-		ReportText( script.errortext );
+		Broadcast( script.errortext, color := 33 );
 		return 0;
 	else
 		while( script.pid )

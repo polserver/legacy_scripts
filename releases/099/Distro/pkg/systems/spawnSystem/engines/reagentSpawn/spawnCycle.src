@@ -1,7 +1,12 @@
 /*
-        Maintened by *Edwards
 
-        2009-02-10
+	spawnSystem originally created by Austin for the 0.97 Distro
+	
+	Bugs fixed by Edwards
+	
+	Adapted for the Basic Distro by Yukiko 10-Sep-2015
+
+
 */
 use uo;
 use os;
@@ -10,7 +15,6 @@ include ":spawnsystem:groups";
 include ":spawnsystem:regions";
 include ":spawnsystem:settings";
 include ":spawnsystem:spawnerUtil";
-include ":security:report";
 
 program SpawnCycle( params )
 

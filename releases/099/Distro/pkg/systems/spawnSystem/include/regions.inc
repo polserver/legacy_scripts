@@ -1,11 +1,12 @@
 /*
-        Maintened by *Edwards
 
-        2009-02-10
-        
-        Last Modifications 2009-09-30
-             * Added SS_SetRegionDifficulty()
-             * Added SS_GetRegionDifficulty()
+	spawnSystem originally created by Austin for the 0.97 Distro
+	
+	Bugs fixed by Edwards
+	
+	Adapted for the Basic Distro by Yukiko 10-Sep-2015
+
+
 */
 use uo;
 use os;
