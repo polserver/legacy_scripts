@@ -1,4 +1,5 @@
 
+include ":damage:damage";
 
 function HandleMods(who, item)
   set_critical(1);
