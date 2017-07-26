@@ -5,7 +5,6 @@ use cfgfile;
 include "include/client";
 include "include/attributes";
 include ":combat:equip";
-include ":damage:damage";
 
 program equip(who, item)
 

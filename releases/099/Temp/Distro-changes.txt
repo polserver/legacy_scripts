@@ -84,7 +84,7 @@ Distro change log
 
 ??-Jul-2017	Yukiko	Changed		Made some minor fixes, changes, and updates to some files but I don't remember when or what was changed. It happens.
 
-22-Jul-2017	Yukiko Added		The "decorate the facets" package to the Distro. Also added was the clilocs package because it is needed by the facet decoration package. It also might prove useful later in future work on the Distro.
+22-Jul-2017	Yukiko	Added		The "decorate the facets" package to the Distro. Also added was the clilocs package because it is needed by the facet decoration package. It also might prove useful later in future work on the Distro.
 
 23-Jul-2017	Yukiko	Updated		The doors itemdesc file to include new doors that weren't in the file including sliding doors. I also added addition single tile book shelves to the carpentry itemdesc file.
 
@@ -100,3 +100,29 @@ Distro change log
 
 25-Jul-2017	Yukiko	Added		The way resistances are handled by equip and unequip scrpts. Damage.inc does not use the resistance members to handle resistances but rather places a CProp on the mobile which contains a dictionary of resistances. I added a check for resistance members on items and then passed the value to ModifyResistance in damage.inc
 
+25-Jul-2017	Yukiko	Fixed		Forgot to include damage.inc in equip.inc
+
+25-Jul-2017	Yukiko	Fixed		Both portcullises (portculli?) had the same name. Changed to portcullisEW and portcullisNS.
+
+26-Jul-2017	Yukiko	Decided		These are the official Distro spell locations for the spells built-in the client:
+
+								  1 -  64	Normal spell ID's
+								 65 -  99	Reserved for special NPC spells until overridden by client side requirements.
+								100 - 116	Necromancy Spell ID's
+								200 - 209	Chivalry Spell ID's
+								400 - 405	Bushido Spell ID's
+								500 - 507	Ninjitsu Spell ID's
+								600 - 615	Spellweaving Spell ID's
+								677 - 692	Mysticism Spell ID's
+								700 - 705	Bard Mastery Spell ID's
+								706 - 743	Skill Mastery Spell ID's
+
+26-Jul-2017	Yukiko	Decided		These are, or will be as soon as I get them entered, the official rune colours for runes marked in the associated realms (facets):
+
+								Rune colours:
+								Felucca - 0x0
+								Trammel - 0x32
+								Ilshenar - 0x455
+								Malas - 0x44E
+								Tokuno - 0x482
+								Termur - 0x852
