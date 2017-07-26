@@ -1,3 +1,8 @@
+/* $Id: goEdit.inc 375 2006-06-17 19:26:32Z austinheilman $
+ *
+ */
+
+
 function Go_EditSendLocation(who, public:=1)
 	var gump;
 	if( public )
@@ -93,7 +98,7 @@ function Go_SelectEditGump(public)
 
 	var gump := Go_GumpHeader(public);
         GFHTMLArea(gump,  25, 60, 150, 20, "<basefont color=#7FFFD4>Name");
-        GFHTMLArea(gump, 225, 60, 150, 20, "<basefont color=#7FFFD4>Realm");
+        GFHTMLArea(gump, 175, 60, 150, 20, "<basefont color=#7FFFD4>Realm");
         GFHTMLArea(gump, 295, 60, 150, 20, "<basefont color=#7FFFD4>Edit");
 
         GFPage(gump, 1);
@@ -106,8 +111,8 @@ function Go_SelectEditGump(public)
 	if( public )
 		go_keys_base.Sort();
 		foreach place in ( go_keys_base )
-			GFTextLine(gump,  25, y_loc, 1153, go_prop_base[place].Name);
-			GFTextLine(gump, 225, y_loc, 1153, go_prop_base[place].Realm);
+			GFTextLine(gump,  25, y_loc, 2100, go_prop_base[place].Name);
+			GFTextLine(gump, 175, y_loc, 2100, go_prop_base[place].Realm);
 			GFAddButton(gump, 300, y_loc+3, 2117, 2118, GF_CLOSE_BTN, counter);
 
 			counter := counter + 1;
@@ -126,8 +131,8 @@ function Go_SelectEditGump(public)
 	else
 		go_keys.Sort();
 		foreach place in ( go_keys )
-			GFTextLine(gump,  25, y_loc, 1153, go_prop[place].Name);
-			GFTextLine(gump, 225, y_loc, 1153, go_prop[place].Realm);
+			GFTextLine(gump,  25, y_loc, 2100, go_prop[place].Name);
+			GFTextLine(gump, 175, y_loc, 2100, go_prop[place].Realm);
 			GFAddButton(gump, 300, y_loc+3, 2117, 2118, GF_CLOSE_BTN, counter);
 
 			counter := counter + 1;
@@ -159,19 +164,19 @@ function Go_EditLocationGump(send_Location, public:=1)
 	edit_delete := GFAddButton(gump, 100, 447, 4005, 4007, GF_CLOSE_BTN, DELETE_BUTTON);
 	GFHTMLArea(gump,  132, 450, 40, 20, "<basefont color=#7FFFD4>Delete");
 
-	GFTextLine(gump, 20, 120, 1153, "Name");
+	GFTextLine(gump, 20, 120, 2100, "Name");
 	GFResizePic(gump, 120, 117, 2620, 180, 30);
 	edit_name := GFTextEntry(gump, 130, 122, 160, 25, 2100, send_Location.Name);
 
-	GFTextLine(gump, 20, 143, 1153, "X Coordinate");
+	GFTextLine(gump, 20, 143, 2100, "X Coordinate");
 	GFResizePic(gump, 120, 140, 2620, 100, 30);
 	xg_pos := GFTextEntry(gump, 130, 145, 80, 25, 2100, send_Location.X);
 
-	GFTextLine(gump, 20, 166, 1153, "Y Coordinate");
+	GFTextLine(gump, 20, 166, 2100, "Y Coordinate");
 	GFResizePic(gump, 120, 163, 2620, 100, 30);
 	yg_pos := GFTextEntry(gump, 130, 168, 80, 25, 2100, send_Location.Y);
 
-	GFTextLine(gump, 20, 189, 1153, "Z Coordinate");
+	GFTextLine(gump, 20, 189, 2100, "Z Coordinate");
 	GFResizePic(gump, 120, 186, 2620, 100, 30);
 	zg_pos := GFTextEntry(gump, 130, 191, 80, 25, 2100, send_Location.Z);
 

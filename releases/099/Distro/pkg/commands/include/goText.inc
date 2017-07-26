@@ -1,3 +1,8 @@
+/* $Id: goText.inc 375 2006-06-17 19:26:32Z austinheilman $
+ *
+ */
+
+
 function Go_Parse_Text(who, text)
 	if ( !text )
 		return 0;
@@ -13,7 +18,7 @@ function Go_Parse_Text(who, text)
 			return Go_GoXYZ(who, params);
 			break;
 		default:
-			return Go_FindLocationByText(who, params);
+			return Go_FindLocationByText(who, params, text);
 			break;
 	endcase
 
@@ -55,28 +60,31 @@ function Go_GoXYZ(who, params)
 endfunction
 
 
-function Go_FindLocationByText(who, params)
+function Go_FindLocationByText(who, params, text)
 	case (Lower(params[params.Size()]))
 		"private":
-			Go_ByPrivateLocation(who, params);
+			Go_ByPrivateLocation(who, params, text);
 			break;
 		"public":
-			Go_ByPublicLocation(who, params);
+			Go_ByPublicLocation(who, params, text);
 			break;
 		default:
-			Go_ByDefaultLocation(who, params);
+			Go_ByDefaultLocation(who, params, text);
 			break;
 	endcase
 
 	return 1;
 endfunction
 
-function Go_ByPrivateLocation(who, params)
+function Go_ByPrivateLocation(who, params, text)
 
-	if( go_prop.Exists( Lower(params[1]) ) )
-		var temp := go_prop[Lower(params[1])];
-		SendSysMessage(who, "Going to private location ["+params[1]+"]");
-		var result := MoveObjectToLocation(who, CInt(temp.X), CInt(temp.Y), CInt(temp.Z), CStr(temp.Realm), MOVEOBJECT_FORCELOCATION);
+//	if( go_prop.Exists( Lower(params[1]) ) )
+//		var temp := go_prop[Lower(params[1])];
+//		SendSysMessage(who, "Going to private location ["+params[1]+"]");
+	if( go_prop.Exists( Lower(text) ) )
+		var temp := go_prop[Lower(text)];
+		SendSysMessage(who, "Going to private location ["+text+"]");
+		var result := MoveObjectToLocation(who, CInt(temp.X), CInt(temp.Y), CInt(temp.Z), temp.Realm, MOVEOBJECT_FORCELOCATION);
 		if ( result.errortext )
 			GumpPrompt(who, "Error moving: X["+temp.X+"] Y["+temp.Y+"] Z["+temp.Z+"] - "+result.errortext);
 			return 0;
@@ -91,12 +99,15 @@ function Go_ByPrivateLocation(who, params)
 endfunction
 
 
-function Go_ByPublicLocation(who, params)
+function Go_ByPublicLocation(who, params, text)
 
-	if(go_prop_base.Exists( Lower(params[1]) ) )
-		var temp := go_prop_base[Lower(params[1])];
-		SendSysMessage(who, "Going to public location ["+params[1]+"]");
-		var result := MoveObjectToLocation(who, CInt(temp.X), CInt(temp.Y), CInt(temp.Z), CStr(temp.Realm), MOVEOBJECT_FORCELOCATION);
+//	if(go_prop_base.Exists( Lower(params[1]) ) )
+//		var temp := go_prop_base[Lower(params[1])];
+//		SendSysMessage(who, "Going to public location ["+params[1]+"]");
+	if(go_prop_base.Exists( Lower(text) ) )
+		var temp := go_prop_base[Lower(text)];
+		SendSysMessage(who, "Going to public location ["+text+"]");
+		var result := MoveObjectToLocation(who, CInt(temp.X), CInt(temp.Y), CInt(temp.Z), temp.Realm, MOVEOBJECT_FORCELOCATION);
 		if ( result.errortext )
 			GumpPrompt(who, "Error moving: X["+temp.X+"] Y["+temp.Y+"] Z["+temp.Z+"] - "+result.errortext);
 			return 0;
@@ -111,20 +122,26 @@ function Go_ByPublicLocation(who, params)
 endfunction
 
 
-function Go_ByDefaultLocation(who, params)
-	if ( go_prop.Exists( Lower(params[1]) ) )
-		var temp := go_prop[Lower(params[1])];
-		SendSysMessage(who, "Going to private location ["+params[1]+"]");
-		var result := MoveObjectToLocation(who, CInt(temp.X), CInt(temp.Y), CInt(temp.Z), CStr(temp.Realm), MOVEOBJECT_FORCELOCATION);
+function Go_ByDefaultLocation(who, params, text)
+//	if ( go_prop.Exists( Lower(params[1]) ) )
+//		var temp := go_prop[Lower(params[1])];
+//		SendSysMessage(who, "Going to private location ["+params[1]+"]");
+	if ( go_prop.Exists( Lower(text) ) )
+		var temp := go_prop[Lower(text)];
+		SendSysMessage(who, "Going to private location ["+text+"]");
+		var result := MoveObjectToLocation(who, CInt(temp.X), CInt(temp.Y), CInt(temp.Z), temp.Realm, MOVEOBJECT_FORCELOCATION);
 
 		if ( result.errortext )
 			GumpPrompt(who, "Error moving: X["+temp.X+"] Y["+temp.Y+"] Z["+temp.Z+"] - "+result.errortext);
 			return 0;
 		endif
-	elseif( go_prop_base.Exists( Lower(params[1]) ) )
-		var temp := go_prop_base[Lower(params[1])];
-		SendSysMessage(who, "Going to public location["+params[1]+"]");
-		var result := MoveObjectToLocation(who, CInt(temp.X), CInt(temp.Y), CInt(temp.Z), CStr(temp.Realm), MOVEOBJECT_FORCELOCATION);
+//	elseif( go_prop_base.Exists( Lower(params[1]) ) )
+//		var temp := go_prop_base[Lower(params[1])];
+//		SendSysMessage(who, "Going to public location["+params[1]+"]");
+	elseif( go_prop_base.Exists( Lower(text) ) )
+		var temp := go_prop_base[Lower(text)];
+		SendSysMessage(who, "Going to public location["+text+"]");
+		var result := MoveObjectToLocation(who, CInt(temp.X), CInt(temp.Y), CInt(temp.Z), temp.Realm, MOVEOBJECT_FORCELOCATION);
 
 		if ( result.errortext )
 			GumpPrompt(who, "Error moving: X["+temp.X+"] Y["+temp.Y+"] Z["+temp.Z+"] - "+result.errortext);

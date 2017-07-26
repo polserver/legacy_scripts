@@ -71,8 +71,6 @@ ecompile.log
 leftovers.txt
 orphans.txt
 
-
-
 # POL binaries and cfg
 pol.exe
 libmysql.dll

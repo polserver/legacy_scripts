@@ -1,29 +1,15 @@
-/*
-        Maintened by *Edwards
-
-        2008-09-28
-*/
-use uo;
 use cfgfile;
+use uo;
 
-include "include/security";
+program textcmd_unloadcfg( who, filename )
 
-program command_unloadCFG( who, filename )
-
-        if( !AuthorizationCode( who ))
-                SendSysMessage( who, "Cancelled." );
-                return 0;
-        endif
-        
 	var res := UnloadConfigFile( filename );
-
-	if( res == error )
-		SendSysMessage( who, "Error unloading config file: "+res.errortext );
-	elseif( res < 0 )
+	if (res == error)
+		SendSysMessage( who, "Error unloading config file: " + res.errortext );
+	elseif (res < 0)
 		SendSysMessage( who, "That config file is not loaded." );
 	else
-		SendSysMessage( who, "Config file unloaded. "+res+" reference(s) to config file exist." );
+		SendSysMessage( who, "Config file unloaded.  " + res + " reference(s) to config file exist." );
 	endif
 
-	return 0;
 endprogram

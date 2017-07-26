@@ -1,18 +1,22 @@
 /*
-        Maintened by *Edwards
+ * $Id: iteminfo.src 539 2006-07-03 21:18:36Z austinheilman $
+ *
+ * Purpose
+ *
+ * Presents information about an item.
+ *
+ */
 
-        Last Modifications 2009-05-30
-*/
 use uo;
 use os;
 
 include ":gumps:gumps";
-include ":gumps:gumpprompt";
-include ":gumps:requestgump";
-include ":gumps:yesno";
-include ":weapons:weaponInfo";
+include ":gumps:gumps_ex";
+include ":gumps:gumpPrompt";
+include ":gumps:requestGump";
+include ":gumps:yesNo";
+include "include/weaponInfo";
 include "include/uo_extend";
-include "include/security";
 
 CONST START_Y	:= 55;   // These are to track the display area height.
 CONST END_Y	:= 410;  // These are to track the display area height.
@@ -26,14 +30,8 @@ var template;			// Template gump (so it doesn't need to be rebuilt)
 var btn_list := array{};	// Stores button information for the current gump (since its so dynamic)
 var btn_info := struct{"editFunc", "name"}; // Individual button tracking that goes into the btn_list array.
 
-program textcmd_Info( who, serial )
-
-        if( !AuthorizationCode( who ))
-                SendSysMessage( who, "Cancelled." );
-                return 0;
-        endif
-
-	if ( Lower( TypeOf( who )) == "array" )
+program textcmd_Info(who, serial)
+	if ( Lower(TypeOf(who)) == "array" )
 		serial := who[2];
 		who := who[1];
 	endif
@@ -50,16 +48,15 @@ program textcmd_Info( who, serial )
 	if ( serial )
 		targ := SystemFindObjectBySerial(CInt(serial));
 	else
-		targ := TargetCoordinates( who ).item;
+		targ := Target(who);
 	endif
-
-	if( !targ.IsA( POLCLASS_ITEM ))
+	if ( !targ.IsA(POLCLASS_ITEM) )
 		SendSysMessage(who, "Cancelled.");
 		return 0;
 	endif
 
 	template := GumpTemplate(targ);
-	var cur_gump := 1;
+	var cur_gump := 3;
 
 	while ( 1 )
 		var gump := BuildGump(targ, cur_gump);
@@ -108,7 +105,7 @@ function BuildEntries(targ, byref gump, byref cfg_elem, byref y_pos)
 
 	if ( cfg_elem.AutoBox )
 		var num_entries := entries.Size();
-		GFResizePic(gump, 145, y_pos, GFGetCfgConst("Defaults", "ForeGround"), 340, (num_entries*20));
+		GFResizePic(gump, 145, y_pos, GetCfgConst("Defaults", "ForeGround"), 340, (num_entries*20));
 	endif
 
 	foreach entry in ( entries )
@@ -125,7 +122,7 @@ function BuildEntries(targ, byref gump, byref cfg_elem, byref y_pos)
 					SleepMS(2);
 				endforeach
 				GFTextLine(gump, 175, y_pos, 2100, text);
-				y_pos += 20;
+				y_pos := y_pos + 20;
 				break;
 			"displaygeneral":
 				DisplayGeneral(targ, gump);
@@ -139,7 +136,7 @@ function BuildEntries(targ, byref gump, byref cfg_elem, byref y_pos)
 				break;
 			default:
 				GFTextLine(gump, 175, y_pos, 32, entry);
-				y_pos += 20;
+				y_pos := y_pos + 20;
 				break;
 		endcase
 		SleepMS(2);
@@ -169,6 +166,11 @@ function DisplayMember(targ, byref gump, byref entry, byref y_pos)
 
 	case ( Lower(entry[4]) )
 		"hex":
+// Uncomment to have gump show Inside UO colour numbers.
+/*			if(entry[3] == "color")
+			    value := value -2;
+			endif
+*/
 			value := Hex(value);
 			break;
 		"binary":
@@ -180,7 +182,7 @@ function DisplayMember(targ, byref gump, byref entry, byref y_pos)
 	endcase
 	GFTextRight(gump, 480, y_pos, 2100, value);
 
-	y_pos += 20;
+	y_pos := y_pos + 20;
 	return 1;
 endfunction
 
@@ -199,7 +201,7 @@ function DisplayWeaponInfo(targ, byref gump, byref entry, byref y_pos)
 endfunction
 
 function DisplayGeneral(targ, byref gump)
-	GFResizePic(gump, 145, 55, GFGetCfgConst("Defaults", "ForeGround"), 340, 240);
+	GFResizePic(gump, 145, 55, GetCfgConst("Defaults", "ForeGround"), 340, 240);
 	var isa_types := GetIsAType(targ, ISA_GET_ALL);
 	isa_types.Reverse();
 	GFTextLine(gump, 155, 60, 2100, "ISA TREE");
@@ -207,11 +209,11 @@ function DisplayGeneral(targ, byref gump)
 	foreach type in ( isa_types )
 		type := GetIsAName(type);
 		GFTextLine(gump, 155+(_type_iter*5), y_pos, 2100, type);
-		y_pos += 20;
+		y_pos := y_pos + 20;
 		SleepMS(2);
 	endforeach
 
-	GFResizePic(gump, 145, 300, GFGetCfgConst("BackGrounds", "GOLDTRIM"), 340, 165);
+	GFResizePic(gump, 145, 300, GetCfgConst("BackGrounds", "GOLDTRIM"), 340, 165);
 	GFTilePic(gump, 290, 355, targ.graphic, targ.color);
 
 	return 1;
@@ -285,20 +287,20 @@ endfunction
 function GumpTemplate(targ)
 	var gump := GFCreateGump();
 	GFPage(gump, 0);
-	GFResizePic(gump, 0, 0, GFGetCfgConst("Defaults", "BackGround"), 500, 480);
+	GFResizePic(gump, 0, 0, GetCfgConst("Defaults", "BackGround"), 500, 480);
 
-	GFResizePic(gump, 15, 15, GFGetCfgConst("Defaults", "ForeGround"), 470, 35);
+	GFResizePic(gump, 15, 15, GetCfgConst("Defaults", "ForeGround"), 470, 35);
 	GFTextLine(gump, 25, 22, 2100, "Info on "+targ.desc);
 
 	GFTextRight(gump, 475, 22, 2100, "["+GetIsAName(GetIsAType(targ))+"]");
 
-	GFResizePic(gump, 15, START_Y, GFGetCfgConst("Defaults", "ForeGround"), 125, END_Y);
+	GFResizePic(gump, 15, START_Y, GetCfgConst("Defaults", "ForeGround"), 125, END_Y);
 
 	var y_pos := 60;
 	foreach entry in ( index_list )
 		GFAddButton(gump, 20, (y_pos+3), 2117, 2118, GF_CLOSE_BTN, (MENU_BTN+_entry_iter));
 		GFTextLine(gump, 40, y_pos, 2100, entry);
-		y_pos += 20;
+		y_pos := y_pos + 20;
 		SleepMS(2);
 	endforeach
 	GFPage(gump, 1);

@@ -1,3 +1,8 @@
+/* $Id: goAdd.inc 375 2006-06-17 19:26:32Z austinheilman $
+ *
+ */
+
+
 function Go_AddNewLocation(who, public:=1)
 
 	SendSysMessage(who, "Click where you want the new Go Location to go to.");
@@ -108,9 +113,7 @@ function Go_SetLocation(gump_Type, who, name, realm, x, y, z)
 		realm := who.realm;
 	endif
 
-	x := CInt(x);
-	y := CInt(y);
-	z := CInt(GetMapInfo(x, y, realm).z);
+	z := GetMapInfo(x, y, realm).z;
 
 	var temp := struct;
 	temp.+Name := Lower(name);
@@ -134,7 +137,7 @@ function Go_LocationCopyGump(public:=1)
 
 	var gump := Go_GumpHeader(public);
 	GFHTMLArea(gump,  25, 60, 150, 20, "<basefont color=#7FFFD4>Name");
-	GFHTMLArea(gump, 225, 60, 150, 20, "<basefont color=#7FFFD4>Realm");
+	GFHTMLArea(gump, 175, 60, 150, 20, "<basefont color=#7FFFD4>Realm");
 	GFHTMLArea(gump, 295, 60, 150, 20, "<basefont color=#7FFFD4>Copy");
 
 	GFPage(gump, 1);
@@ -147,13 +150,13 @@ function Go_LocationCopyGump(public:=1)
 	if( public )
 		go_keys_base.Sort();
 		foreach place in ( go_keys_base )
-			GFTextLine(gump,  25, y_loc, 1720, go_prop_base[place].Name);
-			GFTextLine(gump, 225, y_loc, 1720, go_prop_base[place].Realm);
+			GFTextLine(gump,  25, y_loc, 2100, go_prop_base[place].Name);
+			GFTextLine(gump, 175, y_loc, 2100, go_prop_base[place].Realm);
 			GFAddButton(gump, 300, y_loc+3, 2117, 2118, GF_CLOSE_BTN, counter);
 
-			counter += 1;
-			line_num += 1;
-			y_loc += 20;
+			counter := counter + 1;
+			line_num := line_num+1;
+			y_loc := y_loc + 20;
 			if ( line_num >= 17 && line_num < num_keys )
 				GFAddButton(gump, 370, 405, 2706, 2707, GF_PAGE_BTN, page_num+1);
 				page_num := page_num + 1;
@@ -167,13 +170,13 @@ function Go_LocationCopyGump(public:=1)
 	else
 		go_keys.Sort();
 		foreach place in ( go_keys )
-			GFTextLine(gump,  25, y_loc, 1153, go_prop[place].Name);
-			GFTextLine(gump, 175, y_loc, 1153, go_prop[place].Realm);
+			GFTextLine(gump,  25, y_loc, 2100, go_prop[place].Name);
+			GFTextLine(gump, 175, y_loc, 2100, go_prop[place].Realm);
 			GFAddButton(gump, 300, y_loc+3, 2117, 2118, GF_CLOSE_BTN, counter);
 
-			counter += 1;
-			line_num += 1;
-			y_loc += 20;
+			counter := counter + 1;
+			line_num := line_num+1;
+			y_loc := y_loc + 20;
 			if ( line_num >= 17 && line_num < num_keys )
 				GFAddButton(gump, 370, 405, 2706, 2707, GF_PAGE_BTN, page_num+1);
 				page_num := page_num + 1;

@@ -1,49 +1,53 @@
-/*
-        Created by *Edwards
-
-        2010-03-22
-*/
 use uo;
 use os;
 
 include "include/client";
+include "include/yesNo";
 
-program textcmd_point( mobile )
+program point (who)
+	if (who.concealed)
+		SendSysMessage (who, "Are you really sure you want to do that?");
+		SendSysMessage (who, "Players will be able to see.");
+		if (!yesno (who, "Continue?"))
+			return;
+		endif
+	endif
 
-        SendSysMessage( mobile, "Point at what?" );
-        var targ := TargetCoordinates( mobile );
-        if( !targ )
-                SendSysMessage( mobile, "Cancelled." );
-                return 0;
-        endif
+	SendSysMessage (who, "Point at what?");
+	var targetted := TargetCoordinates (who);
+	if (!targetted)
+		SendSysMessage (who, "Canceled.");
+		return;
+	endif
 
-	var description;
-	if( targ.mobile )
-		targ := targ.mobile;
-		description := targ.name;
-	elseif( targ.item )
-		targ := targ.item;
-		description := targ.desc;
+	var targettedesc;
+	if (targetted.mobile)
+		targettedesc := targetted.mobile.name;
+		targetted := targetted.mobile;
+	elseif (targetted.item)
+		targettedesc := targetted.item.desc;
+		targetted := targetted.item;
+	elseif (targetted.desc)
+		targettedesc := targetted.desc;
 	else
-		targ := CreateItemAtLocation( targ.x, targ.y, targ.z, 0xeed, 1 );
-		targ.movable := 0;
-		targ.name := "pointer";
-		description := "that spot";
+		targetted := CreateItemAtLocation (targetted.x, targetted.y, targetted.z, 0x706c, 1, who.realm);
+		targetted.graphic := 0x206e;
+		targetted.movable := 0;
+		targetted.name := "location marker";
+		SetObjProperty (targetted, "destroyme", 1);
+		targettedesc := "that spot";
 	endif
 
-	PerformAction( mobile, ANIM_SALUTE );
-	PrintTextAbove( mobile, "*points at "+description+"*" );
-	SleepMS(500);
- 
-	if( !targ.container )
-		PrintTextAbove( targ, "*"+mobile.name+" points here*" );
+	PerformAction (who, ANIM_SALUTE);
+	PrintTextAbove (who, "*points at " + targettedesc + "*", FONT_NORMAL, 55);
+	sleepms (500);
+	if (!targetted.container)
+		PrintTextAbove (targetted, "*" + who.name + " points here*", FONT_NORMAL, 55);
 	endif
- 
-	Sleep(2);
- 
-	if( targ.objtype == 0xeed )
-		DestroyItem( targ );
+	sleep (2);
+	if (targetted.objtype == 0x706c)
+		if (GetObjProperty (targetted, "destroyme"))
+			DestroyItem (targetted);
+		endif
 	endif
- 
-        return 1;
 endprogram

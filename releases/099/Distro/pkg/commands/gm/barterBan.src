@@ -1,37 +1,23 @@
-/*
-        Created by *Edwards
-        
-        2010-08-15
-*/
+// auction  version 1.0
+// by Zulu (zulu@zuluhotel.com)   November 12, 2000
+
 use uo;
 
-include "include/security";
+program change_cmdlevel( who )
+    SendSysMessage( who, "Barter Ban, select player." );
 
-program textcommand_BarterBane( mobile )
+    var player := Target( who, TGTOPT_NOCHECK_LOS );
+ 
+    if( !player.npctemplate and !player.amount )
+	if (getObjProperty (player, "barterban") == 1)
+	    EraseObjProperty (player, "barterban");
+	    SendSysMessage( who, "Player is no longer banned." );
+	else
+	    SetObjProperty (player, "barterban", 1);
+	    SendSysMessage( who, "Player is now banned." );
+	endif
+    else
+    	SendSysmessage( who , "Not a player" );
+    endif
 
-        if( !AuthorizationCode( mobile ))
-                SendSysMessage( mobile, "Cancelled." );
-                return 0;
-        endif
-
-        SendSysMessage( mobile, "Select the player you would like to toggle barter statut." );
-        var targ := Target( mobile );
-        if( !targ )
-                SendSysMessage( mobile, "Cancelled." );
-                return 0;
-        elseif( !targ.IsA( POLCLASS_MOBILE ) || targ.IsA( POLCLASS_NPC ))
-                SendSysMessage( mobile, "You must select a player." );
-                return 0;
-        endif
-        
-        var barter_toggle := GetObjProperty( targ, "BarterBAN" );
-        if( barter_toggle )
-                EraseObjProperty( targ, "BarterBAN" );
-                SendSysMessage( mobile, targ.name+" is no longer banned from barter." );
-        else
-                SetObjProperty( targ, "BarterBAN", 1 );
-                SendSysMessage( mobile, targ.name+" is now banned from barter." );
-        endif
-        
-        return 1;
 endprogram

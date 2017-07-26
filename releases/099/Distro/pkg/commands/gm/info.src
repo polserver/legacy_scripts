@@ -1,22 +1,25 @@
 /*
-        Maintened by *Edwards
+ * $Id: info.src 375 2006-06-17 19:26:32Z austinheilman $
+ *
+ * Purpose
+ *
+ * Presents information about a mobile.
+ *
+ */
 
-        Last Modifications 2009-05-30
-*/
 use uo;
 use os;
+use storage;
 
-include ":attributes:attributes";
-include ":brainAI:npcUtil";
+include "include/attributes";
+include "include/BAInpcUtil";
 include ":gumps:gumps";
-include ":gumps:gumpprompt";
-include ":gumps:requestgump";
-include ":gumps:yesno";
-include ":containers:storageAreas";
-include ":weapons:weaponInfo";
+include ":gumps:gumpPrompt";
+include ":gumps:requestGump";
+include ":gumps:yesNo";
+include "include/storageAreas";
+include "include/weaponInfo";
 include "include/arrays";
-include ":security:commandReport";
-include "include/security";
 
 CONST START_Y	:= 55;   // These are to track the display area height.
 CONST END_Y	:= 410;  // These are to track the display area height.
@@ -30,17 +33,11 @@ var template;			// Template gump (so it doesn't need to be rebuilt)
 var btn_list := array{};	// Stores button information for the current gump (since its so dynamic)
 var btn_info := struct{"editFunc", "name"}; // Individual button tracking that goes into the btn_list array.
 
-program textcmd_Info( who, serial )
-
-	if( Lower(TypeOf(who)) == "array" )
+program textcmd_Info(who, serial)
+	if ( Lower(TypeOf(who)) == "array" )
 		serial := who[2];
 		who := who[1];
 	endif
- 
-        if( !AuthorizationCode( who ))
-                SendSysMessage( who, "Cancelled." );
-                return 0;
-        endif
 
 	info_cfg := ReadConfigFile(":commands:info");
 	if ( !info_cfg )
@@ -52,19 +49,19 @@ program textcmd_Info( who, serial )
 
 	var targ;
 	if ( serial )
-		targ := SystemFindObjectBySerial(CInt(serial), SYSFIND_SEARCH_OFFLINE_MOBILES);
+		targ := SystemFindObjectBySerial(CInt(serial));
 	else
-		targ := Target(who, TGTOPT_NOCHECK_LOS);
+		targ := Target(who);
 	endif
+	if ( targ.IsA(POLCLASS_ITEM) )
+		start_script("::textcmd/gm/iteminfo", {who, targ.serial});
+		return 0;
+	endif
+
 	if ( !targ.IsA(POLCLASS_MOBILE) )
 		SendSysMessage(who, "Cancelled.");
 		return 0;
 	endif
- 
-        if( targ.cmdlevel > who.cmdlevel && who.cmdlevel < 4 )
-                SendSysMessage( targ, who.name+" is trying to open your informations." );
-                return 0;
-        endif
 
 	template := GumpTemplate(targ);
 	var cur_gump := 1;
@@ -116,7 +113,7 @@ function BuildEntries(targ, byref gump, byref cfg_elem, byref y_pos)
 
 	if ( cfg_elem.AutoBox )
 		var num_entries := entries.Size();
-		GFResizePic(gump, 145, y_pos, GFGetCfgConst("Defaults", "ForeGround"), 340, (num_entries*20));
+		GFResizePic(gump, 145, y_pos, GetCfgConst("Defaults", "ForeGround"), 340, (num_entries*20));
 	endif
 
 	foreach entry in ( entries )
@@ -142,7 +139,7 @@ function BuildEntries(targ, byref gump, byref cfg_elem, byref y_pos)
 					SleepMS(2);
 				endforeach
 				GFTextLine(gump, 175, y_pos, 2100, text);
-				y_pos += 20;
+				y_pos := y_pos + 20;
 				break;
 			"storageareas":
 				DisplayStorageAreas(targ, gump, y_pos);
@@ -159,7 +156,7 @@ function BuildEntries(targ, byref gump, byref cfg_elem, byref y_pos)
 				break;
 			default:
 				GFTextLine(gump, 175, y_pos, 32, entry);
-				y_pos += 20;
+				y_pos := y_pos +  20;
 				break;
 		endcase
 		SleepMS(2);
@@ -200,23 +197,23 @@ function DisplayMember(targ, byref gump, byref entry, byref y_pos)
 	endcase
 	GFTextRight(gump, 480, y_pos, 2100, value);
 
-	y_pos += 20;
+	y_pos := y_pos +  20;
 	return 1;
 endfunction
 
 function DisplayVitals(targ, byref gump, byref y_pos)
-	var vitals := AP_GetVitalNames();
+	var vitals := GetVitalIds();
 	var num_vitals := vitals.Size();
 
-	GFResizePic(gump, 145, y_pos, GFGetCfgConst("Defaults", "ForeGround"), 340, (num_vitals*20));
+	GFResizePic(gump, 145, y_pos, GetCfgConst("Defaults", "ForeGround"), 340, (num_vitals*20));
 	foreach vital_name in ( vitals )
 		var btn_id := GFAddButton(gump, 150, (y_pos+3), 2117, 2118, GF_CLOSE_BTN);
 		RegisterButton(btn_id, vital_name, "vitalEdit");
 		GFTextLine(gump, 175, y_pos, 2100, vital_name);
-		var value := AP_GetVital(targ, vital_name);
-		var max_value := AP_GetVitalMaximumValue(targ, vital_name);
+		var value := CDbl(GetVital(targ, vital_name)) / 100;
+		var max_value := CDbl(GetVitalMaximumValue(targ, vital_name)) / 100;
 		GFTextRight(gump, 480, y_pos, 2100, value+" / "+max_value);
-		y_pos += 20;
+		y_pos := y_pos +  20;
 		SleepMS(2);
 	endforeach
 
@@ -225,7 +222,9 @@ endfunction
 
 function DisplayAttributes(targ, byref gump, byref entry, byref y_pos)
 	var type := entry[2];
-	var attributes := AP_ListAttributesByType(type);
+//	var attributes := AP_ListAttributesByType(type);
+        var attrib_cfg := ReadConfigFile(":*:attributes"); 
+        var attributes := GetConfigStringKeys(attrib_cfg); 
 	//
 	// Notes about the first page of showing attributes:
 	// 1. The Y position they start showing on is dynamic.
@@ -256,7 +255,7 @@ function DisplayAttributes(targ, byref gump, byref entry, byref y_pos)
 			y_stretch := y_stretch + 10;
 		endif
 
-		GFResizePic(gump, 145, y_pos, GFGetCfgConst("Defaults", "ForeGround"), 340, y_stretch);
+		GFResizePic(gump, 145, y_pos, GetCfgConst("Defaults", "ForeGround"), 340, y_stretch);
 		if ( _group_iter > 1 )
 			GFAddButton(gump, 460, START_Y+5, 2650, 2651, GF_PAGE_BTN, gump.cur_page-1);
 		endif
@@ -266,10 +265,11 @@ function DisplayAttributes(targ, byref gump, byref entry, byref y_pos)
 			RegisterButton(btn_id, attrib_name, "attribEdit");
 
 			GFTextLine(gump, 175, y_pos, 2100, attrib_name);
-			var value := AP_GetTrueSkill(targ, attrib_name);
-			var mod_value := AP_GetSkillMod(targ, attrib_name);
-			GFTextRight(gump, 465, y_pos, 2100, value+" [+"+mod_value+"]");
-			y_pos += 20;
+                        var value := CDbl(GetAttributeBaseValue(targ, attrib_name)) / 10.0;
+                        var mod_value := CDbl(GetAttributeTemporaryMod(targ, attrib_name)) / 10.0;
+
+			GFTextRight(gump, 465, y_pos, 2100, value+" (+"+mod_value+")");
+			y_pos := y_pos +  20;
 			SleepMS(2);
 		endforeach
 
@@ -290,7 +290,7 @@ function DisplayPrivileges(targ, byref gump, byref y_pos)
 	privs := GetConfigStringArray(privs, "Priv");
 
 	var num_privs := privs.Size();
-	GFResizePic(gump, 145, y_pos, GFGetCfgConst("Defaults", "ForeGround"), 340, (num_privs*20));
+	GFResizePic(gump, 145, y_pos, GetCfgConst("Defaults", "ForeGround"), 340, (num_privs*20));
 	foreach priv_name in ( privs )
 		var btn_id := GFAddButton(gump, 150, (y_pos+3), 2117, 2118, GF_CLOSE_BTN);
 		RegisterButton(btn_id, priv_name, "privEdit");
@@ -303,7 +303,7 @@ function DisplayPrivileges(targ, byref gump, byref y_pos)
 		endif
 
 		GFTextRight(gump, 480, y_pos, 2100, status);
-		y_pos += 20;
+		y_pos := y_pos +  20;
 		SleepMS(2);
 	endforeach
 
@@ -315,7 +315,7 @@ function DisplayStorageAreas(targ, byref gump, byref y_pos)
 	var storage_areas := CP_GetStorageAreaNames();
 	var num_areas := storage_areas.Size();
 
-	GFResizePic(gump, 145, y_pos, GFGetCfgConst("Defaults", "ForeGround"), 340, (num_areas*20));
+	GFResizePic(gump, 145, y_pos, GetCfgConst("Defaults", "ForeGround"), 340, (num_areas*20));
 	foreach area_name in ( storage_areas )
 		var container := CP_GetStorageContainerForMobile(targ, area_name, CP_NOCREATE);
 		var name := area_name;
@@ -327,7 +327,7 @@ function DisplayStorageAreas(targ, byref gump, byref y_pos)
 		endif
 
 		GFTextLine(gump, 175, y_pos, 2100, name);
-		y_pos += 20;
+		y_pos := y_pos +  20;
 		SleepMS(2);
 	endforeach
 
@@ -335,7 +335,7 @@ function DisplayStorageAreas(targ, byref gump, byref y_pos)
 endfunction
 
 function DisplayReportables(targ, byref gump, byref y_pos)
-	GFResizePic(gump, 145, y_pos, GFGetCfgConst("BackGrounds", "GoldTrim"), 340, 200);
+	GFResizePic(gump, 145, y_pos, GetCfgConst("BackGrounds", "GoldTrim"), 340, 200);
 	var lines := "<CENTER><U>Reportables</U></CENTER><BR>";
 	foreach line in ( targ.reportables )
 		lines := "<B>o</B>"+lines+line+"<BR>";
@@ -357,7 +357,7 @@ function DisplayWeaponInfo(targ, byref gump, byref entry, byref y_pos)
 		"averagedamage":
 	endcase
 
-	y_pos += 20;
+	y_pos := y_pos +  20;
 
 	return 1;
 endfunction
@@ -434,9 +434,9 @@ endfunction
 function GumpTemplate(targ)
 	var gump := GFCreateGump();
 	GFPage(gump, 0);
-	GFResizePic(gump, 0, 0, GFGetCfgConst("Defaults", "BackGround"), 500, 480);
+	GFResizePic(gump, 0, 0, GetCfgConst("Defaults", "BackGround"), 500, 480);
 
-	GFResizePic(gump, 15, 15, GFGetCfgConst("Defaults", "ForeGround"), 470, 35);
+	GFResizePic(gump, 15, 15, GetCfgConst("Defaults", "ForeGround"), 470, 35);
 	GFTextLine(gump, 25, 22, 2100, "Info on "+targ.name);
 
 	if ( targ.npctemplate )
@@ -447,13 +447,13 @@ function GumpTemplate(targ)
 		GFTextRight(gump, 475, 22, 2100, "[Offline Player]");
 	endif
 
-	GFResizePic(gump, 15, START_Y, GFGetCfgConst("Defaults", "ForeGround"), 125, END_Y);
+	GFResizePic(gump, 15, START_Y, GetCfgConst("Defaults", "ForeGround"), 125, END_Y);
 
 	var y_pos := 60;
 	foreach entry in ( index_list )
 		GFAddButton(gump, 20, (y_pos+3), 2117, 2118, GF_CLOSE_BTN, (MENU_BTN+_entry_iter));
 		GFTextLine(gump, 40, y_pos, 2100, entry);
-		y_pos += 20;
+		y_pos := y_pos +  20;
 		SleepMS(2);
 	endforeach
 	GFPage(gump, 1);
@@ -493,10 +493,8 @@ function ProcessInput(who, targ, input)
 			OpenStorage(who, targ, input_info);
 			break;
 		"vitaledit":
-                        SetObjProperty( targ, "LFucker", who.serial );
 			VitalEdit(who, targ, input_info);
 		"attribedit":
-                        SetObjProperty( targ, "LFucker", who.serial );
 			AttributeEdit(who, targ, input_info);
 		default:
 			GumpPrompt(who, "Dont know what to do with edit function type '"+input_info.editFunc+"'");
@@ -584,21 +582,21 @@ endfunction
 
 function VitalEdit(who, targ, input_info)
 
-	var value := AP_GetVital(targ, input_info.name);
+	var value := GetVital(targ, input_info.name) / 100;
 	var change := RequestGump(who, "New value to assign "+input_info.name+" to.", "", CStr(value), CANCEL_BTN_ON);
 	if ( change == error )
 		return 0;
 	endif
 
-	AP_SetVital(targ, input_info.name, change);
+	SetVital(targ, input_info.name, CInt(CDbl(change)*100.0));
 
 	return 1;
 endfunction
 
 function AttributeEdit(who, targ, input_info)
 
-	var real_value := AP_GetTrueSkill(targ, input_info.name);
-	var mod_value := AP_GetSkillMod(targ, input_info.name);
+	var real_value := CDbl(GetAttributeBaseValue(targ, input_info.name)) / 10.0;
+	var mod_value := CDbl(GetAttributeTemporaryMod(targ, input_info.name)) / 10.0;
 	var value := real_value+" "+mod_value;
 	var change := RequestGump(who, "New value to assign "+input_info.name+" to.", "real_value("+real_value+") modifier("+mod_value+")", CStr(value), CANCEL_BTN_ON);
 	if ( change == error )
@@ -606,20 +604,14 @@ function AttributeEdit(who, targ, input_info)
 	endif
 
 	change := SplitWords(change, " ");
-	AP_SetTrueSkill(targ, input_info.name, change[1]);
-	AP_SetSkillMod(targ, input_info.name, change[2]);
-
+	SetAttributeBaseValue(targ, input_info.name, CInt(CDbl(change[1]) * 10.0));
+	SetAttributeTemporaryMod(targ, input_info.name, CInt(CDbl(change[2]) * 10.0));
+        RecalcVitals(targ);
 	return 1;
 endfunction
 
 function PrivEdit(who, targ, input_info)
 	who := who; // Stops compiler warning.
-
-	// Privs should only be editible by Admin and above
-	if ( who.cmdlevel < 4 )
-		SendSysMessage(who, "Privileges can only be edited by administrators and above.");
-	endif
-	
 	var priv_name := input_info.name;
 
 	if ( targ.Enabled(priv_name) )
@@ -637,7 +629,7 @@ function OpenStorage(who, targ, input_info)
 	var storage_area := input_info.name;
 
 	// Kind of a kludge, but oh well, deal with it!
-	if( storage_area == "backpack" )
+	if ( storage_area == "backpack" )
 		SendOpenSpecialContainer(who, targ.backpack);
 		return 1;
 	else
