@@ -1,4 +1,5 @@
-/* 
+/* $Id: doSkillLock.src 544 2006-07-04 03:13:44Z austinheilman $
+ *
  * Purpose
  * Handles incomming and outgoing send skill requests
  *
@@ -10,8 +11,8 @@ use polsys;
 
 include "include/client";
 include ":skilllocks:common";
-include ":attributes:attributes_ex";
-include ":attributes:skills";
+//include ":attributes:attributes_ex";
+include "include/attributes";
 
 CONST MODE_FULL_LIST		:= 0;
 CONST MODE_SINGLE_SKILL		:= 255;
@@ -33,7 +34,7 @@ CONST DEBUG := 0;
 var num_skills := "";
 
 program doSkillLock()
-	print("INSTALLING: Skill Lock PH...");
+	Print("INSTALLING: Skill Lock PH...");
 	return 1;
 endprogram
 
@@ -57,7 +58,7 @@ exported function HandleSendSkillLock(character, byref packet)
 			if ( mode == MODE_FULL_LIST_CAP )
 				// Use 9 here because byte[2] id + byte[2] skill value + byte[2] unmodified value + byte skillLock + byte[2] cap = 9
 				packet.SetInt8((OFFSET_SEND_SKILLLOCK + (9 * i)), state);
-				packet.SetInt16((OFFSET_SEND_CAP + (9 * i)), CInt(AP_GetSkillsCap()));
+				packet.SetInt16((OFFSET_SEND_CAP + (9 * i)), CInt(AP_GetSkillCap(AP_SkillIdToAttributeName(i))));
 			else
 				// byte[2] id + byte[2] skill value + byte[2] unmodified value + byte skillLock = 7
 				packet.SetInt8((OFFSET_SEND_SKILLLOCK + (7 * i)), state);
@@ -70,7 +71,7 @@ exported function HandleSendSkillLock(character, byref packet)
 
 		// If it is requested, include skill cap information
 		if ( mode == MODE_SINGLE_SKILL_CAP )
-			packet.SetInt16(OFFSET_SEND_CAP, CInt(AP_GetSkillsCap()));
+			packet.SetInt16(OFFSET_SEND_CAP, CInt(AP_GetSkillCap(AP_SkillIdToAttributeName(skill_id))));
 		endif
 	else
 		if ( DEBUG )

@@ -1,3 +1,6 @@
+/* $Id: receiveStatLock.src 375 2006-06-17 19:26:32Z austinheilman $
+ *
+ */
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //  name:    0xBF Hook: Stat Lock Recieve Subcommand 0x1A
@@ -20,7 +23,7 @@ use polsys;
 use math;
 
 program receiveStatLock()
-	print("INSTALLING: Statlock Recieving PH..." );
+	Print( "INSTALLING: Statlock Recieving PH..." );
 	return 1;
 endprogram
 
@@ -31,7 +34,6 @@ CONST CLEAR_DEX_MASK := 0xF3;
 CONST CLEAR_INT_MASK := 0xFC;
 
 exported function HandleReceiveStatLock( character, byref packet )
-
 	// Stat ID of the adjusted stat
 	var stat := packet.GetInt8(OFFSET_STAT);
 	// Lock state of the stat
@@ -58,7 +60,6 @@ exported function HandleReceiveStatLock( character, byref packet )
 	// states when we change them. Going from Down to Lock will create a 11 entry
 	// instead of 10 for the lock state, because of the OR command. Cleaning these
 	// with AND (&) will make them 00 so the new state can be set cleanly.
- 
 	case(stat)
 		0: statBit := statBit & CLEAR_STR_MASK | lsh(mode, 4);
 		1: statBit := statBit & CLEAR_DEX_MASK | lsh(mode, 2);

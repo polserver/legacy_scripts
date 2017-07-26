@@ -1,3 +1,8 @@
+/*
+ * $Id: common.inc 544 2006-07-04 03:13:44Z austinheilman $
+ *
+ */
+
 include ":datafile:datafile";
 
 /*

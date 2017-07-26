@@ -1,3 +1,6 @@
+/* $Id: rScreenSize.src 375 2006-06-17 19:26:32Z austinheilman $
+ *
+ */
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //  name:    0xBF Hook: Screen Size of Client play window Subcommand 0x5
@@ -12,12 +15,11 @@
 use uo;
 
 program rScreenSize()
-  print("INSTALLING: Screen Size Setup PH..." );
+  Print( "INSTALLING: Screen Size Setup PH..." );
   return 1;
 endprogram
 
 exported function HandleReceiveScreenSize( who, byref packet )
-
 	// Get the X resolution
 	var x := packet.GetInt16(7);
 	// Get the Y resolution

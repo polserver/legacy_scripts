@@ -1,8 +1,6 @@
-use os;
+use uo;
 
-var script := Start_Script( "systemMoonGate/moongateInit" );
-if( script.errortext )
-	SysLog( "Error starting system moongate setup ->"+script.errortext );
-else
-	Print( "Starting system moongate setup... OK." );
-endif
+include ":moongates:moongates";
+
+print("Initializing moongates");
+CreateMoongates();

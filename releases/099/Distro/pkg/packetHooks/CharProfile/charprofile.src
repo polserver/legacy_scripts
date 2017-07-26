@@ -1,32 +1,22 @@
-/*
-        Maintened by *Edwards
-
-        Last Maintenances 2011-03-31
-*/
-use uo;
+/* $Id: charprofile.src 375 2006-06-17 19:26:32Z austinheilman $
+ *
+ */
 use os;
 
 program charprofile()
-
-	print( "INSTALLING: Character Profile..." );
+	Print( "INSTALLING: Character Profile PH..." );
 	return 1;
 endprogram
 
-exported function HandleCharProfileRequest( mobile, byref packet )
+CONST PROFILE_UPDATE_MODE := 1;
+CONST PROFILE_REQUEST_MODE := 0;
+CONST OFFSET_MODE := 3;
 
-	var id := packet.GetInt32(4);  //serial of requested profile
-	var chr := SystemFindObjectBySerial( id );
-        if( chr.errortext )
-                //Let's be honest, this check is useless..
-                return 0;
-	elseif( chr.IsA( POLCLASS_NPC ))
-		return 0;
-	endif
- 
-        var script := Start_Script( ":charprofile:parseCharProfile", array{mobile, chr} );
-        if( script.errortext )
-                SendSysMessage( mobile, "Error starting script <:charprofile:parseCharProfile> -->"+script.errortext );
-        endif
+exported function HandleCharProfileRequest( character, byref packet )
+
+
+	Start_Script("parseCharProfile", { character, packet });
 
 	return 1;
+
 endfunction
