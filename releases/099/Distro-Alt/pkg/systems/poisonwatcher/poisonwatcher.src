@@ -4,7 +4,7 @@ use util;
 use cfgfile;
 
 include ":poisonwatcher:poisons";
-
+include ":damage:damage";
 set_priority(5);
 
 program PoisonWatcher(who)

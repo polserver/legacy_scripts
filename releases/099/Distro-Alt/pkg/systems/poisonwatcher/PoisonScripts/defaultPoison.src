@@ -5,6 +5,7 @@ use os;
 
 include "include/attributes";
 include ":poisonwatcher:poisons";
+include ":damage:damage";
 
 program default_poison(params)
 
@@ -76,7 +77,7 @@ program default_poison(params)
 
 		var lasthitparms := {attacker.name, attacker.serial, "poison"};
 		SetObjProperty(who, "LastHit", lasthitparms );
-		ApplyRawDamage(who, dmg);
+		ApplyRawDamageEX(who, dmg, DMG_POISON);
 
 		Set_Critical(1);
 			var curr := CInt(GetStamina(who));

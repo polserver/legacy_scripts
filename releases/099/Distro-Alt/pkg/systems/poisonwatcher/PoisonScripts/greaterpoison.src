@@ -1,6 +1,8 @@
 use uo;
 use os;
+
 include "include/attributes";
+include ":damage:damage";
 
 program GreaterPoison(params)
 	
@@ -13,7 +15,7 @@ program GreaterPoison(params)
 			SetStamina(who, GetStamina(who) - 2);
 		endif
 	
-		ApplyRawDamage(who,3);
+		ApplyRawDamageEX(who, 3, DMG_POISON);
 		sleep(2);
 	endwhile
 endprogram

@@ -139,7 +139,7 @@ function in_combat_event_loop(opponent, loops)
     elseif(dmg < 2)
       dmg := 2;
     endif
-        ApplyDamageEX(opponent, RandomInt(dmg), DMG_PHYSICAL, 0);
+        ApplyDamageEX(opponent, RandomInt(dmg), DMG_PHYSICAL, me);
   endif
 endfunction
 

@@ -12,6 +12,7 @@ include "include/canAccess";
 include "include/toolWear";
 include ":oldstyle-gumps:gumps";
 include "include/noto";
+include ":damage:damage";
 
 var keys := {0x100e, 0x100f, 0x100f, 0x1012, 0x1013};
 var tinker_cfg:= ReadConfigFile("tinker");
@@ -851,7 +852,7 @@ function dart_trap(who, item, ingot, ct)
       endif
       SetObjProperty(chest, "trap_type", "1");
       SetObjProperty(chest, "oldscript", chest.usescript);
-      SendSysMessage(who, "The carefully place the trap on the container");
+      SendSysMessage(who, "You carefully place the trap on the container");
       chest.usescript := ":tinkering:tinkerTraps";
       SetObjProperty(chest, "trapper", who.serial);
       CheckToolWear (who, item, SKILLID_TINKERING);
@@ -859,9 +860,9 @@ function dart_trap(who, item, ingot, ct)
       var results := RandomInt(9) + 1;
       if(results == 1)
         var the_damage := (RandomInt(19) + 1) + RandomInt(myskill + 10);
-        SendSysMessage(who, "You fail, and set off the trap!");
+        SendSysMessage(who, "You fail and set off the trap!", 1, 33);
         PlaySoundEffect(who, SFX_225);
-        ApplyRawDamage(who, the_damage);
+        ApplyDamageEX(who, the_damage, DMG_PHYSICAL);
       else
         SendSysMessage(who, "You failed to properly place the trap");
       endif
@@ -1038,7 +1039,7 @@ function explosion_trap(who, item,  ingot, ct)
         SendSysMessage(who, "You fail, and set off the explosion!");
         PlayObjectCenteredEffect( who,  0x36b0,5,0 );
         PlaySoundEffect( who, 0x0208);
-        ApplyRawDamage(who, the_damage);
+        ApplyDamageEX(who, the_damage, DMG_PHYSICAL);
       else
         SendSysMessage(who, "You failed to properly place the trap");
       endif

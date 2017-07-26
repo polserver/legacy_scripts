@@ -169,7 +169,7 @@ function cast_fireball(caster, cast_on)
     if(cast_on.npctemplate)
       dmg := dmg * 2;
     endif
-    ApplyRawDamage(cast_on, MWResisted(20, cast_on, dmg));
+    ApplySpellDamageEX(cast_on, dmg, DMG_FIRE, caster, 3);
   endif
 endfunction
 
@@ -200,7 +200,7 @@ function cast_lightning(caster, cast_on)
   if(cast_on.isA(POLCLASS_NPC))
     dmg := dmg * 2;
   endif
-  ApplyRawDamage(cast_on, dmg);
+  ApplySpellDamageEX(cast_on, dmg, DMG_ENERGY, caster, 4);
 endfunction
 
 function cast_manadrain(caster, cast_on)

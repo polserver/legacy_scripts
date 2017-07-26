@@ -68,7 +68,7 @@ program detect_hidden ( who )
               "1" :   PlaySoundEffect(who, SFX_224);
                       var dmg := (RandomInt(20) + CInt(trapstrength));
                       SendSysMessage(who, "You set off a needle trap!");
-                      ApplyDamageEX(who, dmg, DMG_FORCED, 0);
+                      ApplyDamageEX(who, dmg, DMG_PHYSICAL, 0);
                       item.usescript := "";
 		              EraseObjProperty( item, "trap_type" );
 		              EraseObjProperty( item, "trap_strength" );
@@ -82,7 +82,7 @@ program detect_hidden ( who )
                       item.usescript := "";
 		              EraseObjProperty( item, "trap_type" );
 		              EraseObjProperty( item, "trap_strength" );
-                      ApplyRawDamageEX(who, dmg, DMG_FORCED, 0);
+                      ApplyDamageEX(who, dmg, DMG_PHYSICAL, 0);
             endcase
             break;
           endif
@@ -98,7 +98,7 @@ program detect_hidden ( who )
               "1" :   PlaySoundEffect(who, SFX_224);
                       var dmg := (RandomInt(20) + CInt(trapstrength));
                       SendSysMessage(who, "You set off a needle trap!");
-                      ApplyDamage(who, dmg);
+                      ApplyDamageEX(who, dmg, DMG_PHYSICAL, 0);
                       item.usescript := "";
 		              EraseObjProperty( item, "trap_type" );
 		              EraseObjProperty( item, "trap_strength" );
@@ -113,11 +113,11 @@ program detect_hidden ( who )
                       SendSysMessage(who, "You set off an explosion trap!");
                       PlayStationaryEffect( item.x,item.y,item.z, FX_EXPLODE_3, 10,10, 0, item.realm);
                       var dmg := (RandomInt(20) + CInt(trapstrength));
-                      ApplyRawDamage(who, dmg);
+                      ApplyDamageEX(who, dmg, DMG_PHYSICAL);
                       item.usescript := "";
 		              EraseObjProperty( item, "trap_type" );
 		              EraseObjProperty( item, "trap_strength" );
-                      ApplyRawDamage(who, dmg);
+                      ApplyDamageEX(who, dmg, DMG_PHYSICAL, 0);
             endcase
             break;
           endif
@@ -133,7 +133,7 @@ program detect_hidden ( who )
               "1" :   PlaySoundEffect(who, SFX_224);
                       var dmg := (RandomInt(20) + CInt(trapstrength));
                       SendSysMessage(who, "You set off a needle trap!");
-                      ApplyDamage(who, dmg);
+                      ApplyDamageEX(who, dmg, DMG_PHYSICAL, 0);
                       item.usescript := "";
 		              EraseObjProperty( item, "trap_type" );
 		              EraseObjProperty( item, "trap_strength" );
@@ -160,11 +160,11 @@ program detect_hidden ( who )
                       SendSysMessage(who, "You set off an explosion trap!");
                       PlayStationaryEffect( item.x,item.y,item.z, FX_EXPLODE_3, 10,10, 0, item.realm);
                       var dmg := (RandomInt(20) + CInt(trapstrength));
-                      ApplyRawDamage(who, dmg);
+                      ApplyRawDamageEX(who, dmg, DMG_PHYSICAL);
                       item.usescript := "";
 		              EraseObjProperty( item, "trap_type" );
 		              EraseObjProperty( item, "trap_strength" );
-                      ApplyRawDamage(who, dmg);
+                      ApplyDamageEX(who, dmg, DMG_PHYSICAL, 0);
             endcase
             break;
           endif

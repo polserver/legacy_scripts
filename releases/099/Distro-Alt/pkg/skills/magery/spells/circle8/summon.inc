@@ -78,11 +78,11 @@ function summon_creature( caster, circle := 8, npctemplate, cast_loc, controldif
 	endif
 	Detach();
 	sleep(duration);
-        if (thecritter)
-                PlaySoundEffect( thecritter, SFX_SPELL_MANA_VAMPIRE );
-                PlayStationaryEffect( thecritter.x, thecritter.y, thecritter.z, FX_SMOKE, 0xa, 0xa, 0, thecritter.realm );
-                MoveObjectToLocation(thecritter, 6143, 0, 0, "britannia_alt", MOVEOBJECT_FORCELOCATION);
-                SetScriptController(thecritter);
-                ApplyDamage(thecritter, GetHp(thecritter) + 100);
-        endif
+  if (thecritter)
+    PlaySoundEffect( thecritter, SFX_SPELL_MANA_VAMPIRE );
+    PlayStationaryEffect( thecritter.x, thecritter.y, thecritter.z, FX_SMOKE, 0xa, 0xa, 0, thecritter.realm );
+    MoveObjectToLocation(thecritter, 6143, 0, 0, "britannia_alt", MOVEOBJECT_FORCELOCATION);
+    SetScriptController(thecritter);
+    ApplyDamage(thecritter, GetHp(thecritter) + 100);
+  endif
 endfunction

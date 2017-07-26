@@ -4,9 +4,9 @@ use cfgfile;
 
 include "include/client";
 include "include/attributes";
+include ":damage:damage";
 
 const EVID_UNEQUIP   := 0x123456;
-const EVID_DISCHARGE := 0x123457;
 
 program unequip(who, item)
   set_critical(1);
@@ -29,6 +29,23 @@ program unequip(who, item)
     "invisibility": val := invisibility(who, item);
     default:        val := 1;
   endcase
+    if(item.resist_fire)
+    ModifyResistance(who, DMG_FIRE, item.resist_fire * -1);
+  endif
+  if(item.resist_cold)
+    ModifyResistance(who, DMG_COLD, item.resist_cold * -1);
+  endif
+  if(item.resist_poison)
+    ModifyResistance(who, DMG_POISON, item.resist_poison * -1);
+  endif
+  if(item.resist_energy)
+    ModifyResistance(who, DMG_ENERGY, item.resist_energy * -1);
+  endif
+  if(item.resist_physical)
+    ModifyResistance(who, DMG_PHYSICAL, item.resist_physical * -1);
+  endif
+
+
   return val;
   set_critical(0);
 endprogram

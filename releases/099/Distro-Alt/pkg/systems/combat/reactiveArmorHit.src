@@ -8,8 +8,6 @@ use util;
 use vitals;
 use os;
 
-include ":damage:damage";
-
 
 program reactivearmourhit(param)
 
@@ -40,7 +38,6 @@ program reactivearmourhit(param)
 	PlayObjectCenteredEffect(attacker, 0x36cb, 7, 0x10);
 	PlaySoundEffect(attacker, 0x208);
 	ApplyRawDamage(attacker, (RandomDiceRoll(diceroll) ) );
-        ApplyRawDamageEX(attacker, RandomDiceRoll(diceroll), DMG_FORCED, defender);
 	SetObjProperty(defender, "TempDamage", rawdamage);
 
 endprogram

@@ -12,6 +12,7 @@ include "include/utility";
 include "include/dist";
 include "include/toolWear";
 include "include/noto";
+include ":damage:damage";
 
 const UACTION_CHOP := 0x0d;
 const FX_POISON_GAS := 0x113a;
@@ -243,7 +244,7 @@ function chopfurniture(me, theobj)
       "1" :   PlaySoundEffect(me, SFX_224);
               var dmg := (RandomInt(20) + CInt(trapstrength));
               SendSysMessage(me, "You set off a needle trap!");
-              ApplyDamage(me, dmg);
+              ApplyDamageEX(me, dmg, DMG_PHYSICAL);
               theobj.usescript := "";
               EraseObjProperty( theobj, "trap_type" );
               EraseObjProperty( theobj, "trap_strength" );
@@ -254,7 +255,7 @@ function chopfurniture(me, theobj)
               SendSysMessage(me, "You set off an explosion trap!");
               PlayObjectCenteredEffect( me, FX_EXPLODE_3, 10,10);
               var dmg := (RandomInt(20) + CInt(trapstrength));
-              ApplyRawDamage(me, dmg);
+              ApplyDamageEX(me, dmg, DMG_PHYSICAL);
               theobj.usescript := "";
               EraseObjProperty( theobj, "trap_type" );
               EraseObjProperty( theobj, "trap_strength" );

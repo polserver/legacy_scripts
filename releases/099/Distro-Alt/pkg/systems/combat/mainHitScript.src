@@ -9,6 +9,28 @@ var speech;
 
 program MainHitScript(attacker, defender, weapon, armor, basedamage, rawdamage)
 
+	var bloodoath := GetObjProperty(defender, "bloodoath");
+	if(bloodoath)
+		if(bloodoath  == defender.serial)
+			rawdamage := rawdamage * 0.9;
+			PlayObjectCenteredEffect(attacker, 0x374a, 20,15 );
+			PlayObjectCenteredEffect( defender, 0x374a, 20,15 );
+			ApplyDamageEX(attacker, rawdamage, DMG_FORCED);
+		endif
+	endif
+	var attune := getobjproperty(defender, "#attune");
+	if(attune)
+		rawdamage := rawdamage * 0.85;
+		PlayObjectCenteredEffect(attacker, 0x374a, 20,15 );
+		PlayObjectCenteredEffect( defender, 0x374a, 20,15 );
+	endif
+	var wraithform := GetObjProperty(defender, "wraith");
+	if(wraithform)
+		rawdamage := rawdamage * 1.2;
+	endif
+
+
+
 	if (!CheckLineOfSight(attacker, defender) )
 		return 0;
 	endif
@@ -21,6 +43,8 @@ program MainHitScript(attacker, defender, weapon, armor, basedamage, rawdamage)
 			return 0;
 		endif
 	endif
+
+
 
 	if (GetObjProperty(defender, "#BLINKING") != error )
 		if ( (GetObjProperty(defender, "#BLINKING") <= ReadGameClock() ) && (RandomInt(2) == 1) )
@@ -51,9 +75,9 @@ program MainHitScript(attacker, defender, weapon, armor, basedamage, rawdamage)
 	endif
 
 	var gloves := GetEquipmentByLayer(attacker, 0x07);
-	var gloveshit := 0;
+	var gloves_hit := 0;
 	if (gloves)
-		gloveshit := GetObjProperty(gloves, "OnHit");
+		gloves_hit := GetObjProperty(gloves, "OnHit");
 	endif
 
 	if (armorhit)
@@ -73,11 +97,11 @@ program MainHitScript(attacker, defender, weapon, armor, basedamage, rawdamage)
 	endif
 
 	if (!weaponhit)
-		if (!gloveshit)
+		if (!gloves_hit)
 			DealDamage(defender, attacker, rawdamage);
 			return;
 		else
-		  foreach x in gloveshit
+		  foreach x in gloves_hit
 			Detach();
 			run_script_to_completion(CStr(x), { attacker, defender, gloves, armor, basedamage, rawdamage } );
 			rawdamage := GetObjProperty(gloves, "TempDamage");
@@ -99,11 +123,11 @@ program MainHitScript(attacker, defender, weapon, armor, basedamage, rawdamage)
 	  if (rawdamage < 1)
             rawdamage := 1;
           endif
-	        if (!gloveshit)
+	        if (!gloves_hit)
 			DealDamage(defender, attacker, rawdamage);
 			return;
 		else
-		  foreach x in gloveshit
+		  foreach x in gloves_hit
 			Detach();
 			run_script_to_completion(CStr(x), { attacker, defender, gloves, armor, basedamage, rawdamage } );
 			rawdamage := GetObjProperty(gloves, "TempDamage");
@@ -113,7 +137,7 @@ program MainHitScript(attacker, defender, weapon, armor, basedamage, rawdamage)
         		rawdamage := 1;
 		  endif
 		endif
-      	  DealDamage(defender, attacker, rawdamage);
+		DealDamage(defender, attacker, rawdamage);
 	  return;
 	endif
 endprogram

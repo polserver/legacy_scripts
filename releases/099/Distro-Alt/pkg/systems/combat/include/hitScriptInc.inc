@@ -13,7 +13,7 @@ include ":damage:damage";
 function DealDamage(defender, attacker, rawdamage)
 
 	rawdamage := rawdamage + ( CInt(GetAttribute(attacker, "anatomy") ) / 9);
-        ApplyRawDamageEX(defender, rawdamage, DMG_PHYSICAL, attacker);
+  ApplyRawDamageEX(defender, rawdamage, DMG_PHYSICAL, attacker);
 
 endfunction
 

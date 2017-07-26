@@ -5,7 +5,7 @@ use util;
 include "include/client";
 include "include/attributes";
 include ":poisonwatcher:poisons";
-include "include/spellRestrictions";
+include ":damage:damage";
 
 program poisondamage (passparms)
   var who      := passparms[1];
@@ -24,8 +24,10 @@ program poisondamage (passparms)
   AddPoison(who, "defaultPoison", 120, attacker, level);
   if(pfield == 1)
     PrintTextAbovePrivate(who, "You choke on the noxious fumes!", who);
-    var dmg := Resisted(5, attacker, who, CInt(GetAttribute(attacker, "magery") / 25));
-    ApplyRawDamage(who, dmg);
+//    var dmg := Resisted(5, attacker, who, CInt(GetAttribute(attacker, "magery") / 25));
+	// We now do a resisting spells check in damage.inc
+    var dmg := CInt(GetAttribute(attacker, "magery") / 25);
+    ApplyRawSpellDamageEX(who, dmg, DMG_POISON, attacker, 5);
   endif
 endprogram
 

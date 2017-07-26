@@ -11,6 +11,7 @@ include "include/NPCCast";
 include "include/randName";
 include "include/dist";
 include "include/snooping";
+include ":damage:damage";
 
 set_priority(5);
 
@@ -896,7 +897,7 @@ function cast_meteor(opponent)
   PlaysoundEffect(me, 0x16b);
   sleep(3);
   PlayMovingEffect(me, opponent, 0x36d4, 10, 1, 1);
-  ApplyRawDamage(opponent, dmg);
+  ApplyRawDamage(opponent, dmg, DMG_FIRE);
 endfunction
 
 function flee(opponent)

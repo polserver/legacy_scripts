@@ -3,7 +3,7 @@ use uo;
 
 program my_form( who )
 
-		SendSysMessage(who, "You are now back to your true graphic.", color := 88);
-		who.graphic := who.trueobjtype;
+	who.graphic := CInt(GetObjProperty(who, "MyForm"));
+	EraseObjProperty(who, "MyForm");
 
 endprogram

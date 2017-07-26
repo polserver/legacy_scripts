@@ -37,6 +37,11 @@ program pushthroughhook()
 endprogram
 
 exported function pushthrough( who , obstacles )
+
+	// Added for necros in wraith form.
+	if(GetObjProperty(who, "wraith"))
+		return 1;
+	endif
 	if( len( obstacles > 1 ) )
 		return 0;
 	endif

@@ -36,7 +36,7 @@ program cast_magicarrow( parms )
             PlayMovingEffect( cast_on, caster, FX_MAGIC_ARROW, 5, 1 );
             PlaySoundEffect( cast_on, SFX_SPELL_MAGIC_ARROW );
         endif
-	ApplyRawSpellDamageEX(cast_on, damage, info.damage_type, caster, info.Circle);
+	ApplySpellDamageEX(cast_on, damage, info.damage_type, caster, info.Circle);
 
 	return 1;
 

@@ -1,6 +1,5 @@
 
 
-
 function HandleMods(who, item)
   set_critical(1);
   var itemdesc := ReadConfigFile("itemdesc");
@@ -33,6 +32,22 @@ function HandleMods(who, item)
     "invisibility": val := invisibility(who,item);
     default:        val := 1;
   endcase
+  if(item.resist_fire)
+    ModifyResistance(who, DMG_FIRE, item.resist_fire);
+  endif
+  if(item.resist_cold)
+    ModifyResistance(who, DMG_COLD, item.resist_cold);
+  endif
+  if(item.resist_poison)
+    ModifyResistance(who, DMG_POISON, item.resist_poison);
+  endif
+  if(item.resist_energy)
+    ModifyResistance(who, DMG_ENERGY, item.resist_energy);
+  endif
+  if(item.resist_physical)
+    ModifyResistance(who, DMG_PHYSICAL, item.resist_physical);
+  endif
+
   return val;
   set_critical(0);
 endfunction

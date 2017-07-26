@@ -7,6 +7,7 @@ use attributes;
 
 include "include/client";
 include "include/attributes";
+include ":damage:damage";
 
 const FX_POISON_GAS := 0x113a;
 
@@ -234,7 +235,7 @@ function trappedswitch(who, item, mid, stt, snd)
     1:   PlaySoundEffect(who, SFX_224);
          var dmg :=(RandomInt(20) + CInt(trapstrength));
          SendSysMessage(who, "You set off a needle trap!");
-         ApplyDamage(who, dmg);
+         ApplyDamageEX(who, dmg, DMG_PHYSICAL);
     2:   PlaySoundEffect(who, SFX_232);
          PrintTextAbovePrivate(who, "You set off a poison trap!", who);
          PlayObjectCenteredEffect( who, FX_POISON_GAS, 10,10);
@@ -244,7 +245,7 @@ function trappedswitch(who, item, mid, stt, snd)
          SendSysMessage(who, "You set off an explosion trap!");
          PlayObjectCenteredEffect( who, FX_EXPLODE_3, 10,10);
          var dmg :=(RandomInt(20) + CInt(trapstrength));
-         ApplyRawDamage(who, dmg);
+         ApplyRawDamageEX(who, dmg, DMG_PHYSICAL);
     4:   var dmg;
          var victims := ListMobilesNearLocation( item.x, item.y, item.z, 5, item.realm);
          Detach();
@@ -252,7 +253,7 @@ function trappedswitch(who, item, mid, stt, snd)
          var dmg :=(RandomInt(20) + CInt(trapstrength));
 	       PlayLightningBoltEffect( mob );
 	       PlaySoundEffect(mob, SFX_SPELL_LIGHTNING);
-	       ApplyRawDamage( mob, Resisted( mob, dmg) );
+	       ApplyRawDamageEX( mob, GMTResisted( mob, dmg), DMG_ENERGY );
            sleepms(600);
          endforeach
   endcase
@@ -720,7 +721,7 @@ function linkteleport(who, item)
   SetObjProperty(item,"function", "tele");
 endfunction
 
-function Resisted(who, amt)
+function GMTResisted(who, amt)
   var magery  := CInt(RandomInt(99)+1);
   var evalint := CInt(RandomInt(99)+1);
   var halfamt := amt/2;

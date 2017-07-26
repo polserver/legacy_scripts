@@ -18,7 +18,7 @@ include "include/sounds";
 program SpellStarter(params)
 	var mobile := params[1]; // Caster
 	var spell_id := params[2]; // Id # of the spell
-	var scroll := params[3]; // Scroll object being used
+	var scroll := params[3]; // Scroll ObjType being used
 	var targ := params[4]; // NPC target used if NPC is casting the spell
 //        targ := targ; // stop compiler unused warning
         if (scroll == 1)
@@ -29,7 +29,7 @@ program SpellStarter(params)
 	endif
 
 	var spell_elem := MS_GetSpellsCfgElem(spell_id);
-
+	var manacost := CInt(spell_elem.ManaCost);
 	// If spell is set to 'TestOnly 1', then it requires cmdlevel or #SpellTester CProp before it can be used.
 	if ( spell_elem.TestOnly and !mobile.cmdlevel )
 		// TestOnly spell, check for #SpellTester
@@ -47,16 +47,16 @@ program SpellStarter(params)
 	var requires_mana := 1;
 	var requires_regs := 1;
 	var settings_elem := MS_GetSettingsCfgElem("Settings");
-        if (scroll)
-            requires_regs := 0;
-        endif
+	if (scroll)
+		requires_regs := 0;
+	endif
 
 	if ( !mobile.IsA(POLCLASS_NPC) && (mobile.cmdlevel >= settings_elem.StaffCmdLvl) )
 		requires_mana := CInt(settings_elem.StaffRequiresMana);
 		requires_regs := CInt(settings_elem.StaffRequiresReagents);
-        else
-                requires_regs := 0;
-                requires_mana := 1;
+	else
+		requires_regs := 0;
+		requires_mana := 1;
 	endif
 
 	if ( GetObjProperty(mobile, "#Casting") )
@@ -77,7 +77,15 @@ program SpellStarter(params)
 	endif
 
 	if ( requires_mana )
-		if ( !AP_ConsumeVital(mobile, VITALID_MANA, spell_elem.ManaCost) )
+	// Added to support necro spell mind rot.
+		if(GetObjProperty(mobile, "mindrot"))
+			if(mobile.isA(POLCLASS_NPC))
+				manacost := manacost * 2;
+			else
+				manacost := manacost * 1.25;
+			endif
+		endif
+		if ( !AP_ConsumeVital(mobile, VITALID_MANA, manacost) )
 			SendSysMessage(mobile, "You don't have enough mana to cast that spell!");
 			FailSpell(mobile);
 			return 0;
@@ -145,13 +153,13 @@ program SpellStarter(params)
 			endif
 		endif
 // This was commented out /////////////////////////////
-                if ( delay % 50 )
-                        SleepMS(delay % 50);
-                        delay := delay - (delay % 50);
-                else
-                        SleepMS(50);
-                        delay := delay - 50;
-                endif
+		if ( delay % 50 )
+				SleepMS(delay % 50);
+				delay := delay - (delay % 50);
+		else
+				SleepMS(50);
+				delay := delay - 50;
+		endif
 
 
 	endwhile
@@ -172,23 +180,28 @@ program SpellStarter(params)
 //	var skill_check := SkillCheck(mobile, attribute, difficulty, 50);
 	var skill_check := SkillCheck(mobile, attribute, difficulty, 30);
 
+	// Added to support necro wraith form can recall regardless of their magery skill level.
+	if(GetObjProperty(mobile, "wraith") && spell_id == 32)
+		skill_check := 1;
+	endif
 	mobile.frozen := 0;
         
 	// skill_check > 0 on success
 	if ( skill_check)
-			var info := struct;
-			info.+script := spell_elem.script;
-			info.+attribute := attribute;
-			info.+skill_check := skill_check;
-			info.+targ := targ;
-			info.+pid := GetPid();
-			info.+spellId := spell_id;
-                        info.+circle := spell_elem.Circle;
-                        info.+spell_config := spell_elem;
+		var info := struct;
+		info.+script := spell_elem.script;
+		info.+attribute := attribute;
+		info.+skill_check := skill_check;
+		info.+targ := targ;
+		info.+pid := GetPid();
+		info.+spellId := spell_id;
+		info.+circle := spell_elem.Circle;
+		info.+spell_config := spell_elem;
+		info.+damage_typ := spell_elem.DamageType;
 
-			var script := Start_Script(spell_elem.SpellScript, {mobile, info, spell_id, targ});
-                        Detach();
-                        EraseObjProperty(mobile, "#Casting");
+		var script := Start_Script(spell_elem.SpellScript, {mobile, info, spell_id, targ});
+		Detach();
+		EraseObjProperty(mobile, "#Casting");
 
 		if ( script.errortext )
 			Broadcast("Unable to start ["+spell_elem.SpellScript+"] -> "+script.errortext);
@@ -245,6 +258,9 @@ function CheckReagents(mobile, byref spell_elem, scroll)
 		endif
 
 		var objtype := GetObjTypeByName(_amount_iter);
+		if(!objtype)
+			objtype := CInt(_amount_iter);
+		endif
 		var properties := dictionary{"objtype"->objtype};
 		
 		if ( AmountInContainer(mobile.backpack, properties) < amount )

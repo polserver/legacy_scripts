@@ -14,7 +14,7 @@ include "include/dist";
 
 var caster;
 var npccfg := ReadConfigFile("::npcdesc");
-const EVID_DISCHARGE := 0x123457;
+const EVID_DISCHARGE_DUP := 0x123457;
 
 function maincast(parms, delivery, circle, noto, id);
   var cast_on;
@@ -224,7 +224,7 @@ function Reflected(cast_on)
       pid := getprocess(holder);
       if(pid)
         var k := struct;
-        k.+type := EVID_DISCHARGE;
+        k.+type := EVID_DISCHARGE_DUP;
         pid.sendevent(k);
       else
         EraseObjProperty(cast_on, "mr");

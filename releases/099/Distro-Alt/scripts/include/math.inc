@@ -68,7 +68,7 @@ endfunction
 function Bounded(x, i, y, inclusive := 1)
 // Checks to see if a number "i" falls between the two
 // bounds "x" and "y".  If inclusive is set to nonzero,
-// the function will return true if (i=x) || (i=y).
+// the function will return true if (i==x) || (i==y).
 	if (inclusive)
 		if ( (i >= Min({x, y})) && (i <= Max({x, y})) )
 			return 1;
@@ -133,6 +133,20 @@ function Remainder(numerator, denominator)
 endfunction
 
 
+function RoundNumber(x)
+
+// Rounds the number to the nearest integer.  0.5 and greater rounds to the next
+// highest int.  Note: negative numbers round up as well, so -1.5 becomes -1.0
+
+	if ( ( Abs(x) - CInt(x) ) >= 0.5)
+		return ( CInt(x + 1) );
+	else
+		return ( CInt(x) );
+	endif
+
+endfunction
+
+
 function Trunc(number, places)
 
 // Truncates a dbl to a fixed amount of decimal places.
@@ -150,7 +164,7 @@ endfunction
 function Fac(factorial);
 
 // Returns the factorial of a number:
-// Fac(10) = 10 * 9 * 8 * 7 * 6 * 5 * 4 * 3 * 2 * 1
+// Fac(10) == 10 * 9 * 8 * 7 * 6 * 5 * 4 * 3 * 2 * 1
 
 	factorial := CInt(factorial);
 	var x := 1;
@@ -193,12 +207,12 @@ function YRoot(x, y)
 		i := i / (a * root);
 		i := Trunc(i, 3);
 		root := root + i;
-		if (i = 0)
+		if (i == 0)
 			success := 1;
 			if ( Pow(Root, y) > x )
 				root := root - 0.001;
 			endif
-			if ( Pow((root + 0.001), y) = x)
+			if ( Pow((root + 0.001), y) == x)
 				root := root + 0.001;
 			endif
 		endif
@@ -272,12 +286,12 @@ function ZTest(ArrayX, mu, sigma)
 // mean and standard deviation for the population must be known.
 // The z-statistic is computed as follows:
 //
-//	z = (mean - mu) / (sigma / (Sqr(n))
+//	z==(mean - mu) / (sigma / (Sqr(n))
 //
-// mean = the mean of the ArrayX data
-// mu = the mean of the entire population
-// sigma = the standard deviation of the population
-// n = the number of samples in the data
+// mean==the mean of the ArrayX data
+// mu==the mean of the entire population
+// sigma==the standard deviation of the population
+// n==the number of samples in the data
 
 	var i, n;
 	var z:= 0.000;
@@ -301,12 +315,12 @@ function TTest(ArrayX, mu)
 // the mean and standard deviation for the entire population are
 // unknown.  The t-statistic is computed as follows:
 //
-//	t = (mean - mu) / (s / (Sqr(n))
+//	t==(mean - mu) / (s / (Sqr(n))
 //
-// mean = the mean of the ArrayX data
-// mu = the estimated mean of the entire population
-// s = the standard deviation of the samples
-// n = the number of samples in the data
+// mean==the mean of the ArrayX data
+// mu==the estimated mean of the entire population
+// s==the standard deviation of the samples
+// n==the number of samples in the data
 
 
 	var i, n, s;
@@ -341,15 +355,15 @@ function BitIn(ArrayX)
 // because it processes the bit values in the following order:
 // 128, 64, 32, 16, 8, 4, 2, 1.
 
-	local i := 8;
-	local n;
-	local loop := 1;
-	local bitvalue := 0;
+	var i := 8;
+	var n;
+	var loop := 1;
+	var bitvalue := 0;
 
 	While (i >= 0)
 
 		n := 8 - i;
-		if (ArrayX[i] = 1)
+		if (ArrayX[i]==1)
 			bitvalue := bitvalue + Pow(2, n);
 		endif
 		i := i - 1;
@@ -369,10 +383,10 @@ function BitOut(x)
 // bit, and so on down.   See the desc for BitIn for the details.
 
 	x := Cint(x);
-	local loop := 1;
-	local bitvalue := 0;
-	local ArrayX := {0,0,0,0,0,0,0,0};
-	local n;
+	var loop := 1;
+	var bitvalue := 0;
+	var ArrayX := {0,0,0,0,0,0,0,0};
+	var n;
 
 	while (loop <= 8)
 
@@ -398,16 +412,16 @@ function BitAnd(x, y)
 // that position in the result is set.   If either are reset, then
 // the position in the result is reset.
 
-	local ArrayX := BitOut(x);
-	local ArrayY := BitOut(y);
-	local z := 0;
-	local loop := 1;
-	local n;
+	var ArrayX := BitOut(x);
+	var ArrayY := BitOut(y);
+	var z := 0;
+	var loop := 1;
+	var n;
 
 	while (loop <= 8)
 	
 		n := loop - 1;
-		if ( (ArrayX[loop] = 1) AND (ArrayY[loop] = 1) )
+		if ( (ArrayX[loop]==1) AND (ArrayY[loop]==1) )
 			z := z + Pow(2, n);
 		endif
 		loop := loop + 1;
@@ -426,16 +440,16 @@ function BitOr(x, y)
 // position are set, then that position in the result is set.   If 
 // both are reset, then the position in the result is reset.
 
-	local ArrayX := BitOut(x);
-	local ArrayY := BitOut(y);
-	local z := 0;
-	local loop := 1;
+	var ArrayX := BitOut(x);
+	var ArrayY := BitOut(y);
+	var z := 0;
+	var loop := 1;
 	locan n;
 
 	while (loop <= 8)
 
 		n := loop - 1;
-		if ( (ArrayX[loop] = 1) OR (ArrayY[loop] = 1) )
+		if ( (ArrayX[loop]==1) OR (ArrayY[loop]==1) )
 			z := z + Pow(2, n);
 		endif
 		loop := loop + 1;
@@ -454,11 +468,11 @@ function BitXor(x, y)
 // set, then that position in the result is set.   If both are 
 // either set or reset, then the position in the result is reset.
 
-	local ArrayX := BitOut(x);
-	local ArrayY := BitOut(y);
-	local z := 0;
-	local loop := 1;
-	local n;
+	var ArrayX := BitOut(x);
+	var ArrayY := BitOut(y);
+	var z := 0;
+	var loop := 1;
+	var n;
 
 	while (loop <= 8)
 
@@ -482,16 +496,16 @@ function BitEqv(x, y)
 // set, then that position in the result is reset.   If both are 
 // either set or reset, then the position in the result is set.
 
-	local ArrayX := BitOut(x);
-	local ArrayY := BitOut(y);
-	local z := 0;
-	local loop := 1;
-	local n;
+	var ArrayX := BitOut(x);
+	var ArrayY := BitOut(y);
+	var z := 0;
+	var loop := 1;
+	var n;
 
 	while (loop <= 8)
 
 		n := loop - 1;
-		if (ArrayX[loop] - ArrayY[loop] = 0)
+		if (ArrayX[loop] - ArrayY[loop]==0)
 			z := z + Pow(2, n);
 		endif
 		loop := loop + 1;
@@ -511,11 +525,11 @@ function BitImp(x, y)
 // then that position in the result is reset.  All other combinations
 // will result in the value being set.
 
-	local ArrayX := BitOut(x);
-	local ArrayY := BitOut(y);
-	local z := 0;
-	local loop := 1;
-	local n;
+	var ArrayX := BitOut(x);
+	var ArrayY := BitOut(y);
+	var z := 0;
+	var loop := 1;
+	var n;
 
 	while (loop <= 8)
 
@@ -539,15 +553,15 @@ function BitNot(x)
 // result is reset.  Conversely, if a position in the integer is 
 // reset, then that position in the result is set.
 
-	local ArrayX := BitOut(x);
-	local z := 0;
-	local loop := 1;
-	local n;
+	var ArrayX := BitOut(x);
+	var z := 0;
+	var loop := 1;
+	var n;
 
 	while (loop <= 8)
 
 		n := loop - 1;
-		if (ArrayX[loop] = 0)
+		if (ArrayX[loop]==0)
 			ArrayX[loop] := 1;
 			z := z + Pow(2, n);
 		else
@@ -570,7 +584,7 @@ function FlagSet(flag, bit);
 
 	bit := 9 - bit;
 	
-	local FlagArray := BitOut(flag);
+	var FlagArray := BitOut(flag);
 	FlagArray[bit] := 1;
 
 	bit := BitIn(FlagArray);
@@ -587,7 +601,7 @@ function FlagReset(flag, bit);
 
 	bit := 9 - bit;
 	
-	local FlagArray := BitOut(flag);
+	var FlagArray := BitOut(flag);
 	FlagArray[bit] := 0;
 
 	bit := BitIn(FlagArray);
@@ -603,10 +617,10 @@ function FlagCheck(flag, bit);
 // <flag> register.  It will return a 1 if the flag is set, and a 0
 // if the flag is reset.  Both <flag> and <bit> are integers.
 
-	local FlagArray := BitOut(flag);
+	var FlagArray := BitOut(flag);
 	bit := 9 - bit;
 
-	if (FlagArray[bit] = 1)
+	if (FlagArray[bit] == 1)
 		return 1;
 	else
 		return 0;

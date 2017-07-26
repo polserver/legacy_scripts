@@ -1,4 +1,5 @@
-//doubles damage taken by npc with cprop undead > 0
+// Doubles damage taken by npc with cprop undead > 0
+// Adds 25% damage to necros in wraith form.
 
 use uo;
 use util;
@@ -12,9 +13,15 @@ program silverhit(param)
 	var armor := param[4];
 	var basedamage := param[5];
 	var rawdamage := param[6];
-
+	basedamage := basedamage;
+	armor := armor;
+	attacker := attacker;
 	if( GetObjProperty(defender,"undead") )
 		rawdamage := rawdamage*2;
+		PrintTextAbove(defender,defender.name + " shrieks from the silvery burn!");
+	endif
+	if(GetObjProperty(defender, "wraith") || Getobjproperty(defender, "lichform") || Getobjproperty(defender, "vampire"))
+		rawdamage := rawdamage + (CInt(rawdamage * 0.25));
 		PrintTextAbove(defender,defender.name + " shrieks from the silvery burn!");
 	endif
 	SetObjProperty(weapon, "TempDamage", rawdamage);

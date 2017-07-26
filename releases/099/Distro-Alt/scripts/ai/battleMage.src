@@ -15,6 +15,7 @@ include "include/anchors";
 include "include/NPCBackpacks";
 include "include/skillLists";
 include ":poisonwatcher:poisons";
+include ":damage:damage";
 
 var flee_point := 0;
 var npccfg := ReadConfigFile("::npcdesc");
@@ -157,7 +158,7 @@ function Fight(opponent)
   PlayLightningBoltEffect(opponent);
   sleepms(100);
   PlayLightningBoltEffect(opponent);
-  sleepms(100);
+  sleepms(100);	
   PlayLightningBoltEffect(opponent);
   sleepms(100);
   PlayLightningBoltEffect(opponent);

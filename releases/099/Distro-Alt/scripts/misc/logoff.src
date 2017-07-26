@@ -93,8 +93,12 @@ program onlogoff(who)
     LogToFile("::log/activity_" + month + ".log", who.name +" on account " + who.acctname + " logged on at " + real_life_time + 
     " and was online for " + timestring);
     EraseObjProperty(who, "Real_Life_login_Time");
-
-  
+    EraseObjproperty(who, "bloodoath");
+    EraseObjproperty(who, "evilomen");
+    EraseObjproperty(who, "mindrot");
+    EraseObjproperty(who, "EnemyOfOne");
+    EraseObjProperty(who, "strangle");
+	
 endprogram
 
 function staffnotify(who)

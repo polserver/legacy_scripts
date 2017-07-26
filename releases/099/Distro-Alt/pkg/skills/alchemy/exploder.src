@@ -1,7 +1,9 @@
 use uo;
 use os;
 use util;
+
 include "include/attributes";
+include ":damage:damage";
 
 program exploder(parms)
   var potion := parms[1];
@@ -34,7 +36,7 @@ program exploder(parms)
       0x1DC09: dmg := (RandomInt(4) + 6 );
       0x1DC07: dmg := (RandomInt(9) + 11 );
     endcase
-    ApplyRawDamage(critter, dmg);
+    ApplyDamageEX(critter, dmg, DMG_PHYSICAL);
   endforeach
 
   // Then everything near it goes out in a bang

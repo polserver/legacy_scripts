@@ -65,7 +65,13 @@ function ApplyDamageEX(mobile, amount, type:=DMG_FORCED, source:=0)
 			SetLastDamageInfo(mobile, amount, type, source);
 			SetScriptController(source);
 		endif
-
+    // Added for necro wraith form
+    if(source and GetObjProperty(source, "wraith"))
+      DoManaSuck(mobile, source, amount);
+    endif
+    if(GetObjProperty(source , "cursed_weapon"))
+      LifeDrain(source, amount, 50);
+    endif
 		ApplyDamage(mobile, amount);
 	endif
 
@@ -106,6 +112,14 @@ function ApplyRawDamageEX(mobile, amount, type:=DMG_FORCED, source:=0)
 			SetLastDamageInfo(mobile, amount, type, source);
 			SetScriptController(source);
 		endif
+  // Added for necro wraith form
+  if(source and GetObjProperty(source, "wraith"))
+    DoManaSuck(mobile, source, amount);
+  endif
+  if(GetObjProperty(source , "cursed_weapon"))
+    LifeDrain(source, amount, 50);
+  endif
+
 		ApplyRawDamage(mobile, amount);
 	endif
 
@@ -143,7 +157,7 @@ function ApplySpellDamageEX(mobile, amount, type:=DMG_FORCED, source:=0, circle 
 	// Check to see if we will take standard resistances into account against spell damage.
 	settings := DMG_GetSettingsCfgElem("Settings");
 	if ( settings.UseDamageTypes )
-            amount := CalcDamageAmount(mobile, amount, type);
+      amount := CalcDamageAmount(mobile, amount, type);
 	endif
 
 	if ( amount == error )
@@ -158,13 +172,20 @@ function ApplySpellDamageEX(mobile, amount, type:=DMG_FORCED, source:=0, circle 
 	if ( amount < 0 )
 	    HealDamage(mobile, Abs(amount));
 	else
-	    if ( source )
-		SetLastDamageInfo(mobile, amount, type, source);
-		SetScriptController(source);
-	    endif
+    if ( source )
+      SetLastDamageInfo(mobile, amount, type, source);
+      SetScriptController(source);
+    endif
 
 	    ApplyDamage(mobile, amount);
 	endif
+  // Added for necro wraith form
+  if(source and GetObjProperty(source, "wraith"))
+    DoManaSuck(mobile, source, amount);
+  endif
+  if(GetObjProperty(source, "cursed_weapon"))
+    LifeDrain(source, amount, 50);
+  endif
 
 	return amount;
 endfunction
@@ -215,6 +236,13 @@ function ApplyRawSpellDamageEX(mobile, amount, type:=DMG_FORCED, source:=0, circ
 		endif
 		ApplyRawDamage(mobile, amount);
 	endif
+  // Added for necro wraith form
+  if(source and GetObjProperty(source, "wraith"))
+    DoManaSuck(mobile, source, amount);
+  endif
+  if(GetObjProperty(source , "cursed_weapon"))
+    LifeDrain(source, amount, 50);
+  endif
 
 	return amount;
 endfunction
@@ -489,12 +517,12 @@ function ModifyResistance(mobile, name, value)
 	if ( Lower(TypeOf(resistances)) != "dictionary" )
 		resistances := dictionary;
 	endif
-
-	var cur_value := CDbl(resistances[name]);
+  var adjustment := value;
+  var cur_value := CDbl(resistances[name]);
 	value := cur_value + CDbl(value);
 
 	resistances[name] := value;
-
+  SendSysMessage(mobile, "Your " + name + " resistance has changed by " + CStr(adjustment)+ ".", 2, 88);
 	return SetObjProperty(mobile, "%Resistances%", resistances);
 endfunction
 
@@ -573,4 +601,68 @@ function ResistanceMultToPercent(mult)
         return CInt(100 + (mult * 100));
     endif
 endfunction
+
+function DoManaSuck(defender, attacker, amount)
+
+  // Added for necro wraith form
+  // Get Spirit Speak skill level from the attacker and divide it by 5.
+  // Then convert to percent (div by 100) and determine the mana amount to suck from defender.
+    var sspeak := GetAttribute(attacker, SPIRITSPEAK);
+    sspeak := CDbl(sspeak);
+    sspeak := sspeak/5;
+    if(sspeak < 8)
+      sspeak := 8;
+    endif
+    sspeak := sspeak / 100;
+    // The amount of mana to suck from the defender.
+    var manasuck := amount * sspeak;
+    var defmana := GetVital(defender, "Mana")/ 100;
+    // If the defender has mana and it is more mana than we want to suck then take the amount.
+    // else take what he's got left if any.
+    if(defmana)
+      if(manasuck <= defmana)
+        ConsumeVital(defender, "Mana", CInt(manasuck * 100));
+      else
+        ConsumeVital(defender, "Mana", defmana);
+      endif
+    endif
+endfunction
+
+///////////////////////////////////////////////////
+//
+//
+// LifeDrain(source, damage, percent)
+//
+// Purpose: To use a percentage of the damage done
+// to apply healing to the attacker.
+//
+// Parameters:
+// source - the attacker
+// damage - the damage amount
+// percent - the percent expressed as an integer eg. 25 = 25%
+//
+// Result:
+// Heals the attacker up to max HP.
+//
+// Return:
+// Amount healed.
+//
+///////////////////////////////////////////////////////
+
+function LifeDrain(source, damage, percent)
+
+    percent := CDbl(percent);
+    percent := percent / 100;
+    var amt := CInt(CDbl(damage) * percent);
+    HealDamage(source, amt);
+    SendSysMessage(source, amt + " life force from your opponent was applied to heal you.", 2, 66);
+    
+    return amt;
+    
+endfunction
+
+
+
+
+
 

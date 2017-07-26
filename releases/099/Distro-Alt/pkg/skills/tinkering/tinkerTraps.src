@@ -7,6 +7,7 @@ include "include/dist";
 include "include/client";
 include ":poisonwatcher:poisons";
 include "include/canAccess";
+include ":damage:damage";
 
 const FX_POISON_GAS := 0x113a;
 
@@ -46,7 +47,7 @@ program open_trapped_item(who, item)
        var dmg :=(RandomInt(20) + CInt(trapstrength));
        SendSysMessage(who, "You set off a needle trap!");
        PlayMovingEffect(item, who, 7166, 5, 1);
-       ApplyDamage(who, dmg);
+       ApplyDamageEX(who, dmg, DMG_PHYSICAL);
        item.usescript := oldscript;
        EraseObjProperty(item, "trap_type");
        EraseObjProperty(item, "trap_strength");
@@ -67,7 +68,7 @@ program open_trapped_item(who, item)
        if(dist(who, item) < 3)
          PlayObjectCenteredEffect(who, FX_EXPLODE_3, 10,10);
          var dmg :=(RandomInt(20) + CInt(trapstrength));
-         ApplyRawDamage(who, dmg);
+         ApplyDamageEX(who, dmg, DMG_FIRE);
        else
          PlayStationaryEffect(item.x, item.y, item.z, FX_EXPLODE_3, 10,10, 0, item.realm);
        endif
@@ -84,7 +85,7 @@ program open_trapped_item(who, item)
        if(dist(who, item) < 3)
          PlayObjectCenteredEffect(who, FX_EXPLODE_3, 10,10);
          var dmg := Resist(who, (RandomInt(20) + trapstrength));
-         ApplyRawDamage(who, dmg);
+         ApplyRawDamageEX(who, dmg, DMG_FIRE);
        else
          PlayStationaryEffect(item.x, item.y, item.z, FX_EXPLODE_3, 10,10, 0, item.realm);
        endif

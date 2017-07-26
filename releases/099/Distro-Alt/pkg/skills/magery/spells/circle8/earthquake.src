@@ -41,7 +41,7 @@ program earthquake( parms )
 
                 PlaySoundEffect( vtarg, SFX_SPELL_EARTHQUAKE );
                 PlayObjectCenteredEffect( vtarg, FX_SMOKE, 7, 7);
-		ApplyRawSpellDamageEX(vtarg, damage, info.damage_type, caster);
+		ApplyRawSpellDamageEX(vtarg, damage, info.damage_type, caster, info.circle);
 	endforeach
 
 	return 1;

@@ -5,8 +5,9 @@ use util;
 
 include "include/client";
 include ":nature:nature";
+include ":damage:damage";
 
-const SOUND_EFFECT_THUNDER:=  0x002a;
+const SOUND_EFFECT_THUNDER :=  0x002a;
 
 program LightningEffect()
   var daymoon := GetGlobalProperty("Nature");

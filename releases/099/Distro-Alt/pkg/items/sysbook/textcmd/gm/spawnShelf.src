@@ -1,0 +1,38 @@
+///////////////////////////////////////////////////////////////
+//
+// Adds the necessary CProps to a book shelf for it to spawn
+// books from zulubooks.cfg.
+//
+///////////////////////////////////////////////////////////////
+
+use uo;
+use util;
+use basic;
+
+program spawnShelf(who, text);
+
+	var bookshelves := {0xA97, 0xA98, 0xA99, 0xA9A, 0xA9B, 0xA9C, 0x2DEF, 0x2DF0};
+	var maxbooks := CInt(text);
+	if(!text || !maxbooks)
+		maxbooks := RandomDiceRoll("1d5+2");
+	endif
+
+	SendSysMessage(who, "Select the bookshelf you wish to have spawn books:", 1, 88);
+	var bookshelf := Target(who);
+	if(!bookshelf)
+		SendSysMessage(who, "Canceled.", 1, 33);
+		return 0;
+	endif
+	if(bookshelf.objtype in bookshelves)
+		SetObjProperty(bookshelf, "Spawn", 1);
+		SetObjProperty(bookshelf, "MaxBooks", maxbooks);
+		SendSysMessage(who, "The shelf has spawned " + CStr(maxbooks) + " and", 1, 66);
+		SendSysMessage(who, "will restock it to " + CStr(maxbooks) + " every 10 minutes.", 1, 66);
+	else
+		SendSysMessage(who, "Ether you targgetted an 'empty' shelf or you chose something that is not a book shelf.", 1, 33);
+		SendSysMessage(who, "Only book shelves with the graphic with books in them can be 'book spawns'.", 1, 33);
+		return 0;
+	endif
+	return 1;
+
+endprogram

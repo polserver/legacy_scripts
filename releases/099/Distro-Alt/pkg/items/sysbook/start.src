@@ -46,5 +46,5 @@ program InitBookDatastore()
     endif
   endforeach
   UnloadConfigFile("zulubooks");
-  start_script("shelfStock");
+  //start_script("shelfStock");
 endprogram

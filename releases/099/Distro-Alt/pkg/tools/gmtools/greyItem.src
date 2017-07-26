@@ -2,7 +2,7 @@ use uo;
 use os;
 include "include/attributes";
 
-program grey(me,item)
+program grey(me, item)
     if (me.cmdlevel < 2)
       return;
     endif
@@ -42,6 +42,6 @@ program grey(me,item)
 	SetScriptController( 0 );
 	RevokePrivilege( boy, "invul" );
 	SetObjProperty(boy,"guardkill",1);
-	ApplyRawDamage( boy, GetMaxHp(boy) );
+	ApplyRawDamage( boy, GetMaxHp(boy) + 3 );
 	SendSysMessage(me, "Criminal flag has expired");
 endprogram

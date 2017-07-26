@@ -48,22 +48,22 @@ endprogram
 
 function DoBolt(who, radius)
 
-If (who.multi)
-	return;
-endif
-var xpos := who.x;
-var ypos := who.y;
-var xrand := RandomInt(radius);
-var yrand := RandomInt(radius);
-xpos := ((xpos - xrand) + radius/2);
-ypos := ((ypos - yrand) + radius/2);
-var zpos := GetMapInfo( xpos, ypos, who.realm ).z;
-var mob := CreateNpcFromTemplate( "Rabbit", xpos, ypos, zpos, 0, who.realm);
-mob.invisible := 1;
-mob.cmdlevel := 2;
-setobjproperty(mob, "guardkill", 1);
-PlayLightningBoltEffect( mob );
-MoveObjectToLocation(mob,0,0,0, "britannia", MOVEOBJECT_FORCELOCATION);// newmap problem
-ApplyRawDamage( mob, mob.hp+2 );
+	If (who.multi)
+		return;
+	endif
+	var xpos := who.x;
+	var ypos := who.y;
+	var xrand := RandomInt(radius);
+	var yrand := RandomInt(radius);
+	xpos := ((xpos - xrand) + radius/2);
+	ypos := ((ypos - yrand) + radius/2);
+	var zpos := GetMapInfo( xpos, ypos, who.realm ).z;
+	var mob := CreateNpcFromTemplate( "Rabbit", xpos, ypos, zpos, 0, who.realm);
+	mob.invisible := 1;
+	mob.cmdlevel := 2;
+	setobjproperty(mob, "guardkill", 1);
+	PlayLightningBoltEffect( mob );
+	MoveObjectToLocation(mob,0,0,0, "britannia", MOVEOBJECT_FORCELOCATION);// newmap problem
+	ApplyRawDamage( mob, mob.hp+2 );
 
 endfunction

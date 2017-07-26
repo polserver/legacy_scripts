@@ -2,6 +2,8 @@ use vitals;
 use uo;
 use os;
 
+include ":damage:damage";
+
 program Plague(params)
 	
 	var who := params[1];
@@ -11,7 +13,7 @@ program Plague(params)
 	while(1)
 		poisonedmsg :="You feel nauseous and feverish!";
         viewermsg := "* - " + who.name + " looks ill. - *";
-	 	ApplyRawDamage(who,4);
+	 	ApplyRawDamageEX(who,4, DMG_POISON);
 		PrintTextAbovePrivate(who, poisonedmsg, who);
 		foreach mob in ListMobilesInLineOfSight(who, 8)
 			if((mob.ip) and (mob != who))

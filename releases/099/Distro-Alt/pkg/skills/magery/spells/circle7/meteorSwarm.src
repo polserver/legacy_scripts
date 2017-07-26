@@ -28,7 +28,7 @@ program cast_meteor( parms )
   endif */
 
 ///////////////////// 0.97 Distro stuff starts here //////////////////////////////////
-
+	Detach();
 	// Base damage is a decimal number in between min and max damage
 	var min_damage := CInt(GetConfigInt(info.spell_config, "MinBaseDamage"));
 	var max_damage := CInt(GetConfigInt(info.spell_config, "MaxBaseDamage"));

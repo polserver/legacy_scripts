@@ -107,7 +107,7 @@
 //
 /////////////////////////////////////////////////////////////////
 
-//***** Copied from Hope WoD scripots for housing system
+//***** Copied from Hope WoD scripts for housing system
 
 use uo;
 use os;

@@ -260,7 +260,7 @@ endfunction
 //  the new code snippet added for DldNGrey's Regional Spawner.
 //  this function makes merchants and other similar NPCs respawn
 ///////////////////
-
+/*
 function AddToSpawner (corpse, npctemplate)
 	var homepoint := GetObjProperty (corpse, "myhome");
 	if (!homepoint)
@@ -278,5 +278,5 @@ function AddToSpawner (corpse, npctemplate)
 	SetGlobalProperty ("respawnmerchants", merchants_to_respawn);
 	set_critical(0);
 endfunction
-
+*/
 

@@ -1097,10 +1097,6 @@ const MALAS_REALM               := "malas";
 const TOKUNO_REALM              := "tokuno";
 const TERMUR_REALM              := "termur";
 
-// Aliases
-const HOPE                      := "britannia";
-const DESPAIR                   := "britannia_alt";
-
 //////////////////////////////////////
 // Canned colours
 //////////////////////////////////////
