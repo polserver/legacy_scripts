@@ -13,7 +13,6 @@ include "include/clock";
 include "include/accounts";
 include ":timeutils:time";
 include ":combat:equip";
-include ":damage:damage";
 
 program onlogon(who)
   TrackIP(who);
