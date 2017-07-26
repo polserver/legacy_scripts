@@ -1,0 +1,10 @@
+/*
+        Created by *Edwards
+        
+        2010-05-26
+*/
+use uo;
+
+program onDestroy( item )
+	return 1;
+endprogram
