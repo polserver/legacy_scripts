@@ -19,6 +19,6 @@
 # Thank you and we hope you enjoy looking through the files.    #
 #                                                               #
 # "Head Archivist" and Distro Team leader,                      #
-# Yuhikio "Kiko"                                                #
+# Yukiko "Kiko"                                                #
 #                                                               #
 #################################################################
