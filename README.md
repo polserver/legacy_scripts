@@ -1,0 +1,4 @@
+Contained in this repository are legacy POL Core builds and legacy POL Distros. The Core builds are obsolete and are no longer supported. They are placed here for archival purposes. So when an archaeologist 1,000 years from now digs up the GitHub servers he, or she, can see the wonderful work of the POL Development Team.
+Seriously though, we just wanted to keep them around for sentimental reasons.
+
+The legacy Distros might be of use to current shard developers if they long for the good old days of a simpler game play environment or they liked a particular feature fro the older Distros. Keep in mind that any legacy script might, and probably will, require modification(s) to make it compatible with newer Cores.
