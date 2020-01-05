@@ -1,8 +1,0 @@
-use uo;
-use cfgfile;
-include "include/newpoison";
-
-program logofftest(character)
-
-logoff(character);
-endprogram

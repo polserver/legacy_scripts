@@ -1,3 +1,0 @@
-Blacksmithy Package Changes
----------------------------
-10/9/99, Racalac, Added Dundee's code to search for nearby anvils

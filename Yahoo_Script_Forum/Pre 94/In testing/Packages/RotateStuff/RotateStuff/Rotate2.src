@@ -1,4 +1,0 @@
-
-program Rotate0( Item )
-	Item.facing := 2;
-endprogram

@@ -1,9 +1,0 @@
-
-use uo;
-use os;
-
-program callDestroyItem(who, spellbook, item)
-
-	DestroyItem(item);	
-
-endprogram
