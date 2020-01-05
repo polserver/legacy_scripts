@@ -31,7 +31,7 @@ program WorldSaver()
 					break;
 			endcase
 		endif
-		
+
 		if ( ShouldSave(savetimes ) )
 			DoTheSave();
 			UpdateTimes(savetimes);
@@ -86,16 +86,16 @@ function UpdateTimes(byref savetimes)
 		wait := 3600; // 1 hour if not set.
 		SVR_ReportText("Error - No SaveTime setting set in settings.cfg", SAVER_REPORT_SYSLOG);
 	endif
-	
+
 	savetimes.lasttick := POLCore().systime; 	// Time time there was a save or event.
 	savetimes.nextsave := POLCore().systime + wait;	// Time the next save will happen.
-	
+
 	return 1;
 endfunction
 
 function DoShutDown(countdown:=0)
 	countdown := CInt(countdown);
-	
+
 	for( countdown; countdown>0; countdown-=1 )
 		var i := 2;
 		for ( i:=2; i>0; i-=1 )
@@ -103,11 +103,11 @@ function DoShutDown(countdown:=0)
 			Sleep(30);
 		endfor
 	endfor
-	
+
 	SVR_ReportText("Shutting down now!", SAVER_REPORT_ALL);
 	Sleep(3);
-	
+
 	ShutDown();
-	
+
 	return 1;
 endfunction

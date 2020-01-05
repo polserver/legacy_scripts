@@ -124,7 +124,7 @@ enum PRIMARY_SOUNDS
 endenum
 
 enum CUSTOM_SOUNDS
-    SFX_SLICE           := 0x57,
+  SFX_SLICE           := 0x57,
 	SFX_SOUND_SCRUNCH	:= 0x58,
 	SFX_USE_LEATHER		:= 0x5A,
 	SFX_SPELL_FAIL		:= 0x5D, // Really SFX_ALIGATOR_1
