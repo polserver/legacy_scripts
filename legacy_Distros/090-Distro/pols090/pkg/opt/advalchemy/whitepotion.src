@@ -1,0 +1,29 @@
+use os;
+use uo;
+use util;
+use cfgfile;
+include "drinkpotion";
+include "include/tempmod";
+program drink_blue (character, potion)
+if (!checkifcandrink(character))
+        return;
+endif
+    local potion_strength := get_potion_strength(potion);
+
+
+    if (is_poison(potion))
+        do_poison(character, potion);
+    else
+        empty_bottle(character, potion);
+        local thestring := cstr(potion_strength) + "d12";
+        local str_gain := RandomDiceRoll( thestring );
+        if (can_stat_mod(character, "str"))
+                character.strength_mod := character.strength_mod + str_gain;
+                do_temp_mod(character, "str", str_gain, cint(potion_strength * 50));
+                allow_stat_mod(character, "str",  cint(potion_strength * 50));
+        endif
+        
+
+    endif
+
+endprogram

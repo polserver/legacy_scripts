@@ -1,0 +1,53 @@
+use uo;
+use os;
+use cfgfile;
+use util;
+
+include "include/client";
+include "include/dist";
+include "include/objtype";
+include "include/starteqp";
+include "util/key";
+
+program spawnchest(who, text)
+
+	local lvl := cint(text);
+	if ((!lvl) or (lvl > 10) or (lvl < 1))
+		SendSysMessage(who,"Useage is .spawnchest [1 to 10]");
+		return;
+	endif
+
+	local boxmenu := CreateMenu("Select a chest type:");
+	AddMenuItem(boxmenu,0xe40,"metalchest");
+	AddMenuItem(boxmenu,0xe41,"metalchest2");
+	AddMenuItem(boxmenu,0xe7c,"silverchest");
+	AddMenuItem(boxmenu,0xe80,"brassbox");
+	AddMenuItem(boxmenu,0xe42,"woodchest");
+	AddMenuItem(boxmenu,0xe43,"woodchest2");
+	local selection := SelectMenuItem2 (who, boxmenu);
+
+	if (!selection)
+		return;
+	endif
+
+	SendSysMessage(who,"Spawn it where?");
+	local where := TargetCoordinates(who);
+	if (!where)
+		return;
+	endif
+
+	local chest := CreateItemAtLocation( where.x , where.y , where.z , selection[2] , 1 );
+	if (!chest)
+		return;
+	endif
+
+	chest.movable := 0;
+	chest.locked := 1;
+
+	SetObjProperty(chest,"lockpicking", lvl );
+	SetObjProperty(chest,"spawnchest", 1 );
+	local lockid := AllocLockId();
+	SetObjProperty( chest , "lockid" , lockid );
+	PrintTextAbovePrivate(chest,"*Ready to be picked!*",who);
+
+endprogram

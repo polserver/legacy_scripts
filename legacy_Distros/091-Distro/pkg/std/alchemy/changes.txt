@@ -1,0 +1,12 @@
+Nov 3, 1999
+
+Potion.inc moved to /include, alchemy autoloop in.
+
+Oct 2,1999
+
+Fixed problem with "You can't drink another potion yet" bug.
+
+
+Sept 27, 19999
+
+dealt with the paralysis and stat mod bugs (see misc/demod.src)

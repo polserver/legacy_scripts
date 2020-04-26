@@ -1,0 +1,63 @@
+use uo;
+use os;
+
+include "include/client";
+
+const PoisonSound := 0x1e2;
+const PoisonEffect := 0x374a;
+
+var spelldelay := 4;
+
+
+program cast_wyvernstrike(caster)
+
+	SpeakPowerWords(caster, 77);
+
+	While (spelldelay > 0)
+		PerformAction(caster, ANIM_CAST_DIR);
+		spelldelay := spelldelay - 1;
+		sleep(1);
+	endwhile
+
+	if (!ConsumeMana(caster, 77))
+		PlayObjectCenteredEffect(caster, FX_SPELL_FAIL, 7, 7);
+		PlaySoundEffect(caster, SFX_5B);
+		SendSysMessage(caster, "Insufficient Mana.");
+		return;
+	endif
+	
+	if (!ConsumeReagents(caster, 77))
+		PlayObjectCenteredEffect(caster, FX_SPELL_FAIL, 7, 7);
+		PlaySoundEffect(caster, SFX_5B);
+		SendSysMessage(caster, "Insufficient Reagents.");
+		return;
+	endif
+
+	if (!CheckSkill(caster, SKILLID_MAGERY, 90, 0))
+		PlayObjectCenteredEffect(caster, FX_SPELL_FAIL, 7, 7);
+		PlaySoundEffect(caster, SFX_5B);
+		return;
+	endif
+
+	local CasterSkill := GetSkill (caster, SKILLID_MAGERY);
+	local PoisonPower := Cint(CasterSkill / 10);
+	local PoisonLevel := "BLANK";
+
+	local victims := ListMobilesNearLocation(caster.x, caster.y, caster.z, 2);
+
+	foreach mobile in victims
+
+		if ((mobile.serial != caster.serial) and (mobile.dead = 0))
+
+			PlaySoundEffect(mobile, PoisonSound);
+			PlayObjectCenteredEffect(mobile, PoisonEffect, 7, 0x10);
+
+			SendSysMessage(mobile, "You have been poisoned!");
+			PoisonLevel := Cint(GetObjProperty(mobile, "poison_level"));
+			PoisonLevel := PoisonLevel + PoisonPower;
+			SetObjProperty(mobile, "poison_level", cstr(PoisonLevel));
+
+		endif
+
+	endforeach
+endprogram

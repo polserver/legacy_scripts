@@ -1,0 +1,4 @@
+program mylight( who, params )
+    params := SplitWords( params );
+    who.setlightlevel( CInt(params[1]), CInt(params[2]) );
+endprogram;

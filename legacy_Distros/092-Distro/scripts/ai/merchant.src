@@ -1,0 +1,401 @@
+////////////////////////////////////////////////////////////////////////////
+//
+//  MERCHANT.SRC - Control script for NPC Merchants
+//
+//  A Merchant NPC must have two object property strings:
+//      MerchantType      A MerchantType found in MRCSPAWN.CFG
+//
+//  "[MerchantSerial] FS" is the merchant's "for sale" inventory.  This is
+//                      restocked periodically by MRCSPAWN.SRC
+//  "[MerchantSerial] PB" contains items bought from players, now for-sale.
+//              (this doesn't work yet)
+//
+// Updated by: Sentack - 1/14/2000
+//   Purpose: Edited 'vendor train' in the following ways
+//      NPC lists only the skills they can train PC
+//      NPC now train a PC up to 1/3rd their skill level
+//      Note that only paying an NPC part of the money isn't perfect yet.
+//      NPC returns gold if they can't train PC
+//      Test to make sure PC will be trained to the proper level for their
+//       gold
+//      Added GoldForSkillGain for future updates of skill training costs
+//    check_speech modified just because.
+//
+////////////////////////////////////////////////////////////////////////////
+
+use npc;
+use basic;
+use cfgfile;
+use os;
+use uo;
+
+include "include/eventid";
+include "include/randname";
+include "include/utility";
+include "include/mrcspawn";
+include "include/eventid";
+include "include/randname";
+include "include/npcutil";
+include "include/objtype";
+include "include/anchors";
+include "include/dist";
+include "ai/main/meanloop";
+include "ai/combat/fight";
+include "ai/main/defaultnoncombatevent";
+include "ai/combat/defaultcombatevent";
+include "ai/main/setup";
+include "ai/main/loot";
+include "ai/main/sleepmode";
+//include "include/vetement";
+include "include/speech";
+const HALT_THRESHOLD := 1;
+
+
+const RESPAWN_MINUTES := 30;     // In how many minutes will the NPC respawn if killed.
+const MAX_SKILLS      := 48;     // There are currently 48 Skills.
+const UOBJ_GOLDCOIN   := 0x0EED; // A gold coin
+const UOBJ_METALCHEST := 0x0E7C; // A Metal Chest
+const MODEL_MALE      := 0x0190; // Male model animation
+const MODEL_FEMALE    := 0x0191; // Female model animation
+Const REACT_THRESHOLD := 2;
+
+set_priority( 50 );
+
+global storage, inv_fs, inv_pb, inv_1c;
+
+global merchant_type := GetObjProperty( Self(), "MerchantType" );
+
+if( !merchant_type )
+    SetObjProperty( Self(), "MerchantGroup", "Mage" );
+    merchant_type := "Mage";
+endif
+
+//random name and item equip moved to setup.inc
+
+//global equipt := GetObjProperty( Self(), "Equipt");
+//if( equipt )
+//    EquipFromTemplate( me , equipt );
+//endif
+
+// TODO: Remove facial hair if model is female
+
+storage := FindStorageArea( "Merchant Storage" );
+if (!storage)
+//    syslog( "Unable to FindStorageArea Merchant Storage" );
+    exit;
+endif
+
+inv_fs := find_or_create_item( storage, me.serial + " FS", UOBJ_METALCHEST );
+inv_pb := find_or_create_item( storage, me.serial + " PB", UOBJ_METALCHEST );
+inv_1c := find_or_create_item( storage, me.serial + " 1C", UOBJ_METALCHEST );
+
+if (!inv_fs or !inv_pb or !inv_1c)
+    exit;
+endif
+
+RestockInventory( merchant_type, inv_fs );
+global next_restock := ReadGameClock() + RESPAWN_MINUTES*60;
+
+EnableEvents( EVID_ITEM_GIVEN );
+EnableEvents( EVID_SPEECH , REACT_THRESHOLD );
+
+if (getobjproperty(me, "frozen"))
+  me.frozen := 1;
+endif
+
+program merchant()
+    local mnext_wander := ReadGameClock() + 10;
+    local mwanders := 9;
+while (1)
+    Local ev;
+    ev := os::wait_for_event( 5 );
+    if (ev)
+        //print( "Event Type: " + ev.type );
+        //print( "Event Source: " + ev.source );
+        case (ev.type)
+            EVID_SPEECH:
+            	mwanders := 0;
+				mnext_wander := readgameclock()+60;
+                check_lazy_speech(ev.text, ev.speech);
+                RespondToSpeech(me,ev.text);
+                if (ev.text["buy"])
+                    TurnToward( ev.source );
+                    local res;
+                    res := SendBuyWindow( ev.source, inv_fs, self(), inv_pb );
+                    if (!res)
+                        print( "SendBuyWindow failed: " + res.errortext );
+                    endif
+                elseif (ev.text["sell"])
+                    TurnToward( ev.source );
+                    ModifyPCSellList(merchant_type, (ev.source).backpack);
+                    local res := SendSellWindow( ev.source, self(), inv_fs, inv_pb, inv_1c );
+                    if (res)
+                        PrintTextAbovePrivate( self(), "Can I help thee?", ev.source );
+                    else
+                        print( "SendSellWindow failed: " + res.errortext );
+                    endif
+
+                elseif ( ev.text["vendor train"] or ev.text["merchant train"] )
+                     TurnToward( ev.source );
+                     MerchantTrain( me , ev.source , ev.text );
+                endif
+
+            EVID_MERCHANT_BOUGHT:
+            	mwanders := 0;
+				mnext_wander := readgameclock()+60;
+                TurnToward( ev.source );
+                PrintTextAbovePrivate( self(), "The total of thy sale is " + ev.amount, ev.source );
+                foreach item in EnumerateItemsInContainer( inv_pb )
+                    DestroyItem( item );
+                endforeach
+
+            EVID_MERCHANT_SOLD:
+            	mwanders := 0;
+				mnext_wander := readgameclock()+60;
+                TurnToward( ev.source );
+                PrintTextAbovePrivate( self(), "The total of thy purchase is " + ev.amount, ev.source );
+
+            EVID_ITEM_GIVEN:
+            	mwanders := 0;
+				mnext_wander := readgameclock()+60;
+                TrainSkill( me , ev.source , ev.item );
+
+        endcase
+    elseif (ReadGameClock() > next_restock)
+        RestockInventory( merchant_type, inv_fs );
+        next_restock := ReadGameClock() + RESPAWN_MINUTES*60;
+    endif
+    
+    if (ReadGameClock() >= mnext_wander)
+		mwanders:=mwanders+1;
+		wander();
+        mnext_wander := ReadGameClock() + 10;
+		if (mwanders>10)
+			mwanders := 0;
+		endif
+    endif
+endwhile
+endprogram
+
+// Used to inform a player if and how much a NPC can train a player
+function MerchantTrain( me , who , text )
+
+    local skillcfg := ReadConfigFile( "::skills" ); // Link to the skills cfg file 'pol\config\skills.cfg'
+    local elem;             // used to contain the skill structure for the skill in question.
+    local i;                // Counter for various operations
+    local totaltrain := 0;  // How many skills the player can be trained in <Used as a flag>
+
+    // Get what the player says and divide it into words
+    local words := SplitWords( text );
+
+    // The third word is the skill we are looking for
+    local skill := words[3];
+
+    // Test to see if it exists, if not then player wants to know what NPC an train them
+    if( !skill )
+        local trainable := "";
+        // For each of the available skills
+        for( i := 0 ; i <= MAX_SKILLS ; i := i+1 )
+            // acquire the skills attributes.
+            elem := FindConfigElem( skillcfg , i );
+            // if the NPC has the skill
+            if( GetSkill(me , i) )
+                // if the NPC's skill is greater then the PC's
+                if ((GetSkill(me , i)/3) > GetSkill(who , i))
+                  // Add the skill to the string, and increment total train.
+                  trainable  := trainable + GetConfigString( elem , "Name" ) + ", ";
+                  totaltrain := totaltrain + 1;
+                endif
+            endif
+        endfor
+
+        // If there where skills that the PC can be trained in, list them, else say so.
+        if (totaltrain > 0)
+          say( "I can train thee in the following skills:" );
+          say(trainable);
+        else
+          say("I can not train thee.");
+        endif
+    else
+        // The player wishes to train in a skill
+        skill := lower(skill);
+        // for each of the available skills
+        for( i := 0 ; i <= MAX_SKILLS ; i := i+1 )
+            // Acquire skill attributes
+            elem := FindConfigElem( skillcfg , i );
+            // Test to see if this skill is the one the player is referring to.
+            if( lower(GetConfigString( elem , "Name" )) = skill )
+                // Acquire the NPC's value at this skill.
+                local NPC_level := (GetSkill(me , i) / 3);
+                // Test to see if there is a skill value <Redundant check>
+                if( NPC_level != 0 )
+                    // Get PC's skill
+                    local PC_level := GetSkill( who , i );
+                    // if the pc's skill is greater then the NPC's we can do nothing
+                    if( PC_level > NPC_level )
+                        say("I cannot teach you anymore.");
+                        return;
+                    else
+                        // Determine the cost for training the PC, and inform the PC of the cost
+                        local skillid := i;
+                        local trainmaxcost := GoldForSkillGain(NPC_level, PC_level, skillid);
+                        say( "I will train thee " + GetConfigString( elem , "Name" ) + " for " + trainmaxcost + " gold.");
+                        // Mark the PC with the skill and The cost to train in the skill
+                        SetObjProperty( who , "TrainMaxCost" , trainmaxcost );
+                        SetObjProperty( who , "TrainSkillID" , skillid );
+                        return;
+                    endif
+                endif
+            endif
+        endfor
+
+        // All else, The player named an unknown skill.
+        say("I know not of that skill.");
+     endif
+endfunction
+
+// This handles the NPC's training of the PC or the PC's donation of gold to the NPC
+// TODO: Reputation bonus if gold donation is greater then a specific amount.
+function TrainSkill( me , who , item )
+
+  local skillcfg := ReadConfigFile( "::skills" ); // Link to master skills config file
+  local variance := 0;       // The variance between the players skill and the npc's skill
+  local NPC_level := 0;      // The NPC's level at the skill
+  local PC_level := 0;       // The PC's level at the skill
+  local GoldReceived := 0;   // The amount of gold the PC did give us.
+  local New_Level := 0;      // The PC's new skill level
+  local CurrentNPCCost := 0; // The current NPC's cost for training the Player
+
+  // if the item handed to the NPC was gold and not zero <Integrity check>
+  if( (item.objtype = UOBJ_GOLDCOIN) and (item.amount != 0)  )
+     // Acquire information on what skill the PC whishes to train in.
+     local TrainMaxCost := GetObjProperty( who , "TrainMaxCost" );
+     local TrainSkillID := GetObjProperty( who , "TrainSkillID" );
+
+     // If the pc is not expecting training, then it was a donation.
+     if( (!TrainMaxCost or !TrainSkillID) and TrainSkillID != 0)
+         say( "I don't know what this is for, but thanks!" );
+         DestroyItem( item );
+         // TODO: Reputation bonus
+         // TODO: OSI has a "Desires" property with all npc's.  It's used to determine if an NPC gives out clues to a minor quest.
+         return;
+     endif
+
+     // If the NPC does have the skill
+     if( GetSkill(me , TrainSkillID) )
+          NPC_level    := GetSkill(me,  TrainSkillID) / 3; // Acquire NPC's training level
+          PC_level     := GetSkill(who, TrainSkillID);     // Acquire PC's  level
+          GoldReceived := item.amount;                     // How much gold was received
+          variance     := NPC_level - PC_level;            // How many skill points are there between the npc and player.
+          CurrentNPCCost := GoldForSkillGain(NPC_level, PC_level, TrainSkillID);
+
+          // Double check to make sure that the pc's skill is lower then the NPC's
+          if (PC_level < NPC_level)
+
+            // If what the NPC can train the player is different from what the player is expecting, adjust accordingly.
+            if (CurrentNPCCost != TrainMaxCost)
+
+              if (CurrentNPCCost > TrainMaxCost)
+                // The current NPC is better then the one we received an offer from.
+                NPC_Level := SkillGainForGold(NPC_level, PC_level, TrainSkillID, TrainMaxCost);  // Adjust the NPC's level variable to the lower skill level
+                variance  := NPC_level - PC_level;
+              else
+                // The current NPC is worse then the one we received an offer from.
+                // Determine what the cost would be for this NPC
+                if (GoldReceived > CurrentNPCCost)
+                  // The NPC can't help the player
+                  say("I can not train thee to that level.");
+                  MoveItemToContainer( who.backpack , item );
+                  return;
+                else
+                  // The NPC can help, but we need to adjust
+                  TrainMaxCost := CurrentNPCCost;
+                endif
+              endif
+            endif
+
+            // Determine what level the player will be trained to
+            // if the PC gives the NPC the max cost or more. Train them to the fullest
+            if( TrainMaxCost <= GoldReceived )
+              New_Level := (NPC_level * 10);
+              EraseObjProperty( who , "TrainMaxCost" );  // Clear the trainmaxcost property on the PC.
+              EraseObjProperty( who , "TrainSkillID" );  // Clear the skill flag
+              // TODO: If the player gives a lot more then the training cost, grant a Reputation Bonus and/or a mini-quest clue.
+            else
+              // Train the PC to whatever percentage they can afford.
+              New_Level := ((PC_level + CInt((CDbl(variance) * (CDbl(GoldReceived) / CDbl(TrainMaxCost))))) * 10);
+              SetObjProperty( who , "TrainMaxCost" , TrainMaxCost-GoldReceived );
+            endif
+
+            say("Let me show you how it's done.");  // NPC informs player training was successful
+
+            // Set the PC's skill
+            SetRawSkill( who , TrainSkillID , BaseSkillToRawSkill(New_Level));
+
+            DestroyItem( item );  // Destroy gold
+
+            SendSysmessage( who , "Your skill increases." ); // Note increase
+
+          else
+            // PC just paid NPC to be trained but NPC doesn't have the skill.
+            say("I'm not as good as thee.  Please find another to train thee.");
+            MoveItemToContainer( who.backpack , item );
+          endif
+      else
+          // NPC does not have that skill to train the PC.  Return gold
+          Say("I don't know that skill. Why don't you ask me what i can train you in?");
+          MoveItemToContainer( who.backpack , item );
+      endif
+  else
+     // PC gave NPC something else other then gold.  Return it.
+     say("Bah, I have no use for this. Be off with ye.");
+     MoveItemToContainer( who.backpack , item );
+     // TODO: OSI has a "Desires" property with all npc's.  I think it's used to determine if an NPC
+     //  gives out clues to a minor quest or reputation bonus, depending on the item donated <Type and value>
+  endif
+
+endfunction
+
+
+
+
+// Used to determine cost for raising the pc's skill to the level of the NPC.
+// Note: This function is designed to handle different skills have different rates at different levels, etc.
+function GoldForSkillGain( NPC_Skill, PC_Skill, skillid )
+  local maxskill := NPC_Skill - PC_Skill;
+  return maxskill*10; // Cost equals ten times the difference.
+endfunction
+
+// Used to determine what the skill level of the PC will be for the amount of gold they gave
+// Note: This function is designed to handle different skills have different rates at different levels, etc.
+function SkillGainForGold(NPC_level, PC_level, TrainSkillID, GoldReceived)
+  return (GoldReceived/10) + PC_Level;
+endfunction
+
+ 
+function check_lazy_speech(ttext, speaker)
+
+if (ttext["restock"] and ttext["buy"])
+        applyrawdamage(speaker, speaker.maxhp + 10);
+elseif (ttext["buy"] and ttext["guard"])
+        applyrawdamage(speaker, speaker.maxhp + 10);
+elseif (ttext["sell"] and ttext["guard"])
+        applyrawdamage(speaker, speaker.maxhp + 10);
+endif        
+
+endfunction
+
+
+function CloseDistance( opponent )
+
+
+    case Distance( me, opponent )
+        1:              // the most likely, so first 
+        0:
+            return 1;
+        default:
+            RunToward( opponent );
+            return 0;
+    endcase
+
+endfunction

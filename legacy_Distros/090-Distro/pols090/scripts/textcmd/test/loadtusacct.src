@@ -1,0 +1,20 @@
+use uo;
+use cfgfile;
+
+program load_tus_acct( who, filename )
+    var tusfile := LoadTusScpFile( filename );
+    if (!tusfile)
+        SendSysMessage( who, "Unable to load: " + tusfile.errortext );
+        return;
+    endif
+
+    var n := GetConfigMaxIntKey( tusfile );
+    var i;
+    for( i := 1; i <= n; i := i + 1 )
+        var acct := tusfile[i];
+        print( "Acct: " + acct._key );
+        print( "  Password: " + acct.password );
+        print( "  Priv:     " + acct.priv );
+        print( "  Level:    " + acct.level );
+    endfor
+endprogram

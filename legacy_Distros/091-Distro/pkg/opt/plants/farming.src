@@ -1,0 +1,83 @@
+use uo;
+use cfgfile;
+use os;
+use util;
+
+include "include/client";
+include "include/objtype";
+include "include/utility";
+include "include/dist";
+
+Const UACTION_CHOP := 0x0D;
+
+program use_plant( me , plant)
+
+if (distance(me, plant) > 3)
+        sendsysmessage(me, "That is too far away!");
+        return;
+endif
+
+local cfg := readconfigfile("plants");
+if (!cfg)
+        return;
+endif
+
+local resource_type := cfg[plant.objtype].product;
+if (!resource_type)
+        return;
+endif
+
+local maxamount := cfg[plant.objtype].maxamount;
+local curamount := getobjproperty(plant, "#amt");
+if (curamount = maxamount)
+        Sendsysmessage(me, "This has already been harvested. Come back later!");
+        return;
+endif
+
+
+local difficulty := randomint(100) + 1;
+print(me.name + " is trying to farm; difficulty is " + difficulty);
+if (me.cmdlevel)
+        Sendsysmessage(me, "Difficulty is " + difficulty);
+endif
+
+	local i;
+	local num_chops;
+	local theamount;
+	local wood_amount;
+	local distt;
+
+
+
+	if (CheckSkill(me, SKILLID_LUMBERJACKING, difficulty, difficulty))
+        	local theroll := randomint(100) + 1;
+    
+		if (theroll = 100)
+			if (HarvestResource( "wood", plant.x, plant.y, 1, 1 ))
+				SendSysmessage (me, "You have found some fertile dirt!");
+				CreateItemInBackpack(me, UOBJ_FERTILE_DIRT , 1);
+				return 0;
+			endif
+        	else
+                 
+            		wood_amount := 1;
+			if (wood_amount = 0)
+				SendSysmessage(me, "This area has already been harvested!");
+				return 0;
+			endif
+	    
+			CreateItemInBackpack(me,cfg[plant.objtype].product, wood_amount);
+			SendSysmessage(me, "You put the crops in your pack");
+			setobjproperty(plant, "#amt", cint(curamount) + 1);
+			local parms := {};
+			parms[1] := plant;
+			parms[2] := cfg[plant.objtype].replenishperiod;
+			start_script("regrow", parms);
+			return 1;
+		endif
+	else
+		SendSysmessage(me, "You're not a very good farmer.");
+		return 1;
+	endif
+
+endprogram

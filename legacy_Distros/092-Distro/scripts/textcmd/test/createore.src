@@ -1,0 +1,10 @@
+use uo;
+
+program textcmd_createore( who, amountstr )
+    local amount := CInt(amountstr);
+    if (!amount) 
+        amount := 1;
+    endif
+
+    CreateItemInBackpack( who, 0x19b7, amount );
+endprogram

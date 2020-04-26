@@ -1,0 +1,68 @@
+use uo;
+use os;
+
+include "include/client";
+
+var spelldelay := 3;
+
+program cast_controlundead(caster)
+	
+	local CasterSkill := GetSkill(caster, SKILLID_MAGERY);
+	local duration := Cint(CasterSkill) * 5;
+
+	SpeakPowerWords(caster, 67);
+
+	While (spelldelay > 0)
+		PerformAction(caster, ANIM_CAST_DIR);
+		spelldelay := spelldelay - 1;
+		sleep(1);
+	endwhile
+	sleepms(500);
+
+	if (!ConsumeMana(caster, 67))
+		PlayObjectCenteredEffect(caster, FX_SPELL_FAIL, 7, 7);
+		PlaySoundEffect(caster, SFX_5B);
+		SendSysMessage(caster, "Insufficient Mana.");
+		return;
+	endif
+	
+	if (!ConsumeReagents(caster, 67))
+		PlayObjectCenteredEffect(caster, FX_SPELL_FAIL, 7, 7);
+		PlaySoundEffect(caster, SFX_5B);
+		SendSysMessage(caster, "Insufficient Reagents.");
+		return;
+	endif
+
+	if (!CheckSkill(caster, SKILLID_MAGERY, 70, 0))
+		PlayObjectCenteredEffect(caster, FX_SPELL_FAIL, 7, 7);
+		PlaySoundEffect(caster, SFX_5B);
+		return;
+	endif
+
+	SendSysMessage(caster, "Select target.");
+	local victim := target(caster);
+
+	if ( (!victim) or (victim.dead = 1) )
+		SendSysMessage(caster, "Aborted.");
+		return;
+	endif
+
+	local powerlevel := GetObjProperty(victim, "Undead");
+	powerlevel := cint(powerlevel);
+	if ( (!powerlevel) or (powerlevel <> 1) )
+		SendSysMessage(caster, "Invalid target.");
+		return;
+	endif
+
+	detach();
+
+	local oldscript := victim.script;
+	SetObjProperty(victim, "Master", caster.serial);
+	victim.script := "tamed";
+	RestartScript(victim);
+	sleep(duration);
+	victim.script := oldscript;
+	RestartScript(victim);
+	EraseObjProperty(victim, "Master");	
+
+endprogram

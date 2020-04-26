@@ -1,0 +1,89 @@
+use util;
+
+include "../pkg/std/spells/summon";
+include "include/spellrestrictions";
+
+program cast_summon( parms )
+
+	local circle := 5;
+	local caster;
+	local cast_loc;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_loc := parms[3];
+	else
+		caster := parms;
+		cast_loc := CanTargetArea(caster, circle);
+		if (!cast_loc)
+			return;
+		endif
+	endif
+
+	local thecreature;
+	local thecritter;
+	local critgroup;
+	local basemagery := cint(GetSkill(caster, SKILLID_MAGERY));
+
+	if (basemagery < 70)
+		Critgroup := RandomInt(1);
+	elseif (basemagery < 80)
+		Critgroup := RandomInt(1)+1;
+	elseif (basemagery < 90)
+		Critgroup := RandomInt(1)+2;
+	else
+		Critgroup := 3;
+	endif
+	
+	local critter := RandomInt(8);
+
+	case (critgroup)
+		0:
+		case (critter)
+		 0: thecreature := "chicken";
+		 1: thecreature := "cat";
+		 2: thecreature := "slime";
+		 3: thecreature := "sheep";
+		 4: thecreature := "pig";
+		 5: thecreature := "dog";
+		 6: thecreature := "grat";
+		 7: thecreature := "mongbat";
+		endcase
+		1:
+		case (critter)
+		 0: thecreature := "eagle";
+		 1: thecreature := "horse";
+		 2: thecreature := "headless";
+		 3: thecreature := "cow";
+		 4: thecreature := "gorilla";
+		 5: thecreature := "panther";
+		 6: thecreature := "gremlin";
+		 7: thecreature := "deer";
+		endcase
+		2:
+		case (critter)
+		 0: thecreature := "bull";
+		 1: thecreature := "bear";
+		 2: thecreature := "frostwolf";
+		 3: thecreature := "gheart";
+		 4: thecreature := "hildisvini";
+		 5: thecreature := "blackbear";
+		 6: thecreature := "alligator";
+		 7: thecreature := "spider";
+		endcase
+		3:
+		case (critter)
+		 0: thecreature := "imp";
+		 1: thecreature := "alligator";
+		 2: thecreature := "spider";
+		 3: thecreature := "harpy";
+		 4: thecreature := "grizzly";
+		 5: thecreature := "giant_serpent";
+		 6: thecreature := "direwolf";
+		 7: thecreature := "polar";
+		endcase
+	endcase
+
+	summon_creature( caster, circle, thecreature, cast_loc );
+
+endprogram

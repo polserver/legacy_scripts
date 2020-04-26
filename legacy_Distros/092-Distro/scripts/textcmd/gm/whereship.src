@@ -1,0 +1,23 @@
+use boat;
+use uo;
+
+
+program textcmd_where( who )
+    SendSysMessage( who, "Target the deed to the ship" );
+
+    local tgt := Target( who );
+    if (tgt)
+        local shipserial := GetObjProperty( tgt, "builtserial" );
+        if (shipserial)
+            local ship := SystemFindBoatBySerial( shipserial );
+            if (ship)
+                SendSysMessage( who, "That ship is located at ("+ship.x+","+ship.y+")" );
+            else
+                SendSysMessage( who, "That ship doesn't seem to exist." );
+            endif
+        else
+            SendSysMessage( who, "That isn't a deed to a built ship." );
+        endif
+       
+    endif
+endprogram

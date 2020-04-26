@@ -1,0 +1,114 @@
+General Script Changes
+---------------------------
+2/17/2000, Dundee	* Added Questie npcs for "Bob the wanderer in Yew has a vase for me.  If you bring 
+			  it I will pay you" and "I have a vase for Joe the drunkard in Vesper.  if you [take]
+			  it to him, he will pay you."  Questitems.cfg defines things for them to want delivered.
+
+				Update to speech.inc makes it so handing the questitem to any speaking npc
+				will prompt them to tell you who you are looking for, and what direction they
+				are in.
+
+			* Made DW's doppelgangers use the same ai\main ai\combat sort of structure (todo: make an
+			  ai\setup?).
+
+			* Added .news seer command and town criers that read the news to players.  Usage of the
+			  textcmd is ".news read", ".news write" or ".news delete".
+
+			
+1/28/2000, Dundee	* Added "dressme.src" to misc\ and is now called from ai\main\setup.inc to dress npcs.
+				specify dress style in npcdesc.cfg
+			* Added "colorrange" in npcdesc and ai\main\setup.inc update for randomly colored mobs
+			* Added seer command ".openpack" to view what mobs are carrying.
+			* Updated playervendors (some general fixes there).
+			* Updated AI's.
+				Added explosionkillpcs (for marksmen) and explosion.src to alchemy\
+				Marksmen npcs now chuck purplepotions at their opponents (while shooting bolts)
+				Added poisonkillpcs for snakes and serpents
+				Added animal.src and mainloopanimal for animal noises, nospeech, no looting.
+			* Added dunlockpicking as optional lockpicking pkg, use with .spawnschest textcmd\seer
+			* Added regionspawner as optional package.  Current cfg stocks entire world (pretty much).
+				.cr and .depop are added for use with regionspawner in textcmd\gm.
+			* Probably screwed something up trying to commit this much junk at once.
+			* Fixed .makemagic to prompt for info and not require setting a bunch of cprops manually.
+			* keyitem and keyword now allow you to specify a word or an item to which the npc
+			  should bark a response, as well as an item they should give when their keyword or keyitem
+			  is heard/received.  To use with an npc: The npc must use speech.inc.  CheckSpeech which 
+			  is heard and TakeItems on EVID_ITEMGIVEN.  See healer, helppcs, goodcaster, etc.
+			* keyword 'hi' sets up a default greeting which they will bark in response to hearing
+			  anything that isn't a keyword itself.
+
+12/7/99, Dundee         * Added '.dress' seer command to dress npcs.
+                          Need to move the code to an .inc and use for person/townie/etc. ai's.
+                          .dress rich
+                          .dress poor
+                          .dress warrior
+                          .dress mage
+                          Makes some neat looking npcs.  Works on players, too.
+
+12/6/99, Dundee         * Added 'guard' command to pets.  Made them follow faster.
+11/15/99, Dundee	* More changes to spell damage amounts.  Now they are PERFECT.  *kaf*
+			* fixed an exploit with magic reflect
+			* fixed summoning-spells and nightsight for charged magic items
+			* fixed inscription's making of charged magic items
+			* added charged magic items ":magic:magicitems" script and 
+			  .makemagic seer command.  See changes.txt in pkg/std/magic for details.
+			* added .maketele command and items/makedtele script, see textcmd/seer/maketele
+			  for the item that MUST be added to itemdesc.cfg.
+			* made door.src look for the key on the user or in a keyring on the user
+			  if the door is locked.
+
+11/01/99, Dundee	* .keyword was case sensitive, now it isn't.
+			* .grab and looting npcs wont scalp corpses any more.
+			* changed basic spell damage from d8 per circle to d5 per circle.
+			* changed bowcrafting (in bladed) to continue carving until the user runs out
+			  of logs, or moves.
+			* Fixed blacksmithing without consuming ingots exploit.
+			* tweaked allowed taming attempt range
+ 
+10/25/99, Dundee, 	* Replaced the elusive runaway script problem with an elusive brain-
+			  dead/full event que problem.
+			* Put in npc looting - if "cprop looter 1" is set on the npc.
+			* Made npcs hyper, and they help each other out by sending enteredarea 
+			  events to each other when engaged.
+			* Made npcs sleep when no players are around.
+			* doppel ai types change shape again.
+			* Taming: cannot tame others pets, or attempt to tame beyond your ability.
+			* Bladed: Fixed carving kindling from trees and fishsteaks from stacked
+			  fish.
+			* Inscription: Fixed the point values, put in mana cost, auto spellbook
+			  search and looping to "begin scribing" a whole stack of scrolls, and quit
+			  when you run out of mana, scrolls or you move.
+			* Mining and smelting:  Put an autosearch for a nearby forge in smelting.
+			  Made mining repeat until you either move, something happens, or you run out
+			  of ore.  "Something happens" is similar to fishing.
+			* Lumberjacking: Must equip the axe, cannot chop-n-run and made the script
+			  repeat until you either move or the tree runs out of wood.  If there's no
+			  wood, you get a message before you start chopping.
+			* Added keyword/bark-response to speech.inc and .keyword seer command.
+			  Usage is:
+
+				.keyword WORD
+
+			  You're prompted to enter the npc's response to WORD.  Any time the npc hears
+			  WORD after that, he barks the response.  .keyword WORD again will shut him up.
+			  Only works on npcs that include speech.inc - and most aggressive types do not
+			  now (they never chat much anyway).
+			* Added .frozen cprop to .freeze/thaw commands and a check on npc scripts so
+			  that if they were frozen at shutdown, the re-freeze when the server comes
+			  back up.
+			* Changed-n-added key/lock commands:
+
+				.rekey - now generates a new lockid for the target and creates a key
+					to match it.
+				.makekey - creates a key to match any item you target, if it has a lockid.
+				.relock - changes the lockid of any door/container to match the key you
+					specify.
+			* added .itemwipe text command to admin\.  Usage is: 
+
+				.itemwipe x y r
+
+			  where x and y are the tile coordinates of ground zero and r is the blastradius.
+
+
+10/9/99, Racalac, Tamed AI changes in hopes of defeating the elusive runaway script problem
+

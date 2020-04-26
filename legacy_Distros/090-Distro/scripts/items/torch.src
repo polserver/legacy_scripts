@@ -1,0 +1,10 @@
+
+program torch( character , item )
+
+    if( item.graphic = 0x0f64 )
+	item.graphic := 0xa12;
+    elseif( item.graphic = 0x0a12 )
+	item.graphic := 0x0f64;
+    endif
+
+endprogram

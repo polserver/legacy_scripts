@@ -1,0 +1,165 @@
+/////////////////////////////////////////
+// msg.src -- Send a message to another
+//
+// Usage: .msg [playername]
+//        if playername is not given,
+//        a menu will open and prompt
+//        you to choose one.
+//
+// players can turn on/off the messages
+// with .msg on  or .msg off
+//
+// Author:  Racalac
+// Updates: Zulu zuluhotel@hotmail.com
+// Created: Dec 3, 1999
+// Updated: July 19, 2000
+/////////////////////////////////////////
+
+use uo;
+
+global layout := array( 
+"page 0",
+"nodispose",
+"resizepic 150   0 2600 320 405", // background
+"resizepic 210 360 5100 200  25", // buttons
+"text 200 40 600 0",
+"text 405 40 600 1"
+);
+
+global data := array(
+       "Player Name",         //0
+       "Send"
+);
+
+program textcmd_goto( character, whom )
+
+  if(!whom)
+
+    FillInArrays( character );
+
+    local result := SendDialogGump( character, layout, data );
+
+    local name := data[result[0]+2];
+
+    foreach onlinechr in EnumerateOnlineCharacters()
+        if (onlinechr.name = name)
+            SendTheMessage(character, onlinechr);
+            break;
+        endif
+    endforeach
+
+  elseif (upper(whom) = "ON")
+  eraseobjproperty(character, "Messages");
+  SendSysMessage(character, "Messages have been turned on");
+  return;
+  elseif (upper(whom) = "OFF")
+  setobjproperty(character, "Messages", 1 );
+  SendSysMessage(character, "Messages have been turned off");
+  return;
+  endif
+
+  SendSysMessage(character, "Usage: .msg or .msg on or .msg off");
+  SendSysMessage(character, "Usage: .reply <message>");
+
+endprogram
+
+
+function FillInArrays( who )
+
+    local players := EnumerateOnlineCharacters();
+    local datalen;
+    local layoutlen;
+    local prev_y := cint(40);
+    local datindx;
+    local buttonret:=1;
+    local playercount:=0, playerdone:=0, pagecount:=1;
+
+    layout[GetLayoutLength()+1] := "page " + pagecount;
+    if( len(EnumerateOnlineCharacters()) > 19)
+        layout[GetLayoutLength()+1] := "button 350 361 5540 5541 0 " + (pagecount + 1);
+    endif
+    
+    foreach player in players
+
+	if (who.cmdlevel >1)
+        playercount := playercount + 1;
+        playerdone := playerdone +1;
+
+        datalen := GetDataLength();
+        layoutlen := GetLayoutLength();
+
+        datindx := datalen+1;
+        data[datindx] := player.name;
+        if(playerdone>=15)
+	    playerdone :=1;
+            pagecount := pagecount + 1;
+            layout[GetLayoutLength()+1] := "page " + pagecount;
+            prev_y := 40;
+            //add page turners
+
+            layout[GetLayoutLength()+1] := "button 260 361 5537 5538 0 " + (pagecount - 1);
+            if( len(EnumerateOnlineCharacters()) > playercount + 19)
+                layout[GetLayoutLength()+1] := "button 350 361 5540 5541 0 " + (pagecount + 1);
+            endif
+        endif
+
+        layout[GetLayoutLength()+1] := ("text 180 " + cstr(prev_y + 20) + " 0 " + datalen);
+        layout[GetLayoutLength()+1] := ("button 415 " + cstr(prev_y + 25) + " 2118 2117 1 0 " + buttonret);
+
+        prev_y := prev_y + 20;
+        buttonret := buttonret + 1;
+
+	elseIf (!player.concealed and player.cmdlevel=0 and getobjproperty(player, "Messages")<>1)
+
+        playercount := playercount + 1;
+        playerdone := playerdone +1;
+
+        datalen := GetDataLength();
+        layoutlen := GetLayoutLength();
+
+        datindx := datalen+1;
+        data[datindx] := player.name;
+        if(playerdone>=15)
+	    playerdone :=1;
+            pagecount := pagecount + 1;
+            layout[GetLayoutLength()+1] := "page " + pagecount;
+            prev_y := 40;
+            //add page turners
+
+            layout[GetLayoutLength()+1] := "button 260 361 5537 5538 0 " + (pagecount - 1);
+            if( len(EnumerateOnlineCharacters()) > playercount + 19)
+                layout[GetLayoutLength()+1] := "button 350 361 5540 5541 0 " + (pagecount + 1);
+            endif
+        endif
+
+        layout[GetLayoutLength()+1] := ("text 180 " + cstr(prev_y + 20) + " 40 " + datalen);
+        layout[GetLayoutLength()+1] := ("button 415 " + cstr(prev_y + 25) + " 2118 2117 1 0 " + buttonret);
+
+        prev_y := prev_y + 20;
+        buttonret := buttonret + 1;
+        endif
+    endforeach
+
+endfunction
+
+
+function GetLayoutLength();
+    return (len(layout));
+endfunction
+
+function GetDataLength();
+    return (len(data));
+endfunction
+
+function sendthemessage(who, whom)
+local themessage := requestinput(who, who.backpack, "What message would you like to send " + whom.name + "?");
+if (!themessage)
+        SendSysMessage(who, "Cancelled.");
+        return;
+endif
+
+SendSysMessage(whom, who.name + " : " + themessage);
+SetObjProperty (whom, "#msgfrom", who.name);
+
+endfunction
+

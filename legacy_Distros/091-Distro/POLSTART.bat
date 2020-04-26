@@ -1,0 +1,1 @@
+command /K pol.exe

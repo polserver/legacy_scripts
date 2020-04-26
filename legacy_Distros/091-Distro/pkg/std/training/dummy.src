@@ -1,0 +1,78 @@
+//dummy.src
+//
+//ON dbl-click this finds the current weapon eqipped and
+//checks the skill at a difficulty of 10 (willnot raise over 30)
+//Use objtypes 0x1070 0x1074 for stationary dummies
+//
+//Problems: long sword uses wrong skill id. Not known if this is an isolated
+//	    problem.
+//
+// Author: Racalac, 3/29/99
+// Modified by: The Writer, 4/15/99 Fixed dummy flicker.
+
+use uo;
+use os;
+
+include "include/client";
+include "include/objtype";
+
+
+program training_dummy( who , dummy )
+
+	local skillid := who.weapon.skillid;
+
+	if( !skillid )
+	    skillid := SKILLID_WRESTLING;
+	    //Print("You probably are fighting bare-handed.");
+	endif
+
+//Print("skillid: " + skillid);
+
+    case (skillid)
+    	SKILLID_MACEFIGHTING: 
+		CheckSwing( who , skillid , ANIM_ATTACK_1HAND_DOWN , dummy );
+    	SKILLID_FENCING: 
+		CheckSwing( who , skillid , ANIM_ATTACK_1HAND_JAB , dummy );
+    	SKILLID_SWORDSMANSHIP: 
+		CheckSwing( who , skillid , ANIM_ATTACK_1HAND_WIDE , dummy );
+    	SKILLID_WRESTLING: 
+		CheckSwing( who , skillid , 0x9 , dummy );
+    	default: 
+		SendSysmessage( who , "I don't know what you are weilding!" );
+    endcase
+
+endprogram
+
+
+function CheckSwing( who , skillid , action , dummy )
+
+   set_critical(1); 
+
+   PerformAction( who , action );
+   Sleep(1);
+
+   if( CheckSkill( who , skillid , 10 , 40 ) )
+
+       PlaySoundEffect( who , SFX_13C ); // hit sound
+
+       if ( dummy.objtype = UOBJ_DUMMYFREEZE_NS )
+            dummy.graphic := UOBJ_DUMMYSWING_NS; // dummy swing
+            sleepms(3600); // show animation for (x) ms
+            dummy.graphic := UOBJ_DUMMYFREEZE_NS; // dummy freeze
+
+       elseif ( dummy.objtype = UOBJ_DUMMYFREEZE_EW )
+            dummy.graphic := UOBJ_DUMMYSWING_EW; // dummy swing
+            sleepms(3600); // show animation for (x) ms
+            dummy.graphic := UOBJ_DUMMYFREEZE_EW; // dummy freeze
+       endif
+
+    else
+
+       PlaySoundEffect( who , SFX_239 ); // missing sound
+       Sleep(2);
+    endif
+
+    set_critical(0);
+
+endfunction
+

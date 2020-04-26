@@ -1,0 +1,89 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// PKG: housing                                                                                                 //
+// version: 1.0                                                                                                 //
+// Maintainer: Bishop Ebonhand                                                                                  //
+// email: bish0p@cfl.rr.com                                                                                     //
+//                                                                                                              //
+// notes:                                                                                                       //
+//   this housing package includes static housing as well as the typical multi type housing.                    //
+//                                                                                                              //
+// known issues:                                                                                                //
+//  stacking "solid" objects causes some wierdness with the multi.items list, and as a result a player may      //
+//  not be able to lock down items on tables within their homes.. when a fix or workaround becomes available    //
+//  I will update this script accordingly...                                                                    //
+//                                                                                                              //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+use os;
+use uo;
+
+program use_securecont( character , item )
+    local signserial := getobjproperty( item, "houseserial");
+    Local house      := SystemFindObjectBySerial( signserial );
+    Local secure := 0;
+    var homeinfo := GetObjProperty(house, "homeinfo");
+    local owner := homeinfo[1];
+    if (GetObjProperty( house , "owneracct" ) = character.acctname)
+      secure := 1;
+    else
+      local friendinfo := GetObjProperty(house,"friends");
+      local coownerinfo := GetObjProperty(house,"coowners");
+      local ind := returnindex(friendinfo, character.serial);
+      if (ind > 0)
+        secure := 1;
+        SendSysmessage( character , "opening container for owner or friend." );
+      else
+        ind := returnindex(coownerinfo, character.serial);
+        if (ind > 0)
+          secure := 1;
+          SendSysmessage( character , "opening container for owner or friend." );
+        elseif (character.cmdlevel > 2)
+          secure := 1;
+          SendSysmessage( character , "opening container for staff member." );
+        endif
+      endif
+    endif
+    if (secure = 0)
+      SendSysmessage( character , "You can't use this." );
+      return;
+    endif
+    local boxin := ListRootItemsInContainer(item);
+    local boxs := GetObjProperty( item , "boxserial" );
+    local boxo := SystemFindObjectBySerial(boxs);
+    SendOpenSpecialContainer( character, boxo);
+    foreach thingie in boxin
+      if (thingie.serial != boxs)
+        moveitemtocontainer(thingie, boxo);
+      endif
+    endforeach
+    sleep(1);
+    if(len(enumerateitemsincontainer(boxo)) > 125)
+      local contents := enumerateitemsincontainer(boxo);
+      foreach thing in contents
+        if(len(enumerateitemsincontainer(boxo)) > 125)
+          moveitemtolocation(thing, character.x, character.y, character.z, MOVEITEM_FORCELOCATION);
+        else
+          break;
+        endif
+      endforeach  
+    endif  
+endprogram
+
+function ReturnIndex(friendinfo, information)
+  local i;
+  for (i := 1; i <= len(friendinfo); i := i + 1)
+    if (friendinfo[i] = information)
+      return i;
+    endif
+  endfor
+  return 0;
+endfunction
+
+function ListRootItemsInContainer(container)
+  var ret := { };
+  foreach item in enumerateitemsincontainer(container)
+    if ( item.container.serial = container.serial )
+	  ret[len(ret)+1] := item;
+    endif
+  endforeach
+  return ret;
+endfunction

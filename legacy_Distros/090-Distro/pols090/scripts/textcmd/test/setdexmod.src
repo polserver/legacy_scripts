@@ -1,0 +1,3 @@
+program textcmd_setdexmod( who, dexmod )
+    who.dexterity_mod := CInt(dexmod);
+endprogram

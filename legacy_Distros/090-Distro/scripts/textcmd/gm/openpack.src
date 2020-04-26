@@ -1,0 +1,28 @@
+use uo;
+
+const UOBJ_BACKPACK := 0x0e75;
+program npcpack(who)
+
+local what := target(who);
+
+if (!what) 
+        sendsysmessage(who, "Targetting cancelled");
+        return;
+endif
+
+if (!what.strength)  //it's not an NPC
+        sendsysmessage(who, "This command only works with NPCs!");
+        return;
+endif
+
+local hispack := what.backpack;
+
+if (!hispack)
+        hispack := createiteminbackpack(who, UOBJ_BACKPACK,1);
+        equipitem(what, hispack);
+endif
+
+sendopenspecialcontainer(who, hispack);
+
+endprogram
+        

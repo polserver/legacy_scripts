@@ -1,0 +1,9 @@
+use uo;
+
+include "include/starteqp";
+
+program sdfsd(who,text)
+
+	var targ := Target(who);
+	MakeLoot(targ,cint(text));
+endprogram

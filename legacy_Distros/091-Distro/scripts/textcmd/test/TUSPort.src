@@ -1,0 +1,294 @@
+//////////////////////////////////////////////////////////////////////////////
+//  TUS To POL Port Utility
+//  Author:  Racalac & Sentack
+//  Created: 1/22/2000
+//  Version: 0.2
+//  Updated: 1/28/2000
+//
+//  Purpose: This utility is designed to import all items from a TUS world
+//    file and convert them into a POL Data.
+//
+//  Arguments: filename - Name of the TUS world file being converted.
+//    Do not include the extension and the file must end with a ".scp".
+//    example: ".TUSPort mytusworld" would try to load the file
+//    "mytusworld.scp"
+//
+//  Requirements: The file being converted must be located at the
+//    "POL/Import/TUS" directory.  The script will convert the file into
+//    "POL_Items.cfg", "POL_Account.cfg", "POL_Multis.cfg", "POL_Pcs.cfg",
+//    "POL_PCEquip.cfg", "POL_.cfg" and "POL_Storage.cfg".  The files
+//    "tusaccu.scp", "tusitem.scp" and "tusitem2.scp" must be in the
+//    "POL/Import/TUS" directory
+//
+//  Directions on usage:  To convert your tus world file.  Login to your
+//    POL Shard as Admin.  Type ".TUSPort <filename>" where <Filename>
+//    is the name of the TUS world file you wish to convert without the ".scp"
+//    Extension.  Once it is complete, a few new files in "POL/Config"
+//    directory.  To use the files you must first log off all players and
+//    shut down the server.  Copy the files to your "POL/Data" directory.
+//    Delete your current data files and then replace them with the newly
+//    generated files.
+//
+//  Warning: The process for applying the converted files as listed above will
+//    destroy any work you have already done in the past.  As a precaution,
+//    it would be advised that you back up your data files before replacing
+//    it with the converted files.  Also, note that if you run this program
+//    and the files POL_*.cfg already in existsance, the new data will append
+//    to the files which may or may not be what you want.  So be careful.
+//
+//  Updates:
+//   0.1 - Initial Release (All packages where in seperate files)
+//   0.2 - True Initial release of TUSPort.
+//   0.3 - Converts spellbooks and contents
+//       - Broke TUSPortTools to Tools and Storage.
+//       - Moved all Const to there own file.
+//       - Fixed Keys
+//       - Fixed Runes (Bzagh)
+//       - Fixed Attr bugs
+//       - Ports Bank Boxes
+//       - Ports SpellBooks
+//       - Ports Multi's
+//////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////
+// ToDo:
+//  Keys - Done (Sentack)
+//  Key rings - Done (Sentack)
+//  Recall items (Recall runes) - Done (Bzagh)
+//  Spellbooks (Needs to be implemented) - Done (Bzagh)
+//  Scrolls (Should work as is but needs testing) - Done
+//  TUS necromancy spells (Shrunken animals) - Pass
+//  Magic Weapons and Armor - Somebody else can attempt this
+//  Spell Casting items (Wands, swords)
+//  House/Boat/Item Deeds
+//  Remaining containers - Alter itemdesc.cfg - Done 1/30/2000 - Bzagh
+
+// Library used for conversion process.
+use basic;    // Used for string manipulation
+use cfgfile;  // Used for opening the TUS World file and Creating the new Item File.
+use uo;       // Used to create object in the current world and test for collision of objects
+
+// EScript Includes
+include "include/client"; // This contains the constants on layers
+// TUSPort utility includes
+include "TUSPortConst"; // All the Constants used with this utility
+include "TUSPortTools"; // These are the tools we will use to port all the data
+
+
+program TUSPort( who, filename, method)
+  var TUSWorldFile; // The Output file
+  var TUSItem1;     // A array of TUSItem.scp
+  var TUSItem2;     // A array of TUSItem2.scp
+  var MaxItems;     // The Total number of possible items to convert
+  var CurrItem;     // The index of the current object we are processing
+  var TUSObject;    // The Current TUS object we are processing, note that it may not be an item.
+  var POLItem;      // The Current POL item we are processing
+
+  var MsgCount;     // Message Counter for use to display status report
+  var ActCount;     // A count of the number of actual items that have been converted.
+  var ErrorTotal;
+
+  var BPObject;     // Temp backpack object storage.
+  var bpindex;      // used to help find the master backpack object to convert it.
+
+  var LargestSerial;// The highest serial number in the worldfile.  Used to say what's next
+  var CharOneFound; // Used to see if Character one is found.  If not, create him.
+
+  SendSysMessage ( who, "Starting TUSPort...");
+  Print("Starting TUSPort...");
+
+  // Load the TUS World file
+  Print("Opening TUS World file.");
+  TUSWorldFile := LoadTusScpFile ( filename );
+
+  // If we fail to load the file, tell the user why.
+  if (!TUSWorldFile)
+      Print("Unable to load TUS World file: " + filename + ".scp" );
+      Print("Reason: " + TUSWorldFile.errortext );
+      return;
+  else
+      Print("Opened TUS World file: " + filename );
+  endif
+
+  // Not used at this point but may have some use to someone in the future.
+/*
+  Print("Opening TUS Item File #1");
+  TUSItem1 := LoadTusScpFile( "tusitem" );
+
+  if (!TUSItem1)
+      Print("Unable to load TUS Item file: TusItem.scp" );
+      Print("Reason: " + TUSItem1.errortext );
+      return;
+  else
+      Print("tusitem: Loaded Successfully");
+  endif
+
+  SendSysMessage ( who, "Opening TUS Item File #2");
+  TUSItem2 := LoadTusScpFile( "tusitem2" );
+
+  if (!TUSItem2)
+      Print("Unable to load TUS Item2 file: TusItem2.scp" );
+      Print("Reason: " + TUSItem2.errortext );
+      return;
+  else
+      Print("tusitem2: Loaded Successfully");
+  endif
+*/
+
+  // Find out how many objects there are total.
+  MaxItems := GetConfigMaxIntKey( TUSWorldFile );
+
+  LargestSerial := 0;
+  for( CurrItem := 1; CurrItem <= MaxItems; Curritem := CurrItem + 1 )
+    TUSObject := TUSWorldFile[CurrItem];
+    if (TUSObject.worlditem != error)
+      if(TUSObject.SERIAL > LargestSerial)
+         LargestSerial := TUSObject.SERIAL;
+      endif
+    endif
+  endfor
+
+  // Init available serials
+  SetAvailSerial(LargestSerial);
+  InitAvailKey();
+  CreateStorage();
+
+  // Port Accounts
+  PortAccounts();
+
+  // Set the index to be the first of the array
+  PlayerBagCount := 1;
+  BankBoxesCount := 1;
+  MasterBackCount := 1;
+  NPCBagCount := 1;
+  KeyIDCount := 1;
+  KeyRingCount := 1;
+  NewMultisCount := 1;
+  ComponentsCount := 1;
+
+  // Inform the Admin that the number of objects we will be attempting to convert
+  Print("Total Objects: " + MaxItems);
+
+  // Set the Message Counter to One.  Use this to determine if need to display a status report message
+  MsgCount := 1;
+
+  // Set the Actual Count and error total, and CharOneFound to Zero.
+  ActCount := 0;
+  ErrorTotal := 0;
+  CharOneFound := 0;
+
+  Print("Port: CurrentObject/MaxObjects (ConvertedItems)");
+  // For each of those objects found in the TUS file...
+  for( CurrItem := 1; CurrItem <= MaxItems; Curritem := CurrItem + 1 )
+
+    // Assign TUSItem to be the object to be processed.
+    TUSObject := TUSWorldFile[CurrItem];
+
+    if (MsgCount > 99) then
+      Print("Port: " + CurrItem + "/" + MaxItems + " (" + ActCount + ")");
+      MsgCount := 1;
+    else
+      // Update Message Counter
+      MsgCount := MsgCount + 1;
+    endif
+    // Go to next object
+
+    if (TUSObject.worlditem != error)
+      if ((TUSObject.worlditem >= UOBJ_MULTI_START) && (TUSObject.worlditem < UOBJ_MULTI_END))
+        print("Porting Multi");
+        PortMulti( TUSObject );
+      elseif (TUSObject.LAYER == 0x0029)
+      //elseif ((TUSObject.worlditem == 0x09b2) )
+        if (!(InNPCBag(TUSObject.CONT)))
+          print("Porting Bankbox");
+          PortBankBox( TUSObject );
+          // Increment Actual Count.
+          ActCount := ActCount + 1;
+        else
+          //print("NPC's Bankbox, storeing and skiping. (" + HextoTxt(TUSObject.Serial) + ")");
+          StoreNPCBag( TUSObject.SERIAL );
+        endif
+      elseif ((TUSObject.worlditem == 0x0e75) && (IsOnPlayer(TUSObject)))
+        // Skip Object, it's a master backpack and we've already done it.
+        //print("Master Backpack.. Skip");
+        if (InNPCBag(TUSObject.CONT))
+          //Print("  Storeing Container (" + HextoTxt(TUSObject.Serial) + ")");
+          StoreNPCBag( TUSObject.SERIAL );
+        endif
+      elseif ((TUSObject.CONT != error) && (InNPCBag(TUSObject.CONT)))
+        //print("NPC Equipement found Skiping... (" + HextoTxt(TUSObject.Serial) + ")");
+        if (IsContainer(TUSObject.worlditem))
+          //Print("  Storeing Container (" + HextoTxt(TUSObject.Serial) + ")");
+          StoreNPCBag( TUSObject.SERIAL );
+        endif
+      else
+        //print("Porting Item (" + HextoTxt(TUSObject.Serial) + ")");
+        PortItem( TUSObject );
+        // Increment Actual Count.
+        ActCount := ActCount + 1;
+      endif
+    elseif (TUSObject.WORLDCHAR != error)
+      if (TUSObject.account != error)
+        // Tis an Player account
+        // Convert account
+        print("Porting PC");
+        PortPC( TUSObject );
+        // Find this account true 'backpack'
+        bpindex := 0;
+        while (1)
+
+          BPObject := TUSWorldFile[(CurrItem+bpindex)];
+
+          if (BPObject.worlditem != error)
+            if ((BPObject.worlditem == 0x0e75) && (IsOnPlayer(BPObject)))
+              // convert the backpack
+              PortItem(BPObject);
+              //print("Porting Master Backpack");
+              // Store Backpack into array
+              //print("Storing Master Backpack");
+              StorePlayerBag(BPObject.SERIAL, TUSObject.SERIAL);
+              StoreMasterBackpack(TUSObject.SERIAL, BPObject.SERIAL);
+              //print("Storeing Player Bag for " + HexToTxt(TUSObject.SERIAL) + " BagID " + HexToTxt(BPObject.SERIAL) );
+              break;
+            endif
+          endif
+          bpindex := bpindex + 1;
+        endwhile
+
+        if (TUSObject.SERIAL == 0x01)
+          CharOneFound := 1;
+        endif
+
+        // Increment Actual Count.
+        ActCount := ActCount + 1;
+      else
+        // It's an NPC we need to store it's Serial, we need to skip these items.
+        //print("Stored NPC");
+        StoreNPCBag(TUSobject.SERIAL);
+      endif
+    elseif (TUSObject.eof != error)
+      print("EOF Found");
+    else
+      // Something went wrong....
+      print("Error: Unknown Object.");
+      ErrorTotal := ErrorTotal + 1;
+      AppendConfigFileElem( "pol_error", "error", "", TUSObject );
+      //return 1;
+    endif
+
+    //print("Converted Item #" + ActCount);
+  endfor
+
+  if (!CharOneFound)
+    CreateCharOne();
+  endif
+
+  PortMultis();
+
+  PortPOLTxt();
+
+  SendSysMessage( who, "Conversion Done...");
+  Print("Converted: " + ActCount + " Items");
+  print("Errors: " + ErrorTotal );
+
+endprogram

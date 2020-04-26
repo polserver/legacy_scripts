@@ -1,0 +1,42 @@
+POL091:
+- Evaluate Intelligence, Arms Lore, and Anatomy now yield the same messages
+  as on OSI.
+- Added Myr's message of the day package as an optional package.
+- Added Animal Lore back in. Dunno why it went missing.
+- When merchants die, their storage areas will be annihilated.
+- Updated the doors package.
+- Fixed hitscriptinc.inc (it was calling the wrong thing for the anatomy value.)
+- Players can log out instantly when in an inn.
+- Brought weapon and armor statistics in line with OSI's.
+- Updated the lighting package.
+- Documentation and updated cfg file for danspawner.
+- Added OSI's treasure map locations.
+- You will not be allowed to put on a piece of armor that would lower your dex
+  to 0 or below. Note that this will not prevent you from drinking a dex potion,
+  putting on plate mail, and then letting the potion wear off, but it is a start.
+- Added an optional alternate mining package.
+- Offer an optional upgrade to Spawnnet. It isn't by Spawnnet's creator, who is
+  working on the next version- this is why I made it optional. If you want to use
+  this version (and it does fix some things), make sure to use the correct include
+  files.
+- TUSReadMe removed, as it refers to a web site no longer being maintained.
+- Added Zulu's new guildstone package. If you were running an earlier version of
+  this package, please refer to the readme in opt/guildstone for how to update your
+  data files.
+- .setprop should no longer allow you to give someone a higher command level than
+  you have.
+
+
+POL090_1:
+- Added a spirit speak package and modified login.src to remove the ability to
+  hear ghosts on login.
+- Updated the optional Arena package.
+- Updated the armor equip, unequip, and destroy scripts, and also chrdeath,
+  to modify dex_mod instead of dex and also to not effect NPCs.
+- Added Dundee's boat package.
+- Updated equip.cfg and objtype.inc.
+- Cleaned up npcdesc.cfg.
+- Fixed equip errors in questie.src.
+- Repairing things with blacksmithy should no longer give skill.
+- Taming now correctly sets the master of the mount.
+- Repsys file corrected.

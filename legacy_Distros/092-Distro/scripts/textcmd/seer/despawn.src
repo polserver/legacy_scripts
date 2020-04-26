@@ -1,0 +1,58 @@
+//Author: Racalac, 1/15/99
+//Issues: Must write necessary data to file before it becomes useful.
+//
+//Update: 1/31/99, 30 minutes before the Super Bowl...
+//This command now prompts you for a location, then an npc type (human, animal, monster), then 
+//     for a specific npc in that category (from spawndef.cfg, must add new npcs to both npcdesc
+//     AND spawndef.cfg for them to be available). This then appends the spawns.cfg with the needed
+//     data.
+
+Use uo;
+Use cfgfile;
+Use os;
+Use basic;
+
+Global spawn_cfg := ReadConfigFile( ":danspawner:spawnignore" );
+Global spawns ;
+
+program despawn( character, words )
+
+
+if (words)
+        SendSysmessage(character, "This command removes a spawned item or mobile from the spawn");
+        return;
+endif
+
+local what := target(character);
+
+if (!what)
+        return;
+endif
+
+local maxentry := GetConfigMaxIntKey(spawn_cfg) + 1;
+local spawnid := getobjproperty(what, "spawn");
+
+if (!spawnid)
+        SendSysMessage(character, "This doesn't appear to have been spawned");
+        return;
+endif
+damage(what, what.hp + 1);
+destroyitem(what);
+
+    local props := array;
+    local prop := array;
+    prop .+ pname;
+    prop .+ pvalue;
+
+    prop.pname := "removedby";
+    prop.pvalue := character.name;
+    props[1] := prop;
+
+   
+    
+    AppendConfigFileElem(":danspawner:spawnignore", "ignore", spawnid, props );
+
+    UnloadConfigFile( ":danspawner:spawnignore" );
+endprogram
+
+

@@ -1,0 +1,27 @@
+use uo;
+
+program warboss(who, item)
+printtextabove(who,"*");
+if (getobjproperty(who, "wb"))
+	PlayLightningBoltEffect( who );
+else
+	PlayLightningBoltEffect( who );
+	applyrawdamage(who, who.maxhp);
+	return 0;
+endif
+if (getobjproperty(who, "wb"))
+	return;
+endif
+setobjproperty(who, "sk41", "1");
+setobjproperty(who, "sk27", "1");
+setobjproperty(who, "oldmaces", getskill(who, 41));
+setobjproperty(who, "oldtactics", getskill(who, 27));
+
+
+setrawskill(who, 41, baseskilltorawskill(1000));
+setrawskill(who, 27, baseskilltorawskill(1000));
+setobjproperty(who, "oldgraphic", who.graphic);
+who.graphic := 0x4c;
+setobjproperty(who, "wb", 1);
+return 1;
+endprogram

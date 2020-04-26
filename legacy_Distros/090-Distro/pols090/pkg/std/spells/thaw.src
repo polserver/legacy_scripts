@@ -1,0 +1,13 @@
+use uo;
+use os;
+program thaw(parms);
+
+local who := parms[1];
+local duration := cint(parms[2]);
+
+
+while (who.frozen)
+        sleep(duration);
+        who.frozen := 0;
+endwhile
+endprogram

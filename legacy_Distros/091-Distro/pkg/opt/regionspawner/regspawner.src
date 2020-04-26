@@ -1,0 +1,28 @@
+use os;
+use uo;
+use util;
+
+program regionalspawner()
+
+	while (1)
+		sleep( (60 * 15) + (60 * (RandomInt(15)+1)) );
+		if (GetGlobalProperty("#spawnerisrunning"))
+			gmreport("regional spawner is still running from last invocation");
+		else
+			start_script( "dospawn" );
+		endif
+		sleep( (60 * 15) + (60 * (RandomInt(15)+1)) );
+	endwhile    
+
+endprogram
+
+function gmreport(text)
+
+	local gms := EnumerateOnlineCharacters();
+	foreach guy in gms
+        	if  (guy.cmdlevel)
+       			SendSysMessage(guy, "Regionspawner: " + text);
+		endif
+	endforeach
+
+endfunction

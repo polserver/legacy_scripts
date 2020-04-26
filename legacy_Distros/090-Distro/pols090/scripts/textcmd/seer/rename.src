@@ -1,0 +1,9 @@
+use os;
+use uo;
+
+program textcmd_rename( speaker, newname )
+    local thetarg := target(speaker);
+    if (thetarg)
+        setname(thetarg, newname);
+    endif
+endprogram

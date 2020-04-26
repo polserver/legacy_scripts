@@ -1,0 +1,123 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// PKG: housing                                                                                                 //
+// version: 1.0                                                                                                 //
+// Maintainer: Bishop Ebonhand                                                                                  //
+// email: bish0p@cfl.rr.com                                                                                     //
+//                                                                                                              //
+// notes:                                                                                                       //
+//   this housing package includes static housing as well as the typical multi type housing.                    //
+//                                                                                                              //
+// known issues:                                                                                                //
+//  stacking "solid" objects causes some wierdness with the multi.items list, and as a result a player may      //
+//  not be able to lock down items on tables within their homes.. when a fix or workaround becomes available    //
+//  I will update this script accordingly...                                                                    //
+//                                                                                                              //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+use uo;
+use os;
+
+include "util/key";
+include "util/bank";
+include "include/objtype";
+
+Const UOBJECT_DOORS_START := 0x0675;
+Const UOBJECT_DOORS_END   := 0x06f4;
+Const UOBJECT_BRASS_SIGN := 0x0bd2;
+Const UOBJECT_WOOD_SIGN := 0x0bd0;
+Const UOBJECT_TENT_CHEST := 0x0E43;
+
+program usehousedeed( character, deed )
+  if (DeedAlreadyBuiltFrom( deed ))
+    PrintTextAbovePrivate( deed, "That house has already been built.", character );
+  else
+    Buildhouse( character, deed );
+  endif
+endprogram
+
+function Buildhouse( character, deed )
+  local housetype := GetObjProperty( deed, "housetype" );
+  if (housetype = error)
+    PrintTextAbovePrivate( deed, "That house deed appears to be broken.", character );
+    return;
+  endif
+  local where := TargetMultiPlacement( character, housetype );
+  if (!where) // cancelled
+    return;
+  endif
+  set_critical( 1 );
+  local created := CreatehouseKeysAndBuiltDeed( character, housetype, where.x, where.y, where.z );
+  if (!created) 
+    return;     // note Createhouse.. prints appropriate error message
+  endif
+  created.WalkOnScript := ":housing:housebanning";
+  SetName( created.builtdeed, deed.desc + " at " + created.house.x + ", " + created.house.y + ", " + created.house.z + " (built)" );
+  SetObjProperty( created.builtdeed, "builtserial", created.house.serial );
+  SetObjProperty( created.builtdeed, "numlockdowns" , GetObjProperty( deed , "numlockdowns" ));
+  SetObjProperty( created.builtdeed, "numsecure" , GetObjProperty( deed , "numsecure" ));
+  SetObjProperty( created.house , "ownerserial" , character.serial );
+  SetObjProperty( created.house , "deedtype" , deed.objtype );
+  local lockid := AllocLockId();
+  SetObjProperty( created.packkey, "lockid", lockid );
+  SetObjProperty( created.bankkey, "lockid", lockid );
+  foreach item in (created.house.components)
+    if( ((item.objtype >= UOBJECT_DOORS_START) and (item.objtype <= UOBJECT_DOORS_END)) or item.objtype = UOBJECT_TENT_CHEST )
+      item.locked := 1;
+      SetObjProperty( item , "lockid" , lockid );
+    elseif( (item.objtype = UOBJECT_BRASS_SIGN) or (item.objtype = UOBJECT_WOOD_SIGN) )
+      SetObjProperty( item , "numlockdowns" , GetObjProperty( deed , "numlockdowns" ));
+      SetObjProperty( item , "numsecure" , GetObjProperty( deed , "numsecure" ));
+      SetObjProperty( item , "ownerserial" , character.serial );
+      SetObjProperty( item , "owneracct" , character.acctname );
+      SetObjProperty( item , "lockid" , lockid );
+      SetObjProperty( item , "deedtype" , deed.objtype);
+      SetObjProperty( item , "builtdeed" , created.builtdeed.serial);
+      setobjproperty( item , "decay", (ReadGameClock()+ 864000));
+    endif
+  endforeach
+  DestroyItem( deed );
+endfunction
+
+function CreatehouseKeysAndBuiltDeed( character, housetype, x, y, z )
+  local bankbox := FindBankBox( character );
+  local packkey := CreateItemInBackpack( character, UOBJ_GOLD_KEY );
+  if (!packkey)
+    PrintTextAbovePrivate( character, "My backpack is too full!", character );
+    return 0;
+  endif
+  local bankkey := CreateItemInContainer( bankbox, UOBJ_GOLD_KEY );
+  if (!bankkey)
+    PrintTextAbovePrivate( character, "My bankbox is too full!", character );
+    DestroyItem( packkey );
+    return 0;
+  endif
+  local builtdeed := CreateItemInContainer( bankbox, UOBJ_HOUSE_DEED1 );
+  if (!builtdeed)
+    PrintTextAbovePrivate( character, "My bankbox is too full!", character );
+    DestroyItem( packkey );
+    DestroyItem( bankkey );
+    return 0;
+  endif
+  local house := CreateMultiAtLocation( x, y, z, housetype );
+  if (!house)
+    PrintTextAbovePrivate( character, "I can't place the house there.", character );
+    DestroyItem( packkey );
+    DestroyItem( bankkey );
+    DestroyItem( builtdeed );
+    return;
+  endif
+  local result array;
+  result .+ packkey := packkey;
+  result .+ bankkey := bankkey;
+  result .+ builtdeed := builtdeed;
+  result .+ house := house;
+  return result;
+endfunction
+
+function DeedAlreadyBuiltFrom( deed )
+  if (GetObjProperty( deed, "builtserial" ))
+    return 1;
+  else
+    return 0;
+  endif
+endfunction

@@ -1,0 +1,35 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+//  saver - Saves world state periodically
+//
+//          complains, via syslog and broadcast, if it can't.
+//          If this script dies, saverchk should notice and complain.
+//
+/////////////////////////////////////////////////////////////////////////////
+
+use os;
+use uo;
+
+include saveopts;
+
+print ("Saving every " + MINUTES_BETWEEN_SAVES + " minutes");
+
+
+while (1)
+    sleep( MINUTES_BETWEEN_SAVES * 60 );
+
+    syslog( "Saving World State" );
+    Broadcast( "Saving World State" );
+
+    var duration := ReadGameClock();
+    var res := SaveWorldState();
+    duration := ReadGameClock() - duration;
+
+    if (res)
+        SetGlobalProperty( "#:saver:lastsave", ReadGameClock() );
+        syslog( "World state saved (" + duration + " seconds)" );
+    else
+        Broadcast( "Error saving world state!  Oh, the humanity!" );
+        syslog( "Error saving world state: " + res );
+    endif
+endwhile

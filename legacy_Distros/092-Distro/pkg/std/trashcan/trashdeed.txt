@@ -1,0 +1,18 @@
+Trash Can Deed - version .3
+Created by Zulu Jan 5, 2000 - updated Jan 10, 2000
+
+Players can now buy trash can deeds and place them in the game.
+Players now can't place more than one can in the current screen.
+This will prevent players blocking locations.
+
+*************************
+How to set up the script: 
+*************************
+
+Copy the trashdeed.src to the \pol\scripts\items directory.
+GM's can use the command .createat 0x7009 to make a deed.
+APPEND the itemdesc.txt to the file \pol\config\itemdesc.cfg
+
+Copy the mrcspawn.txt to the file \pol\config\mrcspawn.cfg
+
+*** under the heading of ProductGroup Deeds: add it after the //smallboatdeed ***

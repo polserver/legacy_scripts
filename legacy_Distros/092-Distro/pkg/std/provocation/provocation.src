@@ -1,0 +1,69 @@
+use uo;
+use util;
+use cfgfile;
+
+include "include/client";
+include "include/objtype";
+include "include/skillpoints";
+include "include/bard";
+include "include/eventid";
+
+
+program bard_provoke(character)
+
+	local thetarg := target(character);
+
+	if (!thetarg)
+        	sendsysmessage(character, "Targetting cancelled.");
+        	return;
+	endif
+
+	local configfile := ReadConfigFile("::npcdesc");
+	local theobj:= thetarg.npctemplate;
+        local elem := FindConfigElem(configfile, theobj);
+	local difficulty;
+
+        if (elem)
+		difficulty := elem.provoke;
+	else
+        	sendsysmessage(character, "You cannot provoke that!");
+        	return;
+	endif
+
+	if (!difficulty)
+		difficulty := 100;
+	endif
+
+	if (!can_sing(character, 5)) 
+        	return;
+	endif
+
+	local instrument := findinstrument(character);
+
+	if (!instrument)
+        	SendSysmessage(character, "You don't have an instrument to play!");
+        	return;
+	endif
+
+	local ev := array;
+	ev.+ type;
+	ev.+ source;
+
+	if (CheckSkill(character, SKILLID_PROVOCATION, cint(difficulty), cint(difficulty *2)) 
+		&& (music(character, instrument, cint(difficulty) ) ))
+		SendSysmessage(character, "Select a target");
+		local newtarg := target(character);
+		ev.source := newtarg;
+		ev.type := EVID_PEACEMADE;
+		sendevent(thetarg, ev);
+		ev.type := EVID_DAMAGED;
+		sendevent(thetarg, ev);
+		PrintTextAbovePrivate(thetarg, "You provoke " + thetarg.name + " to attack " + newtarg.name + "!", character);
+	else
+		ev.source := character;
+		ev.type := EVID_DAMAGED;
+		PrintTextAbovePrivate(thetarg, "You enrage " + thetarg.name + "!", character);
+        	SendEvent(thetarg, ev);
+	endif       
+
+endprogram 

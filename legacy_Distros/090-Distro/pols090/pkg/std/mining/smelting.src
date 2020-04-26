@@ -1,0 +1,65 @@
+////////////////
+// smelting.src
+//
+// Turns normal or colored ore into its respective ingot.
+// Some ores are harder to work with than others.
+//
+// Author: Racalac, 5/8/99
+//
+// Modifications: 
+//     19990525 Syz moved UOBJ_XX definitions to include/objtype.inc
+//
+////////////////
+
+use uo;
+
+include "include/client";
+include "include/objtype";
+
+
+program smelt_that_ore ( character , ore )
+
+    case( ore.objtype )
+        UOBJ_IRON_ORE:          SmeltOre( character , ore , UOBJ_IRON_INGOT , 30 , 10 );
+        UOBJ_BRONZE_ORE:        SmeltOre( character , ore , UOBJ_BRONZE_INGOT , 60 , 20 );
+        UOBJ_DULLCOPPER_ORE:    SmeltOre( character , ore , UOBJ_DULLCOPPER_INGOT , 70 , 30 );
+        UOBJ_COPPER_ORE:        SmeltOre( character , ore , UOBJ_COPPER_INGOT , 80 , 40 );
+        UOBJ_ONYX_ORE:          SmeltOre( character , ore , UOBJ_ONYX_INGOT , 85 , 50 );
+        UOBJ_PYRITE_ORE:        SmeltOre( character , ore , UOBJ_PYRITE_INGOT , 90 , 60 );
+        UOBJ_MALACHITE_ORE:     SmeltOre( character , ore , UOBJ_MALACHITE_INGOT , 95 , 70 );
+        UOBJ_AZURITE_ORE:       SmeltOre( character , ore , UOBJ_AZURITE_INGOT , 99 , 80 );
+        default: SendSysmessage( character , "You can't smelt that." );
+    endcase
+endprogram
+
+
+function SmeltOre( character , ore , ingot , difficulty , points )
+
+	ReserveItem(ore);
+
+    if ( !Accessible( character, ore ) )
+        SendSysmessage( character, "You can't reach that." );
+        return;
+    endif
+
+    Local Near_Items := ListItemsNearLocation(character.x, character.y, character.z,2);
+    foreach forge in Near_Items
+    	if ( ((forge.objtype >= UOBJ_FORGE_START) and (forge.objtype <= UOBJ_FORGE_END)) or (forge.objtype = UOBJ_SMALL_FORGE) )
+
+        	if ( CheckSkill( character, SKILLID_MINING, difficulty, points ) )
+    
+            		local ingots := CreateItemInBackpack( character, ingot, GetAmount( ore ) );
+            		DestroyItem( ore );
+            		SendSysmessage( character, "You create some ingots and place them in your pack." );
+			return;
+		else
+        		SubtractAmount( ore, 1 );
+        		SendSysmessage( character, "You destroy some ore." );
+			return;
+		endif
+    	endif
+    endforeach
+    SendSysmessage( character, "You must be near a forge to smelt ore!" );
+    
+endfunction
+

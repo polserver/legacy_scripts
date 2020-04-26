@@ -1,0 +1,972 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//Version 0.9.5b	Test									//
+//Creator: Louds										//
+//Contact: louds.geo@yahoo.com								//
+//Spawnnet.src: Core script of the system, control all runes and create all	//
+//              NPCs or items.								//
+///what's new:										//
+//	0.6: Blaize's new gump (that's way better than the old one)			//
+//	     Spawns can be anchored to the rune (Blaize)				//
+//	     Note field on the runes (Blaize)						//
+//	     Optimized a lot the spawn core (Louds)					//
+//	     Lots of commands (Louds and Blaize)					//
+//	0.7: New template structure (anchor out, flags in)				//
+//	     Basic support to item spawn						//
+//	     Basic support to container spawn						//
+//	     Quest spawn only added skel, not working					//
+//	     Huge code sintax clean up							//
+//	     New rune gump features							//
+//	     Huge code checking added to rune script					//
+//	     Few bug fixes, hope the overspawn bug is gone				//
+//	     Conversion cmd and a few other						//
+//	     Few features are not working fine as I wanted, coming ver 0.8		//
+//	0.8: Bug fixing and code tweaking.						//
+//	0.9: New code structure, some bug fixes						//
+//	0.9.1: huge code speed-up(75%)							//
+//	       support for itemgroup							//
+//	       revamped item spawn							//
+//	       support for item in container spawn					//
+//	       container spawn redesigned						//
+//	       needs a huge work on sspawn						//
+//	       anchoring percentage and other options to be implemented			//
+//	0.9.2: new desing for item and container spawn new implementation done		//
+//	       start-up changed, now needs some debugging				//
+//	0.9.3: now npc creation is 100%							//
+//	       some config features implemented						//
+//	       sspawnr.src changed							//
+//	0.9.4: last test release, can be thought as A candidate release			//
+//		 containers now decay							//
+//		 some problems with container spawn fixed, small speed up		//
+//		 few small fixed and some bug prone code changed			//
+//		 other small random changes						//
+//		 dspawnr now handle all rune tipes					//
+//	0.9.5: more fixes and a small speed up						//
+//		 container spawn fix							//
+//
+//////////////////////////////////////////////////////////////////////////////////////////
+
+use uo;
+use os;
+use util;
+use cfgfile;
+use basic;
+
+include "spawnnet";
+include "include/starteqp";
+
+const SPAWNNET_PRIORITY := 30;
+const SECS_PER_CYCLE_DEFAULT := 60;
+const CYCLE_TIME_DIVIDER_DEFAULT :=1;
+const  MAXSPAWNPERCYCLE_DEFAULT := 5;
+const CHAOS_EFFECT_CHANGE_DEFAULT := 5;
+const CONTAINER_TRAP_CHANGE_DEFAULT := 10;
+const MAX_CREATE_TRYES_DEFAULT := 4;
+const START_OPT_DEFAULT := 0;
+
+
+//load all config files and cache the group files
+
+global cfg := ReadConfigFile("groups");
+if(!cfg)
+	syslog("couldn't load groups.cfg, aborting");
+	return;
+endif
+//Cache(cfg);
+//UnloadConfigFile("groups");
+
+global icfg := ReadConfigFile("igroups");
+if(!icfg)
+	syslog("couldn't load igroups.cfg, aborting");
+	return;
+endif
+//Cache(icfg);
+//UnloadConfigFile("igroups");
+
+global config := ReadConfigFile("config");
+config := FindConfigElem( config, 1);
+
+if(!config)
+	syslog("couldn't load config.cfg, aborting");
+	return;
+endif
+
+//get the config options from the file
+
+global MAXSPAWNPERCYCLE := cint(config.maxspawnpercycle);
+global CHAOS_EFFECT_CHANGE := cint(config.chaoseffectchance);
+global CONTAINER_TRAP_CHANGE := cint(config.trapchance);
+global MAX_CREATE_TRYES := cint(config.maxtryes);
+global START_OPT := cint(config.faststart);
+global SECS_PER_CYCLE := cint(config.secs_per_cycle);
+global CYCLE_TIME_DIVIDER := cint(config.cycle_time_divider);
+
+
+global forbidden_items := {0xa300,0xa350,0xa340};
+
+if(!MAXSPAWNPERCYCLE) MAXSPAWNPERCYCLE := MAXSPAWNPERCYCLE_DEFAULT; endif
+if(!CHAOS_EFFECT_CHANGE) CHAOS_EFFECT_CHANGE := CHAOS_EFFECT_CHANGE_DEFAULT; endif
+if(!CONTAINER_TRAP_CHANGE) CONTAINER_TRAP_CHANGE := CONTAINER_TRAP_CHANGE_DEFAULT; endif
+if(!MAX_CREATE_TRYES) MAX_CREATE_TRYES := MAX_CREATE_TRYES_DEFAULT; endif
+if(!START_OPT) START_OPT := START_OPT_DEFAULT; endif
+if(!SECS_PER_CYCLE) SECS_PER_CYCLE := SECS_PER_CYCLE_DEFAULT; endif
+if(!CYCLE_TIME_DIVIDER or CYCLE_TIME_DIVIDER <1) CYCLE_TIME_DIVIDER := CYCLE_TIME_DIVIDER_DEFAULT; endif
+
+//unload it
+config :=0;
+UnloadConfigFile("config");
+
+//declare the main variables
+global temparray := { };
+global SpawnNet :=0;
+global queue:={};
+global template := { };
+global x := { };
+global y := { };
+global mintime := { };
+global maxtime := { };
+global range := { };
+global maxamount := { };
+global amount := { };
+global type := { };
+global flags := { };
+global amountnum := { };
+global serial := { };
+global aux := {};
+
+
+Program SpawnNet()
+// BuildSpawnNet
+
+local i;
+Local temp,temp2;
+
+syslog("startup sequence initiated, hold on");
+
+//Start up sequence
+//find all runes on the world, their spawn childs and if it's item container spawn look-up for it's container
+//(phase out if missing)
+//this function will be hugely optimized on the near future, using a runeserial look-up, leaving just the npc look-up
+//the auto-heal start-up will still remain, but will be triggered by a cfg entry
+//the runes shrink will be cfg triggered too, since it's damn heavy, specialy due container/item spawn
+set_critical(1);
+/*
+//look for runes:
+local icounter :=0,ncounter:=0,ccounter:=0,rcounter:=0;
+foreach obj in ListObjectsInBox(0, 0, -128, 10000, 10000, 128)
+	if(obj.npctemplate)
+		ncounter := ncounter +1;
+		spawnnet := cint(GetObjProperty(obj,"spawnnet"));
+		if(!spawnnet)
+			continue;
+		endif
+		ccounter := ccounter+1;
+		if(amount[spawnnet])
+			amount[spawnnet] := amount[spawnnet]+1;
+		else
+			amount[spawnnet] :=1;
+		endif
+	else
+		icounter := icounter+1;
+		spawnnet := cint(GetObjProperty(obj,"spawnnet"));
+		if(!spawnnet)
+			continue;
+		endif
+		if(obj.objtype = 0xa300)
+			if(x[spawnnet])
+				syslog("dupped rune at: "+obj.x+", "+obj.y);
+				continue;
+			endif
+			rcounter := rcounter+1;
+			SetRune(spawnnet,obj);
+		else
+			temp := EnumerateItemsInContainer(obj);
+			if(temp.size())
+				temp2:=0;
+				foreach inside_item in temp
+					if(inside_item.objtype = 0xa300)
+						i := cint(GetObjProperty(inside_item,"spawnnet"));
+						if(i)
+							rcounter := rcounter+1;
+							SetRune(i,inside_item);
+						endif
+						aux[i] := obj.serial;
+					endif
+				endforeach
+		endif
+	endif
+endforeach
+
+syslog("found "+ncounter+" NPCs, found "+icounter+ " Top Layer Items");
+syslog("spawnnet npcs: +" ccounter+" active runes: "+rcounter);
+*/
+
+
+foreach obj in ListObjectsInBox(0, 0, -128, 6300, 4200, 128)  //need change to work with t2a/new lands?
+	spawnnet := cint(GetObjProperty(obj, "spawnnet"));
+	if(spawnnet)	//is part of the system
+		if(obj.amount)  //is object
+			if(obj.objtype = 0xa300)//it's a spawn rune
+				if(x[spawnnet])	//verify for duplicate IDs
+					syslog("rune with bad id : " + spawnnet);
+				else //set it up
+					SetRune(spawnnet, obj);
+				endif
+			else //can be 2 things: a spawned container or root rune container
+				if(len(EnumerateItemsInContainer(obj)))  // locked method is another way, anyone knows?
+					temp2 :=0;
+					foreach ab in EnumerateItemsInContainer(obj)
+						if(ab.objtype = 0xa300) //spawn rune inside
+							temp :=cint(GetObjProperty(ab, "spawnnet"));
+							if(temp) //active rune
+								if(spawnnet = temp)//isn't not a spawned container
+									temp2:=1;
+								endif
+								//setrune and it's aux to master container
+								SetRune(temp,ab);
+								i:= cint(GetObjProperty(ab,"aux"));
+								if(i != obj.serial) //rune have a diferent container set
+									syslog("warning! rune register a diferent TL container than it is curently in, rune: "+temp);
+								endif
+								aux[temp] := obj.serial;
+							endif
+						endif
+					endforeach
+					if(!temp2) //nothing inside
+						temparray.append({obj,spawnnet});
+					endif
+				endif
+			endif
+		else //is npc
+			//childs := childs +1;
+			if (amount[spawnnet])
+				amount[spawnnet] := amount[spawnnet] +1;
+			else
+				amount[spawnnet] := 1;
+			endif
+		endif
+	endif
+	sleepms(5);
+endforeach
+
+//containers with no runes inside or no rune with equal ID
+//format is: {container, ID}
+foreach cnt in temparray
+	temp2 := cnt[2];
+	if(type[temp2] != 3)
+		syslog("container have spawnnet ID but refers to invalid rune, spawnnet ID: "+temp2);
+		continue;
+	endif
+	temp := cnt[1];
+	if(aux[temp2] != temp.serial)
+		syslog("rune register more than one child container, rune: "+temp2);
+		continue;
+	endif
+	aux[temp2] := temp.serial;
+endforeach
+
+//this is to clean any old variable and finish start-up
+//
+temparray:= { };
+//SetGlobalProperty("createpool", { }); this would screw up runes saved between a spawnnet cycle and shutdown
+SetGlobalProperty("deletedpool", { });
+SetGlobalProperty("refreshpool", { });
+SetGlobalProperty("deathpool",{});
+SetGlobalProperty("runeserial", serial);
+StartQueue();
+//cleanup
+
+set_critical(0);
+syslog("startup ended");
+
+set_priority(SPAWNNET_PRIORITY);
+while(1)
+
+//deletepool check
+//this part of the code takes care of all deleded runes, phasing'em down by setting its runes.x to 0
+set_critical(1);
+temparray:=GetGlobalProperty("deletedpool");
+SetGlobalProperty("deletedpool", { });
+set_critical(0);
+
+foreach del in temparray
+	x[cint(del)] :=0;
+endforeach
+
+temparray := { };
+
+//createpool check
+//here we take care of created runes, adding to the system
+set_critical(1);
+temparray:=GetGlobalProperty("createpool");
+SetGlobalProperty("createpool", { });
+set_critical(0);
+
+foreach rune_serial in temparray
+	temp := SystemFindObjectBySerial(rune_serial);
+	if(!temp)
+		continue;
+	endif
+
+	if(GetObjProperty(temp,"spawnnet"))
+		continue;
+	endif
+
+	temp2 := y.size()+1;
+	amount[temp2] :=0;
+	SetRune(temp2,temp);
+	SetObjProperty(temp, "spawnnet",temp2);
+	case(type[temp2])
+		1:DoNPCSpawn(temp2);
+		2:DoItemSpawn(temp2);
+		3:DoContainerSpawn(temp2);
+		default: syslog("rune with bad type: "+temp2);
+	endcase
+endforeach
+
+/*For(i:=1;i<=temparray.size();i:=i+1)
+	//spawnnet := 0;
+	temp := SystemFindObjectBySerial(temparray[i]);
+	if(!temp)
+		continue;
+	endif
+	if(GetObjProperty(temp, "spawnnet"))
+		continue;
+	endif
+
+	temp2 := len(y)+1;
+	amount[temp2] := 0;
+	SetRune(temp2,temp);
+	SetObjProperty(temp, "spawnnet", temp2);
+	case(type[temp2])
+		1:DoNPCSpawn(temp2);
+		2:DoItemSpawn(temp2);
+		3:DoContainerSpawn(temp2);
+		default: syslog("rune with bad type: "+temp2);
+	endcase
+endfor  */
+temparray:={};
+
+
+//deathpool check
+//all death npcs appear here, just subtract 1 from it's rune amount
+
+set_critical(1);
+temparray := GetGlobalProperty("deathpool");
+SetGlobalProperty("deathpool", { });
+set_critical(0);
+
+foreach dead in temparray
+	amount[dead] := amount[dead]-1;
+endforeach
+temparray := { };
+
+
+//Refreshpool check
+//every time you hit save on a online rune, this routine takes care of updating the info on the system.
+//sure we could just store a itemref, but this would result on problems open deletion and a major slow down due
+//heavy use of GetObjProperty() to retrieve data
+
+set_critical(1);
+temparray :=GetGlobalProperty("refreshpool");
+SetGlobalProperty("refreshpool", { });
+set_critical(0);
+
+foreach rune_refresh in temparray
+	spawnnet := SystemFindObjectBySerial(rune_refresh);
+	if(!spawnnet)
+		continue;
+	endif
+	temp2 := GetObjProperty(spawnnet, "spawnnet");
+    	if (temp2)
+		SetRune(temp2, spawnnet);
+	endif
+endforeach
+
+
+/*For(i:=1; i<=temparray.size();i:=i+1)
+    	spawnnet := SystemFindObjectBySerial(temparray[i]);
+    	if(!spawnnet)
+    		continue;
+    	endif
+	temp2 := GetObjProperty(spawnnet, "spawnnet");
+    	if (temp2)
+		SetRune(temp2, spawnnet);
+	endif
+endfor  */
+
+//timer look-up, this will speed things a lot since there's no need to do a rune loop every time cicle
+//this should allso solve some item spawn problem, now they should be hugely faster, thou allowing use of item groups
+//container spawn should allow use of makeloot ofter.
+temparray :=queue[1];
+queue.erase(1);
+
+foreach node in temparray
+	case(type[node])
+		1: DoNPCSpawn(node);
+		2: DoItemSpawn(node);
+		3: DoContainerSpawn(node);
+	endcase
+endforeach
+
+/*for(i:=1;i<=temparray.size();i:=i+1)
+	temp :=temparray[i];
+	case(type[temp])
+		1: DoNPCSpawn(temp);
+		2: DoItemSpawn(temp);
+		3: DoContainerSpawn(temp);
+	endcase
+endfor   */
+
+
+
+
+//misc functions
+//handles all server functions. Will be in on 1.0
+//command table:
+//rune resync --reload all runes, using runeserial
+//rune look-up --reload all runes, search on the world
+//re-load the cfgs, will only work when caching is used
+//rune shrink, this compact the database
+//refresh all rune childs
+//reload config file
+//reload groups files
+
+//cleanup
+//do some upkeep stuff, clean global variables and save the serials
+temp := 0;
+temp2 := 0;
+temparray := { };
+spawnnet:= 0;
+SetGlobalProperty("runeserial", serial);
+sleep(SECS_PER_CYCLE/CYCLE_TIME_DIVIDER);
+
+endwhile
+
+endprogram
+
+
+
+//this function spawns npcs and keep their queue time updated
+//there's nothing much to change, not until I find use to the
+function DoNPCSpawn(rune)
+//syslog("starting npcspawn, rune: "+rune);
+if(!x[rune])
+	syslog("phasing out deleted rune: "+rune);
+	return;
+endif
+//define the next spawn  this could be a single function, but we do realy need this?
+local nq := mintime[rune] + RandomInt(maxtime[rune] - mintime[rune]);
+local qp := queue[nq];
+if(qp)
+	qp.append(rune);
+else
+	qp := {rune,};
+endif
+queue[nq] :=qp;
+
+//syslog("rune next check set at: "+nq);
+
+//check the spawn validity, if needs spawn we do it, otherwise we requeue.
+if(amount[rune] >= maxamount[rune]) //nothing to spawn, return
+	//syslog("amount equal or greater than maxamount, returning. rune: "+rune);
+	return;
+endif
+
+if(amount[rune]) //to avoid problem
+else
+	amount[rune] :=0;
+endif
+
+//spawn   procedues...
+//init variables
+local  nX,nY,nZ,temp,spawn,creature,loop:=1,times:=0,gtimes :=0;
+
+//define how many loops
+if(flags[rune][1]) //grouping
+	loop := amountnum[rune];
+	if(loop > (maxamount[rune] - amount[rune]) ) //looping more than maximum
+		loop := maxamount[rune] - amount[rune];
+	endif
+	if(loop > MAXSPAWNPERCYCLE)
+		loop := MAXSPAWNPERCYCLE;
+	endif
+endif
+
+//syslog("amount on the rune was: "+amount[rune]+" and got increased by: "+loop);
+//add the going to be spawned npcs
+amount[rune] := amount[rune]+loop;
+
+temp := template[rune];
+
+while(loop)
+	//find the spawn point
+	nX:=x[rune]+RandomInt(range[rune]*2)-range[rune];
+	nY:=y[rune]+RandomInt(range[rune]*2)-range[rune];
+	nZ:=GetWorldHeight(nX, nY);
+
+	//verify for error
+	if(nZ = error) //should I add a try counter here?
+		gtimes := gtimes +1;
+		if(gtimes > MAX_CREATE_TRYES)
+			amount[rune] := amount[rune]-loop;
+			syslog("could not find a good spot, rune: "+rune);
+			return 0;
+		endif
+		continue;
+	else
+		gtimes :=0;
+	endif
+
+	//select the spawn, if is from list, use random one
+	if(temp.size())
+		spawn := temp[RandomInt(len(temp))+1];
+	else
+		spawn := temp;
+	endif
+
+	//spawn it!
+	creature := 0;
+	creature := CreateNpcFromTemplate( spawn, 5283,1184,0);
+	if(!creature or creature = error)
+		syslog("could not create npc: "+creature.errortext+" template: "+spawn);
+		times:=times+1;
+		if(times > MAX_CREATE_TRYES)
+			amount[rune] := amount[rune]-loop;
+			syslog("could not create the creature: "+spawn+" from rune: "+rune);
+			return 0;
+		endif
+		Continue;
+	else
+		times:=0;
+	endif
+	Setobjproperty(creature, "spawnnet", rune);
+	MoveCharacterToLocation( creature, nX, nY, nZ , MOVECHAR_FORCELOCATION );
+	if (flags[rune][2] = 1) //anchoring
+		SetObjProperty(creature, "anchorX", x[rune]);
+		SetObjProperty(creature, "anchorY", y[rune]);
+		SetObjProperty(creature, "dstart", range[rune]);
+		SetObjProperty(creature, "psub", 100/range);
+		RestartScript(creature);
+	endif
+	loop := loop-1;
+
+endwhile
+
+endfunction
+
+//this function is itended to only spawn items, in containers or not
+//this would bring otimization due the desagregation of container spawn
+function DoItemSpawn(rune)
+//syslog("doing itemspawn: "+rune);
+return;
+if(!x[rune])
+	return;
+endif
+
+local cont;
+if(flags[rune][2])// inside a container
+	cont := SystemFindObjectBySerial(aux[rune]);
+	if(cont)
+		ContainerCount(cont, rune);
+	else
+		var tr := SystemFindObjectBySerial(serial[rune]);
+		if(tr and tr.container)
+			aux[rune] := tr.container.serial;
+			cont := tr.container;
+			ContainerCount(cont, rune);
+		else //something wrong
+			destroyitem(tr);
+			x[rune] := 0;
+			syslog("rune not on container: "+rune);
+			return 0;
+		endif
+	endif
+else
+	CheckPoint(rune);
+endif
+
+local nq := mintime[rune] + RandomInt(maxtime[rune] - mintime[rune]);
+local qp := queue[nq];
+if(qp)
+	qp.append(rune);
+else
+	qp := {rune,};
+endif
+queue[nq] :=qp;
+//syslog("next queue set to: "+nq);
+//check the spawn validity, it needs spawn we do it, otherwise we requeue.
+if(amount[rune] >= maxamount[rune]) //nothing to spawn, requeue
+	return;
+endif
+if(amount[rune]) //to avoid problem
+else
+	amount[rune] :=0;
+endif
+
+//////////////////spawn procedues\\\\\\\\\\\\\\\\
+local  nX,nY,nZ,item,amt:=1, temp, spawn,loop:=1;
+temp := template[rune];
+if(flags[rune][1]) //grouping
+	loop := amountnum[rune];
+	if(loop > MAXSPAWNPERCYCLE)
+			loop := MAXSPAWNPERCYCLE;
+	endif
+
+	if(loop>(maxamount[rune]-amount[rune])) //looping more than needed
+		loop := maxamount[rune] - amount[rune];
+	endif
+	if(!flags[rune][2])
+		amt := aux[rune];
+	endif
+else
+	amt := amountnum[rune];
+
+endif
+
+amount[rune] := amount[rune]+loop; //adicionamos jah os npc spawned
+
+while(loop)
+	nX:=cint(x[rune]+RandomInt(range[rune]*2)-range[rune]);
+	nY:=cint(y[rune]+RandomInt(range[rune]*2)-range[rune]);
+	nZ:=GetWorldHeight(nX, nY);
+
+	if((nZ.errortext) or (nZ = "error"))
+		continue;
+	endif
+
+	//select the spawn, if is from list, use random one
+	if(temp.size())
+		spawn := temp[RandomInt(len(temp))+1];
+	else
+		spawn := temp;
+	endif
+	if(!flags[rune][2]) //normal spawn
+		item := CreateItemAtLocation( nX, nY, nZ, spawn, amt );
+		if(item.amount)
+		else
+			continue;
+		endif
+		setobjproperty(item, "spawnnet",  rune);
+		if(!flags[rune][4]) //leave baseitem
+			foreach thing in ListItemsAtLocation(nX, nY, GetWorldHeight(nX, nY))
+				if(thing.objtype != 0xa300 and thing.serial != item.serial)
+					destroyitem(thing);
+				endif
+		 	endforeach
+		endif
+	else //container spawn
+		item := CreateItemInContainer( cont, spawn, amt);
+		if(item.amount)
+		else
+			continue;
+		endif
+		setobjproperty(item, "spawnnet",  rune);
+	endif
+	loop :=loop-1;
+endwhile
+
+endfunction
+
+
+
+//first we do check if is there any present container, if not spawn a new one
+//them we check its inside and makeloot if the conditions are ok
+function DoContainerSpawn(rune)
+if(!x[rune])
+	return;
+endif
+//mark the next spawn point.
+local nq := mintime[rune] + RandomInt(maxtime[rune] - mintime[rune]);
+local qp := queue[nq];
+if(qp)
+	qp.append(rune);
+else
+	qp := {rune};
+endif
+queue[nq] :=qp;
+
+local cont;
+if(aux[rune])//we have a serial
+	cont := SystemFindObjectBySerial(aux[rune]);
+	if(!cont)
+		aux[rune] :=0;
+		cont:=0;
+	endif
+else
+	cont := 0;
+endif
+
+if(!cont)//count the number of items
+	amount[rune]:= 0; //nothing inside
+	local nX,nY,nZ;
+	if(flags[rune][1]) //moving spawn
+		nZ := "error";
+		//get a valid position
+		while((nZ.errortext) or (nZ = error))
+			nX:=x[rune]+RandomInt(range[rune]*2)-range[rune];
+			nY:=y[rune]+RandomInt(range[rune]*2)-range[rune];
+			nZ:=GetWorldHeight(nX, nY);
+		endwhile
+	else
+		nX := x[rune];
+		nY := y[rune];
+		nZ := GetWorldHeight(nX, nY);
+	endif
+	cont :=  CreateItemAtLocation( nX, nY, nZ, template[rune], 1);
+	SetObjProperty(cont,"spawnnet",rune);
+	cont.decayat := (mintime[rune] + RandomInt(maxtime[rune] - mintime[rune]))*60;
+	aux[rune] := cont.serial;
+endif
+
+
+//time to do inside check on the container
+//should we just count spawned items by this rune?
+if(flags[rune][3]) //clean old itens
+	Foreach Item in EnumerateItemsInContainer(cont)
+		if (Item.objtype in forbidden_items)
+			continue;
+		else
+			destroyitem(item);
+      	endif
+	endforeach
+else//leave
+	if(!flags[rune][2]) //check inside
+		local c:=0;
+		//do we need to really count?  as fair as I can see the's no use for now.
+		Foreach Item in EnumerateItemsInContainer(cont)
+			If (Item.container.serial=cont.serial and not (item.objtype in forbidden_items) )
+				c:=c+1;
+				break;
+      		endif
+		endforeach
+		if(flags[rune][4]) //must be empty
+			if(c)
+				return 0;
+			endif
+		/*else      //this code is no-sence compare amount with serial?
+			if(c >= aux[rune])
+				return;
+			endif*/
+		endif
+	endif
+endif
+
+makeloot(cont, amountnum[rune]);
+if(randomint(100) < CONTAINER_TRAP_CHANGE)
+	//this part will change soon to use my trap system modification
+	setobjproperty(cont, "trap_strength", randomint(5) + 1);
+	setobjproperty(cont, "trap_type", cstr(randomint(3) + 1));
+	cont.usescript := ":traps:traps";
+endif
+endfunction
+
+
+function ContainerCount(cont,rune)
+local c:=0;
+foreach i in cont
+	if(i.container.serial = cont.serial )
+		if(GetObjProperty(i,"spawnnet") =rune and not (i.objtype in forbidden_items))
+			c:=c+1;
+		endif
+	endif
+endforeach
+amount[rune] := c;
+
+endfunction
+
+
+function CheckPoint(rune)
+
+if(!rune)
+	return 0;
+endif
+
+if(!x[rune])
+	syslog("bad rune check "+x[rune]);
+	return;
+endif
+
+local amt := 0;
+local tp := template[rune];
+if(!flags[rune][3]) //don't use itemgroup
+	foreach item in ListItemsNearLocationOfType(x[rune],y[rune],GetWorldHeight(x[rune],y[rune]),range[rune],tp);
+		spawnnet := GetObjProperty(item, "spawnnet");
+		if(spawnnet = rune and not (item.objtype in forbidden_items))
+			amt := amt+1;
+		endif
+	endforeach
+else
+	foreach item in ListItemsNearLocation(x[rune],y[rune],GetWorldHeight(x[rune],y[rune]), range[rune])
+		spawnnet := GetObjProperty(item, "spawnnet");
+		if (spawnnet = rune and not (item.objtype in forbidden_items))
+			if(item.objtype in tp)
+				amt := amt+1;
+			endif
+		endif
+	endforeach
+endif
+amount[rune] := amt;
+endfunction
+
+
+function SetRune(rune, obj)
+
+template[rune] := GetObjProperty(obj, "template");
+x[rune] := cint(obj.x);
+y[rune] := cint(obj.y);
+mintime[rune] := cint(GetObjProperty(obj, "mintime"))*CYCLE_TIME_DIVIDER;
+maxtime[rune] := cint(GetObjProperty(obj, "maxtime"))*CYCLE_TIME_DIVIDER;
+range[rune] := cint(GetObjProperty(obj, "range"));
+maxamount[rune] := cint(GetObjProperty(obj, "maxamount"));
+aux[rune] := cint(GetObjProperty(obj,"aux"));
+
+
+local props := cint(GetObjProperty(obj, "flags"));
+if(props <  0x1000)
+	props := 0x1000;
+endif
+local tmp;
+props := cstr(hex(props));
+
+//syslog("seting up rune: "+rune+" flags: "+props);
+
+tmp :=  props[3,1];
+tmp := "0x"+tmp;
+type[rune] := cint(tmp);
+
+tmp := 0;
+tmp := props[4,1];
+tmp := "0x"+tmp;
+tmp := cint(tmp);
+flags[rune] := GetFlags(tmp);
+
+tmp := props[5,2];
+tmp := "0x"+tmp;
+tmp := cint(tmp);
+if(tmp < 1)
+	tmp :=1;
+endif
+amountnum[rune] := tmp;
+serial[rune] := obj.serial;
+
+case(type[rune])
+	1:if(cint(template[rune]) > 0) //this should eval right group spawn
+		local entry := cfg[template[rune]];
+		if(entry)
+			template[rune] := GetConfigStringArray(entry,"spawn");
+			if(!template[rune])
+				syslog("empty npc template! number: "+template[rune]);
+				x[rune]:=0;
+				return 0;
+			endif
+		else
+			x[rune] :=0;
+			syslog("npc spawn with bad template, rune: "+rune+" tryed: "+template[rune]);
+			return 0;
+		endif
+	   endif
+	2: if(flags[rune][3]) //use itemgroup
+		local entry := icfg[template[rune]];
+		if(entry)
+			tmp := GetConfigStringArray(entry, "item");
+			if(!tmp)
+				syslog("empty item template! number: "+template[rune]);
+				x[rune]:=0;
+				return 0;
+			endif
+
+			foreach d in tmp
+				d:=cint(d);
+			endforeach
+			template[rune] := tmp;
+		else
+			x[rune] :=0;
+			syslog("item spawn with bad template, rune: "+rune+" tryed: "+template[rune]);
+			return 0;
+		endif
+	   endif
+	   if(flags[rune][2]) //inside container spawn
+		tmp := obj.container.serial;
+		while(tmp.container.serial)
+			tmp := tmp.container;
+		endwhile
+		if(!tmp)
+			syslog("item spawn with inside_container flag isn't inside of anything, rune: "+rune);
+			x[rune]:=0;
+			return 0;
+		endif
+		if(tmp.serial != aux[rune])
+			syslog("item spawn with inside_container flag is inside another container, rune: "+rune+" fixing");
+			aux[rune] := tmp.serial;
+		endif
+	   endif
+
+	3: break;
+
+	default: syslog("bad rune type: "+type[rune]+" on rune num: "+rune);
+		   x[rune] :=0;
+		   return 0;
+endcase
+//syslog("runa: "+rune+"mint: "+mintime+" maxt: "+maxtime+" range: "+range+" maxamt: "+
+//       maxamount+" amount: "+amount+"type: "+type+" flags: "+flags+" amtnum: "+amountnum+
+//      " aux: "+aux+" template: "+template);
+
+return 1;
+endfunction
+
+
+
+function StartQueue();
+local i,point,tmp;
+
+for(i:=1;i<=len(y);i:=i+1)
+	if(x[i] != 0) //do the proof check is allways a good thing
+		if(amount[i])
+		else
+			amount[i] :=0;
+		endif
+		tmp :={};
+		point := mintime[i];
+		tmp := queue[point];
+		if(!tmp)
+			tmp := {};
+		endif
+		tmp.append(i);
+		//syslog("rune "+i+" set to: "+mintime[i]);
+		queue[point] := tmp;
+	endif
+endfor
+
+endfunction
+
+
+function fast_start()
+
+local runes := GetGlobalProperty("runeserial");
+foreach rn in runes
+	if(!rn)
+		continue;
+	endif
+	local therune := SystemFindObjectBySerial(rn);
+	if(!therune)
+		continue;
+	endif
+	spawnnet := GetObjProperty(therune, "spawnnet");
+	if(!spawnnet)
+		continue;
+	endif
+	SetRune(spawnnet,therune);
+endforeach
+
+//foreach npc in ListNPC
+
+endfunction
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,197 @@
+//ver 0.43
+//spawn rune script
+
+
+use uo;
+use os;
+use util;
+include "spawnnet";
+
+global layout := array(
+			"page 0",
+			"resizepic 100 100 5120 280 250",
+			"text 140 100 1000 0",
+			"text 105 125 500 1",
+			"text 195 125 600 2",
+			"text 105 145 500 3",
+			"text 195 145 600 4",
+			"text 105 165 500 5",
+			"text 195 165 600 6",
+			"text 105 185 500 7",
+			"text 195 185 600 8",
+			"text 105 205 500 9",
+			"text 195 205 600 10",
+			"text 105 225 500 11",
+			"text 195 225 600 12",
+			"text 105 245 500 13",
+			"text 105 265 500 14",
+			"text 105 285 500 15",
+			"text 105 305 500 16",
+
+			"button 310 130 2117 2118 1 0 101",
+			"button 310 150 2117 2118 1 0 102",
+			"button 310 170 2117 2118 1 0 103",
+			"button 310 190 2117 2118 1 0 104",
+			"button 310 210 2117 2118 1 0 105",
+
+			"button 290 250 2117 2118 1 0 106",
+			"button 290 270 2117 2118 1 0 107",
+			"button 290 290 2117 2118 1 0 108",
+			"button 290 310 2117 2118 1 0 109",
+
+);
+
+global data := array(  
+	"Spawn Rune Config",
+	"Mintime:",
+	"",
+	"Maxtime:",
+	"",
+	"Template:",
+	"",
+	"MaxAmount:",
+	"",
+	"Range",
+	"",
+	"SpawnNet",
+	"",
+	"Check Rune",
+	"Send to CreatePool",
+	"Send to RefreshPool",
+	"Destroy Rune",
+);
+           
+program spawnr_script( who, item )
+
+data[3] := GetObjProperty( item, "mintime" );
+data[5] := GetObjProperty( item, "maxtime" );
+data[7] := GetObjProperty( item, "template" );
+data[9] := GetObjProperty( item, "maxamount" );
+data[11] := GetObjProperty( item, "range" );
+data[13] := GetObjProperty( item, "spawnnet" );
+
+local box := SendDialogGump( who, layout, data );             
+
+case (box[0])
+	101: changedata("mintime", who, item);
+	102: changedata("maxtime", who, item);
+	103: changedata("template", who, item);
+	104: changedata("maxamount", who, item);
+	105: changedata("range", who, item);
+	106: checkrune(who, item);
+
+	107: if (checkrune(who, item))
+		AddCreated(item);
+		SendSysMessage(who, "The rune is now on the Createpool" );
+	     else
+		SendSysMessage(who, "Rune have problems");
+	     endif
+
+	108: if (checkrune(who, item) = 1)
+		AddRefresh(item.serial);
+		SendSysMessage(who, "The rune is now on the Refreshpool");
+	     else
+		SendSysMessage(who, "Rune have problems");
+	     endif
+
+	109: DestroyItem( item);
+		SendSysMessage(who, "The rune has been deleted");
+
+	default: SendSysMessage( who,  "unexpected error");
+endcase
+
+endprogram
+
+
+function changedata(type, who, item)
+
+  local value := SendTextEntryGump( who, "Enter the new value to " + type, 40 );
+  if (!value)
+	SendSysMessage(who, "Canseled");
+	return 0;
+  endif
+
+  if ((type = "template") and !cint(value))
+	value := cstr(value);
+  else
+	value := cint(value);
+  endif
+
+  SetObjProperty(item, type, value);
+  SendSysMessage(who, "You have set " +type+ " to " +value);
+
+endfunction
+
+
+//test all props of a rune
+function checkrune(who, item)
+
+   SendSysMessage(who, "Test started");
+   var ret, temp, temp2;
+   ret:=1;
+   temp := GetObjProperty(temp, "spawnnet");
+   if ((!temp) or (!cint(temp)))
+	SendSysMessage(who, "The rune is not online or spawnnet is missing");
+	ret:=2;
+   endif
+
+   temp := GetObjProperty(item, "mintime");
+   temp2 := GetObjProperty(item, "maxtime");
+   if ((!temp) or (!cint(temp)))
+	SendSysMessage(who, "Wrong MinTime ");
+	ret:=0;
+   endif
+   if ((!temp2) or (!cint(temp)))
+	SendSysMessage(who, "Wrong MaxTime");
+	ret:=0;
+   endif
+
+   if (temp >= temp2)
+	SendSysMessage(who, "MinTime is bigger than Maxtime");
+	ret:=0;
+   endif
+
+   temp := GetObjProperty(item, "range");
+   if (temp = "error")
+	SendSysMessage(who, "Wrong range");
+	ret:=0;
+   endif
+
+   temp := GetObjProperty(item, "maxamount");
+   if ((!temp) or (!cint(temp)))
+	SendSysMessage(who, "Wrong maxamount, must be at least 1");
+	ret:=0;
+   endif
+
+   temp := GetObjProperty(item, "template");
+   if (!temp)
+	SendSysMessage(who, "Wrong template");
+	ret:=0;
+   endif
+
+   if(temp > 0)
+	temp2 := CreateNpcFromTemplate( "orc1", item.x, item.y, GetWorldHeight(item.x, item.y) );
+	if (!temp2)
+		SendSysMessage(who, "Bad template, check entry " + temp + " on group.cfg");
+		ret :=0;
+	endif
+   else
+	temp2 := CreateNpcFromTemplate( temp, item.x, item.y, GetWorldHeight(item.x, item.y) );
+	if (!temp2)
+		SendSysMessage(who, "Bad template, check npctemplate for the right name");
+		ret :=0;
+	endif
+	RevokePrivilege( temp2, "invul" );
+	SetObjProperty(temp2, "guardkill", 1);
+	Damage( temp2, temp2.hp );  
+   endif
+   
+   if (ret = 1)
+	SendSysMessage(who, "No problems found on the rune.");
+	return ret;
+   else 
+	return ret;
+   endif
+
+endfunction
+

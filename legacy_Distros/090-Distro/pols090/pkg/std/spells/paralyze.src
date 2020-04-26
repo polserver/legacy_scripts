@@ -1,0 +1,45 @@
+use uo;
+use os;
+
+include "include/client";
+include "include/spellrestrictions";
+include "include/statmod";
+include "include/spellattack";
+
+program cast_paralyze( parms )
+
+	local circle := 5;
+	local caster;
+	local cast_on;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_on := parms[3];
+		send_attack(cast_on,caster, 38);
+	else
+		caster := parms;
+		cast_on := CanTargetSpell(caster, circle, TGTOPT_HARMFUL + TGTOPT_CHECK_LOS );
+		if (!cast_on)
+			return;
+		endif
+	endif
+
+	if (Reflected(cast_on))
+		cast_on := caster;
+		if (GetObjProperty( caster, "mr") = "1")
+			EraseObjProperty(caster, "mr");
+			SendSysMessage(caster, "Your magic reflect spell saved you!");
+			return;
+		endif
+	endif
+
+	local amt := 10 + cint(GetSkill(caster, SKILLID_MAGERY)/100);
+	local duration := Resisted(caster, cast_on, circle, amt);
+
+	PlayStationaryEffect( cast_on.x , cast_on.y , cast_on.z , FX_CURSE_EFFECT , 10 , 0xa , 0 );
+	PlaySoundEffect( cast_on , SFX_SPELL_PARALYZE );
+	DoTempMod(cast_on, "p", 1, amt);
+    
+endprogram
+
+

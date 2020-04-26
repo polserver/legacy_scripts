@@ -1,0 +1,38 @@
+//
+// Example program for the "gumps.inc" include file
+//
+// What it does:
+//	Shows a gump with "Are you sure?" and 2 buttons (Okay/Cancel)
+//
+// Where it goes:
+//	scripts/textcmd/test
+//
+// Author:
+//	Myrathi <myrathi@templar.dhs.org>
+//
+// Created (for v1.0):	25-Jan-2000
+// Modified (for v2.0):	06-Feb-2000
+//
+use uo;
+
+include "../gumps";
+
+program textcmd_areyousure( who )
+
+    GFInitGump( 100, 100 );
+    GFNoClose();
+
+    GFGumpPic( 0, 0, 0x816 );
+    GFTextLine( 38, 33, 55, "Are you sure?" );
+    local okay := GFButtonID( 35, 72, 0x81c, 0x81b, 1 );
+    local cancel := GFButtonID( 85, 72, 0x819, 0x818, 1 );
+
+    local keys := GFSendGump( who );
+
+    if ( keys[0] = okay.keyid )
+	SendSysMessage( who, "Okay!" );
+    else
+	SendSysMessage( who, "Cancelled." );
+    endif
+
+endprogram

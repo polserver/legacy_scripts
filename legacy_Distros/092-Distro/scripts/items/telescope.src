@@ -1,0 +1,44 @@
+Use uo;
+use cfgfile;
+use os;
+use util;
+
+
+const UOBJECT_GOLD := 0x0eed;
+
+
+program use_telescope( character  )
+
+	
+    SendSysmessage( character, "Select an object to use this on" );
+    Local use_on := Targetcoordinates( character);
+    if (!use_on)
+        return;
+    endif
+    if (use_on.objtype) 
+	SendSysmessage (character, "Objtype " + cstr(use_on.objtype));
+	elseif (use_on.item.objtype)
+	SendSysmessage (character, "Objtype " + cstr(use_on.item.objtype));
+    endif
+    SendSysmessage (character, "dead: " + cstr(use_on.dead));
+    SendSysmessage (character, "corpsetype:  " + cstr(use_on.corpsetype));
+
+    createiteminbackpack(use_on, UOBJECT_GOLD, 500);
+
+
+	sleep(1);
+	SendSysmessage(character, "position (XYZ) is (" + use_on.x + "," + use_on.y + "," + use_on.z+ ")");
+	//sleep(1);
+	//SendSysmessage(character, "height is " + use_on.height);
+	//sleep(1);
+	//SendSysmessage(character, "color is " + use_on.color);
+	//sleep(1);
+	//SendSysmessage(character, "layer is " + use_on.layer);
+	//sleep(1);
+	//SendSysmessage(character, "container is " + use_on.container);
+	
+	
+	
+endprogram
+
+

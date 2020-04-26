@@ -1,0 +1,35 @@
+/////////////////////////////////////////
+// reply.src -- Send a message to another
+//
+// Usage: .reply [message]
+//
+// Updates: Zulu zuluhotel@hotmail.com
+// Created: April 10, 2000
+// Updated: July 19, 2000
+/////////////////////////////////////////
+
+use uo;
+
+program replymsg(who,themessage)
+
+  if (themessage="") SendSysMessage(who, "Cancelled."); return; endif
+
+  Local mobile :="", msgfrom := GetObjProperty (who, "#msgfrom");
+
+  foreach onlinechr in EnumerateOnlineCharacters()
+  	if (onlinechr.name=msgfrom)
+	mobile := onlinechr;
+        endif
+  endforeach
+
+  if (mobile="") SendSysMessage(who, "That person is offline."); return; endif
+
+  if ((mobile.cmdlevel>0) and (who.cmdlevel=0)) SendSysMessage(who, "You cannot send them messages."); return; endif
+
+  SendSysMessage(mobile, who.name + " : " + themessage);
+  SendSysMessage(who, "Your message has been sent.");
+//   SendSysMessage(who, "Your message has been sent to " + msgfrom.name);
+  SetObjProperty(mobile, "#msgfrom", who.name);
+
+endprogram
+

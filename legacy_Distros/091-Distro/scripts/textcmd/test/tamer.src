@@ -1,0 +1,27 @@
+use cfgfile;
+use uo;
+
+program textcmd_tamer(character, words)
+
+SendSysmessage(character, "Select the creature that should be tamable");
+local thecritter := Target(character);
+if (!thecritter)
+	return;
+endif
+
+local difficulty := cint(words);
+local props := array;
+props .+ difficulty;
+
+props[1]:= "difficulty";
+props[2]:= difficulty;
+
+local proplist := array;
+proplist[1] := props;
+
+AppendConfigFileElem( "taming","tame", thecritter.objtype,proplist );
+
+UnloadConfigFile("taming");
+
+
+endprogram

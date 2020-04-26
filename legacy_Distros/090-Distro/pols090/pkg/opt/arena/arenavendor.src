@@ -1,0 +1,264 @@
+// Created By Sigismund
+// Email: prostheticdelirium@worldnet.att.net
+// ICQ#: 10520050
+
+use uo;
+use os;
+use cfgfile;
+use util;
+use basic;
+
+include "include/client";
+
+var layout := {
+    "page 0",
+    "resizepic 30 30 83 280 200",
+    "button 50 70 2104 2103 1 0 1001",
+    "button 50 90 2104 2103 1 0 1002",
+    "button 50 110 2104 2103 1 0 1003",
+    "button 50 130 2104 2103 1 0 1004",
+    "button 50 150 2104 2103 1 0 1005",
+    "button 50 170 2104 2103 1 0 1006",
+    "text 50 42 35 0",
+    "text 70 65 35 1",
+    "text 70 85 35 2",
+    "text 70 105 35 3",
+    "text 70 125 35 4",
+    "text 70 145 35 5",
+    "text 70 165 35 6",
+    "button 141 195 2119 2120 1 0 1"
+};
+
+var data := {
+    "Please select your opponent:",
+    "Humanoid",
+    "Beastial",
+    "NPC Human",
+    "Several Opponents",
+    "Another Player",
+    "Grand Melee"
+};
+
+var layout2 := {
+    "page 0",
+    "resizepic 30 30 83 280 200",
+    "button 50 70 2104 2103 1 0 2001",
+    "button 50 90 2104 2103 1 0 2002",
+    "button 50 110 2104 2103 1 0 2003",
+    "button 50 130 2104 2103 1 0 2004",
+    "button 50 150 2104 2103 1 0 2005",
+    "text 50 42 35 0",
+    "text 70 65 35 1",
+    "text 70 85 35 2",
+    "text 70 105 35 3",
+    "text 70 125 35 4",
+    "text 70 145 35 5",
+    "button 141 195 2119 2120 1 0 1"
+};
+
+var data2 := {
+	"Please select difficulty:",
+	"Weak",
+	"Average",
+	"Advanced",
+	"Dangerous",
+	"Oh my God, run...RUUNNNNN!"
+};
+
+var layout3 := {
+    "page 0",
+    "resizepic 30 30 83 280 200",
+    "button 50 70 2104 2103 1 0 3001",
+    "button 50 90 2104 2103 1 0 3002",
+    "text 50 42 35 0",
+    "text 70 65 35 1",
+    "text 70 85 35 2",
+    "button 141 195 2119 2120 1 0 1"
+};
+
+var data3 := {
+    "Do you wish to fight?",
+    "Accept",
+    "Decline"
+};
+
+
+program use_arena(who, vendor)
+
+	local Selection, PowerLevel, Success := 0;
+	local x, y, z, Difficulty;
+	local dx, dy, dz;
+
+	local InUse := GetObjProperty(vendor, "InUse");
+
+	if (InUse = "Y")
+		SendSysMessage(who, "The Arena is in use...");
+		return;
+	endif
+
+	local VendorID := GetObjProperty(vendor, "VendorID");
+
+	local cfg := ReadConfigFile("arenavendors");
+	local elem := FindConfigElem(cfg, VendorID);
+	
+	local MonsterList := GetConfigStringArray(elem, "Monster");
+	local MonsterLevel := GetConfigStringArray(elem, "Level");	
+	local MonsterType := GetConfigStringArray(elem, "Type");
+	local MonsterLen := Len(MonsterList);
+
+	local DestX := GetConfigStringArray(elem, "DestX");
+	local DestY := GetConfigStringArray(elem, "DestY");
+	local DestZ := GetConfigStringArray(elem, "DestZ");
+
+	for(x:=1; x <= Len(DestX); x:=x+1)
+		DestX[x] := Cint(DestX[x]);
+		DestY[x] := Cint(DestY[x]);
+		DestZ[x] := Cint(DestZ[x]);
+	endfor
+
+	for(x:=1; x <= Len(MonsterType); x:=x+1)
+		MonsterType[x] := Cint(MonsterType[x]);
+		MonsterLevel[x] := Cint(MonsterLevel[x]);
+	endfor
+
+
+	UnloadConfigFile("arenavendors");	
+
+	var res := SendDialogGump( who, layout, data );             
+	if ( (res[0]=0) or (res[0]=1) )
+		SendSysMessage(who, "Cancelled.");
+		return;
+	endif
+	Selection := res[0] - 1000;
+
+if (Selection < 4)
+
+	res := SendDialogGump( who, layout2, data2 );             
+	if ( (res[0]=0) or (res[0]=1) )
+		SendSysMessage(who, "Cancelled.");
+		return;
+	endif
+	Difficulty := res[0] - 2000;	
+
+	y := 1;
+	z := {};
+
+	For(x:=1; x <= MonsterLen; x := x+ 1)
+		if (MonsterType[x] = Selection)
+			if (MonsterLevel[x] = Difficulty)
+				z[y] := MonsterList[x];
+				y := y + 1;
+			endif
+		endif
+	endfor
+
+	if (Len(z) < 1)
+		SendSysMessage(who, "Error creating monster...page a GM at once.");
+		SendSysMessage(who, "MonsterList: " + z);
+		return;
+	endif
+
+	x := RandomInt( Len (DestX) ) + 1;
+	y := RandomInt( Len (z) ) + 1;
+	
+	local Opponent := CreateNPCFromTemplate(z[y], DestX[x], DestY[x], DestZ[x]);
+
+
+
+	if (!Opponent)
+		SendSysMessage(who, "Error creating monster...page a GM at once.");
+		SendSysMessage(who, "Monster = " + z[y]);
+		return;
+	endif	
+
+
+	While (success = 0);
+		y := RandomInt( Len (DestX) ) + 1;
+		if ( (DestX[y] = DestX[x]) and (DestY[y] = DestY[x]) )
+			success := 0;
+		else
+			success := 1;
+		endif
+	endwhile
+	MoveCharacterToLocation(who, DestX[y], DestY[y], DestZ[y]);
+	SendSysMessage(who, "Prepare thyself...");
+	Detach();
+
+	Success := 0;
+	SetObjProperty(vendor, "InUse", "Y");
+
+		While (Success = 0)
+			If ( (who.dead = 1) or (!who) )
+				SendSysMessage(who, "Perhaps next time.");
+				MoveCharacterToLocation(who, vendor.x, vendor.y -1 , vendor.z);
+				ApplyRawDamage(Opponent, Opponent.maxhp );
+				Success := 1;
+			endif
+			if ( (Opponent.dead = 1) or (!Opponent) )
+				SendSysMessage(who, "Well fought.");
+				MoveCharacterToLocation(who, vendor.x - 1, vendor.y, vendor.z);
+				Success := 1;
+			endif				
+			Sleep(20);
+		endwhile
+	SetObjProperty(vendor, "InUse", "N");
+
+else
+	if ( (Selection = 4) or (Selection = 6) )
+		SendSysMessage(who, "Option disabled.");
+		return;
+	endif
+
+	if (Selection = 5)
+
+		SendSysMessage(who, "Select your opponent.");
+		local TargOpp := target(who);
+		if (!TargOpp)
+			SendSysMessage(who, "Aborted.");
+		endif
+
+		SendSysMessage(who, "Confirming opponent, please wait...");
+		res := SendDialogGump( TargOpp, layout3, data3 );
+		if (res[0]=3001)
+			x := RandomInt( Len (DestX) ) + 1;
+			MoveCharacterToLocation(TargOpp, DestX[x], DestY[x], DestZ[x]);
+			SendSysMessage(TargOpp, "Prepare thyself...");
+		else
+			SendSysMessage(who, "Your opponent declines.");
+			return;
+		endif
+	
+		While (success = 0);
+			y := RandomInt( Len (DestX) ) + 1;
+			if ( (DestX[y] = DestX[x]) and (DestY[y] = DestY[x]) )
+				success := 0;
+			else
+				success := 1;
+			endif
+		endwhile
+		MoveCharacterToLocation(who, DestX[y], DestY[y], DestZ[y]);
+		SendSysMessage(who, "Prepare thyself...");
+		Detach();
+
+		Success := 0;
+		SetObjProperty(vendor, "InUse", "Y");
+		While (Success = 0)
+			If ( (TargOpp.dead = 1) or (!TargOpp) )
+				SendSysMessage(who, "Well fought.");
+				MoveCharacterToLocation(TargOpp, vendor.x - 1, vendor.y, vendor.z);
+				MoveCharacterToLocation(who, vendor.x - 1, vendor.y, vendor.z);
+				Success := 1;
+			endif
+			if ( (who.dead = 1) or (!who) )
+				SendSysMessage(TargOpp, "Well fought.");
+				MoveCharacterToLocation(who, vendor.x - 1, vendor.y, vendor.z);
+				MoveCharacterToLocation(TargOpp, vendor.x - 1, vendor.y, vendor.z);
+				Success := 1;
+			endif				
+			Sleep(20);
+		endwhile
+		SetObjProperty(vendor, "InUse", "N");
+	endif
+endif
+		
+endprogram

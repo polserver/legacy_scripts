@@ -1,0 +1,26 @@
+use uo;
+
+program equipweapon(who,item,startup)
+
+if(!startup)
+// skill adjustment
+	SetObjProperty(item,"w_equipped",who.serial);
+	var skill_adj := GetObjProperty(item,"skill_adj");
+	if(!skill_adj) return 1; endif
+
+	skill_adj := cint(skill_adj) * 10;
+	var skillid := item.skillid;
+	
+	var currskill := GetRawSkill(who,skillid);
+	currskill := RawSkillToBaseSkill(currskill);
+	
+	var newskill := currskill + skill_adj;
+	newskill := BaseSkillToRawSkill( newskill );
+	
+	SetRawSkill(who,skillid,newskill);
+//
+endif
+
+	return 1;
+	
+endprogram

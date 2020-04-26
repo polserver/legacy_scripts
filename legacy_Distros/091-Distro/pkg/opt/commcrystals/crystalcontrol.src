@@ -1,0 +1,44 @@
+// Created By Sigismund
+// Email: prostheticdelirium@worldnet.att.net
+// ICQ#: 10520050
+
+use uo;
+use os;
+use basic;
+
+include "include/eventid";
+
+program receivercontrol(crystal);
+
+local i, j, placeholder, evwaiting, receiver, Links, LinkList, LinkCount;
+
+RegisterForSpeechEvents(crystal, 1);
+EnableEvents(EVID_SPEECH,1);
+local ev;
+
+while(1)
+ev := os::wait_for_event( 3 );
+if(ev)
+	Local IsOn := GetObjProperty(crystal, "Status");
+	IsOn := CStr(IsOn);
+
+	If (IsOn = "ON")
+		if (ev.type=EVID_SPEECH)
+
+			LinkList := GetObjProperty(crystal, "Links");
+			Links := Splitwords(LinkList);
+			LinkCount := Len(Links);
+			LinkCount := LinkCount + 1;
+			i := 1;
+
+			While (i < LinkCount)
+				placeholder := Cint(Links[i]);
+				receiver := SystemFindObjectBySerial(placeholder);
+				PrintTextAbove(receiver, "Message from "+ev.source.name+": " + ev.text);
+				i := i + 1;
+			endwhile
+		endif
+	endif
+endif
+endwhile
+endprogram

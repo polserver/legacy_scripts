@@ -1,0 +1,67 @@
+use npc;
+use uo;
+use basicio;
+use util;
+use basic;
+use cfgfile;
+
+include "include/randname";
+include "include/objtype";
+global  cfg;
+global colors ;
+global num_colors ;
+global spawns := ReadConfigFile("spawns");
+
+program npc(who)
+local ttemplate;
+ local elemkey := (GetConfigMaxIntKey(spawns)) + 1;
+local where := targetcoordinates(who);
+while (where.x)
+
+
+local which := randomint(4);
+
+case (which)
+        0: ttemplate := "bird";
+        1: ttemplate := "cat";
+        2: ttemplate := "bird";
+        3: ttemplate := "dog";
+endcase        
+
+local it := CreateNpcFromTemplate( ttemplate, where.x, where.y, where.z );
+
+
+
+
+    local props:= array;
+    local prop:= array;
+    prop .+ pname;
+    prop .+ pvalue;
+
+    prop.pname := "template";
+    prop.pvalue := ttemplate;
+    props[1] := prop;
+
+    prop.pname := "x";
+    prop.pvalue := where.x;
+    props[2] := prop;
+
+    prop.pname := "y";
+    prop.pvalue := where.y;
+    props[3] := prop;
+
+    prop.pname := "z";
+    prop.pvalue := where.z;
+    props[4] := prop;
+
+    AppendConfigFileElem( ":spawner:spawns", "Spawn", elemkey, props );
+
+where := targetcoordinates(who);
+elemkey := elemkey + 1;
+endwhile
+
+
+
+
+endprogram
+

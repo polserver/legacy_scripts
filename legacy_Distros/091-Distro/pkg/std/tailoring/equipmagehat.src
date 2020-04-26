@@ -1,0 +1,24 @@
+use uo;
+use cfgfile;
+
+var itemdesc := ReadConfigFile("itemdesc");
+
+program equiphat(who,item,startup)
+
+if(!startup)
+// str penalty / int add adjustment
+	SetObjProperty(item,"equipped",who.serial);
+	var inte := who.intelligence;
+	var str := who.strength;
+	
+	var strpenalty := cint(itemdesc[item.objtype].StrPenalty);
+	var intadd := cint(itemdesc[item.objtype].IntAdd);
+	who.SetStr( str-strpenalty );
+	who.SetInt( inte+intadd );
+//
+endif
+
+
+	return 1;
+	
+endprogram

@@ -1,0 +1,42 @@
+use uo;
+include "include/client";
+
+const UOBJ_PROOF := 0xbe34;
+
+program forensic(who)
+  EraseObjProperty(who, "IsMeditating");
+  EraseObjProperty(who, "HealTimer");
+  SendSysMessage(who, "What would you like to evaluate?");
+  var what := Target(who, TGTOPT_CHECK_LOS);
+  if (!what)
+    SendSysMessage(who, "Targetting cancelled");
+    return;
+  endif
+  var strmessage;
+  if (CheckSkill(who, SKILLID_FORENSICS, -1, 75))
+    var poisoner := GetObjProperty(what, "p");
+    if (poisoner)
+      SendSysMessage(who, "This appears to have been poisoned by " + poisoner);
+      strmessage := what.desc + " was poisoned by " + poisoner;
+    endif
+    var vendor := GetObjProperty(what, "v");
+    if(vendor)
+      SendSysMessage(who, "This was sold by " + vendor);
+      strmessage := what.desc + " was sold by " + vendor;
+    endif
+    var chopper := GetObjProperty(what, "c");
+    if (chopper)
+      SendSysMessage(who, "This corpse was cut up by " + chopper);
+      strmessage := what.desc + " was brutally chopped up by " + chopper;
+    endif
+    if (!poisoner && !vendor && !chopper)
+      SendSysMessage(who, "You find no clues");
+    else
+      var proof := CreateItemInBackpack(who, UOBJ_PROOF, 1);
+      proof.name := "Evidence indicates that " + strmessage;
+      SetObjProperty(proof, "serial", what.serial);
+    endif
+  else
+    SendSysMessage(who, "You find no clues");
+  endif
+endprogram

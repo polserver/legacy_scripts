@@ -1,0 +1,8 @@
+use uo;
+
+include "include/starteqp";
+
+program test_starteqp( who, skillids )
+    skillids := SplitWords( skillids );
+    CreateStartingEquipment( who, skillids );
+endprogram

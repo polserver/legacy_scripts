@@ -1,0 +1,15 @@
+use os;
+use uo;
+
+program textcmd_online( who )
+    local charlist := "";
+
+    foreach charac in EnumerateOnlineCharacters()
+    if (!charac.concealed)
+        charlist := charlist + charac.name + " ";
+    endif
+    endforeach
+
+    SendSysMessage( who, "Online characters:" );
+    SendSysMessage( who, charlist );
+endprogram

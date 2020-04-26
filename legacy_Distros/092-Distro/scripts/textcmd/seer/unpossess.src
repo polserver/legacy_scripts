@@ -1,0 +1,19 @@
+// .unpossess command v1.0
+// Author: Dundee
+// Used in conjunction with the .possess command.  Allows the
+// player controlling the NPC to return to his own body.
+// NOTE:  Requires the possess.inc file to be in your scripts/
+// include directory at compile time.
+
+use uo;
+use os;
+
+include "include/client";
+include "include/possess";
+
+program textcmd_unpossess( me )
+
+	unpossess(me);
+
+endprogram
+

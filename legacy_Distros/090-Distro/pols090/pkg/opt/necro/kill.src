@@ -1,0 +1,89 @@
+use uo;
+use util;
+use os;
+
+include "include/client";
+
+const KillSound := 0x202;
+const KillEffect := 0x375a;
+const SFX_SPELL_FAIL := 0x005b;
+
+var spelldelay := 4;
+
+program cast_kill(caster)
+
+	SpeakPowerWords(caster, 70);
+
+	SendSysMessage(caster, "Select victim.");
+	
+	local casterskill := GetSkill(caster, SKILLID_EVALINT);
+	local casterpower := GetSkill(caster, SKILLID_MAGERY);
+	local victim := target(caster);
+	local victimlevel := victim.hp;
+	local victimsave := 0;
+	local alternative := RandomDiceRoll("5d10");
+	local spelldelay := 4;
+
+While (spelldelay > 0)
+		PerformAction(caster, ANIM_CAST_DIR);
+		sleep(1);
+		spelldelay := spelldelay - 1;
+	endwhile
+
+	if (!ConsumeMana(caster, 70))
+		PlayObjectCenteredEffect(caster, FX_SPELL_FAIL, 7, 7);
+		PlaySoundEffect(caster, SFX_SPELL_FAIL);
+		SendSysMessage(caster, "Insufficient Mana.");
+		return;
+	endif
+	
+	if (!ConsumeReagents(caster, 70))
+		PlayObjectCenteredEffect(caster, FX_SPELL_FAIL, 7, 7);
+		PlaySoundEffect(caster, SFX_SPELL_FAIL);
+		SendSysMessage(caster, "Insufficient Reagents.");
+		return;
+	endif
+
+	if (!CheckSkill(caster, SKILLID_MAGERY, 90, 0))
+		PlayObjectCenteredEffect(caster, FX_SPELL_FAIL, 7, 7);
+		PlaySoundEffect(caster, SFX_SPELL_FAIL);
+		return;
+	endif
+
+
+	if (victim.hp < 30)
+		PlaySoundEffect(victim, KillSound);
+		PlayObjectCenteredEffect(victim, KillEffect, 1, 0x10);
+		ApplyRawDamage(victim, victim.hp+3);
+		return;
+	elseif (victim.hp < 75)
+		PlaySoundEffect(victim, KillSound);
+		PlayObjectCenteredEffect(victim, KillEffect, 1, 0x10);
+		local victimskill := GetSkill (victim, SKILLID_MAGICRESISTANCE);
+		local resistchance := casterskill + casterskill - victimskill;
+		resistchance := Cint(resistchance/2);
+		local resistcheck := RandomDiceRoll("1d100");
+		if (resistcheck < resistchance)
+			ApplyRawDamage(victim, victim.hp+3);
+			return;
+		else
+			ApplyRawDamage(victim, alternative);
+			return;
+		endif
+	else
+		PlaySoundEffect(victim, KillSound);
+		PlayObjectCenteredEffect(victim, KillEffect, 1, 0x10);
+		local victimskill := GetSkill (victim, SKILLID_MAGICRESISTANCE);
+		local resistchance := casterskill + casterskill - victimskill;
+		resistchance := Cint(resistchance/2);
+		local resistcheck := RandomDiceRoll("1d100");
+		if (resistcheck < resistchance)
+			ApplyRawDamage(victim, alternative);
+			return;
+		else
+			alternative := cint(alternative/2);
+			ApplyRawDamage(victim, alternative);
+			return;
+		endif
+	endif
+endprogram

@@ -1,0 +1,181 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+//  packcarnivore - carnivores with a 'pack' social structure
+//
+//  Created: 19990702 Syzygy
+//
+/////////////////////////////////////////////////////////////////////////////
+
+use npc;
+use os;
+use uo;
+use cfgfile;
+
+include "include/eventid";
+include "include/randname";
+include "include/npcutil";
+include "include/objtype";
+include "include/speech";
+include "include/dist";
+
+const HALT_THRESHOLD := 5; // how close before he attacks?
+global speech;
+global ammotype;
+global ammoamount;
+
+global me := Self();
+if( me.name["<random>"] )
+   SetName ( me , RandomName( me ) );
+endif
+
+
+program KillPlayers()
+local next_wander := ReadGameClock() + 10;
+local npccfg := readconfigfile("npcdesc");
+local speechelem := npccfg[me.npctemplate];
+speech := getconfigstring(speechelem, "speech") ;
+
+
+
+    EnableEvents( EVID_ENGAGED + EVID_DISENGAGED + EVID_DAMAGED );
+    EnableEvents( EVID_ENTEREDAREA, HALT_THRESHOLD );
+
+
+    SetWarMode( 0 );
+
+    SearchAndFight();
+
+    local ev;
+    while (1)
+        ev := os::wait_for_event( 4 );
+
+        repeat
+            // print( "event type: " + ev.type );
+            case (ev.type)
+                EVID_SPEECH:
+                    if (speech > "") then
+                        say(process_text(ev.text, "default",speech));
+                    endif
+
+                EVID_ENGAGED:
+                    Fight( ev.source );
+                    SearchAndFight();
+
+                EVID_DAMAGED:
+                    if (ev.source)
+                        Fight( ev.source );
+                        SearchAndFight();
+                    endif
+
+                EVID_ENTEREDAREA:
+                    if (ev.source.graphic = UOBJ_HUMAN_MALE or
+                           ev.source.graphic = UOBJ_HUMAN_FEMALE )
+                        Fight( ev.source );
+                        SearchAndFight();
+                    endif
+            endcase
+        until (! (ev := os::wait_for_event(4)) );
+        if (ReadGameClock() >= next_wander)
+                wander();
+                next_wander := ReadGameClock() + 10;
+        endif
+    endwhile
+endprogram
+
+/////////////////////////////////////////////////////////////////////////////
+//
+//  These types fight singlemindedly, until the quarry is dead.
+//  There is no way out but death.
+//
+/////////////////////////////////////////////////////////////////////////////
+function Fight( opponent )
+
+    local oldprio := set_priority(50);
+    DisableEvents( EVID_ENTEREDAREA + EVID_LEFTAREA );
+    SetOpponent( opponent );
+
+    local waittime;
+
+    while (opponent and not (opponent.dead or opponent.hidden or opponent.concealed) and (dist(me,opponent) < 25))
+        waittime := CloseDistance( opponent ) * 15;
+
+        local ev := wait_for_event( waittime );
+
+        // print( "event type: " + ev.type );
+        repeat
+            case (ev.type)
+                EVID_SPEECH:
+                    if (speech > "") then
+                        say(process_text(ev.text, "default",speech));
+                    endif
+            
+                EVID_DISENGAGED:
+                    // too bad, we don't break off.
+                    break;
+
+                EVID_ENGAGED:
+                EVID_DAMAGED:
+                         // if not our opponent, we should add to our "Pity List"
+                    break;
+
+                EVID_OPPONENT_MOVED:
+                    break; // just waking up is enough
+                
+                EVID_ENTEREDAREA:
+                EVID_LEFTAREA:
+                    // ignore both of these
+            endcase
+        until (! (ev := wait_for_event(0)) );
+    endwhile
+
+    EnableEvents( EVID_ENTEREDAREA + EVID_LEFTAREA, HALT_THRESHOLD );
+    SetWarMode( 0 );
+    set_priority( oldprio );
+endfunction
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+//  CloseDistance - close the distance between self and an opponent.
+//  Returns: 1 if distance is 0 or 1 (no move necessary)
+//           0 if distance is >= 2 (may still need to move)
+//
+//  This is a .EM-file candidate.
+//
+/////////////////////////////////////////////////////////////////////////////
+function CloseDistance( opponent )
+
+
+    case Distance( me, opponent )
+        1:              // the most likely, so first 
+        0:
+            return 1;
+        
+        2:
+            WalkToward( opponent );
+            return 0;
+
+        default:
+            RunToward( opponent );
+            return 0;
+    endcase
+
+endfunction
+
+
+// Look around me for humans to fight.  
+function SearchAndFight()
+
+  search:
+    while (1)  
+        foreach mobile in ListMobilesInLineOfSight( me , 4 )
+            if( mobile.graphic = UOBJ_HUMAN_MALE or mobile.graphic = UOBJ_HUMAN_FEMALE )
+               Fight( mobile );
+               continue search;
+            endif
+        endforeach
+            // we didn't find anything to fight.
+        break;
+    endwhile
+
+endfunction

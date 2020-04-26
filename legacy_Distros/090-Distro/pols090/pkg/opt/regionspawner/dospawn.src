@@ -1,0 +1,241 @@
+//  Note, DEATH.SRC must include:
+//
+//	if ( GetObjProperty( corpse, "regspawn" ) )
+//	    if ( Cint(GetGlobalProperty("regionalspawnerwipe"))!=1 )
+//		local SpawnName := GetObjProperty( corpse, "regspawn" );
+//		local numspawns := Cint(GetGlobalProperty(SpawnName))-1;
+//		SetGlobalProperty(SpawnName,numspawns);
+//	    endif
+//	endif
+//
+//	Global property "rs9animals", for example, is used to keep track of the current number
+//		of spawns for region 9, group 'animals'.  When the animals die, one is subtracted
+//		from rs9animals.  When one is spawned, one is added to rs9animals.
+//
+//	.depop disables the spawner, kills all the regionalspawned animals, resets
+//	  the counters, and repops all the regions.
+//
+//	.cr X clears and repops region X.
+//
+//
+use uo;
+use os;
+use cfgfile;
+use util;
+
+global regspawn;
+global totalnumspawned := 0;
+
+program SpawnThatStuff( me )
+
+	set_critical(0);
+
+	if (GetGlobalProperty("#regionalspawnerwipe"))
+		gmreport("regional spawner is disabled");
+		return;
+	endif
+
+	if (GetGlobalProperty("#spawnerisrunning"))
+		gmreport("regional spawner is still running from last invocation");
+		return;
+	endif
+
+	SetGlobalProperty("#spawnerisrunning",1 );
+	gmreport("regional spawner is running");
+
+	UnloadConfigFile( "regionspawn" );
+
+	regspawn := ReadConfigFile( "regionspawn" );
+
+	local numregions := GetConfigMaxIntKey( regspawn );
+	local coords;
+	local x1;
+	local y1;
+	local x2;
+	local y2;
+
+	local i;
+	for( i := 1; i <= numregions; i := i + 1 )
+        	local spawnregion := regspawn[ i ];
+
+		local spawngroups := GetConfigStringArray( spawnregion, "group" );
+
+		foreach spawngroup in spawngroups
+			local groupstring := splitwords(spawngroup);
+			local groupname := groupstring[1];
+			local groupdensity := cint(groupstring[2]);
+
+			if (GetGlobalProperty("regionalspawnerwipe"))
+				gmreport("regional spawner is disabled");
+				EraseGlobalProperty("#spawnerisrunning");
+				return;
+			endif
+			SpawnThisGroup(i, spawnregion, groupname, groupdensity);
+			sleep(1);
+		endforeach
+    	endfor
+
+	UnloadConfigFile( "regionspawn" );
+	EraseGlobalProperty("#spawnerisrunning");
+	gmreport("Total mobs respawned: "+ totalnumspawned);
+
+endprogram
+
+function SpawnThisGroup(regionnum, spawnregion, groupname, groupdensity)
+
+	local coords := splitwords(spawnregion.rect);
+	local x1 := cint(coords[1]);
+	local y1 := cint(coords[2]);
+	local x2 := cint(coords[3]);
+	local y2 := cint(coords[4]);
+
+	local spawngroup := FindConfigElem( regspawn, groupname );
+	if (!spawngroup)
+		gmreport("Could not find: "+groupname);
+	endif
+
+	local critterlist := GetConfigStringArray( spawngroup, "npc" );
+
+	local sizeofregion := (x2 - x1) * (y2 - y1);
+	local numtospawn := cint((sizeofregion * groupdensity)/10000);
+
+	if (!numtospawn)
+		numtospawn := 1;
+	endif
+
+	local SpawnName := "r"+regionnum+"g"+groupname;
+
+	if (groupdensity = 0)
+		gmreport("Erasing: "+SpawnName);
+		EraseGlobalProperty(SpawnName);
+		return;
+	endif
+
+	if ( RandomInt(100) = 1 )
+		gmreport("resetting : "+SpawnName);
+		NukeThisGroup(regionnum,spawnregion,groupname);
+	endif
+
+	local currentspawn := 0;
+	if (GetGlobalProperty(SpawnName))
+		currentspawn := Cint(GetGlobalProperty(SpawnName));
+	else
+		SetGlobalProperty(SpawnName,0);
+	endif
+
+	if (currentspawn < 1)
+		currentspawn := 0;
+		SetGlobalProperty(SpawnName,0);
+	endif
+
+	numtospawn := numtospawn - currentspawn;
+
+	if (numtospawn < 1)
+		return;
+	endif
+
+	local critnum;
+	local thecritter;
+	local x;
+	local y;
+	local z;	
+	local i;
+	local tries;
+	local sh;
+	local info;
+
+	for( i := 1; i <= numtospawn; i := i + 1 )
+		critnum := RandomInt(len(critterlist))+1;
+
+		thecritter := 0;
+		tries := 0;
+		repeat
+
+			x := RandomInt (x2-x1)+x1;
+			y := RandomInt (y2-y1)+y1;
+			z := GetMapInfo(x,y).z;
+			tries := tries +1;
+
+			sh := GetStandingHeight( x, y, z );
+			if (sh.multi or sh.multi.serial)
+				thecritter := 0;
+			else
+				info := hex(GetMapInfo( x , y ).landtile);
+				if ((info < 0x406) or (info > 0x455))
+					thecritter := createnpcfromtemplate(critterlist[critnum],x,y,z);
+					if (thecritter)
+						if (!movecharactertolocation(thecritter, thecritter.x,
+							 thecritter.y, thecritter.z,0) )
+							KillIt(thecritter);
+						else
+							SetObjProperty(thecritter,"regspawn",SpawnName);
+							currentspawn := Cint(GetGlobalProperty(SpawnName))+1;
+							SetGlobalProperty(SpawnName,currentspawn);
+							totalnumspawned := totalnumspawned +1;
+							sleep(1);
+						endif
+					endif
+				endif
+			endif
+
+		until (thecritter) or (tries > 50);
+
+		if (tries > 50)
+			gmreport ("Error - could not spawn "+ critterlist[critnum] + " in " + SpawnName);
+		endif
+
+	endfor
+
+endfunction
+
+function gmreport(text)
+
+	local gms := EnumerateOnlineCharacters();
+	foreach guy in gms
+        	if  (guy.cmdlevel)
+       			SendSysMessage(guy, "Regionspawner: " + text);
+		endif
+	endforeach
+
+endfunction
+
+function KillIt(me)
+
+	MoveCharacterToLocation(me,5288 , 1176 , 0,MOVECHAR_FORCELOCATION);
+	SetObjProperty(me,"guardkill",1);
+	damage( me, me.maxhp + 3 );
+
+endfunction
+
+function NukeThisGroup(regionnum, spawnregion, groupname)
+
+	local coords := splitwords(spawnregion.rect);
+	local x1 := cint(coords[1]);
+	local y1 := cint(coords[2]);
+	local x2 := cint(coords[3]);
+	local y2 := cint(coords[4]);
+	local kills := 0;
+
+	local SpawnName := "r"+regionnum+"g"+groupname;
+
+	set_critical(0);
+	local x, y, z;
+	for( x := x2 ; x > x1 ; x := x  - 16)
+    	  for( y := y1; y < y2; y := y + 16 )
+	    for( z := -60; z <= 60; z := z + 16 )
+		foreach npc in ListMobilesNearLocationEx( x, y, z, 32,0x02+0x01)
+			if ( GetObjProperty( npc, "regspawn" ) = SpawnName )
+				KillIt(npc);
+				sleep(1);
+				kills := kills + 1;
+			endif
+		endforeach
+	    endfor
+	  endfor
+		sleep(1);
+	endfor
+	set_critical(0);
+	gmreport("kills: "+kills);
+	SetGlobalProperty(SpawnName,0);
+
+endfunction

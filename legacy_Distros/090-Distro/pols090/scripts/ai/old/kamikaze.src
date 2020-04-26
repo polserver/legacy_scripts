@@ -1,0 +1,10 @@
+use npc;
+use os;
+use uo;
+
+global me := npc::Self();
+
+while (1)
+    Sleep( 5 );
+    ApplyDamage( me, 100 );
+endwhile

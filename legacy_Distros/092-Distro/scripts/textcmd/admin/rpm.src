@@ -1,0 +1,6 @@
+use uo;
+use os;
+
+program textcmd_rpm( who )
+    SendSysMessage( who, "RPM: " + system_rpm() );
+endprogram

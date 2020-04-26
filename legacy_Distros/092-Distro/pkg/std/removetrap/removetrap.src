@@ -1,0 +1,58 @@
+/////////////////////////////////////////
+//removetrap.src
+//
+//Removes a trap if:
+//
+// *It's not a trapped container
+// *You pass a skill check
+//
+//Disarms a trap if:
+//
+// *It is a trappd container
+// *You pass a skill Check
+//
+//Todo: Chance to set off trap if you fail.
+//      Move the removed trap in a nearby location
+//      after a few minutes.
+//
+//Author: Racalac, 4/22/99
+/////////////////////////////////////////
+
+use uo;
+
+include "include/client";
+include "include/skillpoints";
+
+program remove_trap( character )
+local thepoints := get_default_points(SKILLID_REMOVETRAP);
+     SendSysmessage( character , "Select Target." );
+     local item := Target( character , "" );
+
+     if( !item )
+        SendSysmessage( character , "Cancelled." );
+        return;
+     endif
+
+     if( GetObjProperty(item,"trap_type") )
+        if( CheckSkill( character, SKILLID_REMOVETRAP, -1, thepoints ) )
+           EraseObjProperty( item, "trap_type" );
+           EraseObjProperty( item, "trap_strength" );
+           item.usescript := "";
+	   SendSysmessage( character , "You sucessfully disarmed the trap." );
+        else
+           SendSysmessage( character , "You failed to disarm the trap." );
+        endif
+
+     elseif( (GetObjProperty(item,"trapped") = 1) )
+        if( CheckSkill( character, SKILLID_REMOVETRAP, -1, 40 ) )
+           DestroyItem( item );
+	   SendSysmessage( character , "You sucessfully removed the trap." );
+        else
+           SendSysmessage( character , "That may not be trapped" );
+        endif
+     else
+        SendSysmessage( character , "That may not be trapped" );
+     endif
+
+endprogram
+

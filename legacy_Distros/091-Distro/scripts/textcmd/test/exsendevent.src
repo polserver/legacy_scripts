@@ -1,0 +1,13 @@
+use uo;
+
+program exsendevent( who, evtype )
+    var tgt := Target( who );
+    var ev := {};
+    ev.+type := evtype;
+    ev.+source := who;
+    print( ev );
+    var res := SendEvent( tgt, ev );
+    if (res)
+        SendSysMessage( who, "Error: " + res );
+    endif
+endprogram

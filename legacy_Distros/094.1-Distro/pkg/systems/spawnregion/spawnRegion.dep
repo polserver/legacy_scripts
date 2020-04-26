@@ -1,0 +1,6 @@
+./pkg/systems/spawnregion/spawnRegion.inc
+i:\094final\pol094\scripts/include/createNPC.inc
+i:\094final\pol094\scripts/include/attributes.inc
+i:\094final\pol094\scripts/include/client.inc
+i:\094final\pol094\scripts/include/eventID.inc
+i:\094final\pol094\scripts/include/clock.inc

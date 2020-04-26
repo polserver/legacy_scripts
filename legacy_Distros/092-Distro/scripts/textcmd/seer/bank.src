@@ -1,0 +1,15 @@
+
+Use uo;
+
+include "util/bank";
+
+program open_bank( who )
+
+             Local bankbox;
+            
+             bankbox := FindBankBox( who );
+
+             SendOpenSpecialContainer( who, bankbox );
+    
+endprogram
+

@@ -1,0 +1,39 @@
+use npc;
+use uo;
+use basicio;
+use util;
+use basic;
+use cfgfile;
+
+include "include/randname";
+include "include/objtype";
+global  cfg;
+global colors ;
+global num_colors ;
+
+program npc(who)
+local ttemplate;
+
+local where := targetcoordinates(who);
+while (where.x)
+
+
+local props := array;
+props.+facing := who.facing;
+
+local which := randomint(4);
+
+case (which)
+        0: ttemplate := "bird";
+        1: ttemplate := "cat";
+        2: ttemplate := "bird";
+        3: ttemplate := "dog";
+endcase        
+
+local it := CreateNpcFromTemplate( ttemplate, where.x, where.y, where.z, props);
+where := targetcoordinates(who);
+
+endwhile
+
+endprogram
+

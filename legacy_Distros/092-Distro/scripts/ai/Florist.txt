@@ -1,0 +1,3 @@
+Florist NPC by Talos
+
+To spawn the new npc, type .createnpc florist

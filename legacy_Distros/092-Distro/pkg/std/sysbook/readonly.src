@@ -1,0 +1,52 @@
+// Bookcase Spawning system  version .3
+// created December 6, 2000
+// updated December 8, 2000
+// designed by Syzygy, Zulu and Bishop Ebonhand
+
+use datafile;
+
+function GetBookElem( book )
+    var bookid := book.getprop( "bookid" );
+    var df := OpenDataFile( "staticbooks" );
+    return df.FindElement( bookid );
+endfunction
+
+exported function IsWritable( book )
+    return 0;
+endfunction
+
+exported function GetNumLines( book )
+    return GetBookElem(book).getprop( "contents" ).size();
+endfunction
+
+exported function GetTitle( book )
+    return GetBookElem(book).getprop( "title" );
+endfunction
+
+exported function GetAuthor( book )
+    return GetBookElem(book).getprop( "author" );
+endfunction
+
+exported function GetLine( book, line )
+    // print( "book.GetLine("+book+","+line+")" );
+    var contents := GetBookElem(book).getprop( "contents" );
+    if (contents = error)
+        contents := array;
+    endif
+    // print( "contents: " + contents );
+    if (line <= contents.size())
+        var text := contents[line];
+        if (text)
+            return text;
+        else
+            return "";
+        endif
+    else
+        return "";
+    endif
+endfunction
+
+
+program BookInterface()
+    return 1;
+endprogram

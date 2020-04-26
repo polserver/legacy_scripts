@@ -1,0 +1,31 @@
+use uo;
+use os;
+
+include "include/client";
+include "include/spellrestrictions";
+
+program cast_reflect( parms )
+
+	local circle := 5;
+	local caster;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+	else
+		caster := parms;
+		if (!can_cast(caster, circle))
+        		return;
+		endif
+	endif
+
+	if (!(GetObjProperty(caster, "mr") = "1") )
+			PlaySoundEffect(caster, SFX_SPELL_MAGIC_REFLECTION);
+			PlayObjectCenteredEffect( caster, FX_CURSE_EFFECT, 10,10);
+			SetObjProperty(caster, "mr","1");
+		else
+			PlaySoundEffect(caster,0x005d);
+			PlayObjectCenteredEffect(caster, 0x3735,0x0a, 0x1e);
+			SendSysMessage(caster,"You are already protected.");
+	endif
+
+endprogram

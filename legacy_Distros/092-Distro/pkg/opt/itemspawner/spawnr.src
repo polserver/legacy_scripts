@@ -1,0 +1,26 @@
+//spawn script //ver 0.43
+
+use os;
+use uo;
+use util;
+
+Program spawnr( props )
+//loops maxtime mintime x y  range npctemplate
+local timer, nX, nY, spawn, i, creature;
+for(i:=0; i<props[1]; i:=i+1)
+//props[2] armazena o timer
+	timer := cint( props[3] + RandomInt( props[2] - props[3] ) );
+	nX := cint( props[4] + RandomInt( (props[6] * 2) - props[6] ) );
+	nY := cint( props[5] + RandomInt( (props[6] * 2) - props[6] ) );
+	if (props[7].size() = "error")
+		spawn := cstr(props[7]);
+	else
+		spawn := props[RandomInt(cint(len(props[7])))+1];
+	endif
+	creature := CreateNpcFromTemplate( spawn, nX, nY, GetWorldHeight(nX, nY) );
+	setobjproperty(creature, "spawnnet", props[8]);
+	detach();
+	sleep(timer);
+endfor
+
+endprogram

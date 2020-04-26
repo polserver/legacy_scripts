@@ -1,0 +1,156 @@
+///////////
+// archery.src
+//
+// FIX: bow, crossbow, heavy crossbow should be two-hand weapons
+//
+// archery_butte.src
+//
+// Dbl-click to train Archery up to 30.
+//
+// NEW: Use of ammunition is active now (0xf3f or 0x1bfb).
+//
+// HISTORY:	Author: the Writer 4/23/99
+//                      Racalac    4/25/99 - projectile anims added, get some ammo back.
+////////////
+
+use uo;
+use os;
+
+// move to a master include file ? example include/client ?
+// or split to object, animation, sound, ... file
+Const UOBJECT_ARROW := 0xf3f;
+Const UOBJECT_BOLT := 0x1bfb;
+Const SFX_SHOT := 0x235;
+Const SFX_ARROWHIT1 := 0x224;
+Const SFX_ARROWHIT2 := 0x225;
+
+Const GFX_ARROW_FLIGHT := 0x0f42;
+Const GFX_BOLT_FLIGHT := 0x1bfe;
+
+GLOBAL projectile;
+Global used_arrows;
+Global used_bolts;
+
+include "include/client";
+
+program training_archery( who , butte )
+
+	if (!CheckLineOfSight( who, butte ))
+	        SendSysMessage( who, "You don't have line of sight to that." );
+        	return;
+	endif
+
+        used_arrows := GetObjProperty( butte , "arrows" );
+        if(!used_arrows)
+           used_arrows := 0;
+           SetObjProperty( butte , "arrows" , 0 );
+        endif
+
+    
+        used_bolts := GetObjProperty( butte , "bolts" );
+        if(!used_bolts)
+           used_bolts := 0;
+           SetObjProperty( butte , "bolts" , 0 );
+        endif
+
+    if( Distance( who , butte ) = 1 )
+       GrabAmmo( who , butte );
+    else
+
+	local ammunitiontype;
+	local panim;
+        local effect;
+
+	local skillid := who.weapon.skillid;
+
+	if( skillid = SKILLID_ARCHERY )
+		local itemtype := GetObjType( who.weapon );
+
+		if ( itemtype = 0x13b2 ) // bow
+			ammunitiontype := UOBJECT_ARROW;
+			panim := ANIM_ATTACK_BOW;
+                        effect := GFX_ARROW_FLIGHT;		
+		endif
+
+		if (( itemtype = 0xf4f ) or ( itemtype = 0x13fd )) //xbow
+			ammunitiontype := UOBJECT_BOLT;
+			panim := ANIM_ATTACK_XBOW;
+                        effect := GFX_BOLT_FLIGHT;	
+		endif
+
+		local found := checkforammunition( who, ammunitiontype );
+
+		if( !found )
+		        SendSysMessage( who, "You don't have any ammunition in the bag." );
+		return;
+	
+		else
+			theshot( who, panim, butte ,effect );
+		endif
+
+	else
+		SendSysmessage( who, "You must equip a bow or a crossbow." );
+	endif
+    endif
+
+endprogram
+
+
+function checkforammunition( who, ammunitiontype )
+
+	local mypack := EnumerateItemsInContainer ( who.backpack );
+
+	foreach item in mypack
+		if( item.objtype = ammunitiontype )
+			projectile := item;
+			return 1;
+		endif
+	endforeach
+
+endfunction
+	
+
+function theshot ( who, panim, butte , effect )
+	if( CheckSkill( who , SKILLID_ARCHERY , 10 , 40 ) )
+		PerformAction( who, panim );
+                sleep(1);
+                PlayMovingEffectXYZ( who.x, who.y, who.z+9,
+                                     butte.x, butte.y, butte.z+5,
+                                     effect, 10, 0, 0 );
+		sleep(1);
+
+		PlaySoundEffect( who, SFX_SHOT );
+		SendSysmessage( who, "A good shot." );
+	
+	else
+		PerformAction( who, panim );
+		sleep(1);
+                PlayMovingEffectXYZ( who.x, who.y, who.z+9,
+                                     butte.x, butte.y, butte.z+5,
+                                     effect, 10, 0, 0 );
+		sleep(1);
+		PlaySoundEffect( who, SFX_ARROWHIT1 );
+		SendSysmessage( who, "You miss." );
+	endif
+
+	SubtractAmount( projectile, 1 );
+
+        if( projectile.objtype = UOBJECT_ARROW )
+           SetObjProperty( butte , "arrows" , used_arrows + 1 );
+        elseif( projectile.objtype = UOBJECT_BOLT )
+           SetObjProperty( butte , "bolts" , used_bolts + 1 );
+        endif
+
+endfunction
+
+function GrabAmmo( who , butte );
+
+    CreateItemInBackpack( who , UOBJECT_ARROW , used_arrows/2 );
+    CreateItemInBackpack( who , UOBJECT_BOLT , used_bolts/2 );
+
+    SendSysmessage( who , "You grab " + used_arrows/2 + " arrows and " + used_bolts/2 + " bolts from the butte." );
+
+    SetObjProperty( butte , "arrows" , 0 );
+    SetObjProperty( butte , "bolts" , 0 );
+
+endfunction

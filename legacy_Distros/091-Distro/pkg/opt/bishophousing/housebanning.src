@@ -1,0 +1,22 @@
+use os;
+use uo;
+
+program walk_on_moongate( who, tile)
+  local signserial := getobjproperty(tile,"signserial");
+  local sign := SystemFindObjectBySerial(signserial);
+  local enemyinfo := GetObjProperty( sign, "enemies");
+  local ind := returnindex(enemyinfo, who.serial);
+  if (ind > 0)
+    MoveCharacterToLocation( who, sign.x, sign.y, sign.z, MOVECHAR_FORCELOCATION );
+  endif
+endprogram
+
+function ReturnIndex(info, information)
+  local i;
+  for (i := 1; i <= len(info); i := i + 1)
+    if (info[i] = information)
+      return i;
+    endif
+  endfor
+  return 0;
+endfunction

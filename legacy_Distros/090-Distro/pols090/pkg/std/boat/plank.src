@@ -1,0 +1,178 @@
+/*
+ * plank2 - plank double-click script
+ *
+ * changes a plank type from extended to retracted, or vice-versa
+ *
+ * this one is more complicated - autoclosing and such.
+ *
+ * Planks do a number of things when you doubleclick them:
+ *    switch from open to closed, and vice versa
+ *    open for 3 seconds, then autoclose
+ *    transport you onto the deck from off the ship
+ * The trick is telling which of these is appropriate to do.
+ 
+
+
+ * TODO:
+ *     sound effects?
+ *
+ * 1/7/1999 ENS
+ */
+
+use os;
+use uo;
+
+include "util/key";
+include "include/objtype";
+include "plankutil";
+
+set_debug(1);
+
+program useplank( mob, plank )
+        
+        //
+        // Let's have no concurrency weirdness here.
+        //
+    
+    set_critical(1); 
+
+
+        //
+        //  If the plank is locked, we can only open the plank for 3 seconds
+        //  under certain conditions.
+        //
+        //  keyholders can open/close the plank from anywhere.
+        //  nonkeyholders can only open/close the plank if they're on the boat.
+        //
+        //  In either case, the plank will auto-close after three seconds or as
+        //  soon as noone is standing on the plank, whichever comes later.
+        //
+
+    if (plank.locked)
+        if (mob.multi.serial = plank.multi.serial) 
+            TimedOpenClose(plank);
+        elseif (FindKey( mob, plank ))
+            if (!IsExtended(plank) or CanWalkOntoPlank(plank))
+                TimedOpenClose(plank);
+            else
+                YankOntoBoat(mob,plank);
+            endif
+        else
+            PrintTextAbovePrivate( plank, "That is locked.", mob );
+        endif
+        return;
+    endif
+
+
+        //
+        //  The plank is unlocked.  Sometimes it's appropriate to transport the
+        //  player onto the boat, and sometimes it's appropriate to open/close
+        //  the plank.
+        //
+
+        //
+        //  The circumstances where we'll yank someone onto the boat: 
+        //    (all must be true)
+        //     The mob isn't on a multi 
+        //     It isn't legal to stand in the tile in front of the plank
+        //     The mob is within 3 squares of the plank
+        //
+
+    if (!mob.multi && !CanWalkOntoPlank(plank) && distance(mob,plank) <= 4)
+        YankOntoBoat( mob, plank );
+        return;
+    endif
+
+        
+        //
+        // The circumstances where we'll toggle the open/closed status of the boat:
+        //     (we already know the plank is unlocked)
+        //     The mob is within 2 squares of the plank
+        //     
+        
+    if (distance(mob,plank) <= 2)
+        TogglePlank( plank );
+    endif   
+    
+endprogram
+
+    //
+    // This logic is borrowed from door autoclose stuff
+    // If planks had open() and close() methods, it'd be identical.
+    //
+function TimedOpenClose( plank )
+    if (IsExtended(plank))
+        if (!IsPlankOccupied(plank))
+            // PlaySoundEffect
+            Retract( plank );
+            EraseObjProperty( plank, "#WhenOpened" );
+        endif
+    else
+        var whenopened := ReadGameClock();
+        SetObjProperty( plank, "#WhenOpened", whenopened );
+        // PlaySoundEffect
+        Extend( plank );
+        
+        repeat
+            sleep( 3 );
+        until (! (plank and IsPlankOccupied(plank)) );
+        
+        if (GetObjProperty( plank, "#WhenOpened" ) = whenopened)
+            // PlaySoundEffect
+            Retract( plank );
+            EraseObjProperty( plank, "#WhenOpened" );
+        endif
+    endif
+endfunction
+
+    //
+    // We don't pull the mob onto the plank directly, but onto
+    // the deck.  On the large boats it may move them 1 tile off.
+    //
+function YankOntoBoat( mob, plank )
+    var sh := GetStandingHeight( plank.x, plank.y, plank.z );
+    if (sh)
+        print( "sh.multi: " + sh.multi );
+        var nx := (plank.x + plank.multi.x) / 2;
+        var ny := (plank.y + plank.multi.y) / 2;
+        MoveCharacterToLocation( mob, 
+                                 nx, 
+                                 ny, 
+                                 plank.z );
+        return;
+    endif
+endfunction
+
+
+
+function CanWalkOntoPlank( plank )
+    var dx;
+    var dy;
+    case (plank.graphic)
+        GID_PLANK_EXTENDED_FACING_WEST:
+        GID_PLANK_RETRACTED_FACING_WEST:
+            dx := -1;
+            dy := 0;
+
+        GID_PLANK_EXTENDED_FACING_EAST:
+        GID_PLANK_RETRACTED_FACING_EAST:
+            dx := 1;
+            dy := 0;
+             
+        GID_PLANK_EXTENDED_FACING_NORTH:
+        GID_PLANK_RETRACTED_FACING_NORTH:
+            dx := 0;
+            dy := -1;
+
+        GID_PLANK_EXTENDED_FACING_SOUTH:
+        GID_PLANK_RETRACTED_FACING_SOUTH:
+            dx := 0;
+            dy := 1;
+    endcase 
+    if (GetStandingHeight( plank.x + dx, plank.y + dy, plank.z ))
+        return 1;
+    else
+        return 0;
+    endif
+endfunction
+

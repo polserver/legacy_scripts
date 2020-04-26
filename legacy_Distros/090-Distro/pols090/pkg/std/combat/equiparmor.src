@@ -1,0 +1,25 @@
+use uo;
+use os;
+use cfgfile;
+
+var itemdesc := ReadConfigFile("itemdesc");
+program equiparmor(who,item,startup)
+
+set_critical(1);
+if(!startup and !who.npctemplate)
+        if (GetObjProperty( item, "a_equipped")=who.serial)
+                //the item is already equipped and hasn't been dequipped
+                //so we don't want to adjust their stats again:
+                return 1;
+        endif
+        SetObjProperty(item,"a_equipped",who.serial);
+        var dex := who.dexterity;
+        var penalty := cint(itemdesc[item.objtype].DexPenalty);
+        if (penalty)
+                who.SetDex( dex-penalty );
+        endif
+endif
+
+return 1;
+        
+endprogram

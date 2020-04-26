@@ -1,0 +1,152 @@
+use cfgfile;
+use uo;
+use os;
+
+include "util/key";
+include "util/bank";
+include "include/objtype";
+
+program useshipdeed( character, deed )
+  if (DeedAlreadyBuiltFrom( deed ))
+	PrintTextAbovePrivate( deed, "That ship has already been built.", character );
+  else
+	BuildShip( character, deed );
+  endif
+endprogram
+
+function BuildShip( character, deed )
+  if(deed.movable = 0)
+     sendsysmessage(character,"you cannot use that while it is locked down");
+     return; 
+  endif   
+  if(!reserveitem(deed))
+    sendsysmessage(character,"that deed is already in use");
+    return; 
+  endif
+  local shiptype := GetShipObjtype( deed );
+  if (!shiptype)
+	PrintTextAbovePrivate( deed, "That ship deed appears to be broken.", character );
+	return;
+  endif
+  var flags := ShipFacingFlags( character.facing );
+  local where := TargetMultiPlacement( character, shiptype, flags );
+  if (!where) 
+	if ( deed.graphic = 5363 )
+	  deed.graphic := 5364;
+	elseif ( deed.graphic = 5364 )
+	  deed.graphic := 5363;
+	endif
+	return; 
+  endif
+  if ( (where.x = deed.x) and (where.y = deed.y) )
+	if ( deed.graphic = 5363 )
+	  deed.graphic := 5364;
+	elseif ( deed.graphic = 5364 )
+	  deed.graphic := 5363;
+	endif
+	return;
+  endif
+  set_critical( 1 );
+  if (	(where.x < character.x-10) or (where.y < character.y-10) or (where.x > character.x+10) or (where.y > character.y+10) )
+	if ( deed.graphic = 5363 )
+	  deed.graphic := 5364;
+	elseif ( deed.graphic = 5364 )
+	  deed.graphic := 5363;
+	endif
+	return;
+  endif
+  local created := CreateShipKeysAndBuiltDeed( character, shiptype, where.x, where.y, where.z, flags );
+  if (!created) 
+	if ( deed.graphic = 5363 )
+	  deed.graphic := 5364;
+	elseif ( deed.graphic = 5364 )
+	  deed.graphic := 5363;
+	endif
+	return; 
+  endif
+  local deedtype := deed.objtype;
+  if ( (deed.name != "a toy boat") and (!deed.name["deed"]) )
+	created.ship.tillerman.name := deed.name;
+  endif
+  DestroyItem( deed );
+  created.ship.starboardplank.locked := 1;
+  created.ship.portplank.locked := 1;
+  created.ship.hold.locked := 1;
+  local lockid := AllocLockId();
+  SetObjProperty( created.ship.starboardplank,    "lockid",     lockid );
+  SetObjProperty( created.ship.portplank,         "lockid",     lockid );
+  SetObjProperty( created.ship.hold,              "lockid",     lockid );
+  SetObjProperty( created.ship.hold,              "owner",      character.serial );
+  SetObjProperty( created.ship.hold,              "shiptype",   deedtype ); 
+  SetObjProperty( created.ship.tillerman,         "owner",      character.serial );
+  SetObjProperty( created.ship.tillerman,         "shipserial", created.ship.serial );
+  SetObjProperty( created.ship.tillerman,         "lockid",     lockid );
+  SetObjProperty( created.packkey,                "lockid",     lockid );
+  created.ship.tillerman.usescript := ":boat:tillerman";
+endfunction
+
+function ShipFacingFlags( facing )
+  var flags := 0;
+  case facing
+    DIR_N:
+    DIR_NE:
+        flags := CRMULTI_FACING_EAST;
+
+    DIR_E:
+    DIR_SE:
+        flags := CRMULTI_FACING_NORTH;
+
+    DIR_S:
+    DIR_SW:
+        flags := CRMULTI_FACING_WEST;
+
+    DIR_W:
+    DIR_NW:
+        flags := CRMULTI_FACING_SOUTH;
+  endcase
+  return flags;
+endfunction
+
+function CreateShipKeysAndBuiltDeed( character, shiptype, x, y, z, flags )
+  local bankbox := FindBankBox( character );
+  local packkey := CreateItemInBackpack( character, UOBJ_COPPER_KEY );
+  if (!packkey)
+	PrintTextAbovePrivate( character, "My backpack is too full!", character );
+	return 0;
+  endif
+  local ship := CreateMultiAtLocation( x, y, z, shiptype, flags );
+  if (!ship)
+	PrintTextAbovePrivate( character, "I can't place the ship there.", character );
+	DestroyItem( packkey );
+	return 0;
+  endif
+  SetObjProperty( ship.hold,"owner", character.serial );
+  if(!getObjProperty( ship.hold,"owner" ))
+	PrintTextAbovePrivate( character, "I can't place the ship there.", character );
+	DestroyItem( packkey );
+	return 0;
+  endif
+  local result := {}; 
+  result .+ packkey := packkey;
+  result .+ ship := ship;
+  sendsysmessage(character,"All aboard!");
+  local sh := GetStandingHeight( ship.x, ship.y, ship.z );
+  movecharactertolocation(character, ship.x, ship.y, sh.z, MOVECHAR_FORCELOCATION);
+  return result;
+endfunction
+
+function DeedAlreadyBuiltFrom( deed )
+  if (GetObjProperty( deed, "builtserial" ))
+	return 1;
+  else
+	return 0;
+  endif
+endfunction
+
+function GetShipObjtype( deed )
+    var id := ReadConfigFile( "itemdesc" ); // package itemdesc
+    var elem := id[ deed.objtype ];
+    var ot := GetObjtypeByName( elem.ShipObjType );
+    return ot;
+endfunction
+

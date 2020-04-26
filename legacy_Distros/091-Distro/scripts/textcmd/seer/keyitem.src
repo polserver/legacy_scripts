@@ -1,0 +1,64 @@
+use uo;
+include "include/npcbackpacks";
+
+program textcmd_ident( who )
+
+    SendSysMessage( who, "Assign a key item to whom?" );
+    local whom := Target( who, TGTOPT_NOCHECK_LOS );
+    if (!whom)
+	SendSysMessage( who, "Cancelled" );
+	return;
+    endif
+
+    SendSysMessage( who, "What is the key item?" );
+    local what := Target( who, TGTOPT_NOCHECK_LOS );
+    if (!what)
+	SendSysMessage( who, "Cancelled" );
+	return;
+    endif
+
+    local whatdesc := "";
+    if (!len(what.name))
+    	whatdesc := what.desc;
+    else
+	whatdesc := what.name;
+    endif
+
+    local keyitem := lower("keyitem"+whatdesc);
+    local itemcount := 0;
+
+    local response := "";
+    SendSysMessage( who, "That is a "+ whatdesc );
+
+	if (getobjproperty(whom, keyitem) )
+		EraseObjProperty( whom, keyitem );
+		SendSysMessage( who, "npc will no longer respond to " + whatdesc + " by saying: "+ response );
+		return;
+	else
+		response := RequestInput( who, who.backpack, "What should their response be?");
+		setobjproperty( whom, keyitem, response);
+		SendSysMessage( who, "npc will respond to "+ whatdesc + " by saying: "+ response );
+		SendSysMessage( who, "Target each item you wish the npc to give in exchange" );
+
+		local thetarget := Target(who, "");
+		local mypack := findmypack(whom.serial);
+                while (thetarget.objtype)
+			moveitemtocontainer(thetarget,mypack);
+			SetObjProperty(thetarget,"returnfor",lower("return"+whatdesc));
+			thetarget := Target(who, "");
+			itemcount := 1;
+        	endwhile
+	endif
+
+	if ( itemcount )
+
+	response := RequestInput( who, who.backpack, "What should their response be after they have given away their item?");
+	if (response)
+		setobjproperty( whom, "done"+keyitem, response);
+	endif
+
+	endif
+
+	SendSysMessage(who,"Done.");
+
+endprogram

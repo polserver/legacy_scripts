@@ -1,0 +1,41 @@
+use uo;
+use os;
+
+include "include/client";
+include "include/objtype";
+include "include/spellrestrictions";
+
+program cast_recall( caster )
+
+	local circle := 4;
+	SendSysmessage( caster, "Select a rune to recall from." );
+	local cast_on := CanTargetThing(caster, circle, TGTOPT_CHECK_LOS );
+	if (!cast_on)
+		return;
+	endif
+
+	if (!Accessible(caster, cast_on))
+		SendSysmessage (caster, "You can't reach that!");
+	endif
+
+	if (cast_on.objtype != UOBJ_RUNE and cast_on.objtype != 0x6100) //runebook
+		SendSysmessage(caster, "You can't cast this on that item!");
+		return;
+	endif
+
+	ReserveItem(cast_on);
+
+	local tox := Cint(GetObjProperty( cast_on, "x" ));
+	local toy := Cint(GetObjProperty( cast_on, "y" ));
+	local toz := Cint(GetObjProperty( cast_on, "z" ));
+
+	if (GetGlobalProperty( "destroyrecallrune" ) = "yes")
+                destroyitem(cast_on);
+        endif
+
+	PlaySoundEffect( caster, SFX_210 );
+	sleepms(250);
+	MoveCharacterToLocation( caster, tox, toy, toz );
+	PlaySoundEffect( caster, SFX_SPELL_RECALL );
+
+endprogram

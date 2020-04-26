@@ -1,0 +1,3 @@
+program textcmd_setint( who, newint )
+    who.setint( CInt(newint) );
+endprogram

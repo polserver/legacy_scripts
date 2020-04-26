@@ -1,0 +1,118 @@
+use cfgfile;
+use uo;
+use basic;
+use os;
+use util;
+
+include "include/client";
+
+program tame( character )
+    local conf := ReadConfigFile ("::npcdesc");
+    local elem;
+    local timer := 0;
+    local points := 0;
+
+    SendSysMessage( character, "What do you want to tame?" );
+    local thecreature  := target(character);
+    if (!thecreature)
+        SendSysmessage(character, "Targetting cancelled.");
+        return;
+    endif 
+    if (!CheckLineofSight(character, thecreature))
+        SendSysmessage (character, "You can't see that!");
+        return;
+    endif
+    elem := FindConfigElem(conf, thecreature.npctemplate);
+    if (!elem)
+        SendSysmessage(character, "You cannot tame this!");
+        return;
+    endif
+    local difficulty := cint(GetConfigInt(elem, "tameskill"));
+    points := (difficulty*5);
+
+    if (!difficulty)
+        SendSysmessage(character, "You can't tame that!");
+        return;
+    endif
+
+    if (thecreature.script = "tamed")
+        SendSysmessage(character, "That creature looks pretty tame already.");
+        return;
+    endif
+
+    if ( GetSkill( character , SKILLID_TAMING ) < (difficulty-20) )
+        SendSysmessage(character, "You have no chance of taming this creature!");
+        return;
+    endif	
+    
+    if(GetObjProperty( thecreature , "prevtamed" ));
+	if (difficulty > 20)
+		difficulty := difficulty - 20;
+	else
+		difficulty := 0;
+	endif
+	if ( points > 20 )
+		points := points - 20;
+	else
+		points := 0;
+	endif
+    endif
+
+    local thename := get_name(thecreature.name);
+    
+    PrintTextAbove(character, "What a nice " + thename);
+    sleep(3);
+    PrintTextAbove(character, "I've always wanted a " + thename + " like you.");
+    sleep(3);
+    PrintTextAbove(character, thename + ", will you be my friend?");
+    sleep(3);
+    
+    timer := GetObjProperty( thecreature , "tametimer" );
+    if(!timer)
+       timer := 0;
+    endif
+
+    if ( (CheckSkill( character, SKILLID_TAMING, difficulty, points )) and (ReadGameClock() > timer) )
+        SendSysmessage(character, "You successfully tame the " + thename);
+        SetObjProperty(thecreature, "master", character.serial);
+        SetObjProperty(thecreature,"script",thecreature.script);
+        SetObjProperty(thecreature,"prevtamed",1);
+        thecreature.script := "tamed";
+        RestartScript(thecreature);
+    else
+        SendSysmessage (character, "You failed to tame the creature.");
+        local chance := randomint( 100 ) + 1;
+        if( (GetSkill( character , SKILLID_TAMING )) <= chance )
+           SendSysmessage( character, "And have made the creature unresponsive to taming." );
+           SetObjProperty( thecreature , "tametimer" , (ReadGameClock() + 300) );
+        endif
+    endif
+endprogram
+
+
+function get_name(thename)
+
+    if (find(thename, "an ",1) = 1)
+        local i;
+        local tempname;
+
+        tempname := thename[4,len(thename)];
+        return tempname;
+    elseif (find(thename, "a ",1) = 1)
+        local i;
+        local tempname;
+
+        tempname := thename[3,len(thename)];
+        return tempname;
+    else
+        return thename;
+    endif
+
+endfunction        
+
+
+
+
+
+
+

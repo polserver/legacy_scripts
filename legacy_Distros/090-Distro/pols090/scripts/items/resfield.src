@@ -1,0 +1,35 @@
+//
+// FIX: fields in itemdesc.cfg are moveable
+//
+// TODO: create menu for resurrectionfields, ank and all importent floor objects
+//
+// HISTORY: Author: the Writer  4/17/99
+
+use os;
+use uo;
+
+include "include/res";
+include "include/respenalty";
+
+Const EFFECT_SPARKLE := 0x373a;
+Const SOUND_EFFECT_RES := 0x215;
+
+program resfield( mobile, floor )
+    set_critical( 1 );
+
+    if( mobile.dead )
+        // res choice window
+        
+        if (Distance( mobile, floor ) = 0)
+        	if(ResNow(mobile)=1)
+            	PlaySoundEffect( mobile, SOUND_EFFECT_RES );
+            	mobile.poison_level := 0; // cure poison...
+            	Resurrect( mobile );
+            	ResPenalties(mobile);
+            	PlayObjectCenteredEffect( mobile, EFFECT_SPARKLE, 10,10);
+            endif
+        endif
+
+    endif
+
+endprogram

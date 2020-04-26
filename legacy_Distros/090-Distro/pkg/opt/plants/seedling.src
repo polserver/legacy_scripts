@@ -1,0 +1,19 @@
+use os;
+use uo;
+
+program seedling(parms)
+local where := parms[1];
+local what := parms[2];
+
+local i;
+local j;
+
+for (i := 1; i <= 10; i := i + 1)
+        for (j := 1; j <= 6; j := j + 1)
+                sleep(60);
+        endfor
+endfor
+
+createitematlocation(where.x, where.y, where.z, what, 1);
+
+endprogram

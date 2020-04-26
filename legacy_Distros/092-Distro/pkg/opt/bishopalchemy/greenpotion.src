@@ -1,0 +1,19 @@
+use os;
+use uo;
+use util;
+use cfgfile;
+include "drinkpotion";
+
+program drink_blue (who, potion)
+  EraseObjProperty(who, "IsMeditating");
+  if(potion.movable = 0)
+    SendSysMessage(who, "You cannot drink that.");
+    return;
+  endif
+  if(!checkifcandrink(who, "green_potion"))
+    return;
+  endif
+  local potion_strength := get_potion_strength(potion);
+  do_poison(who, potion);
+  detach();
+endprogram

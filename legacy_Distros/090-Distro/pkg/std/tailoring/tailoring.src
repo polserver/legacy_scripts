@@ -1,0 +1,69 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+//  tailoring.src - I think this just turns thread into cloth at a loom?
+//
+//
+//
+/////////////////////////////////////////////////////////////////////////////
+
+use uo;
+use os;
+
+include "include/client";
+include "include/objtype";
+
+
+
+function MakeCloth( character, thread )
+
+  // Test to see if the player can reach the targed thread.
+  if (not Accessible( character, thread ))
+    SendSysmessage( character, "You don't have any thread!" );
+    return;
+  endif
+
+  if( thread.amount >= 5 )    //
+                              //
+    set_critical( 1 );        //  These lines combat a moved-materials exploit.
+                              //
+    if( thread.amount >= 5 )  //
+       // Create one bolt of cloth in the players backpack
+       Local cloth := CreateItemInBackpack( character, UOBJ_CLOTH, 1 );
+       if (cloth)
+          // if the creation of the cloth item was successfull.
+          // Subtract five spools of thread from the players inventory
+          SubtractAmount( thread, 5 );
+          SendSysmessage( character, "You weave some thread and create a bolt of cloth" );
+       endif
+    else
+       SendSysmessage( character, "You don't have enough thread for the bolt of cloth.");
+    endif
+  else
+       SendSysmessage( character, "You don't have enough thread for the bolt of cloth.");
+  endif
+
+endfunction
+
+program use_thread( character, thread )
+  SendSysmessage( character, "Select the loom to use that on" );
+
+  // Ask the player what they wish to use the thread on.
+  Local use_on := Target( character, "" );
+
+  // If they cancel, quit.
+  if (!use_on)
+    return;
+  endif
+	
+  // Get the type of object.
+  local obj_type := GetObjType(use_on);
+
+  if ( (obj_type < UOBJ_LOOM_START) or (obj_type > UOBJ_LOOM_END))
+    // If the object is NOT a loom, give the player an error message.
+    SendSysmessage( character, "You can only use thread on a loom" );
+  else
+    // Else, try and make the cloth
+    MakeCloth( character, thread);
+  endif
+endprogram
+

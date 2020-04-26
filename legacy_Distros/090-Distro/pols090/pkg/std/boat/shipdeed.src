@@ -1,0 +1,186 @@
+//
+// shipdeed - ship plan/deed double-click script
+//
+// - creates a "built" deed in placer's bank (deed possession is ship ownership)
+// - creates keys (one in bank, one in backpack)
+// - places the ship
+// - destroys the ship plans (unbuilt deed)
+// - locks planks and hold, and associates with new keys.
+//
+// An "unbuilt" deed must have the following custom properties:
+//    shiptype :   0x4000 to 0x4017 (?), the type of the ship multi.
+//                 Note, this should be the first of the four "facings"
+//
+// A "built" deed will have the following custom properties:
+//    builtserial: serial of the built ship, after it's built.
+// 
+// A deed's name is "A deed to a small ship" if not built, or
+// "A deed to a small ship (built)" if built. 
+//
+// TODO: the keys should probably be named.
+// 
+// 1/7/1999 ENS
+//
+
+use uo;
+use os;
+
+include "util/key";
+include "util/bank";
+include "include/objtype";
+
+program useshipdeed( character, deed )
+    if (DeedAlreadyBuiltFrom( deed ))
+        PrintTextAbovePrivate( deed, "That ship has already been built.", character );
+    else
+        BuildShip( character, deed );
+    endif
+endprogram
+
+
+
+//
+// BuildShip: build a ship from a deed.
+// 
+// The character is prompted to place the boat.  If the boat, the new keys, and
+//    the ownership deed can be created, then they are, and the original deed is
+//    destroyed.
+//
+// TODO: the location is tested to make sure it's on water, and not occupied,
+//       but not much else beside that (ie closeness to the dock, or even the placer)
+// 
+
+function BuildShip( character, deed )
+    local shiptype := GetObjProperty( deed, "shiptype" );
+
+    if (!shiptype)
+        PrintTextAbovePrivate( deed, "That ship deed appears to be broken.", character );
+        syslog( "Deed " + deed.serial + " had no shiptype property!" );
+        return;
+    endif
+
+    shiptype := TurnedShiptype( shiptype, character.facing );
+
+    local where := TargetMultiPlacement( character, shiptype );
+    if (!where) // cancelled
+        return;
+    endif
+
+        //
+        // Do the work, atomically.
+        //
+
+    set_critical( 1 );
+
+    local created := CreateShipKeysAndBuiltDeed( character, shiptype, where.x, where.y, where.z );
+    if (!created) 
+        return;     // note CreateShip.. prints appropriate error message
+    endif
+
+    SetName( created.builtdeed, deed.name + " (built)" );
+    DestroyItem( deed );
+
+    SetObjProperty( created.builtdeed, "builtserial", created.ship.serial );
+
+    created.ship.starboardplank.locked := 1;
+    created.ship.portplank.locked := 1;
+    created.ship.hold.locked := 1;
+
+    local lockid := AllocLockId();
+    SetObjProperty( created.ship.starboardplank,    "lockid", lockid );
+    SetObjProperty( created.ship.portplank,         "lockid", lockid );
+    SetObjProperty( created.ship.hold,              "lockid", lockid );
+    SetObjProperty( created.packkey,                "lockid", lockid );
+    SetObjProperty( created.bankkey,                "lockid", lockid );
+
+endfunction
+
+
+//
+// turned_shiptype 
+//
+// When a ship is placed, it should be shown facing perpendicular to the
+// direction the placing character is facing.  This function calculates the
+// correct multi-type to use given the base ship type and placer's facing.
+//
+// This assumes 'shiptype' is the base-shiptype (facing north) - 0x4000, 0x4004
+//
+// If the character is facing east, the ship's bow should face north.
+// If the character is facing south, the ship's bow should face east.
+// 
+
+function TurnedShiptype( shiptype, facing )
+    local boatadd := (facing / 2) - 1;
+    if (boatadd < 0) 
+        boatadd := boatadd + 4;
+    endif
+
+    shiptype := shiptype + boatadd;
+    return shiptype;
+endfunction
+
+
+//
+// CreateShipAndParaphernalia: atomically create ship, keys, and new deed
+//
+// The keys and deed, in the bankbox and backpack, are created first because
+// it's possible to delete them.  It's nontrivial to delete the ship.
+//
+// Returns a structure with references to the created objects.
+//
+
+function CreateShipKeysAndBuiltDeed( character, shiptype, x, y, z )
+    local bankbox := FindBankBox( character );
+
+    local packkey := CreateItemInBackpack( character, UOBJ_COPPER_KEY );
+    if (!packkey)
+        PrintTextAbovePrivate( character, "My backpack is too full!", character );
+        return 0;
+    endif
+
+    local bankkey := CreateItemInContainer( bankbox, UOBJ_COPPER_KEY );
+    if (!bankkey)
+        PrintTextAbovePrivate( character, "My bankbox is too full!", character );
+        DestroyItem( packkey );
+        return 0;
+    endif
+
+    local builtdeed := CreateItemInContainer( bankbox, UOBJ_SHIP_DEED1 );
+    if (!builtdeed)
+        PrintTextAbovePrivate( character, "My bankbox is too full!", character );
+        DestroyItem( packkey );
+        DestroyItem( bankkey );
+        return 0;
+    endif
+
+    local ship := CreateMultiAtLocation( x, y, z, shiptype );
+    if (!ship)
+        PrintTextAbovePrivate( character, "I can't place the ship there.", character );
+        DestroyItem( packkey );
+        DestroyItem( bankkey );
+        DestroyItem( builtdeed );
+        return;
+    endif
+
+    local result := {};
+    
+    result .+ packkey := packkey;
+    result .+ bankkey := bankkey;
+    result .+ builtdeed := builtdeed;
+    result .+ ship := ship;
+    
+    return result;
+endfunction
+
+
+//
+// A deed has been built from if it has a "builtserial" custom property.
+//
+
+function DeedAlreadyBuiltFrom( deed )
+    if (GetObjProperty( deed, "builtserial" ))
+        return 1;
+    else
+        return 0;
+    endif
+endfunction

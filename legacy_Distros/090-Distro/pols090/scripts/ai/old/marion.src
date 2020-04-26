@@ -1,0 +1,55 @@
+
+Use npc;
+Use os;
+
+function tell_my_position()
+	Local pos, text;
+
+	pos := position();
+
+	text := "My position is (" + pos.x + "," + pos.y + "," + pos.z + ")";
+	say( text );
+endfunction
+
+Global ev;
+
+print( "Marion online." );
+
+while (1)
+	ev := wait_for_event( 10 );
+	if (ev)
+        if (Find( ev.text, "marion", 1 ))
+            print( "Hey! someone said my name." );
+            Local txt := upper(ev.text);
+
+            Local walkstr := txt["WALK",7];
+            if (walkstr)
+                Local walkdir := walkstr[6,2];
+
+                print( "Walk Dir: " + walkdir );
+
+                move( walkdir );
+
+                tell_my_position();
+            elseif (Find(txt,"TURNAWAY",1))
+                TurnAwayFrom( ev.source );
+            elseif (Find(txt,"MOVEAWAY",1))
+                WalkAwayFrom( ev.source );
+            elseif (Find(txt,"TURNTOWARD",1))
+                TurnToward( ev.source );
+            elseif (Find(txt,"MOVETOWARD",1))
+                WalkToward( ev.source );
+            elseif (Find(txt,"RUNAWAY",1))
+                RunAwayFrom(ev.source); 
+                RunAwayFrom(ev.source);
+                RunAwayFrom(ev.source);
+                RunAwayFrom(ev.source);
+            elseif (Find(txt,"RUNTOWARD",1))
+                RunToward(ev.source);
+                RunToward(ev.source);
+                RunToward(ev.source);
+                RunToward(ev.source);
+            endif
+        endif
+	endif
+endwhile

@@ -1,0 +1,54 @@
+Package Additions:
+	Auction (Zulu): Buy and Sell items from other players from anywhere! 
+		Fully Graphical & Very cool.
+	Book (Shinigami): User-writable books.
+	Clothes and Colors (Boum): Random clothes and coloring for your NPCs.
+	Coordinates (HellRaider): Convert Cartesian coords to Sexant coords.
+	Day/Night,Moon,Weather (Raxxla): Replaces old day/night system. Adds moon
+		phases, lightlevel based on phase, seasons, and weather by season.
+	DeathSounds (Racalac): Added "DeathSound" prop in npcdesc, added values for most
+		of the templates.
+	DyeItems (Zulu): Specify what can and cannot be dyed.
+	EquipScript (Racalac): Armor: Dex penalties, Weapons: Accuracy bonuses (auto
+		created with loot), Wizard Hats: INT and STR adjustments.
+	GMTools (Bishop Ebonhand): Lots of great tools for GMs! Offline account/character
+		editor, Quest tools: trap & switch management, quest NPC and spawn management,
+		Movement tools, Item modification tools. Fully Graphical.
+	Guildstone (Louds): Updated to use built-in titles. REPSYS???
+	Gumps (Myrathi): Easier to use wrapper for gump creation.
+	Help (Zulu): Very nice GM Page & Help system, fully graphical.
+	ICP (Myrathi): Identify what pacakges are installed.
+	ItemInfo (Maverick): Get and Set properties on items graphically.
+	IView (Mercy): Find out what objtype number ranges are available (PERL script)
+	Jail (Bzagh): Jail whole accounts.
+	Spells (Zulu): Magic un/lock, Magic un/trap.
+	Poison (Dreamweaver): New poison damage scripts that integrate with hitscripts.
+	Poisonskill (Racalac): Can poison weapons, poison degrades with use.
+	Professional Titles (Racalac): Added a player textcmd that allows the player
+		to choose a title from his/her top 7 skills.
+	Skillcap (Svovl): Linearly reduce skills to under the cap (default 700pts).
+	StaticHousing (Bishop Ebonhand): Make static buildings act like player-placed
+		houses (optional).
+	Trashcan (Zulu): Dump items to free memory.
+
+
+Changes:
+	Explosion potion (Zulu): Halved damage in town.
+	Fields (poison&fire) fixed up.
+	Fishing (Cassandra White): deep sea fishing, catch interesting items.
+	Goto (Sentack): can display unlimited number of players.
+	Guards (Louds): updated optional package
+	Hitscripts (Dreamweaver,Sigismund,Racalac,Raxxla): Now works, easy to add 
+		new hitscripts to a weapon. DW: mainhitscript, poison hitscript; Sigi:
+		mainhitscript; Racalac: silver hitscript, fixed up poison & added poison
+		degredation; Raxxla: spell effect hitscript
+	Housing (Zulu): Completely OSI style house menu with friends, co-owners, ejecting,
+		re-deeding, banning, secure containers implimented. Yay!
+	Runebook (Bishop Ebonhand,Racalac): Now OSI-style. Index page and can 
+		recall using the 'default' rune, more balanced runebook recall and 
+		gate spells.
+	Silver Weapons (Racalac): Now are randomly created like other magic loot,
+		show up with ItemID, does double damage to undead.
+	SpawnNet (Louds): Now uses .invisible prop, use the "SeeInvisItems" priv to
+		see the runes, hide and show no longer needed.
+	Starting Equipment (Racalac): Finally added items for all starting skills.

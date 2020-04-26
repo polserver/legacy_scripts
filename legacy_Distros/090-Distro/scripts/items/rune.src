@@ -1,0 +1,37 @@
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////
+//  RUNE.SRC - Used when doubleclicking a rune.
+//
+//  Author: ???? ????/??/??
+//
+//  Recent Modifications
+//      1999/05/26 Ignatius lenghtchecking and commenting.
+////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////
+use uo;
+program dblclick_rune( who, rune )
+
+	// check if the rune has been marked.
+	// should this matter?
+	if (GetObjProperty( rune, "x" ) = error)
+        	SendSysMessage( who, "That rune is not marked." );
+        	return;
+    	endif
+
+	// fetch the description from the user.
+    	var runeDescription := RequestInput( who, rune, 
+		"Please enter a description for this rune. (max 20 characters)" );
+
+	// get lenght of description
+    	var descriptionLen := Len( runeDescription );
+
+	if ( runeDescription )
+		if ( descriptionLen <= 20 )
+			rune.name := "A recall rune for " + runeDescription;			
+			SendSysMessage( who, "Rune is renamed." );
+		else
+			SendSysMessage( who, "Too many characters in description." );
+		endif
+	endif
+
+endprogram

@@ -1,0 +1,122 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+// updated by Zulu (zuluhotel@home.com) Dec 14, 1999 - ver .1b
+// - Removed some debugging code
+// - Fixed display directions
+// - Fixed tracking time setting
+// - Fixed skill so it could be used
+// - Adjust tracking time
+// 
+/////////////////////////////////////////////////////////////////////////////
+
+use uo;
+use basic;
+use cfgfile;
+use os;
+
+include "include/client";
+
+global config;
+        
+include "include/skillpoints";
+
+program track( character )
+local thepoints := get_default_points(SKILLID_TRACKING);
+    local critter;    //the creature being tracked
+    local range;      // the range at which crature can be tracked
+
+   if( !GetObjProperty( character , "trackingtimeout") )
+        SetObjProperty( character , "trackingtimeout" , ReadGameClock()-1 );
+   endif
+
+    if( GetObjProperty( character , "trackingtimeout") >= ReadGameClock() )
+        SendSysmessage( character , "You must wait to track again." );
+        return;
+    endif
+
+    if (checkskill(character, SKILLID_TRACKING, -1,thepoints))
+        config := ReadConfigFile ("tracking");
+        range := Cint((GetSkill(character, SKILLID_TRACKING) /3));
+        local nearby := ListMobilesNearLocation (character.x,character.y, character.z, range);
+  
+        if (len(nearby) = 1)
+            SendSysmessage (character, "There don't seem to be any creatures nearby");
+            return;
+        endif
+  
+        local track_menu := CreateMenu("Select a creature.");
+        local critter_ids := array;
+        local menucount := 0;
+        
+        foreach mobile in nearby
+            if ( (mobile.serial != character.serial) and (mobile.dead != 1))
+                local elem := FindConfigElem(config, mobile.objtype);
+                if (elem)
+                    menucount := menucount + 1;
+                    critter_ids[menucount] := mobile;
+                    local tiletype := GetConfigInt(elem, "tile");
+                    AddMenuItem(track_menu, tiletype, mobile.name);
+                endif
+            endif
+        endforeach
+  
+        if (menucount > 0)
+            local thetarget := SelectMenuItem2 (character, track_menu);
+            if (!thetarget)
+                SendSysmessage (character, "Targetting cancelled.");
+                return;
+            endif
+            critter := critter_ids[thetarget.index];
+            SetObjProperty( character , "trackingtimeout" , ReadGameClock()+40 );
+            detach();
+   
+            while ( (Distance(character, critter) <= range) and (critter.dead = 0) and (GetObjProperty( character , "trackingtimeout") >= ReadGameClock()) )
+//                print ("dist : " + Distance(character, critter));
+                local dir := Get_direction(character, critter);
+                If (dir = "nearby")
+                SendSysmessage (character, critter.name + " is " + dir);
+		else
+                SendSysmessage (character, critter.name + " is to the " + dir);
+		endif
+                sleep(5);
+            endwhile
+            SendSysmessage (character, "You have lost your quarry.");
+            EraseObjProperty( character , "trackingtimeout" );
+        endif
+    else
+        SendSysmessage (character, "You fail to find any creatures nearby");
+    endif
+endprogram
+
+
+
+function get_direction (character, critter)
+    local ns_desc := "";
+    local ew_desc := "";
+    local thedesc;
+
+        //
+        //  print ("character : (" + character.x + "," + character.y + ")");
+        //  print ("critter : (" + critter.x + "," + critter.y + ")");
+        //
+    
+    if (critter.y < character.y)
+        ns_desc := "north";
+    elseif  (critter.y > character.y)
+        ns_desc := "south";
+    endif
+
+    if (critter.x < character.x)
+        ew_desc := "west";
+    elseif  (critter.x > character.x)
+        ew_desc := "east";
+    endif
+
+    if (ns_desc = "" and ew_desc = "")
+        thedesc := "nearby";
+    else 
+        thedesc := ns_desc + ew_desc ;
+    endif
+
+    return thedesc;
+endfunction

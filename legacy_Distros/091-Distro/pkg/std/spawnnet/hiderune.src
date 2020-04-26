@@ -1,0 +1,24 @@
+include "spawnnet";
+
+
+
+program hide_rune(who,params)
+
+if(!params)
+	params := 5;
+endif
+
+params:= cint(params);
+if(!params)
+	SendSysMessage(who,"parameter must be a number");
+	return;
+endif
+local counter :=0;
+
+foreach rune in ListItemsNearLocationOfType( who.x,who.y,who.z, params, 0xa300 )
+	rune.graphic := 0x1;
+	counter:=counter+1;
+endforeach
+
+SendSysMessage(who,"A total of "+counter+" runes have been hidden");
+endprogram

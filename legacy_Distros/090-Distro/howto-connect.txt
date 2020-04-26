@@ -1,0 +1,23 @@
+
+To connect to POL090 you have several choices involving a combination of the 
+encyrption used by POL, client version, and Ignition use:
+
+In pol.cfg set
+ClientEncryptionVersion=1.26.4
+and clients can connect with UO clients 1.26.4 - 1.26.4i
+
+In pol.cfg set
+ClientEncryptionVersion=2.0.0
+and clients can connect with UO clients 2.0.0 - 2.0.0b
+
+In pol.cfg set
+ClientEncryptionVersion=ignition
+and clients can connect with ANY client that Ignition supports 
+(currently 2.0.0-2.0.0e). *BUT* the client *MUST* be launched via Ignition! 
+This makes it easier to get all your users to connect with a support client, 
+because many clients are supported. The only problem would be getting them 
+ALL to download and USE Ignition.
+
+Get Ignition here: http://www.swileys.com/ignition/
+AND you must get the current config file: http://www.swileys.com/uox/Ignition.cfg
+

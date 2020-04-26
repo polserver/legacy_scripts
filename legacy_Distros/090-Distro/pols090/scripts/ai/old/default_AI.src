@@ -1,0 +1,417 @@
+//////////////////////////////////////////////////////////
+//
+//  default_AI
+//
+//  This file is exactly what it says it is: it contains
+//  controls for the basic creature types.  The creature's
+//  behavior all depends on the value of its 'nature' field,
+//  enumerated below:
+//
+//  Herbivores
+//
+//  1.  grazer       ( social )     antelope, moose, whale
+//  2.  intermittent ( solitary )   chipmunk, elephant
+//
+//  Omnivores
+//
+//  3.  hunter       ( solitary )   bear
+//
+//  Carnivores
+//
+//  4.  chaser       ( social )     wolf
+//  5.  trapper      ( solitary )   spider
+//  6.  killer       ( solitary )   shark, many evil creatures
+//
+   //  killer critters exist to kill, and are especially keen on 
+   //  killing humans.  They don't bother eating, and aren't 
+   //  driven by hunger like predators: instead, they are driven 
+   //  by the madness of bloodlust.
+//  
+//  Scavengers
+//
+//  7.  hijacker     ( solitary )   lion  
+//  8.  intimidator  ( social )     coyote
+//
+//  Undead
+//
+//  9.  undeadHunter ( solitary )   liche
+//  10. undeadChaser ( social )     skeleton
+//
+//  Evil Mortal Creatures
+//
+//  11. clansman     ( social )     orc        * NOT DONE
+//
+//////////////////////////////////////////////////////////
+use npc;
+use uo;
+
+include "util/creature";
+include "util/conflicts";
+include "util/spawn";
+include "util/buddies";
+include "include/randname";
+
+Const SHORT_RANGE      := 3;
+Const DEFAULT_RANGE    := 5;
+Const PARANOID_RANGE   := 7;
+Const HUNTER_RANGE     := 9;
+
+Const MEEK_TEMPER       := 0;
+Const MILD_TEMPER       := 15;
+Const EVEN_TEMPER       := 50;
+Const AGGRESSIVE_TEMPER := 100;
+Const BERSERK_TEMPER    := 250;
+Const INSANE_TEMPER     := 1000;
+
+////////////////////////////////////////////////////////////////////
+//
+//  default_AI
+//
+//  Handle all basic critter types in a generic fashion.
+//
+////////////////////////////////////////////////////////////////////
+program default_AI()
+
+        // 4/6/1999: temporary hack ENS
+        //           switch antagonist types to being efficient
+        //           player-haters
+        //           switch herbivores to avoid people
+    case ( nature )
+           // these were going to be "aloof", oh well 
+        "hunter":
+        "hijacker":
+        "intimidator":
+
+        "chaser":
+        "trapper":
+        "killer":
+        "undeadHunter":
+        "undeadChaser":
+        "clansman":
+
+            me.script := "killpcs";
+            RestartScript( me );
+        
+        "grazer":
+        "intermittent":
+            me.script := "meek";
+            RestartScript( me );
+    endcase
+
+if( me.name["<random>"] )
+   SetName ( me , RandomName( me ) );
+endif
+
+   local crowd  := 0;
+   local radius := determineRadius( nature );
+
+   while( 1 )
+
+      local nearby    := ListMobilesInLineOfSight( me, radius );
+      local groupSize := len( nearby );
+  
+      normalBehavior( groupSize );
+
+      if ( ! BadGuy )
+         foreach dude in ( nearby )
+            if ( examine( dude ) )
+               break;
+            endif
+         endforeach
+      endif
+
+   endwhile
+
+endProgram
+
+
+/////////////////////////////////////////////////////////////////
+//
+//  From the critter's nature, determine how perceptive
+//  it is.
+//
+/////////////////////////////////////////////////////////////////
+function determineRadius( nature )
+
+   case ( nature )
+
+      "trapper": 
+         return SHORT_RANGE;
+
+      "grazer":
+      "intimidator":
+      "hijacker":
+      "killer": 
+         return DEFAULT_RANGE;
+
+      "intermittent":
+      "undeadHunter":
+      "undeadChaser":
+      "clansman":
+         return PARANOID_RANGE;
+
+      "hunter":
+      "chaser": 
+         return HUNTER_RANGE;
+
+   endcase
+
+   return SHORT_RANGE;
+
+endfunction
+
+///////////////////////////////////////////////////////////////////
+//
+//  From the critter's nature, determine how aggressive it is.
+//
+///////////////////////////////////////////////////////////////////
+function determineAggression( nature )
+
+   case (nature)
+
+      "intermittent":
+         return MEEK_TEMPER;
+
+      "grazer":
+         return MILD_TEMPER;
+
+      "intimidator":
+      "hijacker":
+      "clansman":
+         return EVEN_TEMPER;
+
+      "hunter":
+      "chaser":
+      "trapper": 
+         return AGGRESSIVE_TEMPER;
+
+      "killer": 
+         return BERSERK_TEMPER;
+
+      "undeadHunter":
+      "undeadChaser":
+         return INSANE_TEMPER;
+
+      default:
+         return MILD_TEMPER;
+
+   endcase
+
+endfunction
+
+///////////////////////////////////////////////////////////////////
+//
+//  From the critter's nature, determine how it reacts
+//  to a given dude.
+//
+//  Return a 1 if we react to this dude, otherwise 0.
+//
+///////////////////////////////////////////////////////////////////
+function examine( dude )
+
+   local status := 0;
+
+   case ( nature )
+
+      "intermittent":                    // flees from other species
+         if ( ! cr_justLikeMe( dude ) )
+            RunAwayFrom( dude );
+            status := 1;
+         endif
+
+      "grazer":                          // defends self if attacked
+      "chaser":                          // attacks and defends
+      "intimidator":
+         if ( ! cr_justLikeMe( dude ) )
+            if ( ( Hunger + determineAggression( nature ) )/4
+                   > determineAggression( Cint( GetObjProperty( dude, "nature" ) ) ) // hunting
+               or GetObjProperty( dude, "BadGuy" ) = me.serial ) // hunted
+               co_target( dude );
+               status := 1;
+            endif
+         elseif ( bu_setBuddy( dude ) )  // can have buddies
+            status := 1;
+         endif
+
+      "hunter":                         // a chaser without buddies
+      "trapper":
+         if ( ! cr_justLikeMe( dude ) )
+            if ( ( Hunger + determineAggression( nature ) )/4
+                   > determineAggression( Cint( GetObjProperty( dude, "nature" ) ) )// hunting
+               or GetObjProperty( dude, "BadGuy" ) = me.serial ) // hunted
+               co_target( dude );
+               status := 1;
+            endif
+         endif
+
+      "killer":                        // a hunter without remorse
+      "hijacker":
+         if ( (Hunger + determineAggression( nature ) ) * ( 1 + co_human( dude ) ) 
+              > determineAggression( Cint( GetObjProperty( dude, "nature" ) ) )
+         or ( GetObjProperty( dude, "BadGuy" ) = me.serial ) )
+            co_target( dude );
+            status := 1;
+         endif
+
+      "undeadHunter":                 // solitary killer of non-evil things
+         if (GetObjProperty( dude, "alignment" ) != "evil")
+            co_target( dude );
+            status := 1;
+         endif
+
+      "undeadChaser":                 // non-evil killer with a buddy instinct
+         if (GetObjProperty( dude, "alignment" ) != "evil")
+            co_target( dude );
+            status := 1;
+         else
+            bu_setBuddy( dude );     // or at least try...
+         endif
+
+      "clansman":
+      default: unknownCritter();
+
+   endcase
+
+   return status;
+
+endfunction
+
+////////////////////////////////////////////////////////////////////
+//
+//  normalBehavior
+//
+//  From the critter's nature, determine its daily routine.
+//  The single parameter, crowd, is the number of other critters
+//  it perceives in its immediate vicinity.
+//
+////////////////////////////////////////////////////////////////////
+function normalBehavior( crowd )
+
+   case ( nature )
+
+      "intermittent":
+         sp_spawn( ( crowd+1 ) * 25 );  // shy herbivore
+         cr_wander();
+
+
+      "grazer":
+         if (BadGuy)                    // defensive herbivore
+            co_fight();
+         else
+            cr_wander();
+            bu_followBuddies();         // social skills
+            sp_spawn( crowd * crowd );
+         endif
+
+
+      "intimidator":
+         co_eatTheDead();               // carnivore
+
+         // no valor here.. this guy will not attack, but neither
+         // will it flee.
+
+         cr_wander();
+         bu_followBuddies();            // social skills
+
+         if ( ! BadGuy )
+            sp_spawn( Hunger + 25 - crowd );
+         endif
+
+      "chaser":
+         co_eatTheDead();              // carnivore
+
+         if (BadGuy)
+            co_fight();
+         else
+            cr_wander();
+            bu_followBuddies();         // social skills
+            sp_spawn( Hunger + 25 - crowd );
+         endif
+
+
+      "hunter":
+      "hijacker":
+         co_eatTheDead();              // carnivore
+
+         if (BadGuy)
+            co_fight();
+         else
+            cr_wander();
+            sp_spawn( Hunger + 25 - crowd );
+         endif
+
+
+      "trapper":
+         if (BadGuy)
+            co_fight();
+         else
+            if ( randomint( 100 ) = 0 )
+               cr_wander();           // mostly stationary
+            endif
+         endif
+
+
+      "killer":
+         if (BadGuy)
+            co_fight();
+         else
+            cr_wander();
+            sp_spawn( crowd );
+         endif
+
+
+      "undeadHunter":
+         if ( BadGuy )
+            if (co_fight() = 1)
+               me.hp := me.maxhp;    // a kill restores hits
+            endif
+         else
+            cr_wander();
+         endif
+
+      "undeadChaser":      
+         if ( BadGuy )
+            if (co_fight() = 1) 
+               me.hp := me.maxhp;   // a kill restores hits
+               sp_spawn( 1 );       // a kill may trigger a spawn
+            endif
+         else
+            bu_followBuddies();     // social skills
+            cr_wander();
+         endif
+
+
+      "clansman":
+         if (BadGuy)                    // defense
+            co_fight();
+         else
+            cr_wander();
+            bu_followLeader();          // social skills
+            sp_spawn( crowd * crowd );
+         endif
+
+
+      default:
+         cr_wander();
+
+   endcase
+
+endfunction
+
+
+function unknownCritter()
+
+   /////////////////////////////////////////////////////////////
+   //
+   //  This creature has a nature that is not understood.
+   //  Log this, kill the creature, and exit, so someone 
+   //  can get a clue and the world isn't littered with
+   //  motionless creatures.
+   //
+   /////////////////////////////////////////////////////////////
+      syslog( "Creature " + Hex(me.serial) + " (" + me.name + ")" +
+              " has nature '" + GetObjProperty( me, "nature" ) + "'" +
+              ", which is unhandled." );
+      ApplyRawDamage( me, me.maxhp );     
+
+endfunction

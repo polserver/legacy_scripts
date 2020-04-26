@@ -1,0 +1,20 @@
+//
+// oncreate.src: Runs on character creation
+//
+// Notes:
+//    runs critical (may be changed to just run to completion)
+//    parameters are (who, skillids)
+//       who: character created
+//       skillids: array of skillid integers
+//    
+
+use uo;
+
+include "include/starteqp";
+
+program oncreate( who, skillids )
+    print( "Character created: " + who.name );
+    
+    CreateStartingEquipment( who, skillids );
+
+endprogram

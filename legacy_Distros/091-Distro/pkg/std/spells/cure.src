@@ -1,0 +1,40 @@
+use uo;
+
+include "include/client";
+include "include/spellrestrictions";
+program cast_cure( parms )
+
+	local circle :=2 ;
+	local caster;
+	local cast_on;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_on := parms[3];
+	else
+		caster := parms;
+		cast_on := CanTargetSpell(caster, circle, TGTOPT_HELPFUL + TGTOPT_CHECK_LOS );
+		if (!cast_on)
+			return;
+		endif
+	endif
+
+        PlaySoundEffect(caster, SFX_SPELL_CURE);
+        PlayObjectCenteredEffect( cast_on, FX_BLESS_EFFECT, 10,10);
+
+	local poison_descr := GetObjProperty( cast_on,"poison_level" ) ;
+        local poison_level := Cint(poison_descr);
+        if (poison_level >= 1)
+		poison_level := poison_level - 1;
+                if (poison_level >= 1)
+			Sendsysmessage(caster, "You cure some poison.");
+			SendSysmessage (cast_on, caster.name + " has partially cured you!"); 
+                else
+			SendSysmessage (caster, cast_on.name + " cured."); 
+			SendSysmessage (cast_on, caster.name + " has cured you completely!"); 
+                endif
+		SetObjProperty(cast_on, "poison_level", Cstr(poison_level));
+        endif        
+
+
+endprogram

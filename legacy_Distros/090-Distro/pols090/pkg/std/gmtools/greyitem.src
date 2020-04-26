@@ -1,0 +1,46 @@
+Use uo;
+Use os;
+
+program grey(me,item)
+    if (me.cmdlevel < 2)
+      return;
+    endif
+	SetScriptController( me );
+	if (item.color = 910)
+	  item.color := 88;
+	  SendSysmessage(me, "Criminal flag will expire in under two minutes.");
+	  return;
+	endif
+	item.color := 910;
+	local parms := {};
+	parms.+alignment := "good";
+	parms.+name := me.name + "'s whipping boy";
+	local boy := createnpcfromtemplate("person",5275,1174,0,parms);
+      boy.frozen := 1;
+      boy.invisible := 1;
+      boy.squelch(0);
+    detach();
+	if (!boy)
+	  SendSysMessage(me,"Sorry, unable to create the whipping boy");
+	  item.color := 88;
+	  return;
+	else
+      boy.frozen := 1;
+	  set_critical(0);
+	  SendSysmessage(me, "You are now flagged criminal");
+	  applydamage(boy,1);
+	  boy.hp := boy.maxhp;
+	  sleep(120);
+	endif
+	While (item.color = 910)
+	  SendSysmessage(me, "Still grey");
+	  applydamage(boy,1);
+	  boy.hp := boy.maxhp;
+	  sleep(120);
+	EndWhile
+	SetScriptController( 0 );
+	RevokePrivilege( boy, "invul" );
+	setobjproperty(boy,"guardkill",1);
+	Damage( boy, boy.maxhp );
+	SendSysMessage(me, "Criminal flag has expired");
+endprogram

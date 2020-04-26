@@ -1,0 +1,64 @@
+use uo;
+use os;
+use basic;
+
+
+program demod(parms)
+
+local mod := lower(parms[1]);
+local who := parms[2];
+local amt := parms[3];
+local duration := parms[4];
+
+if (who.npctemplate)
+        sleep(duration);
+        undo_mod(who, mod, amt);
+else
+     local retval := 0;
+        
+     while (!retval)
+        sleep(duration);
+        retval := undo_mod(who, mod, amt);
+     endwhile
+endif
+
+EraseModFlags(who, mod);
+
+endprogram
+
+function undo_mod(who, mod, amt)
+
+if (who && !who.dead)
+
+        case (mod)
+                "str": who.strength_mod := who.strength_mod - amt; 
+                "dex": who.dexterity_mod := who.dexterity_mod - amt;
+                "int": who.intelligence_mod := who.intelligence_mod - amt;
+                "ar":  who.ar_mod := who.ar_mod - amt;
+                "p" :  who.SetParalyzed(0);
+        endcase
+        return 1;
+else
+        return 0;
+endif
+
+endfunction
+
+function EraseModFlags(who, stat)
+
+	local mod;
+
+	case (stat)
+        	"str": mod := "#ss";
+        	"dex" : mod := "#dd";
+        	"int" : mod := "#ii";
+        	"ar"  : mod := "#aa";
+		"p"   : mod := "#pp";
+	endcase
+
+        if (who)
+                eraseobjproperty(who, mod);
+                return;
+        endif
+
+endfunction

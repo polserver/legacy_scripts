@@ -1,0 +1,143 @@
+use os;
+use uo;
+use boat;
+
+include "include/eventid";
+
+set_debug(1);
+
+const STATE_STATIONARY := 0;
+const STATE_MOVING := 1;
+
+const DELAY_FULL_SPEED := 333;
+const DELAY_SLOW := 1000;
+
+global state := STATE_STATIONARY;
+global relative_direction;
+global ms_delay_between_moves := DELAY_FULL_SPEED;
+global boat;
+global tillerman;
+
+function handle_speech( event )
+    local text := lower( event.text );
+
+    if (text["unfurl sail"] or text["unfurl"])
+        state := STATE_MOVING;
+        relative_direction := 0;
+    elseif (text["forward"])
+        state := STATE_MOVING;
+        if (text["left"])      relative_direction := 7;  // "forward left"
+        elseif (text["right"]) relative_direction := 1;  // "forward right"
+        else                   relative_direction := 0;  // "forward"
+        endif
+    elseif (text["back"]) // gets "backward" too
+        state := STATE_MOVING;
+        if (text["left"])      relative_direction := 5;  // "back left"
+        elseif (text["right"]) relative_direction := 3;  // "back right"
+        else                   relative_direction := 4;  // "back"
+        endif
+    elseif (text["stop"] or text["furl sail"] or text["furl"])
+        state := STATE_STATIONARY;
+    elseif (text["turn right"] or text["starboard"])
+        TurnBoat( boat, 1 );
+    elseif (text["right"])
+        state := STATE_MOVING;
+        relative_direction := 2;
+    elseif (text["turn left"] or text["port"])
+        TurnBoat( boat, 3 );
+    elseif (text["left"])
+        state := STATE_MOVING;
+        relative_direction := 6;
+    elseif (text["come about"])
+        TurnBoat( boat, 2 );
+        sleep(1);
+    else
+        // not a command.  don't do the stuff below.
+        return;
+    endif
+
+    // a command was executed.  if "full" or "slow" was specified,
+    // modify our speed accordingly
+
+    if (text["full"])
+        ms_delay_between_moves := DELAY_FULL_SPEED;
+    elseif (text["slow"])
+        ms_delay_between_moves := DELAY_SLOW;
+    endif
+
+    PrintTextAbove( tillerman, "Aye, Captain" );
+    sleep(1);
+
+    // if "one" was specified, just move one, then stop.
+    if (text["one"])
+        MoveBoatRelative( boat, relative_direction );
+        state := STATE_STATIONARY;
+    endif
+
+endfunction
+
+function process_event( event )
+    if (event.type = EVID_SPEECH)
+        // check that the speaker is actually on the boat.
+        if( CanCommandMe( event.source ))
+            handle_speech( event );
+        endif
+    endif
+endfunction
+
+function CanCommandMe( who )
+    if (who.multi.serial != boat.serial)
+        return 0;
+    endif
+
+    var whodist := Distance( who, tillerman );
+
+    foreach mob in (boat.mobiles)
+        if (Distance( mob, tillerman ) < whodist)
+            return 0;
+        endif
+    endforeach
+
+    return 1;
+endfunction
+
+function boat_script()
+    RegisterForSpeechEvents( tillerman, 12 );
+
+    set_critical(1);
+
+    while (boat)
+        case (state)
+            STATE_MOVING:
+                MoveBoatRelative( boat, relative_direction );
+                sleepms( ms_delay_between_moves );
+                while (events_waiting())
+                    process_event( wait_for_event(0) );
+                endwhile
+
+            STATE_STATIONARY:
+                var ev := wait_for_event( 300 );
+                if (ev)
+                    process_event( ev);
+                endif
+        endcase
+    endwhile
+
+endfunction
+
+program autostart_boat( param )
+    boat := param;
+    if (!boat)
+        syslog( "No boat! Huh?" );
+        return;
+    endif
+
+    tillerman := boat.tillerman;
+    if (!tillerman)
+        syslog( "No tillerman for boat " + hex(boat.serial) + "! WTF?" );
+        return;
+    endif
+
+    boat_script();
+endprogram
+

@@ -1,0 +1,45 @@
+use uo;
+use util;
+
+include "include/client";
+include "include/objtype";
+include "include/skillpoints";
+include "include/bard";
+include "include/eventid";
+
+
+program bard_provoke(character, range)
+
+if (!range)
+        Sendsysmessage(character, "Usage: .mattack (range). Used to provoke many creatures on one player");
+        return;
+endif        
+sendsysmessage(character, "Select a creature you wish to provoke");
+
+local thetargs := targetcoordinates(character);
+
+if (!thetargs)
+        sendsysmessage(character, "Targetting cancelled.");
+        return;
+endif
+
+
+
+local ev := array;
+ev.+ type;
+ev.+ source;
+ev.type := EVID_PEACEMADE;
+
+SendSysmessage(character, "Select the target");
+        local newtarg := target(character);
+        ev.source := newtarg;
+
+local thetarg;
+
+foreach thetarg in  listmobilesnearlocation(thetargs.x, thetargs.y, thetargs.z, cint(range))
+        sendevent(thetarg, ev);
+        ev.type := EVID_ENGAGED;
+        sendevent(thetarg, ev);
+endforeach        
+
+endprogram 

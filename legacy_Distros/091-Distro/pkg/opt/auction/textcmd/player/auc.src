@@ -1,0 +1,540 @@
+// auction  version .6
+// by Zulu (zulu@zuluhotel.com)   April 27, 2000
+
+use uo;
+use os;
+include "include/utility"; //storage
+
+global storage, inv_auct,inv_auct_ticket, inv_view_item, inv_view;
+const UOBJ_GOLDCOIN := 0xeed;
+
+storage := FindStorageArea( "Merchant Storage" );
+
+if (!storage)
+    exit;
+endif
+
+inv_auct := find_or_create_item( storage, "1AUCTION1", 0xE7C );
+inv_auct_ticket := find_or_create_item( storage, "2AUCTION2", 0xE7C );
+
+if((!inv_auct)or(!inv_auct_ticket))
+    exit;
+endif
+
+global gumpx, gumpy;
+
+
+global layout := {
+"page 0",
+"nodispose",
+"resizepic 25 0 2600 500 400",
+"resizepic 45 60 5100 450 25",
+"resizepic 45 330 5100 450 25",
+"text 150 25 995 0",
+//top bar
+"text 70 60 0 1",
+"button 110 63 5002 5003 1 0 11",//join
+"text 150 60 0 2",
+"button 200 63 5002 5003 1 0 12",//leave
+"text 240 60 0 3",
+"button 360 63 5002 5003 1 0 13",//message
+"text 405 60 0 4",
+"button 445 63 5002 5209 0 2",//help
+
+"text 65 330 0 5",
+"button 95 333 5002 5003 1 0 15",//bid
+"text 125 330 0 6",
+"button 210 333 5002 5003 1 0 16", //desc
+"text 240 330 0 7",
+"button 285 333 5002 5003 1 0 17", //view
+"text 315 330 0 8",
+"button 445 333 5002 5003 1 0 18", //players
+"page 2",//help
+"text 70 100 200 36",
+"text 70 120 600 37",
+"text 70 140 200 38",
+"text 70 160 200 39",
+"text 70 180 600 40",
+"text 70 200 600 41",
+"text 70 220 200 42",
+"text 70 240 600 43",
+"text 70 260 600 44",
+"text 70 280 200 45",
+"page 1"
+};
+
+global data := {
+"AUCTION SELECTION MENU",
+"Join",
+"Leave",
+"Barter Message",
+"Help",
+"Bid",
+"Description",
+"View",
+"Auction Members",
+"",//9
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"0",//18
+"0",
+"0",
+"0",
+"0",
+"0",
+"0",
+"0",
+"0",
+"0",//27
+"0",
+"0",
+"0",
+"0",
+"0",
+"0",
+"0",
+"0",//35
+"Join: will allow you to join the auction.",
+"Leave: will allow you to leave the auction.",
+"Barter Messages: will allow you to send a message to",
+"other auction memebers.",
+"Bid: will allow you to bid on an item. The price",
+"inside of () is the current bid.",
+"Description: will give you info on a selected item.",
+"View: will allow you to see the item and view what is",
+"inside a backpack, container or spellbook.",
+"Auction Members: will show you the current members."
+};
+
+
+program textcmd_testgump( who )
+
+	buildgump();
+
+      var res :=    SendDialogGump( who, layout, data );
+
+//bid on an item
+	if (res[0]=15)
+		if (GetObjproperty(who, "auction")="yes")
+		foreach key in (res.keys)
+		if (key >99)
+			biditem(who, (key-100));
+			break;
+		endif
+		endforeach
+		else
+		SendSysMessage( who,"You need to join the auction first");
+		endif
+	endif
+
+//view description
+	if (res[0]=16)
+		foreach key in (res.keys)
+		if (key >99)
+			buildinfo(who, (key-100));
+			break;
+		endif
+	endforeach
+
+//	buildinfo(who, res[1]);
+	endif
+
+//view item
+	if (res[0]=17)
+	foreach key in (res.keys)
+	  if (key >99)
+		viewitem(who, (key-100));
+		break;
+	  endif
+	endforeach
+
+	endif
+
+// join the auction
+	if (res[0]=11) 
+		if (GetObjproperty(who, "auction")!="yes")
+		setobjproperty(who, "auction", "yes");
+		updateplayers(who);
+		else
+		SendSysMessage( who,"You are already a member");
+		endif
+	endif
+
+// quit the auction
+	if (res[0]=12)
+		if (GetObjproperty(who, "auction")="yes")
+		eraseobjproperty(who, "auction");
+		SendSysMessage( who, who.name + " has left the auction");
+		updateplayers(who);
+		else
+		SendSysMessage( who,"You have not joined the auction");
+		endif
+	endif
+
+//barter message
+	if (res[0]=13)
+		if (GetObjproperty(who, "auction")="yes")
+		barter(who);
+		else
+		SendSysMessage( who,"You need to join the auction first");
+		endif
+	endif
+
+//players
+	if (res[0]=18)
+		if (GetObjproperty(who, "auction")="yes")
+		auctionplayers(who);
+		else
+		SendSysMessage( who,"You need to join the auction first");
+		endif
+	endif
+
+endprogram
+
+function biditem(who,item)
+
+if (data[item+18]="closed")
+return;
+endif
+
+local bid;
+
+bid := Cint(RequestInput(who, who.backpack, "What is your bid for " + data[item+9] + "("+data[item+18]+")"));
+
+if((bid="") or (!bid))
+SendSysMessage( who, "Cancelled." );
+return;
+endif
+if(bid<0)
+SendSysMessage( who, "Your bid was not accepted." );
+return;
+endif
+
+
+finditem(who,item,bid);
+
+endfunction
+
+function finditem(who,num1,num2)
+	local backpack := EnumerateItemsInContainer ( inv_auct );
+	local auctionitem := 0;
+	local startbid := 0;
+	local currentbid := 0;
+	local timeleft, seller, lastbid, givebackgold;
+
+	num2 := Cint(num2);
+
+        foreach auction_items in backpack
+
+	timeleft := (GetObjProperty(auction_items, "time")-ReadGameClock());
+
+	if ((!timeleft) or (timeleft=""))
+	else
+	auctionitem := auctionitem +1;
+	endif
+
+	if (auctionitem = num1)
+	   if (timeleft <= 0)
+		SendSysMessage( who, "Bidding is closed on that item.");
+		return;
+	   endif
+
+	  seller := GetObjProperty (auction_items, "seller");
+	  lastbid := GetObjProperty (auction_items, "buyer");
+
+	   if (who.serial =  seller)
+		SendSysMessage( who, "You cannot bid on your own items.");
+		return;
+	   endif
+
+	   if (who.serial =  lastbid)
+		SendSysMessage( who, "You cannot bid twice in a row.");
+		return;
+	   endif
+
+	   startbid := Cint(GetObjProperty (auction_items, "starting"));
+	   currentbid := Cint(GetObjProperty (auction_items, "bid"));
+
+	   if((currentbid=0) and (num2<startbid))
+		SendSysMessage( who, "Bids start at " + startbid);
+		return;
+	   endif
+	   
+	if((num2>currentbid+9) or (currentbid=0))
+	  if (who.spendgold(num2))
+		if (currentbid>0)
+		// give money back to loosing player
+		givebackgold := CreateItemIncontainer(inv_auct_ticket, UOBJ_GOLDCOIN, currentbid);
+	        SetObjProperty (givebackgold, "owner", GetObjProperty(auction_items, "buypack"));
+		endif
+
+        	SetObjProperty (auction_items, "buyer", who.serial);
+	        SetObjProperty (auction_items, "buypack", Cint(who.backpack.serial));
+	        SetObjProperty (auction_items, "bid", num2);
+	        SetObjProperty (auction_items, "time", (GetObjProperty(auction_items, "time")+20));
+		updatebid(auction_items, Cint(auctionitem));
+		SendSysMessage( who, "Your bid was accepted.");
+		return;
+	  else
+        	SendSysMessage( who, "You do not have " + num2);
+		return;
+	  endif
+
+
+	 elseif(num2<(currentbid+9))
+		SendSysMessage( who, "Your bid must be higher than " + (currentbid+9));
+		return;
+	 endif
+		SendSysMessage( who, "Your bid was not accepted");
+		return;
+
+	endif
+endforeach
+
+	SendSysMessage( who, "That item could not be found.");
+endfunction
+
+
+function updatebid(item, auctionitem)
+
+local auctioncheck;
+
+foreach chr in EnumerateOnlineCharacters()
+   auctioncheck := getobjproperty(chr, "auction");
+
+   if (auctioncheck = "yes")
+	SendSysMessage(chr, "New bid for: " + item.desc + " " + GetObjProperty(item, "bid") );
+	SendSysMessage(chr, "Time Left: " + (GetObjProperty(item, "time")-ReadGameClock()) );
+   endif
+endforeach
+endfunction
+
+function buildinfo(who, whichone)
+
+    local counter :=0, timeleft, backpack := EnumerateItemsInContainer ( inv_auct );
+
+    foreach item in backpack
+
+	timeleft := (GetObjProperty(item, "time")-ReadGameClock());
+
+	if ((!timeleft) or (timeleft=""))
+	else
+	counter := counter +1;
+	if (counter = whichone)
+	if (timeleft<=0)
+		SendSysMessage( who, "Bidding is closed." );
+	else
+	SendSysMessage( who, " ");
+	SendSysMessage( who, "Item: " + item.desc);
+	SendSysMessage( who, "Message: " + GetObjProperty (item, "msg"));
+	SendSysMessage( who, "Starting Bid: " + GetObjProperty (item, "starting"));
+	SendSysMessage( who, "Current  Bid: " + GetObjProperty (item, "bid"));
+	SendSysMessage( who, "Time Left: " + timeleft);
+	sleep(2);
+	endif
+	break;
+	endif
+	endif
+    endforeach
+
+endfunction
+
+function buildgump()
+
+    Local i, totalitems :=1, gumpx :=1, gumpy :=3, split, totalwords :=0, amount,timeleft;
+
+local textlayout := {70,210,345,95,175,255};
+local buttlayout := {130,270,405,120,205,280};
+local pictlayout := {75,215,350,120,205,280};
+
+  	local backpack := EnumerateItemsInContainer ( inv_auct );
+
+    foreach item in backpack
+
+
+	timeleft := (GetObjProperty(item, "time")-ReadGameClock());
+
+	if ((!timeleft) or (timeleft=""))
+	else
+	gumpy := gumpy +1;
+	if (gumpy=7)
+		gumpy :=4;
+	gumpx := gumpx +1;
+	if (gumpx=4)
+	gumpx :=1;
+	endif
+	endif
+
+	split := SplitWords( item.desc );
+	totalwords := len(split);
+
+	if((totalwords=1) or (totalwords=2))
+		data[totalitems+9] := split[totalwords];
+	elseif(totalwords > 3)
+		data[totalitems+9] := split[totalwords-2] + " " + split[totalwords-1] + " " + split[totalwords];
+	else
+		data[totalitems+9] := split[2] + " " + split[3];
+	endif
+
+	amount := GetObjProperty (item, "bid");
+
+	if (amount=0)
+	amount := GetObjProperty (item, "starting");
+	endif
+
+	if (timeleft > 0)
+		data[totalitems+18] := amount;
+	else
+		data[totalitems+18] := "closed";
+	endif
+
+	layout.append("text "+textlayout[gumpx]+" "+textlayout[gumpy]+" 995 "+(totalitems+8));
+	layout.append("text "+(textlayout[gumpx]+50)+" "+(textlayout[gumpy]+50)+" 995 "+(totalitems+17));
+	layout.append("radio "+buttlayout[gumpx]+" "+buttlayout[gumpy]+" 210 211 0 " + (100+totalitems));
+	layout.append("tilepic "+pictlayout[gumpx]+" "+pictlayout[gumpy]+" "+item.graphic);
+
+	totalitems := totalitems +1;
+	endif
+
+    endforeach
+
+endfunction
+
+
+function updateplayers( who )
+
+local auctioncheck;
+
+foreach chr in EnumerateOnlineCharacters()
+   auctioncheck := getobjproperty(chr, "auction");
+
+   if (auctioncheck = "yes")
+	if (getobjproperty(who, "auction")="yes")
+		SendSysMessage( chr, who.name + " has joined the auction" );
+	else
+		SendSysMessage( chr, who.name + " has left the auction" );
+	endif
+   endif
+
+endforeach
+
+endfunction
+
+
+function barter(who)
+
+local auctioncheck, bartermsgonoff, bartermsg, nextmsg :=cint(GetObjProperty(who, "#nextbartermsg")), secclock:=ReadGameClock();
+
+if ( secclock< nextmsg)
+SendSysMessage( who, "You have to wait " + (nextmsg-secclock) + " to send another message.");
+return;
+endif
+
+SendSysMessage( who, "You now can type in: on or off");
+bartermsg := RequestInput(who, who.backpack, "Type in your barter message:" );
+
+if((bartermsg="") or (!bartermsg))
+SendSysMessage( who, "Cancelled." );
+return;
+endif
+
+if (bartermsg="on")
+SendSysMessage( who, "You have turned on barter messages.");
+eraseobjproperty(who, "barter");
+return;
+endif
+if (bartermsg="off")
+SendSysMessage( who, "You have turned off barter messages.");
+setobjproperty(who, "barter", "off");
+return;
+endif
+
+foreach chr in EnumerateOnlineCharacters()
+   auctioncheck := getobjproperty(chr, "auction");
+   bartermsgonoff := getobjproperty(chr, "barter");
+
+   if ((auctioncheck = "yes") and (bartermsgonoff<>"off"))
+	SendSysMessage( chr, who.name + " barters: " + bartermsg );
+   endif
+endforeach
+
+setobjproperty(who, "#nextbartermsg", ReadGameClock() + 60);
+
+endfunction
+
+
+function auctionplayers(who)
+
+local auctioncheck, bartermsgonoff, aucmembers :=EnumerateOnlineCharacters();
+SendSysMessage( who, " " );
+SendSysMessage( who, len(aucmembers) + " Auction Members:" );
+
+foreach chr in aucmembers
+   auctioncheck := getobjproperty(chr, "auction");
+
+   if (auctioncheck = "yes")
+	bartermsgonoff :="";
+	if (getobjproperty(chr, "barter")<>"off")
+	   bartermsgonoff :=" *";
+	endif
+	if (getobjproperty(who, "auction")="yes")
+		SendSysMessage( who, chr.name + bartermsgonoff);
+	endif
+   endif
+
+endforeach
+	SendSysMessage( who, "* = barter message on" );
+endfunction
+
+function viewitem(who, item)
+
+   local backpack := EnumerateItemsInContainer ( inv_auct );
+   local totalitems := 0, totalamount :=0, gotit := 0, timeleft, pause:=0;
+
+   foreach auction_items in backpack
+
+	timeleft := (GetObjProperty(auction_items, "time")-ReadGameClock());
+
+	if (gotit=0)
+	   if ((!timeleft) or (timeleft=""))
+	   else
+		totalitems := totalitems + 1;
+	   endif
+	endif
+
+	if ((gotit=0) and (totalitems = item))
+	if (timeleft<=0)
+		SendSysMessage( who, "Bidding is closed." );
+		return;
+	endif	
+		gotit := 1;
+		SendSysMessage( who, auction_items.desc + " includes:" );
+	elseif(gotit=1)
+	   if ((!timeleft) or (timeleft=""))
+		SendSysMessage( who, auction_items.desc );
+		totalamount := totalamount+1;
+		pause:=pause+1;
+		if (pause=4)
+		sleep(2);
+		pause:=0;
+		endif
+	   else
+		break;
+	   endif
+
+	endif
+
+   endforeach
+
+   if (totalamount=0)
+   SendSysMessage( who, "nothing." );
+   else
+   SendSysMessage( who, totalamount + " total item(s)." );
+   endif
+endfunction

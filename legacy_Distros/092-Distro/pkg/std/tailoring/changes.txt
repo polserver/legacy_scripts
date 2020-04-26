@@ -1,0 +1,5 @@
+Tailoring Package Changes
+---------------------------
+10/9/99, Racalac, Submitted Code: fixed leather tailoring bug, manufacture bandages
+                  Scissors fixed for cutting bandages
+

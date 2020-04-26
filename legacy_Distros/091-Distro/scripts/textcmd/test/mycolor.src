@@ -1,0 +1,5 @@
+use uo;
+
+program textcmd_mycolor( who, color )
+    who.color := CInt(color);
+endprogram

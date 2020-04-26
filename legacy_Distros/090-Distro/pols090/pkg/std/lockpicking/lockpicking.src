@@ -1,0 +1,69 @@
+use uo;
+use cfgfile;
+use util;
+include "include/client";
+program use_lockpicks(who, lockpick)
+
+local cfg := readconfigfile("lockpicking");
+
+if (!cfg)
+        return;
+endif
+
+if (randomint(100) = 1)
+        sendsysmessage(who, "Your lockpicks break!");
+        subtractamount(lockpick, 1);
+        return;
+endif
+
+
+sendsysmessage(who, "What would you like to use this on?");
+local what := target(who, TGTOPT_CHECK_LOS);
+
+if(!what)
+        sendsysmessage(who, "Targetting cancelled!");
+        return;
+endif
+
+if (!what.locked)
+        sendsysmessage(who, "Uhh, that's not locked...");
+        return;
+endif
+
+if (getobjproperty(what, "#U"))
+        if (getobjproperty(what, "#U") > readgameclock())
+                sendsysmessage(who, "You must wait to pick this lock!");
+                return;
+        endif
+endif
+if (distance(who, what) > 2)
+        sendsysmessage(who,"You need to get closer to that!");
+        return;
+endif
+
+if (what.multi)
+        Sendsysmessage(who, "The Gods frown on picking this door!");
+        playlightningbolteffect(who);
+        return;
+endif
+
+local difficulty := getobjproperty(what, "LockDifficulty");
+if (!difficulty)
+        difficulty := cfg[what.objtype].difficulty;
+endif
+
+if (!difficulty)
+        sendsysmessage(who, "You can't seem to pick that lock!");
+        return;
+endif
+        
+if (CheckSkill(who, SKILLID_LOCKPICKING, difficulty, difficulty * 2))
+        playsoundeffect(who, 0x242);
+        what.locked := 0;
+        setobjproperty(what, "L", who.name);
+else
+        sendsysmessage(who, "You fail to open the lock!");
+        setobjproperty(what, "#U", readgameclock() + 60);
+endif
+
+endprogram

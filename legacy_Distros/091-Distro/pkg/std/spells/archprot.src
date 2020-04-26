@@ -1,0 +1,40 @@
+use uo;
+use os;
+
+include "include/client";
+include "include/statmod";
+include "include/spellrestrictions";
+
+program cast_archprot( parms )
+
+	local circle := 4;
+	local caster;
+	local thetarget;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		thetarget := parms[3];
+	else
+		caster := parms;
+		thetarget := CanTargetArea(caster, circle);
+		if (!thetarget)
+			return;
+		endif
+	endif
+	
+	PlaySoundEffect(caster, SFX_SPELL_PROTECTION);
+
+	local magery := Getskill(caster, SKILLID_MAGERY);
+
+	local mod_amount := GetModAmount( magery );
+	local duration := GetModDuration( magery );
+
+	foreach cast_on in ListMobilesNearLocation( thetarget.x,
+	  thetarget.y, thetarget.z, cint(magery/15) );
+		if (CanMod(cast_on, "ar"))
+			PlayObjectCenteredEffect( cast_on, FX_BLESS_EFFECT, 7,7);
+			DoTempMod(cast_on, "ar", mod_amount, duration);
+		endif
+	endforeach
+
+endprogram

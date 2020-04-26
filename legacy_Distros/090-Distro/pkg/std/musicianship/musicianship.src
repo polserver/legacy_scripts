@@ -1,0 +1,81 @@
+use uo;
+use os;
+use util;
+
+include "include/client";
+include "include/objtype";
+include "include/skillpoints";
+
+
+global config;
+
+function play(character,succeed_sound,fail_sound)
+
+	local diff := Cint(GetSkill(character,SKILLID_MUSICIANSHIP)-10);
+	if (diff<1) diff := 10; endif
+	local thepoints := diff*2;
+
+   	if (CheckSkill(character, SKILLID_MUSICIANSHIP, diff, thepoints))
+      		PlaySoundEffect( character, succeed_sound );
+      		return 1;
+   	else
+      		PlaySoundEffect( character, fail_sound);
+      		return 0;
+   	endif
+
+endfunction
+
+program music(character, instrument, skill)
+
+   local inst_id := instrument.objtype;
+   local ret := 0;
+
+   if (!skill)
+	AutoRepeat(character, instrument);
+	return;
+   endif
+ 
+   if (inst_id = UOBJ_HARP)
+      ret := play(character,SFX_HARP_SUCC,SFX_HARP_FAIL);
+   elseif (inst_id = UOBJ_LUTE)
+      ret := play(character,SFX_LUTE_SUCC,SFX_LUTE_FAIL);
+   elseif (inst_id = UOBJ_DRUM)
+      ret := play(character,SFX_DRUM_SUCC,SFX_DRUM_FAIL);
+   elseif (inst_id = UOBJ_TAMB)
+      ret := play(character,SFX_TAMB_SUCC,SFX_TAMB_FAIL);
+   else
+      PrintTextAbovePrivate( character, "That's not something you can play", character );
+	return 0;
+   endif
+
+   return ret;
+
+endprogram
+
+function AutoRepeat(character, instrument)
+
+	local inst_id := instrument.objtype;
+	local ret := 0;
+	local cx := character.x;
+	local cy := character.y;
+
+	SendSysMessage(character,"You begin playing...");
+	repeat
+ 
+ 	if (inst_id = UOBJ_HARP)
+      		ret := play(character,SFX_HARP_SUCC,SFX_HARP_FAIL);
+   	elseif (inst_id = UOBJ_LUTE)
+      		ret := play(character,SFX_LUTE_SUCC,SFX_LUTE_FAIL);
+   	elseif (inst_id = UOBJ_DRUM)
+      		ret := play(character,SFX_DRUM_SUCC,SFX_DRUM_FAIL);
+   	elseif (inst_id = UOBJ_TAMB)
+      		ret := play(character,SFX_TAMB_SUCC,SFX_TAMB_FAIL);
+   	else
+      		PrintTextAbovePrivate( character, "That's not something you can play", character );
+		return 0;
+   	endif
+	sleep(2);
+	until ((character.x != cx) or (character.y != cy));
+	SendSysMessage(character,"You stop playing...");
+
+endfunction

@@ -1,0 +1,22 @@
+use uo;
+use os;
+
+program summonnpc(who,item)
+  if (who.cmdlevel < 2)
+    return;
+  endif
+  local monlink := getobjproperty(item,"mobilearray");
+  if (!monlink)
+	SendSysMessage(who, "no mobiles attached.");
+	return;
+  endif
+  local arraysize := len(monlink);
+  local i := 0;
+  For (i:=1;i<=arraysize;i:=i+1)
+    local monstr := SystemFindObjectBySerial(monlink[i]);
+    if ( !MoveCharacterToLocation(monstr, who.x, who.y, who.z, MOVECHAR_FORCELOCATION) )
+	  SendSysMessage(who, "NPC no longer exists.");
+	  return;
+    endif
+  endfor
+endprogram

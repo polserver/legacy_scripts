@@ -1,0 +1,36 @@
+// SETALLSKILLS (x)
+//
+// This textcommand will set all of target's skills to <x>.
+// Basically, I ripped off the SETSKILL.SRC, added the for loop,
+// and PRESTO!
+//
+// Implemented by Sigismund, 16-Jul-99
+//
+// TODO?  Eliminate the spamming?  We know what it does!
+//
+
+
+use os;
+use uo;
+use boat;
+
+program textcmd_setskill( who, text )
+    SendSysMessage(who, "Select target.");
+    local targ := target(who);
+    local skill := 1;
+    local basevalue := CInt( CDbl(text) * 10 );
+    local rawvalue := BaseSkillToRawSkill( basevalue );
+
+
+    for (skill := 0; skill <= 48; skill := skill + 1)
+    if (skill != error && rawvalue != error)
+        print( "Setting Raw Skill " + skill + " to " + rawvalue );
+        local res := SetRawSkill( targ, skill, rawvalue );
+        if (res = error)
+            SendSysMessage( who, "Unable to set raw skill: " + res.errortext );
+        else
+            SendSysMessage( who, "New Effective Skill for Skill #" + skill + ": " + GetSkill(who,skill) );
+        endif
+    endif
+    endfor
+endprogram

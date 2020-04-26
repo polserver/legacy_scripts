@@ -1,0 +1,53 @@
+use uo;
+use cfgfile;
+use os;
+use util;
+
+program exploder(parms)
+  var potion := parms[1];
+  if(GetObjProperty(potion,"running"))
+    return;
+  endif
+  setobjproperty(potion,"running", 1);
+  var who := parms[2];
+  if(GetObjProperty(potion,"pause"))
+    sleepms(250);
+  endif
+  var potions := {0xdc08, 0xdc09, 0xdc07};
+  local itemdef := readconfigfile(":alchemy:itemdesc");
+  if(!itemdef)
+    print ("couldn't open itemdesc");
+    return;
+  endif
+  local telem := itemdef[Cint(potion.objtype)];
+  if(!telem)
+    print ("Couldn't find elem " + potion.objtype);
+  endif
+  local thecenter := potion;
+  while(thecenter.container)
+    thecenter := thecenter.container;
+  endwhile
+  SetScriptController(who);
+  var dmg;
+  PlayStationaryEffect( potion.x, potion.y, potion.z, 0x36b0, 7, 10, 1);
+  PlaySoundEffect(potion, 0x208);
+  potion.graphic := 1;
+  foreach critter in ListMobilesNearLocationEx( potion.x, potion.y, potion.z, 1, LISTEX_FLAG_NORMAL + LISTEX_FLAG_HIDDEN );
+    PlayObjectCenteredEffect( critter, 0x36b0, 7 , 0x10 );
+    PlaySoundEffect( critter, 0x208);
+    case(telem.Strength)
+      1: dmg := (Randomint(4) + 1 );
+      2: dmg := (Randomint(4) + 6 );
+      3: dmg := (Randomint(9) + 11 );
+    endcase
+    ApplyRawDamage(critter, dmg);
+  endforeach
+  foreach item in ListItemsNearLocation(potion.x, potion.y, potion.z, 1)
+    if((item.objtype in potions) and (item != potion))
+      SetObjProperty(item,"pause", 1);
+      var passparms := {item, who};
+      start_script(":alchemy:exploder", passparms);
+     endif
+  endforeach
+  destroyitem(potion);
+endprogram

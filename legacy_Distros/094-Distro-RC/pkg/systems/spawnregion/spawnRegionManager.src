@@ -1,0 +1,88 @@
+include "include/eventID";
+include "spawnRegion";
+
+program SpawnRegionManager(param)
+  var pid := getpid();
+  SetGlobalProperty("#SpawnRegionManagerPID", pid);
+  var spawngroups := GlobalSpawnGroups();
+  var spawnregions := GlobalSpawnRegions();
+  sleep(60);
+  if (param == "v")
+    mgrverbose := 1;
+  endif
+  ValidateSpawnRegions();
+  var nextregion := 0;
+  SpawnAllRegions();
+  var ev;
+  while(1)
+    sleep(60);
+    SpawnAllRegions();
+  endwhile
+endprogram
+
+function GlobalSpawnGroups()
+  var dfile := OpenDataFile("SpawnGroups");
+  if(!dfile)
+    dfile := CreateDataFile("SpawnGroups");
+    var cfg := ReadConfigFile(":spawnregion:spawngroups");
+    var grouparray := {};
+    var holder := {};
+    var ary, plc;
+    foreach group in GetConfigStringKeys(cfg)
+      holder.append(group);
+      plc := FindConfigElem(cfg, group);
+      ary := GetConfigStringArray(plc, "npc");
+      foreach entry in ary
+        holder.append(entry);
+      endforeach
+      grouparray.append(holder);
+      holder := {};
+    endforeach
+    var group, groupholder := {};
+    foreach thing in grouparray
+      group := dfile.CreateElement(thing[1]);
+      thing.erase(1);
+      foreach subthing in thing
+        groupholder.append(subthing);
+      endforeach
+      group.SetProp("npc", groupholder);
+      groupholder := {};
+    endforeach
+  endif
+  return dfile;
+endfunction
+
+function GlobalSpawnRegions()
+  var dfile := OpenDataFile("SpawnRegions");
+  if(!dfile)
+    dfile := CreateDataFile("SpawnRegions");
+    var cfg := ReadConfigFile(":spawnregion:spawnregions");
+    var grouparray := {};
+    var holder := {};
+    var ary, plc;
+    foreach group in GetConfigStringKeys(cfg)
+      holder.append(group);
+      holder.append(cfg[group]."rect");
+      plc := FindConfigElem(cfg, group);
+      ary := GetConfigStringArray(plc, "group");
+      foreach entry in ary
+        holder.append(entry);
+      endforeach
+      grouparray.append(holder);
+      holder := {};
+    endforeach
+    var group, split;
+    foreach thing in grouparray
+      group := dfile.CreateElement(thing[1]);
+      group.SetProp("rect", thing[2]);
+      var num := 1;
+      foreach subthing in thing
+        if((subthing != thing[1]) && (subthing != thing[2]))
+          group.SetProp("group"+num, subthing);
+          num := num + 1;
+        endif
+      endforeach
+    endforeach
+  endif
+  return dfile;
+endfunction

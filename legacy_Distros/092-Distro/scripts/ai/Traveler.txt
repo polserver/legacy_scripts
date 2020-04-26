@@ -1,0 +1,9 @@
+Traveler version .4 - zulu (zulu@zuluhotel.com)
+updated April 14, 2000
+
+This is based on Charles' code.
+
+Gump added, so players can pick destination from gump.
+Money routine updated.
+
+To spawn the new npc, type .createnpc traveler

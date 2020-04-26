@@ -1,0 +1,66 @@
+////////////////////////////////////////////////////////////
+// hiding.src                                             //
+//                                                        //
+// Hides the player if:                                   //
+//                                                        //
+// * He is not in war mode                                //
+// * There are no mobiles targetting him in range and LOS //
+// * He passes a skill check                              //
+//                                                        //
+// Author: Racalac, modified 4/16/99                      //
+//                                                        //
+////////////////////////////////////////////////////////////
+
+use uo;
+
+include "include/client";
+include "include/skillpoints";
+
+
+program skill_hide ( hider )
+local thepoints := get_default_points(SKILLID_HIDING);
+  if( hider.warmode )
+    PrintTextAbovePrivate( hider, "You cannot hide while in War Mode.", hider );
+    return 0;
+  endif
+
+  local range := getHideRange( GetSkill( hider, SKILLID_HIDING ) );
+  local bystanders := ListHostiles( hider, range, LH_FLAG_LOS );
+
+  if( len(bystanders) > 0 )
+    PrintTextAbovePrivate( hider, "You cannot hide as there are hostiles in view!" , hider );
+    return 0;
+  endif
+
+  if( CheckSkill( hider , SKILLID_HIDING , -1 , thepoints ) )
+    hider.hidden := 1;
+    PrintTextAbovePrivate( hider, "You have hidden yourself well" , hider );
+  else
+    PrintTextAbovePrivate( hider, "You can't seem to hide here" , hider );
+  endif
+
+endprogram
+
+
+function getHideRange( skill )
+  if( skill >= 100 )
+    return 1;
+  elseif( skill >= 90 )
+    return 2;
+  elseif( skill >= 80 )
+    return 3;
+  elseif( skill >= 70 )
+    return 4;
+  elseif( skill >= 60 )
+    return 5;
+  elseif( skill >= 50 )
+    return 6;
+  elseif( skill >= 30 )
+    return 8;
+  elseif( skill >= 10 )
+    return 9;
+  else
+    return 10;
+  endif
+  
+endfunction

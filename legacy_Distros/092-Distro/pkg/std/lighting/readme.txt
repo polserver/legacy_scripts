@@ -1,0 +1,1 @@
+NOTE:  Lights.pl is a PERL file.  You only need to run this if you were running a shard without Zulu's lighting package before now.  Lights.pl will fix the light sources in your data files so that they will now face the right way when used with this package.

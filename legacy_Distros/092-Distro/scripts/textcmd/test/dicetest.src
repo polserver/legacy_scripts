@@ -1,0 +1,11 @@
+use uo;
+use util;
+
+program dicetest( who, dicedef )
+    local roll := RandomDiceRoll( dicedef );
+    if (roll = error)
+        SendSysMessage( who, "Dice roll failed: " + roll.errortext );
+    else
+        SendSysMessage( who, "Dice roll results: " + roll );
+    endif
+endprogram

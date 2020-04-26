@@ -1,0 +1,17 @@
+use uo;
+
+program textcmd_listghosts( who )
+    SendSysMessage( who, "Target a location to search for ghosts." );
+
+    local where := TargetCoordinates( who );
+    if (where)
+        local count := 0;
+        foreach ghost in ListGhostsNearLocation( where.x, where.y, where.z, 10 )
+            print( ghost.name );
+            SendSysMessage( who, "In line of sight: " + ghost.name );
+            count := count + 1;
+        endforeach
+        SendSysMessage( who, count + " ghosts found." );
+    endif
+endprogram
+

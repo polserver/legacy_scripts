@@ -1,0 +1,41 @@
+use uo;
+use util;
+use os;
+use cfgfile;
+include "include/skillpoints";
+include "include/client";
+
+global points := get_default_points(SKILLID_MAGICRESISTANCE );
+program field_control( item )
+  local creater := getobjproperty(item, "creater");
+  local boss := Systemfindobjectbyserial(cint(creater));
+  local fieldstrength;
+  if (boss)
+    SetScriptController(boss);
+    fieldstrength := randomint(getskill(boss, 25)/10);
+  else
+    fieldstrength := 5;
+  endif  
+  foreach character in listmobilesnearlocation(item.x,item.y, item.z, 0)
+    set_priority(1);
+    PlaySoundEffect(character, 0x209);
+    if (checkskill(character, SKILLID_MAGICRESISTANCE ,40, points ) )
+      ApplyrawDamage(character, fieldstrength/2);
+    else
+      ApplyrawDamage(character, fieldstrength );
+    endif
+  endforeach
+  sleepms(1500);
+  foreach character in listmobilesnearlocation(item.x,item.y, item.z, 0)
+    while ((character.x = item.x) and (character.y = item.y))
+      local flamestrength := randomint(getskill(boss, 25)/10);
+      PlaySoundEffect(character, 0x209);
+      if (checkskill(character, SKILLID_MAGICRESISTANCE ,40, points ) )
+        ApplyrawDamage(character, flamestrength/2);
+      else
+        ApplyrawDamage(character, flamestrength );
+      endif
+      sleepms(1500);
+    endwhile
+  endforeach    
+endprogram

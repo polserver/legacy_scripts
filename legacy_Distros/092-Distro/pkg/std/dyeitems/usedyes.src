@@ -1,0 +1,32 @@
+use uo;
+
+program use_dyes( who, dyes )
+    
+    if (!ReserveItem( dyes ))
+        SendSysMessage( who, "Those dyes are already in use." );
+        return;
+    endif
+
+    SendSysMessage( who, "Select a dye tub to use the dyes on." );
+
+    Local dyetub := Target( who, TGTOPT_CHECK_LOS );
+    
+    if (!ReserveItem(dyetub))
+        SendSysMessage( who, "That is already in use." );
+        return;
+    endif
+
+    if (!Accessible( who, dyetub ))
+        SendSysMessage( who, "You cannot reach that!" );
+        return;
+    endif
+
+    if (dyetub.objtype != GetObjtypeByName( "dyetub" ))
+        SendSysMessage( who, "That is not a dye tub!" );
+        return;
+    endif
+
+    var color := SelectColor( who, dyetub );
+    dyetub.color := color;
+
+endprogram

@@ -1,0 +1,6 @@
+std-spiritspeak (POL076)
+========================
+    Verified ready for release
+      (Note - still doesn't work, pending core functionality)
+    First packaged version
+    - Syzygy <syzygy@pobox.com> 19990705

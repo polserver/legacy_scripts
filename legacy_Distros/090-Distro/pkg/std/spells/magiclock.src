@@ -1,0 +1,75 @@
+// Magic lock and Magic unlock  version .3
+// by Zulu (zulu@zuluhotel.com)   May 5, 2000
+
+
+use os;
+use uo;
+use util;
+
+include "include/client";
+include "include/spellrestrictions";
+include "util/key";
+include "include/checkcity";
+
+program cast_strength( parms )
+
+	local circle := 3;
+	local caster;
+	local cast_on;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_on := parms[3];
+	else
+		caster := parms;
+		cast_on := CanTargetThing(caster, circle, TGTOPT_HELPFUL + TGTOPT_CHECK_LOS );
+		if (!cast_on)
+			return;
+		endif
+	endif
+
+	if ((cast_on.multi) or (GetObjProperty(cast_on,"houseserial")) or (GetObjProperty(cast_on,"house_serial")))
+		SendSysmessage(caster, "That cannot be magic locked!");
+		playlightningbolteffect(caster);
+		return;
+	endif
+
+	if (cast_on.locked)
+		SendSysMessage(caster,"That is already locked!");
+		return;
+	endif
+
+	if ((checkfordoors(cast_on)) and (checkcity(cast_on)))
+		SendSysmessage(caster, "That cannot be magic locked!");
+		return;
+	endif
+	
+	if (((cast_on.graphic<=0x9ab) and (cast_on.graphic>=0x9a8)) or ((cast_on.graphic<=0xe43) and (cast_on.graphic>=0xe3c)) or ((cast_on.graphic<=0xe80) and (cast_on.graphic>=0xe7c)) or (checkfordoors(cast_on)))
+
+	local magery := GetSkill(caster, SKILLID_MAGERY);
+	
+	if(randomint(100) > (magery/2))
+	PlaySoundEffect(caster, SFX_SPELL_MAGIC_LOCK);
+    	SetObjProperty(cast_on, "lockid" , AllocLockId());
+	Setobjproperty(cast_on, "LockDifficulty", magery);
+	cast_on.locked := 1;
+	else
+	PlaySoundEffect(caster, SFX_11F);
+	SendSysmessage(caster, "You failed at locking that!");
+	endif
+
+	else
+	SendSysmessage(caster, "That cannot be magic locked!");
+	endif
+
+endprogram
+
+function checkfordoors(cast_on)
+
+if (((cast_on.graphic<=0x1ffc) and (cast_on.graphic>=0x1fed)) or ((cast_on.graphic<=0x6f4) and (cast_on.graphic>=0x675)))
+return 1;
+endif
+
+return 0;
+
+endfunction

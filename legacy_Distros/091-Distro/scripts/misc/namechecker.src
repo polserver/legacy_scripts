@@ -1,0 +1,37 @@
+use uo;
+use cfgfile;
+
+program checkname(who)
+
+local hisname := lower(who.name);
+
+local cfg := readconfigfile("badnames");
+
+local elem := findconfigelem(cfg, hisname);
+
+if (!elem)
+        return;
+endif
+
+who.name := "invalid name";
+
+while (who.name = "invalid name")
+
+        local newname := Sendtextentrygump( who, 
+                   "You have selected a name that is not valid on this shard.", 
+                   TE_CANCEL_DISABLE,
+                   TE_STYLE_NORMAL,
+                   20,              
+                   "Please select a new name");
+                   
+local elem := findconfigelem(cfg, lower(newname));
+
+if (!elem)
+        SendSysmessage(who, "Good choice, " + newname + "!");
+        who.name := newname;
+        return;
+endif
+
+endwhile
+
+endprogram

@@ -1,0 +1,14 @@
+////////////////////////////////////////////////////////////////////////////
+//
+// scripts/misc/skillwin.src: skill-window request hook script
+//
+//   if this script is not present, this functionality will be executed
+//   internally.
+//
+////////////////////////////////////////////////////////////////////////////
+
+use uo;
+
+program skillwindow( mob )
+    SendSkillWindow( mob, mob );
+endprogram

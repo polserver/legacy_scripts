@@ -1,0 +1,33 @@
+use uo;
+use os;
+use util;
+
+program LockThemChests( me )
+
+	local sleeptime;
+	while(1)
+
+	if ( GetGlobalProperty("unlockedchests") )
+		set_critical(1);
+		local chests := GetGlobalProperty("unlockedchests");
+		RelockEm(me, chests);
+		EraseGlobalProperty("unlockedchests");
+		set_critical(0);
+	endif
+
+	sleeptime := (randomint(15)+15)*60;
+	sleep(sleeptime);
+
+	endwhile
+
+endprogram
+
+function RelockEm(me, chests)
+
+	local chest;
+	foreach num in chests
+		chest := Systemfindobjectbyserial(cint(num));
+		chest.locked := 1;
+	endforeach
+
+endfunction

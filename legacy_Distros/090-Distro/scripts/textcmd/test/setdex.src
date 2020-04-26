@@ -1,0 +1,3 @@
+program textcmd_setdex( who, newdex )
+    who.setdex( CInt(newdex) );
+endprogram

@@ -1,0 +1,101 @@
+use util;
+
+include "include/spellrestrictions";
+include "include/client";
+
+program cast_poly( parms )
+
+	local circle := 7;
+	local caster;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+	else
+		caster := parms;
+		if (!can_cast(caster, circle))
+        		return;
+		endif
+	endif
+
+	local origform := caster.graphic;
+	local magery := cint(GetSkill(caster, SKILLID_MAGERY));
+	local Critgroup;
+	local thecreature;
+
+	if (!GetObjProperty(caster,"origform"))
+		SetObjProperty(caster,"origform",caster.graphic);
+	else
+		PlaySoundEffect(caster,0x005d);
+		PlayObjectCenteredEffect(caster, 0x3735,0x0a, 0x1e);
+		caster.mana := caster.mana + 40;
+		SendSysMessage(caster,"Hopefully you don't normally look like that.");
+		return;
+	endif
+
+	if (magery < 70)
+		Critgroup := RandomInt(1);
+	elseif (magery < 80)
+		Critgroup := RandomInt(1)+1;
+	elseif (magery < 90)
+		Critgroup := RandomInt(1)+2;
+	else
+		Critgroup := 3;
+	endif
+	
+	local critter := RandomInt(8);
+
+	case (critgroup)
+		0:
+		case (critter)
+		 0: thecreature := 51;	//slime
+		 1: thecreature := 42;	//ratman
+		 2: thecreature := 39;	//mongbat
+		 3: thecreature := 31;	//headless
+		 4: thecreature := 29;	//gorilla
+		 5: thecreature := 28;	//giant spider
+		 6: thecreature := 6;	//bird
+		 7: thecreature := 5;	//eagle
+		endcase
+		1:
+		case (critter)
+		 0: thecreature := 48;	//scorpion
+		 1: thecreature := 7;	//orc
+		 2: thecreature := 33;	//lizardman
+		 3: thecreature := 30;	//harpy
+		 4: thecreature := 26;	//shade
+		 5: thecreature := 24;	//lich
+		 6: thecreature := 21;	//giant serp
+		 7: thecreature := 17;	//orc
+		endcase
+		2:
+		case (critter)
+		 0: thecreature := 22;	//beholder
+		 1: thecreature := 18;	//ettin
+		 2: thecreature := 16;	//water elem
+		 3: thecreature := 15;	//fire elem
+		 4: thecreature := 14;	//earth elem
+		 5: thecreature := 13;	//air elem
+		 6: thecreature := 8;	//corpser
+		 7: thecreature := 47;	//ent
+		endcase
+		3:
+		case (critter)
+		 0: thecreature := 12;	//dragon
+		 1: thecreature := 10;	//demon with sword
+		 2: thecreature := 9;	//demon
+		 3: thecreature := 5;	//eagle
+		 4: thecreature := 4;	//gargoyle
+		 5: thecreature := 3;	//zombie
+		 6: thecreature := 1;	//ogre
+		 7: thecreature := 2;	//ettin
+		endcase
+	endcase
+
+	caster.graphic := thecreature;
+
+	detach();
+	sleep(magery * 2);
+	caster.graphic := origform;
+	EraseObjProperty(caster,"origform");
+	
+endprogram

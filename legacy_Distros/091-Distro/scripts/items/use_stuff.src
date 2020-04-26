@@ -1,0 +1,177 @@
+
+Use uo;
+Use util;
+use os;
+use cfgfile;
+
+global config;
+global elem;
+
+//fixme: take the fire out of his damned pack!
+//return control to the player once the fire is started
+//make the fire a light source
+
+program UseStuff( character, stuff )
+    local skill;
+    local obj2 ;
+    local skill_needed;
+    local points;
+    local targetitem;
+    local prompt;
+    local target_quantity;
+    local desc;
+    local destroy_failure ;
+    local quantity1;
+    local quantity2;
+    local use_on;
+    local destroy_target_success;
+    local destroy_target_failure;
+    local leftover;
+    local leftover_amount;
+    local success_sound;
+    local failure_sound;
+    local targetted;
+    local key_id ;
+    local thetarget;
+
+
+    print ("Cstr(stuff.objtype)) = " + Cstr(stuff.objtype));
+
+    if (! Accessible( character, stuff))
+        SendSysmessage( character, "You can't reach that!" );
+        return;
+    endif
+    
+   
+    prompt := "Select an object to use this on";
+  
+    
+    SendSysmessage (character, prompt);
+    targetted := TargetCoordinates(character);
+        
+    if (targetted.item.objtype) then
+        use_on := targetted.item;
+    elseif (targetted.mobile.objtype)
+        use_on := targetted.mobile;
+    else
+        use_on := targetted;
+    endif
+    
+    
+    if (! Accessible( character, use_on))
+        SendSysmessage( character, "You can't reach that!" );
+        return;
+    endif
+    
+
+    
+    config := ReadConfigFile( "use_stuff");
+    
+    
+    key_id := cstr(stuff.objtype) + "+" + cstr(use_on.objtype);
+    
+    elem := FindConfigElem(config, key_id);
+    
+    if (!elem)
+        SendSysmessage (character, "You don't know how to use these together!");
+        return;
+    endif
+    
+    
+    skill := Cint(GetElemProperty(elem, "skill"));
+    targetitem := Cint(GetElemProperty(elem, "product"));
+    skill_needed := Cint(GetElemProperty(elem, "skill_needed"));
+    points := Cint(GetElemProperty(elem, "points"));
+    target_quantity := Cint(GetElemProperty(elem, "target_quantity"));
+   // target_quantity := Cint(GetElemProperty(elem, "destroy"));
+    quantity1 := Cint(GetElemProperty(elem, "quantity1"));
+    quantity2 := Cint(GetElemProperty(elem, "quantity2"));
+    destroy_target_success := Cint(GetElemProperty(elem, "destroy_target_on_success"));
+    destroy_target_failure := Cint(GetElemProperty(elem, "destroy_target_on_failure"));
+    destroy_failure := Cint(GetElemProperty(elem, "destroy_material_on_failure"));
+    leftover := Cint(GetElemProperty(elem, "leftover"));
+    leftover_amount := Cint(GetElemProperty(elem, "leftover_amount"));
+    success_sound := Cint(GetElemProperty(elem, "success_sound"));
+    failure_sound := Cint(GetElemProperty(elem, "failure_sound"));
+    
+    
+    if (stuff.amount < quantity1)
+        SendSysmessage (character, "You don't have enough of that to make anything");
+        return;
+    endif
+    
+    if (target_quantity = 0 )
+        target_quantity := 1;
+    endif
+
+    
+    
+    if (! use_on)
+        SendSysmessage(character, "Targetting cancelled.");
+        return;
+    endif
+    
+    if (!Accessible(character, use_on))
+        SendSysmessage (character, "You can't reach that!");
+        return;
+    endif
+    
+    if (use_on.amount < quantity2)
+        SendSysmessage (character, "You don't have enough of that to make anything");
+        return;
+    endif
+    
+    if ( skill > "")
+        if (checkskill (character, skill, skill_needed, points))
+            SubtractAmount (stuff, quantity1);  //use material
+            CreateItemInBackpack (character, targetitem, target_quantity);
+            if (target_quantity > 1)
+                desc := "items";
+            else
+                desc := "item";
+            endif
+            
+            if (destroy_target_success)
+                SubtractAmount(use_on, 1);
+            endif
+            PlaySoundEffect(character, success_sound);
+            SendSysmessage (character, "You place the " + desc  + " in your backpack");
+            if (leftover)
+                CreateIteminBackpack(character, leftover, leftover_amount);
+            endif
+        else
+            PlaySoundEffect(character, failure_sound);
+            if (destroy_failure)
+                SendSysmessage (character, "You fail, and destroy the material");
+                SubtractAmount (stuff, 1);
+            else
+                SendSysmessage (character, "You fail to produce the item");
+            endif
+
+            if  (destroy_target_failure)
+                SubtractAmount(use_on, 1);
+            endif
+        endif
+        
+    else        
+        //don't need a skill check 
+        SubtractAmount (stuff, quantity1);
+        
+        
+        CreateItemInBackpack (character,targetitem,  target_quantity);
+        if (target_quantity > 1)
+            desc := "items";
+        else
+            desc := "item";
+        endif  
+                
+        if (destroy_target_success)
+            SubtractAmount(use_on, 1);
+        endif  
+                   
+   endif
+    
+endprogram
+
+
+

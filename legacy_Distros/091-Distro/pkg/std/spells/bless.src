@@ -1,0 +1,45 @@
+use uo;
+use os;
+use util;
+
+include "include/client";
+include "include/spellrestrictions";
+include "include/statmod";
+
+program cast_bless( parms )
+
+	local circle := 3;
+	local caster;
+	local cast_on;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_on := parms[3];
+	else
+		caster := parms;
+		cast_on := CanTargetSpell(caster, circle, TGTOPT_HELPFUL + TGTOPT_CHECK_LOS );
+		if (!cast_on)
+			return;
+		endif
+	endif
+
+	PlaySoundEffect(cast_on, SFX_SPELL_BLESS);
+	PlayObjectCenteredEffect( cast_on, FX_BLESS_EFFECT, 10,10);
+
+	local magery := GetSkill(caster, SKILLID_MAGERY);
+	local mod_amount := GetModAmount( magery );
+	local duration := GetModDuration( magery );
+
+	if (CanMod(cast_on, "str"))
+		DoTempMod(cast_on, "str", mod_amount, duration);
+	endif
+
+	if (CanMod(cast_on, "dex"))
+		DoTempMod(cast_on, "dex", mod_amount, duration);
+	endif
+
+	if (CanMod(cast_on, "int"))
+		DoTempMod(cast_on, "int", mod_amount, duration);
+	endif
+
+endprogram

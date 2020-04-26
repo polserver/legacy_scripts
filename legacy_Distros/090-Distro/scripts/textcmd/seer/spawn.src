@@ -1,0 +1,184 @@
+//Author: Racalac, 1/15/99
+//Issues: Must write necessary data to file before it becomes useful.
+//
+//Update: 1/31/99, 30 minutes before the Super Bowl...
+//This command now prompts you for a location, then an npc type (human, animal, monster), then 
+//     for a specific npc in that category (from spawndef.cfg, must add new npcs to both npcdesc
+//     AND spawndef.cfg for them to be available). This then appends the spawns.cfg with the needed
+//     data.
+
+Use uo;
+Use cfgfile;
+Use os;
+Use basic;
+include "include/spawn";
+
+Global spawn_cfg := ReadConfigFile( "spawndef" );
+Global npc_desc := ReadConfigFile( "npcdesc" );
+Global track_cfg := ReadConfigFile( ":tracking:tracking" );
+Global spawns ;
+
+program spawn( character, templatename )
+
+if (!Icanspawn(character))
+        SendSysmessage(character, "Someone else is spawning right now.");
+        return;
+endif
+   
+local spawnerfile;
+local tempname;
+
+if ( GetGlobalProperty("danspawner") )
+        spawnerfile := ":danspawner:spawns";
+
+else
+        spawnerfile := ":spawner:spawns";
+endif
+
+spawns := ReadConfigFile(spawnerfile);
+
+
+    SendSysmessage( character, "Select a place to spawn." );
+    local where := TargetCoordinates( character );
+
+    if(!spawn_cfg)
+      Print("ach! Cant find the config file!");
+    endif
+    
+    local maxentry := GetConfigMaxIntKey(spawn_cfg);
+
+    //Print("maxentry: " + maxentry);
+    
+if (templatename)
+        tempname := templatename;
+else
+
+    local firstchoice:= SelectMenuItem2(character, "Spawning");
+
+    if(!firstchoice)
+	SendSysmessage( character , "Cancelled." );
+	EraseObjProperty(character, "canspawn" );
+	return 0;
+    endif
+
+    local name;
+    local elem;
+
+    local type;
+    local thisobjtype;
+    local track_gump;
+
+    local spawn_menu := CreateMenu("Select an NPC.");
+
+
+    local i := 1;
+    for( i ; i <= maxentry ; i := i +1 )
+
+        //Print(i);       
+ 
+	elem := FindConfigElem( spawn_cfg, i );
+	tempname := GetConfigString( elem, "TemplateName" );
+	type := GetConfigInt( elem, "Type" );
+
+        //Print(tempname);
+	//Print("Type: " + type);
+	//Print("Firstchoice index: " + firstchoice.index);
+
+     if( type = firstchoice.index )
+
+        elem := FindConfigElem( npc_desc, tempname );
+        thisobjtype := Hex( GetConfigInt( elem, "ObjType" ) );
+
+        //Print(thisobjtype);
+
+        name := GetConfigString( elem, "Name" );
+
+        //Print(name);
+        //Print("objtype: " + thisobjtype);
+
+        local trackelem := FindConfigElem(track_cfg, Cint(thisobjtype)); 
+        
+        if(!trackelem)
+	    Print("ach! cant find trackelem");
+        else
+ 	    track_gump := GetConfigInt(trackelem, "tile");
+        endif
+
+        //Print("trackgump: " + track_gump);
+
+        AddMenuItem( spawn_menu , track_gump , name );
+      endif
+    endfor
+
+    local choice := SelectMenuItem2( character , spawn_menu );
+
+    if(!choice)
+       SendSysmessage( character , "Cancelled" );
+       EraseObjProperty(character, "canspawn" );
+       return 0;
+    endif
+
+    //Print(choice.index);
+
+    tempname := FindSpawndefIndex( firstchoice.index , choice.index , maxentry );
+
+    Print("You added a " + tempname + " to the spawns.cfg");
+    SendSysmessage( character , "You added a " + tempname + " to the spawn" );
+
+endif // command line vs menu
+
+    local elemkey := (GetConfigMaxIntKey(spawns)) + 1;
+
+    local props := array;
+    local prop := array;
+    prop .+ pname;
+    prop .+ pvalue;
+
+    prop.pname := "template";
+    prop.pvalue := tempname;
+    props[1] := prop;
+
+    prop.pname := "x";
+    prop.pvalue := where.x;
+    props[2] := prop;
+
+    prop.pname := "y";
+    prop.pvalue := where.y;
+    props[3] := prop;
+
+    prop.pname := "z";
+    prop.pvalue := where.z;
+    props[4] := prop;
+
+    AppendConfigFileElem(spawnerfile, "Spawn", elemkey, props );
+
+    UnloadConfigFile( spawnerfile );
+    EraseObjProperty(character, "canspawn" );
+endprogram
+
+
+function FindSpawndefIndex( type , init_index , maxentry )
+
+    local i := 1;
+    local OnNumOfType := 0;
+    local elem;
+    local tempname;
+    local this_type;
+
+    for( i ; i <= maxentry ; i := i +1 )
+	
+	elem := FindConfigElem( spawn_cfg, i );
+	this_type := GetConfigInt( elem, "Type" );
+	  
+	if( this_type = type )
+	   OnNumOfType := OnNumOfType + 1;
+	   if( OnNumOfType = init_index )
+	      tempname := GetConfigString( elem, "TemplateName" );
+	      return tempname;
+           endif
+        endif
+    endfor
+
+
+endfunction
+

@@ -1,0 +1,13 @@
+use uo;
+
+program textcmd_distance( who )
+    SendSysMessage( who, "Target the first object." );
+    local obj1 := Target( who );
+    if (obj1)
+        SendSysMessage( who, "Target the second object." );
+        local obj2 := Target( who );
+        if (obj2)
+            SendSysMessage( who, "Distance is " + Distance( obj1, obj2 ) );
+        endif
+    endif
+endprogram

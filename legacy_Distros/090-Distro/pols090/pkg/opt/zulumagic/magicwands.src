@@ -1,0 +1,70 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+// Created: Syzygy 19990609
+// updated: Zulu feb 2, 2000
+//
+/////////////////////////////////////////////////////////////////////////////
+
+use uo;
+use os;
+
+include "include/client";
+
+include "getspellid";
+
+program magicwands( who, item )
+
+	ReserveItem(item);
+
+	if (! IsWandEquipped (who, item) )
+		SendSysmessage(who,"You need to equip that to use it.");
+		return;
+	endif
+
+    local charges := Cint(GetObjProperty(item, "charges"));
+
+    if (charges)
+
+        local spellid := GetSpellId( item );
+
+	local loop := cint(spellid/15) + 1;
+
+	Performaction(who, 0x11);
+
+	if (loop<2)
+		loop :=2;
+	endif
+
+	while ( loop >0)
+		sleep(1);
+		loop := loop -1;
+	endwhile
+
+        charges := charges - 1;
+        SetObjProperty(item, "charges", charges);
+
+        Detach();
+        StartSpellEffect( who, spellid );
+	if (charges = 0)
+        PrintTextAbovePrivate( item, "That is out of charges", who );
+	destroyitem(item);
+	endif
+    endif
+
+endprogram
+
+function IsWandEquipped (who,wand)
+
+	if ( (!Accessible(who,wand)) or (distance(who,wand) > 1) )
+        	return 0;
+    	endif
+
+    	foreach item in listequippeditems(who)
+    		if (wand.serial = item.serial )
+			return 1;
+		endif
+	endforeach
+
+	return EquipItem(who,wand );
+
+endfunction

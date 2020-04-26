@@ -1,0 +1,43 @@
+////////////
+//
+// changeowner.ecl gets call when a player dbl clicks on the house title
+// that was created in his bank. It changes the owner props on the house it
+// belongs to. Use that title to change the ownership of the house.
+// KEEP IT SAFE!
+//
+// Author: Racalac, 9/12/99
+//
+////////////
+
+
+use uo;
+use os;
+
+program ChangeHouseOwner( who , title )
+
+   var houseserial := GetObjProperty( title, "builtserial" );
+   if( houseserial = error )
+       SendSysmessage( who, "That title is invalid" );
+       return;
+   endif
+
+   var house :=  SystemFindObjectBySerial( houseserial );
+   if( house = error )
+       SendSysmessage( who , "Error finding the built house!" );
+       syslog( house.errortext );
+       return;
+   endif
+
+   var oldownerserial := GetObjProperty( house , "ownerserial" );
+   if( oldownerserial = who.serial )
+       SendSysmessage( who , "You are already the owner of that house." );
+       return;
+   else
+       SetObjProperty( house , "ownerserial" , who.serial );
+       SendSysmessage( who , "You have taken ownership of the house." );
+       SendSysmessage( who , "It would be wise to change the locks soon." );
+   endif
+endprogram
+
+
+   

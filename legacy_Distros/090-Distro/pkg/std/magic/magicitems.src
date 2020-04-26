@@ -1,0 +1,50 @@
+use uo;
+use os;
+
+program use_chargedspellitem( user, item )
+
+	local charges := Cint(GetObjProperty(item, "charges"));
+	local spellname := GetObjProperty(item, "spellname");
+	local tgtopt := GetObjProperty(item, "tgtopt");
+
+	if (!accessible(user,item) )
+		SendSysMessage(user,"You can't reach that");
+    	endif	
+
+	if (charges)
+        	charges := charges - 1;
+        	SetObjProperty(item, "charges", charges);
+
+        	Detach();
+        	DoSpell( user, spellname, tgtopt );
+    	else
+        	PrintTextAbovePrivate( item, "That is out of charges", user );
+    	endif
+
+endprogram
+
+function DoSpell(caster,spellname,tgtopt)
+
+	local cast_on;
+
+	if (tgtopt = "NOTARGET")
+		cast_on := caster;
+	elseif (tgtopt = "TARGETAREA")
+		cast_on := TargetCoordinates( caster );
+	else
+		cast_on := Target( caster, tgtopt );
+	endif
+
+	if (!cast_on)
+		return;
+	endif
+
+	local parms array;
+	parms[1] := "#MOB";
+	parms[2] := caster;
+	parms[3] := cast_on;
+
+	detach();
+	start_script( ":spells:"+spellname, parms ); 
+
+endfunction

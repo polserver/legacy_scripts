@@ -1,0 +1,61 @@
+use uo;
+use util;
+
+include "include/client";
+include "include/spellrestrictions";
+include "include/spellattack";
+
+program mana_drain ( parms )
+
+	local circle := 4;
+	local caster;
+	local dtarget;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		dtarget := parms[3];
+		send_attack(dtarget ,caster, 31);
+	else
+		caster := parms;
+		dtarget := CanTargetSpell(caster, circle, TGTOPT_HARMFUL + TGTOPT_CHECK_LOS );
+		if (!dtarget)
+			return;
+		endif
+	endif
+
+	local caster_magery := GetSkill( caster , SKILLID_MAGERY );
+
+	if (Reflected(dtarget))
+		local tmp := dtarget;
+		dtarget := caster;
+		caster := tmp;
+		if (GetObjProperty( caster, "mr") = "1")
+			EraseObjProperty(caster, "mr");
+			SendSysMessage(caster, "Your magic reflect spell saved you!");
+			return;
+		endif
+	endif
+
+	local target_resist := GetSkill( dtarget , SKILLID_MAGICRESISTANCE );
+   
+	local diff := Resisted(circle, caster, dtarget, (caster_magery - target_resist)/2);
+
+	if ( diff > 0 )
+
+		if( diff > dtarget.maxmana )
+			diff := dtarget.maxmana;
+		endif
+		PlaySoundEffect( caster , SFX_SPELL_MANA_DRAIN );
+		PlayObjectCenteredEffect( dtarget , FX_HEAL_EFFECT , 7 ,0x10 );
+
+		if( (dtarget.mana - diff) < 0 )
+			diff := dtarget.mana;
+		endif
+
+		dtarget.mana := (dtarget.mana - diff);
+		PrintTextAbovePrivate( caster , "You drained " + diff + " mana" , caster );
+	else
+		PrintTextAbovePrivate( caster , dtarget.name + "'s will is too strong!" , caster );
+	endif
+
+endprogram

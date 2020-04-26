@@ -1,0 +1,51 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+// sspeak.src: Spirit Speak skill script
+//
+// Author: ens
+//
+// Modified: 19990414 ENS fixed sound effect
+//
+// Modified By Charles Haustron 09/2000
+//
+// - Add Hear Ghosts Priv, so it can Work for now
+// - Make Duration variable according to player skill level
+//
+/////////////////////////////////////////////////////////////////////////////
+
+use uo;
+use os;
+
+include "include/client";
+
+program spiritspeak( chr )
+    If ( GetObjProperty(chr, "#SpiritSpeak")>ReadGameClock() )
+//      SendSysMessage( chr, "Voce precisa esperar um pouco para poder contatar o outro mundo novamente." );
+      SendSysMessage( chr, "You have to wait a little to contact the netherworld again." );
+      Return;
+    elseif (CheckSkill( chr, SKILLID_SPIRITSPEAK, -1, 50 ))
+        SendSysMessage( chr, "You contact the netherworld." );
+
+	Local Duration := Cint(GetSkill(Chr, SKILLID_SPIRITSPEAK)/10);
+
+	SetObjProperty(chr, "#SpiritSpeak", ReadGameClock()+(Duration*20)+10);
+        Detach();
+
+        // TODO: chr.hear_ghosts := 1;
+	GrantPrivilege( chr, "hearghosts" );
+	chr.enable("hearghosts");
+
+        for i := 1 to  Duration
+            PlaySoundEffectPrivate( chr, SFX_SKILL_SPIRITSPEAK, 4 );
+            Sleep( 20 );
+        endfor
+
+	chr.disable("hearghosts");
+	RevokePrivilege( chr, "hearghosts" );
+	EraseObjProperty(chr, "#SpiritSpeak");
+        // TODO: chr.hear_ghosts := 0;
+    else
+        SendSysMessage( chr, "You can't contact the netherwold." );
+//        SendSysMessage( chr, "Voce nao consegue se comunicar com o outro mundo." );
+    endif
+endprogram

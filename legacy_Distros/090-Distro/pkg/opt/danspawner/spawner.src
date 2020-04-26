@@ -1,0 +1,241 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//          Danspawner: an attempt at a spawner that keeps track of the serial numbers of the critters it spawns
+//                      so only 1 or each are spawned at a time
+//
+//          Fixmes:
+//                it uses a kludgy way of saving stuff -- a buncha global properties. Once we can save arrays as properties it'll be better
+//                spawns 1 critter per entry -- no groups
+//                
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+use UO;
+use os;
+use cfgfile;
+use util;
+include "include/starteqp";
+
+global num_spawns ;
+global spawns := array;
+global skipped;
+
+
+program spawner()
+set_priority(10);
+syslog ("Spawner active");
+setglobalproperty("danspawner", 1);  //the text command "spawn" looks for this
+
+num_spawns := GetGlobalProperty("num_spawns");
+syslog ("Num spawns is " + num_spawns);
+
+if (num_spawns = 0)
+        syslog("running all spawns");
+        RunAllSpawns();
+        writespawns();
+else
+        syslog ("Reading spawns");
+        ReadSpawns();
+        syslog ("Checking spawns");
+        checkspawns();
+        writespawns();
+        syslog("Done with spawns");
+endif
+
+while(1)
+        local i;
+        local sleept:= randomint(6) + 1;
+        for (i := 1; i <= sleept; I := i + 1)
+                sleep(300);
+        endfor
+        syslog ("Checking Spawns.................................");
+        CheckSpawns();
+        syslog ("Writing spawns...................................");
+        writespawns();
+
+
+endwhile
+
+endprogram
+
+function RunAllSpawns()
+
+    local retval:= array;
+    local spawns_cfg := ReadConfigFile("spawns");
+    local thiscritter;
+    if (!spawns_cfg)
+        syslog("unable to read spawns.cfg");
+        return;
+    endif
+
+    num_spawns := GetConfigMaxIntKey( spawns_cfg );
+    print ("In run all spawns, num_spawns is " + num_spawns);
+    local i;
+    for( i := 1; i < num_spawns; i := i + 1 )
+        sleepms(500);
+        local spawn_elem := spawns_cfg[ i ];
+        if (spawn_elem)
+            thiscritter := spawn( spawn_elem , i);
+            retval[i] := thiscritter;
+        endif
+    endfor
+SetGlobalProperty("num_spawns", num_spawns);
+print("Done with runallspawns");
+return retval;
+endfunction
+
+function spawn( spawndef , counter)
+
+    local retval;
+    local x, y, z, stype;
+    if (spawndef.x)
+        x := cint(spawndef.x);
+        y := cint(spawndef.y);
+        z := GetMapInfo( x, y ).z;
+        stype := spawndef.type;
+        
+    else
+        local rect := SplitWords( spawndef.rect );
+        local minx := CInt(rect[1]);
+        local miny := CInt(rect[2]);
+        local maxx := CInt(rect[3]);
+        local maxy := CInt(rect[4]);
+        x := minx + RandomInt( maxx - minx + 1 );
+        y := miny + RandomInt( maxy - miny + 1 );
+        z := GetMapInfo( x, y ).z;
+    endif
+    case (stype)
+        "I":  foreach thing in listitemsnearlocation(x,y,z,0)
+                destroyitem(thing);
+              endforeach
+              retval := CreateItematLocation(x,y,z,spawndef.objtype, 1);
+        "C": retval := Spawn_container(spawndef.objtype, x,y,z, spawndef.level);
+        default: 
+        local thelist := ListMobilesNearLocationEx( x,y,z, 0, 0x01);
+        
+        if (len(thelist) = 0)
+         retval := CreateNpcFromTemplate( spawndef.template, 
+                           x, y, z );
+        else
+              skipped := skipped +  1;
+        endif
+    endcase        
+    SetObjProperty(retval, "spawn", counter);       
+    local propname := "spawn" + cstr(counter);
+    setglobalproperty(propname, retval.serial);  
+    //syslog ("setting " + propname + " to " + retval.serial);     
+    //syslog ("Just spawned serial " + cstr(retval.serial) + " type " + stype); 
+    return retval.serial;
+endfunction
+
+
+function  CheckSpawns()
+local spawns_cfg := ReadConfigFile("spawns");
+local i;
+local num_respawns := 0 ;
+skipped := 0;
+
+num_spawns := GetConfigMaxIntKey(spawns_cfg);
+setglobalproperty("num_spawns",num_spawns);
+local spawnignore := ReadConfigFile("spawnignore");
+
+if (num_spawns = 0)
+        runallspawns();
+        return;
+endif
+
+for (i := 1; i <= num_spawns; i := i + 1)
+sleepms(500);
+if (!spawnignore[i])
+        local ttype := spawns_cfg[i].type;
+        case (ttype)
+                "I":
+                local titem := SystemFindObjectBySerial(cint( spawns[i] ));
+
+                if (!titem.container)
+                        destroyitem(titem);
+                        respawn(i);
+                else
+                        respawn(i);
+                endif
+                "C": 
+                local theitem := systemfindobjectbyserial(cint(spawns[i]));
+                if (!theitem)
+                       
+                endif
+                destroyitem(theitem);
+                respawn(i);
+                default:
+        local tcritter := SystemFindObjectBySerial( cint(spawns[i]  ));
+   
+        if (!tcritter.hp)
+                spawns[i] := respawn(i);
+                num_respawns := num_respawns + 1;
+        else
+            if (!tcritter.warmode and tcritter.script != "tamed")
+                movecharactertolocation(tcritter, cint(spawns_cfg[i].x), cint(spawns_cfg[i].y), cint(spawns_cfg[i].z));
+            endif
+        endif
+        endcase
+
+endif
+endfor
+syslog ("Had to respawn " + num_respawns - skipped + " of " + num_spawns +  " (" + skipped + " skipped due to proximity errors)");
+setglobalproperty("num_spawns", num_spawns);
+unloadconfigfile(":danspawner:spawns");  
+unloadconfigfile(":danspawner:spawnignore");
+return spawns;
+endfunction
+
+function respawn(i)
+
+        local spawns_cfg := ReadConfigFile("spawns");
+        local spawndef := spawns_cfg[i];
+        local retval := spawn(spawndef, i);
+        setobjproperty(retval, "spawn", i);
+        return retval;
+endfunction
+
+function  ReadSpawns()
+
+        local i;
+        for (i := 1; i <= num_spawns; i := i + 1)
+                local tname := "spawn" + cstr(i);
+                spawns[i] := cint(GetGlobalProperty(tname));  
+        endfor
+
+endfunction
+
+function writespawns()
+        //syslog ("Here I am in writespawns()");
+        local i;
+
+        local tlen := len(spawns);
+
+        setglobalproperty("num_spawns", cint(tlen));
+
+        for (i := 1; i <= tlen; i := i + 1)
+                local tname := "spawn" + cstr(i);
+                SetGlobalProperty(tname, spawns[i]);  
+        endfor
+        setglobalproperty("num_spawns", num_spawns);
+       // syslog ("Leaving writespawns");
+endfunction
+
+function Spawn_container(tobjtype, x,y,z, tlevel)
+       // syslog("Spawning a container of level " + tlevel);
+        local nz := GetMapInfo( x, y ).z ;
+        foreach thing in listitemsnearlocation(x,y,z,0)
+                destroyitem(thing);
+        endforeach
+        local tcontainer := createitematlocation(x,y,nz, tobjtype,1);
+        
+        makeloot(tcontainer, tlevel);
+        if  (randomint(4) = 1 )
+                local trap_strength := randomint(5) + 1;
+                setobjproperty(tcontainer, "trap_strength", trap_strength);
+                setobjproperty(tcontainer, "trap_type", cstr(randomint(3) + 1));
+                tcontainer.usescript := ":traps:traps";
+        endif
+      //  syslog("Done with the spawn. error: " + tcontainer.errortext);
+        return tcontainer.serial;
+endfunction

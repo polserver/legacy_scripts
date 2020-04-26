@@ -1,0 +1,104 @@
+use npc;
+use uo;
+use basicio;
+use util;
+use basic;
+use cfgfile;
+
+include "include/randname";
+include "include/objtype";
+include "include/spawn";
+global  cfg;
+global colors ;
+global num_colors ;
+
+program npc(who)
+
+if (!Icanspawn(who))
+        SendSysmessage(who, "Someone else is spawning right now.");
+        return;
+endif
+
+local  spawns := readconfigfile(":danspawner:spawns");
+local ttemplate;
+
+local where := targetcoordinates(who);
+ local elemkey := (GetConfigMaxIntKey(spawns)) ;
+while (where.x)
+
+
+elemkey := elemkey + 1;
+
+local which := randomint(32) + 1;
+
+case (which)
+       1 : ttemplate := "llama";
+2: ttemplate := "cow";
+3: ttemplate := "bull";
+4: ttemplate := "panther";
+5: ttemplate := "cougar";
+6: ttemplate := "mongbat";
+7: ttemplate := "horse";
+8: ttemplate := "horse1";
+9: ttemplate := "horse2";
+10: ttemplate := "horse3";
+11: ttemplate := "deer";
+12: ttemplate := "bear";
+13: ttemplate := "bird";
+14: ttemplate := "rat";
+15: ttemplate := "eagle";
+16: ttemplate := "pig";
+17: ttemplate := "chicken";
+18: ttemplate := "cat";
+19: ttemplate := "gorilla";
+20: ttemplate := "alligator";
+21: ttemplate := "sheep";
+22: ttemplate := "goat";
+23: ttemplate := "grizzly";
+24: ttemplate := "grat";
+25: ttemplate := "gheart";
+26: ttemplate := "wolf";
+27: ttemplate := "direwolf";
+28: ttemplate := "corpser";
+29: ttemplate := "reaper";
+30: ttemplate := "wisp";
+31: ttemplate := "scorp";
+32: ttemplate := "spider";
+endcase        
+
+local it := CreateNpcFromTemplate( ttemplate, where.x, where.y, where.z);
+
+
+
+
+    local props:= array;
+    local prop:= array;
+    prop .+ pname;
+    prop .+ pvalue;
+
+    prop.pname := "template";
+    prop.pvalue := ttemplate;
+    props[1] := prop;
+
+    prop.pname := "x";
+    prop.pvalue := where.x;
+    props[2] := prop;
+
+    prop.pname := "y";
+    prop.pvalue := where.y;
+    props[3] := prop;
+
+    prop.pname := "z";
+    prop.pvalue := where.z;
+    props[4] := prop;
+
+    AppendConfigFileElem( ":danspawner:spawns", "Spawn", elemkey, props );
+
+where := targetcoordinates(who);
+
+endwhile
+
+unloadconfigfile(":danspawner:spawns");
+EraseObjProperty(who, "canspawn" );
+endprogram
+

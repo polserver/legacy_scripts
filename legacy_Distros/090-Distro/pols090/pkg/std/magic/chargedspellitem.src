@@ -1,0 +1,36 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+// chargedspellitem - expends a charge from an item to cast a spell.
+//
+// The main weakness of this approach is that if the targetting is cancelled
+// or LOS fails or anything else like that, the charge is still used.
+//
+// TODO: consider destroying the item when it runs out of charges.
+//
+// Created: Syzygy 19990609
+//
+/////////////////////////////////////////////////////////////////////////////
+
+use uo;
+use os;
+
+include "include/client";
+
+include "getspellid";
+
+program use_chargedspellitem( user, item )
+
+    local charges := Cint(GetObjProperty(item, "charges"));
+
+    if (charges)
+        charges := charges - 1;
+        SetObjProperty(item, "charges", charges);
+
+        local spellid := GetSpellId( item );
+        Detach();
+        StartSpellEffect( user, spellid );
+    else
+        PrintTextAbovePrivate( item, "That is out of charges", user );
+    endif
+
+endprogram

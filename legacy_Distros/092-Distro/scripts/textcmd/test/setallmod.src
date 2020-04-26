@@ -1,0 +1,9 @@
+use uo;
+
+program textcmd_setallmod( who, newmod )
+    newmod := CInt(newmod);
+
+    who.strength_mod     := newmod;
+    who.intelligence_mod := newmod;
+    who.dexterity_mod    := newmod;
+endprogram

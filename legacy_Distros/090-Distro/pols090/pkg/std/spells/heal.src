@@ -1,0 +1,38 @@
+use uo;
+use os;
+use util;
+
+include "include/client";
+include "include/spellrestrictions";
+
+program cast_heal( parms )
+
+	local circle := 1;
+	local caster;
+	local cast_on;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_on := parms[3];
+	else
+		caster := parms;
+		cast_on := CanTargetSpell(caster, circle, TGTOPT_HELPFUL + TGTOPT_CHECK_LOS );
+		if (!cast_on)
+			return;
+		endif
+	endif
+
+	local die_string := "3d2";
+	local healed := RandomDiceRoll( die_string ) ;
+	healed := healed + Cint( GetSkill(caster, SKILLID_MAGERY)/20)+5;
+	if (healed > 20)
+		healed := 20;
+	endif
+
+	HealDamage( cast_on , healed );
+	PlayObjectCenteredEffect( cast_on , FX_SPARK_EFFECT , 7 , 0x10 );
+	PlaySoundEffect( cast_on , SFX_SPELL_HEAL );
+
+	SendSysMessage( caster, "You healed " + healed + " damage." );
+
+endprogram

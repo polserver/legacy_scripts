@@ -1,0 +1,30 @@
+use uo;
+use os;
+use cfgfile;
+use util;
+
+include "include/dotempmods";
+
+program walk_on_trap( mobile, trap )
+
+   local itemdesc := ReadConfigFile( "itemdesc" );
+   local elem := FindConfigElem( itemdesc , trap.objtype );
+   local effect := GetConfigInt( elem , "Effect" );
+   local sound := GetConfigInt( elem , "Sound" );
+   local dieroll := GetConfigString( elem, "Damage" );
+   local poison := GetConfigInt( elem , "Poison" );
+
+   PlaySoundEffect( mobile, sound );
+   local trapitem := CreateItemAtLocation( trap.x, trap.y, trap.z, effect, 1 );
+
+   if (poison)
+	SetPoison(mobile,RandomInt(3)+1,"You've been poisoned!");
+   else
+	local dam := RandomDiceRoll( dieroll );
+	ApplyRawDamage( mobile , dam );
+   endif
+
+   sleep(2);
+   destroyitem(trapitem);
+
+endprogram

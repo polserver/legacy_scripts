@@ -1,0 +1,23 @@
+use uo;
+use os;
+use util;
+
+program Hunger(chr)
+  var hunger;
+  while(chr)
+    hunger := CInt(GetObjProperty(chr, "hunger"));
+    if(hunger >= 9)
+	  hunger := 9;
+    elseif (!hunger)
+      hunger :=0;
+    endif
+    hunger := hunger +1;
+    SetObjProperty(chr, "hunger", hunger);
+    case (hunger)
+	  4 : SendSysMessage(chr, "You could use a bite to eat...");
+	  8 : SendSysMessage(chr, "You're getting pretty hungry...");
+	  10: SendSysMessage(chr, "You're absolutely famished!");
+    endcase
+    sleep(30 * 60);
+  endwhile
+endprogram

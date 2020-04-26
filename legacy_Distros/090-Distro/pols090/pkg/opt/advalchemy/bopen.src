@@ -1,0 +1,409 @@
+use uo;
+use os;
+use cfgfile;
+use util;
+
+ include "include/client";
+ 
+ 
+ Const UOBJECT_EMPTY_BOTTLES := 0x0f0e;
+ Const UOBJECT_MORTAR := 0x0e9b;
+ Const SOUND_EFFECT_GRIND := 0x243;
+ Const SOUND_EFFECT_POUR := 0x241; 
+ Const SOUND_EFFECT_POISON := 0x247;  
+ Const SOUND_EFFECT_EXPLOSION := 0x208; 
+ Const EFFECT_EXPLOSION := 0x36b0; 
+ Const EFFECT_SPARKLE  := 0x374a; 
+
+
+
+global layout := array(
+	"page 0",
+	"gumppic 150 150 2203",
+	"gumppic 185 285 58",
+	"gumppic 200 285 58",
+	"gumppic 215 285 58",
+	"gumppic 230 285 58",
+	"gumppic 245 285 58",
+	"gumppic 260 285 58",
+	"gumppic 275 285 58",
+	"gumppic 290 285 58",
+	"gumppic 340 285 58",
+	"gumppic 355 285 58",
+	"gumppic 370 285 58",
+	"gumppic 385 285 58",
+	"gumppic 400 285 58",
+	"gumppic 415 285 58",
+	"gumppic 430 285 58",
+	"gumppic 445 285 58",
+);
+
+global data array;
+
+program recibe_book_open(who, item)
+
+//cria o array local com todas pocoes contidas
+local potions := GetObjProperty( item, "recipes");
+potions := SplitWords( potions);
+
+local i;
+
+local cfg := ReadConfigFile("alchemy2");
+if (!cfg)
+        syslog("unable to read alchemy2.cfg");
+        return;
+endif
+
+
+local itemdesc := ReadConfigFile("::itemdesc");
+if (!itemdesc)
+        syslog("unable to read itemdesc.cfg");
+        return;
+endif
+
+
+local lastpotion := 0;
+
+for(i:=1; i<=potions.size(); i:=i+1)
+	if(cint(potions[i])>lastpotion)
+		lastpotion := cint(potions[i]);
+	endif
+endfor
+
+
+local potionlist array;
+
+for(i:=1; i<=potions.size(); i:=i+1)
+	potionlist[cint(potions[i])] := 1;
+endfor
+
+
+local pagina:=1;
+local posicao :=1;
+local offset := 18;
+local dataoffset :=1;
+local tilepic;
+local curpotion;
+local curtext := 0;
+local page := 1;
+local picX;
+local fbuttonX;
+local sbuttonX;
+local textX;
+local titleX;
+local regs;
+local amount;
+local tpage;
+local fbuttonpic;
+local regname;
+
+for(i:=1; i<=lastpotion;i:=i+1)
+curpotion := cfg[i];
+
+if(!potionlist[i])
+	continue;
+endif
+
+//build the layout structure
+
+//page header
+
+if ((!mod((offset-18),17)) and (mod(pagina, 2)))
+	layout[offset] := "page " + cstr(page);
+	offset := offset +1;
+	page := page+1;
+endif
+
+//set some layout properties based of current pagina
+if (mod(pagina,2))
+	picX := cstr(220);
+	fbuttonX := cstr(172);
+	sbuttonX := cstr(290);
+	titleX := cstr(185);
+	textX := cstr(180);
+	tpage := cstr(page-2);
+	fbuttonpic := cstr(2205);
+else
+	picX := cstr(380);
+	fbuttonX := cstr(444);
+	sbuttonX := cstr(445);
+	titleX := cstr(340);
+	textX := cstr(340);
+	tpage := cstr(page);
+	fbuttonpic := cstr(2206);
+endif
+
+
+//tilepics
+
+tilepic := curpotion.icon;
+
+
+layout[offset] := "tilepic " + cstr(picX) + " 225 " + cstr(tilepic);
+offset := offset +1;
+
+
+//buttons
+
+layout[offset] := "button " + cstr(fbuttonX) + " 155 " + " " + cstr(fbuttonpic) + " " + cstr(fbuttonpic) + " 0 " + cstr(tpage) + " 0 ";
+offset := offset +1;
+
+layout[offset] := cstr("button " + sbuttonX + " 275 5032 5300 1 0 " + cstr(i));
+offset := offset +1;
+
+
+//texts
+
+//title
+layout[offset] := cstr("text " + titleX + " 172 0 " + curtext);
+offset := offset +1;
+curtext := curtext +1;
+
+
+//regs
+
+layout[offset] := cstr("text " + textX + " 294 0 " + cstr(curtext));
+offset := offset +1;
+curtext := curtext +1;
+
+layout[offset] := cstr("text " + textX + " 306 0 " + cstr(curtext));
+offset := offset +1;
+curtext := curtext +1;
+
+layout[offset] := cstr("text " + textX + " 318 0 " + cstr(curtext));
+offset := offset +1;
+curtext := curtext +1;
+
+layout[offset] := cstr("text " + textX + " 330 0 " + cstr(curtext));
+offset := offset +1;
+curtext := curtext +1;
+
+//increase other variables
+
+pagina := pagina +1;
+
+////////////Data/////////////////
+
+regs := GetConfigStringArray(curpotion, "reagent");
+amount :=GetConfigStringArray(curpotion, "amount"); 
+
+data[dataoffset] := cstr(curpotion.name);
+dataoffset := dataoffset +1;
+
+
+if (!regs[1])
+	data[dataoffset] := cstr(" ");
+else
+	regname := GetConfigString( FindConfigElem(itemdesc, cint(regs[1])), "name");
+	data[dataoffset] := cstr( " " + amount[1] + " " + regname );
+endif
+
+dataoffset := dataoffset +1;
+
+
+if (!regs[2])
+	data[dataoffset] := cstr(" ");
+else
+	regname := GetConfigString( FindConfigElem(itemdesc, cint(regs[2])), "name");
+	data[dataoffset] := cstr(" " + amount[2] + " " + regname );
+endif
+
+dataoffset := dataoffset +1;
+
+
+if (!regs[3])
+	data[dataoffset] := cstr( " " );
+else
+	regname := GetConfigString( FindConfigElem(itemdesc, cint(regs[3])), "name");
+	data[dataoffset] := cstr( " " + amount[3] + " " + regname );
+endif
+
+dataoffset := dataoffset +1;
+
+
+if (!regs[4])
+	data[dataoffset] := cstr( " " );
+else
+	regname := GetConfigString( FindConfigElem(itemdesc, cint(regs[4])), "name");
+	data[dataoffset] := cstr( " " + amount[4] + " " + regname );
+endif
+
+dataoffset := dataoffset +1;
+
+
+endfor
+
+
+local box := SendDialogGump( who, layout, data );
+
+if (box[0])
+	Local TX:=who.x;
+	Local TY:=who.y;
+
+	Local val := cint(SendTextEntryGump( who, "How many potions would you like to make?(Max 20)", 40 ));
+        if (!val or val>20)
+		SendSysMessage(who, "Canseled");
+		return 0;
+  	endif		
+	For (i:=1;i<=val;i:=i+1)
+	  if (TX<>who.x or TY<>who.y)
+	    break;
+	  elseIf (!make_potion( who, box[0]))
+	    break;
+	  endif
+	endfor
+else
+	sendsysmessage(who, "Canseled");
+endif
+
+//clearance
+UnloadConfigFile( "alchemy2" );
+UnloadConfigFile( "itemdesc" );
+
+endprogram
+
+function make_potion(user, PotionId)
+   Local config_file := readconfigfile("alchemy2");
+   Local elem := FindConfigElem(config_file,PotionID);
+
+   Local PotionName:=GetConfigString(elem,"name");
+   Local PotionsSkill:=GetConfigInt(elem,"skill");
+   Local PotionRegs:=GetConfigStringArray(elem,"reagent");
+   Local PotionAmount:=GetConfigStringArray(elem,"amount");
+   Local PotionPoints :=GetConfigInt(elem,"points");
+   Local PotionObjType:=GetConfigInt(elem,"objtype");
+   Local Bottle:= is_item(user,UOBJECT_EMPTY_BOTTLES); 
+   Local Mortar:= is_item(user,UOBJECT_MORTAR);
+   
+   If (!Bottle)
+     PrintTextAbovePrivate(user, "You dont have bottles", user);
+     return 0;
+     else
+     if (!mortar)
+       PrintTextAbovePrivate(user, "You dont have a mortar", user);
+       return 0;
+       else
+       If (!Take_Regs(user,PotionRegs,PotionAmount));
+         PrintTextAbovePrivate(user, "You dont have enought reagents", user);
+	 else
+           local control;
+
+           for (control:= 1; control <= 4; control := control + 1)
+              playsoundeffect(user, SOUND_EFFECT_GRIND);
+              printtextaboveprivate(user, "You grind the reagents",user);
+              sleepms(2000);
+           endfor
+           Local SkillCheck:=CheckSkill( user, SKILLID_ALCHEMY, PotionsSkill, PotionPoints );
+
+           If (SkillCheck<=0)
+             Return RandomEffect(user,SkillCheck, PotionObjType);
+             else
+               SubtractAmount(Bottle, 1);
+               local Potion := CreateItemInBackpack(user, PotionObjType, 1);
+               potion.name:="Uma Pocao de "+PotionName;
+               PlaySoundEffect(user, SOUND_EFFECT_POUR);
+               PrintTextAbovePrivate(user, "You create the potion and put it in your backpack", user);
+               return 1;
+           endif
+       endif
+     endif
+   endif
+endfunction
+
+ Function is_item(user,LookingFor)
+         local hasitem:= 0;
+         Local RetItem;
+
+         set_critical(1);
+
+         foreach item in EnumerateItemsInContainer(user.backpack)
+                 if (item.objtype = LookingFor)
+                         RetItem:=item;
+                         hasitem := 1;
+                         break;
+                 endif
+         endforeach
+                 
+         set_critical(0);
+
+         if (hasitem)
+            return RetItem;
+         else
+            return 0;
+         endif  
+ endfunction
+
+ Function Take_Regs(user,PotionRegs,PotionAmount)
+	 Local i,has_item;
+         Local ItemArray:=Array(len(PotionRegs));
+         
+         For (i:=1;i<len(PotionRegs)+1 ;i:=i+1)
+         set_critical(1);
+         has_item:=0;
+
+         foreach item in EnumerateItemsInContainer(user.backpack)
+                 if (item.objtype = Cint(PotionRegs[i]) and item.amount>=CInt(PotionAmount[i]) )
+                         ItemArray[i]:=item;
+                         has_item:=1;
+                         break;
+                 endif
+         endforeach
+
+         set_critical(0);       
+
+         If (!has_item)
+             return 0;
+         endif;
+         EndFor
+         
+         // Take Regs
+         For (i:=1;i<=len(ItemArray) ;i:=i+1)
+             SubtractAmount(itemArray[i], Cint(PotionAmount[i]));
+         EndFor
+         return 1;
+ 
+ endfunction
+
+ Function RandomEffect(user,Bottle, PotionObjType)
+   Local config_file := readconfigfile("itemdesc");
+   Local elem := FindConfigElem(config_file,PotionObjType);
+
+   Local strength:=Cint(GetConfigString(elem,"Strength"));
+   local results := Randomint(9) + 1;
+   if (results <= 2)
+     SendSysmessage (user, "The unstable concoction explodes");
+     PlayObjectCenteredEffect( user, EFFECT_EXPLOSION, 10,10 );
+     PlaySoundEffect( user,  SOUND_EFFECT_EXPLOSION );
+     Local dmg := (Randomint(19) + 1) * strength ;
+     dmg := dmg + 2;
+     ApplyRawDamage(user, dmg);
+     SubtractAmount(Bottle, 1);
+     return 0;
+   elseif (results <= 4)
+     PlayObjectCenteredEffect( user, EFFECT_SPARKLE, 10,10 );
+     SendSysmessage (user, "That mixture sends off a choking gas");
+     sleep(1);
+     local curr_level := Cint(GetObjProperty (user, "poison_level") );
+     local poison_level := cint(strength);
+     if (curr_level > 0 ) 
+       poison_level := poison_level + curr_level;
+       SetObjProperty(user, "poison_level",cstr(poison_level));
+       else
+         SetObjProperty(user, "poison_level",cstr(poison_level));
+         start_script( "spells/poisondamage", user ); 
+     endif
+     SubtractAmount(bottle, 1);
+     return 0;
+   else
+     PlaySoundEffect(user, SOUND_EFFECT_POUR);
+     PrintTextAbovePrivate(user, "You pour out the useless mixture", user);
+     return 1;
+  endif
+ EndFunction
+ 
+function Mod(Numerator, Denominator)
+While (Numerator >= Denominator)
+         Numerator := Numerator - Denominator;
+endwhile
+return Numerator;
+endfunction 

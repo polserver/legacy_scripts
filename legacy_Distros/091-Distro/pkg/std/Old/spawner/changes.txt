@@ -1,0 +1,8 @@
+std-spawner (POL076)
+====================
+    Verified ready for release.
+    First packaged version.
+    - Syzygy <syzygy@pobox.com> 19990705
+
+Disabled this spawner, enabled danspawner as default (this was confusing ppl) 
+	-- DW

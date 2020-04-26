@@ -1,0 +1,16 @@
+Animal Trainer - version .4
+Updated by Zulu (zulu@cadvision.com) April 3, 2000
+
+I have included RoTTer's Stable Keeper script into the animal trainer.
+I have updated his code a bit. I have also included Sentack's training
+code. I have updated his code a bit.
+
+The animal trainer can train skills for players.
+They will stable and return pets for players.
+They sell pets and buy pets from players.
+
+It now includes an updated buy/sell routine, you will need the latest
+POL package to run this.
+
+To create a npc use the command 
+.createnpc animaltrainer

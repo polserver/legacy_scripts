@@ -1,0 +1,52 @@
+Use npc;
+Use os;
+
+function tell_my_position()
+	Local pos, text;
+
+	pos := position();
+
+	text := "My position is (" + pos.x + "," + pos.y + "," + pos.z + ")";
+	say( text );
+endfunction
+
+sleep( 20 );
+
+Global walkarea;
+Global boundingBox;
+Global direction;
+Global i;
+
+Global count, ev;
+walkarea := GetProperty( "WalkArea" );
+boundingBox := MakeBoundingBox( walkarea );
+
+count := 0;
+
+//if (walkarea <> "")
+	//print "My WalkArea is: " + walkarea;
+
+while (1)
+	direction := move(boundingBox);
+	
+	for( i := 0; i < 3; i := i + 1 )
+		if (IsLegalMove( direction, boundingBox ))
+			move( direction );
+		else
+			break;
+        endif
+	endfor
+
+
+	tell_my_position();
+
+	count := count + 1;
+	say( "again I go around the ring (" + count + " times)." );
+
+	ev := wait_for_event( 10 );
+	if (ev <> 0)
+		//print "Event Type: " + ev.type;
+		//print "Event Source: " + ev.source;
+		say( "Someone said: '" + ev.text + "'" );
+	endif
+endwhile

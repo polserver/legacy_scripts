@@ -1,0 +1,17 @@
+use uo;
+
+program tame( who )
+
+    SendSysmessage( who , "Tame what?" );
+    local npc := Target( who , "" );
+
+    SetObjProperty( npc , "master" , who.serial );
+    SetObjProperty( npc , "script" , npc.script );
+        // hmm, 'script' could be read from npcdesc to restore..
+    
+    npc.setmaster( who );
+
+    npc.script := "tamed";
+    RestartScript(npc);
+
+endprogram

@@ -1,0 +1,17 @@
+Current AIs:
+daves_healer: a generic healer script. Wanders around and resurrects a ghost if it's visible
+meek: a wanderer that fears humans. Use for wildlife, etc
+person: a generic townperson. Pretty boring, and rather incomplete
+killpcs: your generic melle-fighting bad guy. Hates all players
+archerkillpcs: like killpcs, only uses a bow or crossbow. The "missileweapon" entry in NPCDESC.CFG is important for this creature,which needs to be an entry in equip.cfg containing both a backpack and a missile weapon of some sort. You also need to put an "ammotype" entry, stating the objtype of the ammunition that the creature uses, as well as "ammoamount" -- the amount of the ammunition it takes.
+spellkillpcs:hates people, and fights with spells. Salient npcdesc.cfg entries:
+        spell (multiplpe entries): the spells this npc can cast. The current list is poison,flamestrike,ebolt,lightening,harm,mindblast,magicarrow,meteorswarm,summonskel,summonfire,summonwater,summonair,summonearth,summondaemon,summonvortex,paralyze,chainlightning,masscurse,weaken,fireball,explosion. Other important entries: cast_pct: the chance of casting each combat loops,count_casts: should it cast a limited number of spells, num_casts: the number of casts it gets per combat, and saywords: whether or not it should say the words of power when it casts
+goodcaster: mostly for wisps and other "nice" spellcasters. Casts spells, but won't attack. Same entries as spellkillpcs
+doppel: a shapechanger AI that attacks players. Can also breathe fire and cast spells. Tough to configure. Salient entries:
+        graphics (multiple entries): These critters will change shape once per graphic entry, when they drop below 30% HP. When they change shape, they go back to 100% health. The graphics entry has several important parts, each separated by spaces. These parts are: graphic id, color, cast_spells, breathe_fire
+        spells: entries as per spellkillpcs. Only used if the current graphic can cast spells
+critterhealer: casts spells, and heals any NPCs that are damaged. Makes the combat quite difficult. Config entries are as per spellkillpcs
+firebreather: like killpcs, but can breathe fire. Can be tough, as damage is based on hit points (damage is between 1 and 70% of their total hitpoints)
+spider: like killpcs, but tosses spider webs at foes. If the webs are stepped on, the player is paralyzed for 15 seconds
+townguard: a generic guard AI. Attacks all creatures without guardignore 1 in npcdesc.cfg
+slime: a slime AI. There's a chance that they'll split or spit acid when hit

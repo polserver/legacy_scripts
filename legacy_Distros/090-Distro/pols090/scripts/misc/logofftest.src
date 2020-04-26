@@ -1,0 +1,13 @@
+//
+//  default logofftest: anyone with a cmdlevel can log off immediately.
+//                      those without have to wait 5 minutes.
+//
+
+program logofftest( character )
+    // print( "logofftest: " + character.name );
+    if (character.cmdlevel)
+        return 0;
+    else
+        return 60 * 5;
+    endif
+endprogram

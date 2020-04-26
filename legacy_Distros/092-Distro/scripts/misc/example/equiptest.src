@@ -1,0 +1,4 @@
+program equiptest( mob, item )
+    print( "equiptest: " + mob.name + " " + item.desc );
+    return 1;
+endprogram

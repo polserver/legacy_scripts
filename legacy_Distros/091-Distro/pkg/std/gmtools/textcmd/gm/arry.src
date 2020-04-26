@@ -1,0 +1,11 @@
+use uo;
+
+program textcmd_arry(who)
+  local newarray := {};
+  local trg := target(who);
+  newarray.append(trg.x);
+  newarray.append(trg.y);
+  newarray.append(trg.z);
+  local targ := target(who);
+  SetObjProperty(targ,"speaker", newarray);
+endprogram

@@ -1,0 +1,15 @@
+// Refreshme.src
+// Refreshes mana and stanima, and grants nightsight.
+// Last Modified:  20 Nov 00.
+
+use uo;
+use os;
+
+program textcmd_refreshme( who )
+    who.setlightlevel (0, 1800);
+    who.hp := who.maxhp; 
+    who.mana := who.maxmana;
+    who.stamina := who.maxstamina;
+    PrintTextAbovePrivate( who, "Your mana, stanima, and nightsight have been refreshed!", who);
+
+endprogram

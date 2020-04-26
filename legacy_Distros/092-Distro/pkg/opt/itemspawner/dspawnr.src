@@ -1,0 +1,11 @@
+//ver 0.43
+//spawn rune destroy script
+//find and destroy all s eatures on the box
+//seu algovatmo tava matando tudo na tela entao vou reescrever do zero o qtento antes
+
+use os;
+use uo;
+
+program dspawnr( item )
+
+endprogram

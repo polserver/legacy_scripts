@@ -1,0 +1,111 @@
+use uo;
+use basic;
+use cfgfile;
+use util;
+
+include "include/client";
+include "include/objtype";
+
+Global config_file;
+
+
+program do_poisoning( character )
+ 
+    local the_item;
+    local the_poison;
+    local skill;
+    local points;
+    local elem;
+    local strength;
+  
+    config_file := ReadConfigFile( "poisoning");
+
+    SendSysMessage( character, "Select a poison potion." );
+
+    the_poison := target(character, "");
+
+    if (!the_poison)
+        SendSysmessage(character, "Targetting cancelled.");
+        return;
+    endif 
+    
+    if (! Accessible(character, the_poison))
+        SendSysmessage (character, "You can't reach that!");
+        return;
+    endif
+    
+    if (the_poison.graphic != UOBJ_POISON_POTION)
+        SendSysmessage (character, "You must select a poison potion!");
+        return;
+    endif
+    
+    SendSysmessage (character, "Select an object to which to apply this poison");
+    
+    the_item := target(character, TGTOPT_CHECK_LOS);
+
+    if (!the_item)
+        SendSysmessage (character, "Targetting cancelled.");
+        return;
+    endif
+
+    if (! Accessible(character, the_item))
+        SendSysmessage (character, "You can't reach that!");
+        return;
+    endif
+   
+    local alchcfg := readconfigfile(":alchemy:itemdesc");
+   
+    local acfgfile := ReadConfigFile( "poisoning_items");
+    local theitem := FindConfigElem( acfgfile, cint(the_item.objtype) );   
+    
+    if (!theitem)
+        acfgfile := readconfigfile(":combat:itemdesc");
+        theitem := acfgfile[the_item.objtype];
+        if (! theitem)
+                if (the_item.usescript["eat"] or the_item.usescript["drink"])
+                        theitem := the_item;
+                else
+                        if (alchcfg[the_item.objtype])
+                                theitem := theitem;
+                        else
+                                return;
+                        endif
+                endif
+        endif
+
+    endif    
+   
+ 
+   
+    strength:= cint(alchcfg[the_poison.objtype].strength);
+
+    if (strength = 0)
+        strength := 1;
+    endif
+   
+    elem := FindConfigElem( config_file, strength );
+
+    skill := Cint(GetElemProperty( elem , "skill"));
+    points := Cint(GetElemProperty( elem , "points"));
+
+    if (CheckSkill( character, SKILLID_POISONING, skill, points ))
+        SetObjProperty(the_item, "poison_level", cstr(strength));
+        SetObjProperty(the_item, "pstr", strength*2);
+        Setobjproperty(the_item, "p", character.name);
+        var hits := GetObjProperty( the_item, "OnHit");
+        if(hits)
+        	hits.append("poisonhit");
+        	SetObjProperty(the_item, "OnHit", hits);
+        else
+        	SetObjProperty(the_item, "OnHit", {"poisonhit"});
+        endif
+        SendSysmessage(character, "You succeed in poisoning the item.");
+
+    else
+        SendSysmessage (character, "You fail to poison the item."); 
+    endif
+    
+    SubtractAmount(the_poison,1);
+    CreateIteminBackpack(character, UOBJ_EMPTY_BOTTLE, 1);   
+
+endprogram

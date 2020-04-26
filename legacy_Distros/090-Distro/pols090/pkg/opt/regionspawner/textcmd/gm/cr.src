@@ -1,0 +1,169 @@
+use uo;
+use os;
+use cfgfile;
+use util;
+
+global regspawn;
+
+program SpawnThatStuff( me, region )
+
+	sendsysmessage(me, "Restoring Region " + region);
+
+	UnloadConfigFile( ":regionalspawner:regionspawn" );
+
+	set_critical(0);
+
+	regspawn := ReadConfigFile( ":regionalspawner:regionspawn" );
+
+	local numregions := GetConfigMaxIntKey( regspawn );
+	local coords;
+	local x1;
+	local y1;
+	local x2;
+	local y2;
+
+	local i := cint(region);
+
+        	local spawnregion := regspawn[ i ];
+
+		local spawngroups := GetConfigStringArray( spawnregion, "group" );
+
+		foreach spawngroup in spawngroups
+			local groupstring := splitwords(spawngroup);
+			SendSysMessage(me,"Group: " + groupstring);
+			local groupname := groupstring[1];
+			local groupdensity := cint(groupstring[2]);
+			SpawnThisGroup(me, i, spawnregion, groupname, groupdensity);
+			sleep(5);
+		endforeach
+
+	SendSysMessage(me,"Done spawning!");
+
+endprogram
+
+function SpawnThisGroup(me, regionnum, spawnregion, groupname, groupdensity)
+
+	local coords := splitwords(spawnregion.rect);
+	local x1 := cint(coords[1]);
+	local y1 := cint(coords[2]);
+	local x2 := cint(coords[3]);
+	local y2 := cint(coords[4]);
+
+	local spawngroup := FindConfigElem( regspawn, groupname );
+	if (!spawngroup)
+		SendSysMessage(me,"Could not find: "+groupname);
+	endif
+
+	NukeThisGroup(me,regionnum,spawnregion,groupname);
+
+	local critterlist := GetConfigStringArray( spawngroup, "npc" );
+
+	local sizeofregion := (x2 - x1) * (y2 - y1);
+
+	local numtospawn := cint((sizeofregion * groupdensity)/10000);
+
+	if (!numtospawn)
+		numtospawn := 1;
+	endif
+
+	local SpawnName := "r"+regionnum+"g"+groupname;
+
+	if (!GetGlobalProperty(SpawnName))
+		SetGlobalProperty(SpawnName,0);
+	endif
+
+	local currentspawn := Cint(GetGlobalProperty(SpawnName));
+
+	if (currentspawn < 0)
+		currentspawn := 0;
+		SetGlobalProperty(SpawnName,0);
+	endif
+
+	numtospawn := numtospawn - currentspawn;
+
+	SendSysMessage(me,"Number to Spawn: "+numtospawn);
+
+	if (numtospawn < 1)
+		return;
+	endif
+
+	local critnum;
+	local thecritter;
+	local x;
+	local y;
+	local z;	
+	local i;
+	local tries;
+	local sh;
+	local info;
+
+	for( i := 1; i <= numtospawn; i := i + 1 )
+		critnum := RandomInt(len(critterlist))+1;
+
+		thecritter := 0;
+		tries := 0;
+		repeat
+
+			x := RandomInt (x2-x1)+x1;
+			y := RandomInt (y2-y1)+y1;
+			z := GetMapInfo(x,y).z;
+			tries := tries +1;
+
+			sh := GetStandingHeight( x, y, z );
+			if (sh.multi or sh.multi.serial)
+				thecritter := 0;
+			else
+				info := hex(GetMapInfo( x , y ).landtile);
+				if ((info < 0x406) or (info > 0x455))
+					thecritter := createnpcfromtemplate(critterlist[critnum],x,y,z);
+					if (thecritter)
+						SetObjProperty(thecritter,"regspawn",SpawnName);
+						currentspawn := Cint(GetGlobalProperty(SpawnName))+1;
+						SetGlobalProperty(SpawnName,currentspawn);
+					endif
+				endif
+			endif
+
+		until (thecritter) or (tries > 25);
+
+		if (tries > 25)
+			SendSysMessage(me,"Error - could not spawn "+ critterlist[critnum] + " in " + SpawnName);
+		endif
+
+	endfor
+
+endfunction
+
+
+function NukeThisGroup(me, regionnum, spawnregion, groupname)
+
+	local coords := splitwords(spawnregion.rect);
+	local x1 := cint(coords[1]);
+	local y1 := cint(coords[2]);
+	local x2 := cint(coords[3]);
+	local y2 := cint(coords[4]);
+	local kills := 0;
+
+	local SpawnName := "r"+regionnum+"g"+groupname;
+
+	set_critical(1);
+	local x, y, z;
+	for( x := x2 ; x > x1 ; x := x  - 16)
+    	  for( y := y1; y < y2; y := y + 16 )
+	    for( z := -60; z <= 60; z := z + 16 )
+		foreach npc in ListMobilesNearLocationEx( x, y, z, 50,0x02+0x01)
+			if ( GetObjProperty( npc, "regspawn" ) = SpawnName )
+				SetObjProperty( npc, "guardkill",1);
+				ApplyRawDamage( npc, npc.maxhp );
+				kills := kills +1;
+			endif
+		endforeach
+	    endfor
+	  endfor
+		sleep(1);
+	endfor
+	set_critical(0);
+	SendSysMessage(me,"kills: "+kills);
+	SetGlobalProperty(SpawnName,0);
+
+endfunction

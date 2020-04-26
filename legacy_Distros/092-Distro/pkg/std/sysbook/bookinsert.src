@@ -1,0 +1,16 @@
+// Bookcase Spawning system  version .3
+// created December 6, 2000
+// updated December 8, 2000
+// designed by Syzygy, Zulu and Bishop Ebonhand
+
+use uo;
+use os;
+
+program can_insert(who, backpack, item)
+  if(who.cmdlevel>=2 || getobjproperty(item,"casecity")<>1)
+    return 1;
+  else
+    printtextaboveprivate(backpack, "You cannot store things there.", who);
+    return 0;
+  endif
+endprogram

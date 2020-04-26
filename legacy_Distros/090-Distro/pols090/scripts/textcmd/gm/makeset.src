@@ -1,0 +1,121 @@
+use uo;
+use cfgfile;
+
+program makeset(who, tsetname  )
+
+sendsysmessage(who, "Enter the upper left-hand corner of the box that contains the set");
+local where1 := targetcoordinates(who);
+if (!where1)
+        return;
+endif
+
+
+sendsysmessage(who, "Enter the lowe right-hand corner of the box that contains the set");
+local where2 := targetcoordinates(who);
+if (!where2)
+        return;
+endif
+
+local cfg := readconfigfile("sets");
+local id := cint(GetConfigMaxIntKey(cfg)) + 1;
+local thing;
+local entry := {};
+local items := {};
+local mobiles := {};
+
+
+foreach thing in ListObjectsInBox( where1.x, where1.y, where1.z, where2.x, where2.y, where2.z )
+        if (thing.npctemplate) //we're dealing with a critter
+                local parm := {};
+                local parms := {};
+                parm.+pname;
+                parm.+pval;
+                parm.pname := "template";
+                parm.pval := thing.npctemplate;
+                parms.append(parm);
+                parm.pname := "color";
+                parm.pval := cstr(thing.color);
+                parms.append(parm);
+                parm.pname := "script";
+                parm.pval := thing.script;
+                parms.append(parm);
+                parm.pname := "dx";
+                parm.pval := cstr(thing.x - where1.x);
+                parms.append (parm);
+                parm.pname := "dy";
+                parm.pval := cstr(thing.y - where1.y);
+                parms.append (parm);
+                parm.pname := "dz";
+                parm.pval := cstr(thing.z - where1.z);
+                parms.append(parm);
+                AppendConfigFileElem("sets", "setmobile", id, parms);
+                mobiles.append (cstr(id));
+                id := id + 1;
+        elseif (!thing.dexterity) //we're dealing with an item
+                local parm := {};
+                local parms := {};
+                parm.+pname;
+                parm.+pval;
+                parm.pname := "objtype";
+                parm.pval := cstr(thing.objtype);
+                parms.append(parm);
+                parm.pname := "color";
+                parm.pval := cstr(thing.color);
+                parms.append (parm);
+                parm.pname := "dx";
+                parm.pval := cstr(thing.x - where1.x);
+                parms.append (parm);
+                parm.pname := "dy";
+                parm.pval := cstr(thing.y - where1.y);
+                parms.append (parm);
+                parm.pname := "dz";
+                parm.pval := cstr(thing.z - where1.z);
+                parms.append(parm);
+                if (getobjproperty(thing, "trap_type"))
+                        parm.pname := "trap_type";
+                        parm.pval := getobjproperty(thing, "trap_type");
+                        parms.append(parm);
+                        parm.pname := "trap_strength";
+                        parm.pval := getobjproperty(thing, "trap_strength");
+                        parms.append(parm);
+                endif
+                parm.pname := "script";
+                parm.pval := thing.usescript;
+                AppendConfigFileElem("sets", "setitem", id, parms);
+                
+                items.append (cstr(id));
+                id := id + 1;
+       endif
+endforeach
+
+if (tsetname = "")
+        tsetname := sendtextentrygump(who, "What would you like to call this set?");
+        if (tsetname  = "")
+                sendsysmessage(who, "Cancelled");
+                return;
+        endif
+endif
+
+
+local tparm := {};
+tparm.+ pname;
+tparm.+ pval;
+local ntry;
+
+foreach ntry in items
+        tparm.pname := "setitem";
+        tparm.pval := cstr(ntry);
+        entry.append(tparm);
+endforeach        
+
+foreach ntry in mobiles
+        tparm.pname := "setmobile";
+        tparm.pval := cstr(ntry);
+        entry.append(tparm);
+endforeach
+
+appendconfigfileelem("sets", "set", tsetname, entry);
+
+sendsysmessage(who, "Entry saved!");
+UnloadConfigFile("sets");
+endprogram

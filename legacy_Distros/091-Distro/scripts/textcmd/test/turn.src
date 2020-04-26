@@ -1,0 +1,7 @@
+use uo;
+
+program textcmd_turn( who, newfacing )
+    newfacing := CInt( newfacing );
+    local what := Target( who );
+    what.facing := newfacing;
+endprogram

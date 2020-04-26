@@ -1,0 +1,57 @@
+use uo;
+use util;
+use os;
+use cfgfile;
+
+include "include/client";
+include "include/attributes";
+
+program poisonhit(param)
+  var npccfg := ReadConfigFile("::npcdesc");
+  var attacker := param[1];
+  var defender := param[2];
+  var weapon := param[3];
+  var armor := param[4];
+  var basedamage := param[5];
+  var rawdamage := param[6];
+  SetObjProperty(defender, "TempDamage", rawdamage);
+  var duration := CInt(GetObjProperty(weapon, "d"));
+  if((duration < 1) || !duration)
+    var hitscript := GetObjProperty(weapon,"OnHit");
+    hitscript.erase(returnindex(hitscript, ":combat:poisonHit"));
+    SetObjProperty(weapon,"OnHit", hitscript);
+    EraseObjProperty(weapon,"poison_level");
+    EraseObjProperty(weapon,"d");
+    EraseObjProperty(weapon,"ps");
+    SetObjProperty(defender, "LastHit", {attacker.name, attacker.serial, weapon });
+    return;
+  endif
+  duration := duration - 1;
+  SetObjProperty(weapon, "d", duration);
+  var potion_strength := GetObjProperty(weapon, "poison_level");
+  var defenderplevel := CInt(GetObjProperty(defender,"poison_level"));
+  var newplevel := (CInt(potion_strength));
+  var value := ((GetEffectiveSkill(attacker, SKILLID_POISONING) + 2) + (potion_strength * 2));
+  if(CheckSkill(attacker, SKILLID_POISONING, value, 20))
+    PrintTextAbove(defender, defender.name + " has been poisoned!");
+    SendSysMessage(defender, "You have been poisoned by " + attacker.name +"!");
+    if((defenderplevel < newplevel) || (!defenderplevel) || (defenderplevel < 1))
+      SetObjProperty(defender, "poison_level", potion_strength);
+    endif
+    Detach();
+    SetObjProperty(defender, "PoisonStamp", ReadGameClock());
+    var passparms := { defender, attacker, "poisoned weapon" };
+    start_script(":spells:poisonDamage", passparms);
+    SetObjProperty(defender, "LastHit", {attacker.name, attacker.serial, "poisoned weapon" });
+  endif
+endprogram
+
+function returnindex(info, information)
+  var i;
+  for (i := 1; i <= len(info); i := i + 1)
+    if (info[i] == information)
+      return i;
+    endif
+  endfor
+  return 0;
+endfunction

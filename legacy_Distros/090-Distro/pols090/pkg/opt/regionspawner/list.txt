@@ -1,0 +1,23 @@
+dospawn.src
+
+	The main spawner.  Launched as a seperate proggy so that it can be updated on the fly.
+
+regionspawn.cfg
+
+	Populates pretty much the whole world.  Edit it.  We probably have npcs that you don't.
+
+regspawner.src
+
+	Launches dospawn every 30 to 45 minutes.
+
+start.src
+
+	Launches regspawner.src.
+
+textcmd\gm\cr.src
+
+	Clears and repops a region.  .cr 3 will clear and repop region 3, etc.
+
+textcmd\gm\depop.src
+
+	Does a shard-wide npc wipe, repop and resets all the counters.  Only kills regionspawned npcs.

@@ -1,0 +1,59 @@
+use uo;
+const UOBJ_PITCHER_FULL := 0x1f9d;
+const UOBJ_PITCHER_EMPTY := 0x09f0;
+
+program ale (character, keg)
+
+if (!getobjproperty(keg, "ale"))
+        sendsysmessage(character, "Alas, that keg is tapped out");
+        return;
+endif
+
+if (getobjproperty(keg, "ale") > readgameclock())
+        sendsysmessage(character, "That's not ready yet! You don't want to drink that!");
+        return;
+endif
+
+sendsysmessage(character, "Select a pitcher to use that on");
+local pitcher := target(character, TGTOPT_CHECK_LOS);
+
+if (pitcher.graphic != UOBJ_PITCHER_EMPTY)
+        Sendsysmessage(character, "You need to pour this into an empty pitcher!");
+        return;
+endif
+
+pitcher.graphic := UOBJ_PITCHER_FULL;
+local leftt := getobjproperty(keg, "left");
+if (!leftt)
+        setobjproperty(keg, "left", 9);
+else
+        if (leftt = 1)
+                keg.usescript := "";
+                eraseobjproperty(keg, "w");
+                eraseobjproperty(keg, "left");
+                local thing;
+                foreach thing in enumerateitemsincontainer(keg)
+                        destroyitem(thing);
+                endforeach
+                sendsysmessage(character, "The keg is empty!");
+        else
+                leftt := leftt - 1;
+                setobjproperty(keg, "left", leftt);
+        endif
+endif
+
+setobjproperty(pitcher, "proof", getobjproperty(keg, "alequal") * 2);
+local aq := getobjproperty(keg, "alequal");
+
+case (aq)
+
+         1: pitcher.name := "pitcher of ale";
+         2: pitcher.name := "pitcher of good ale";
+         3: pitcher.name := "pitcher of very good ale";
+         default: setobjproperty(pitcher, "poison_level", 2);
+            pitcher.name := "pitcher of beer";
+endcase
+
+pitcher.usescript := ":drinking:drink";
+
+endprogram

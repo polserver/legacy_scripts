@@ -1,0 +1,55 @@
+use uo;
+use os;
+use cfgfile;
+
+include "include/client";
+include "getspellid";
+
+program use_scroll( who, scroll )
+
+	set_critical( 1 );
+	if (!scroll.amount)
+		return;
+    	endif
+
+	ReserveItem(scroll);
+
+        local spellid := GetSpellId( scroll );
+
+	PerformAction(who,ANIM_CAST_DIR);
+	local spells_cfg := ReadConfigFile( ":spells:spells" );
+	local element := FindConfigElem ( spells_cfg, spellid );
+	PrintTextAbove( who, GetConfigString(element, "PowerWords") );
+
+        if ( (ConsumeMana( who, spellid )) and (CanReadScroll(who)) )
+            	if (CheckSkill( who, SKILLID_MAGERY, GetSpellDifficulty( spellid ) - 20, 20 ) )
+                	Detach();
+			SubtractAmount( scroll, 1 );
+                	StartSpellEffect( who, spellid );
+			return;
+		endif
+	endif
+
+	PlaySoundEffect(who,0x005d);
+	PlayObjectCenteredEffect(who, 0x3735,0x0a, 0x1e);
+
+endprogram
+
+function CanReadScroll (me)
+
+	local cfg := readconfigfile(":combat:itemdesc");
+	local item;
+	local circle := 2;
+
+	local theweapon := GetEquipmentByLayer( me,  LAYER_HAND1   );
+	if (!theweapon)
+		theweapon := GetEquipmentByLayer( me,  LAYER_HAND2   );
+	endif
+	
+	if (theweapon)
+		return 0;
+	else
+		return 1;
+	endif
+
+endfunction

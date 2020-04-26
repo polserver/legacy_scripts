@@ -1,0 +1,18 @@
+use os;
+use uo;
+
+include "include/client";
+
+program textcmd_setskill( who )
+local i;
+for (i := 0; i <= SKILLID__HIGHEST; i := i + 1)
+
+        print( "Setting Raw Skill " + i + " to 0" );
+        local res := SetRawSkill( who, i, 0 );
+        if (res = error)
+            SendSysMessage( who, "Unable to set raw skill: " + res.errortext );
+        else
+            SendSysMessage( who, "New Effective Skill: " + GetSkill(who,i) );
+        endif
+    endfor
+endprogram

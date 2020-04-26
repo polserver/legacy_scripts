@@ -1,0 +1,3 @@
+program unequiptest( mob, item )
+    return 1;
+endprogram

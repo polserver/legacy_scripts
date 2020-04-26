@@ -1,0 +1,100 @@
+Use cfgfile;
+Use uo;
+use basic;
+
+include "include/client";
+include "include/skillpoints";
+
+
+program do_armslore( character )
+    local configfile;
+    local the_item;
+    local max_hp;
+    local item_max_hp;
+    local hp;
+    local itemtype;
+    local element;
+    local configfilename;
+    local quality_descr;
+    local damage_descr;
+    local quality_nbr;
+    local damage_nbr;
+    local quality_real;
+    local damage_real;
+    
+    local thepoints := get_default_points(SKILLID_ARMSLORE);
+    SendSysMessage( character, "Select an object to evaluate." );
+    the_item := target(character, TGTOPT_CHECK_LOS);
+    if (!the_item)
+        SendSysmessage(character, "Targetting cancelled.");
+        return;
+    endif 
+    
+    local cfg := readconfigfile(":combat:itemdesc");
+    local entry := cfg[the_item.objtype];
+    
+    if (!entry)
+        sendsysmessage(character, "You can only use this skill on weapons or armor!");
+        return;
+    endif
+ 
+    if (CheckSkill( character, SKILLID_ARMSLORE, -1, thepoints ))
+        
+    
+    
+        item_max_hp := the_item.maxhp;
+        max_hp := item_max_hp;
+        hp := the_item.hp;
+
+       
+    
+        if (hp = 0)
+            hp := 1;
+        endif
+
+        if (max_hp = 0)
+            max_hp := 1;
+        endif
+        if (item_max_hp = 0)
+            item_max_hp := 1;
+        endif        
+        
+        damage_real := (hp  * 100) / max_hp;
+        damage_nbr := Cint(damage_real);
+
+        quality_real :=  (the_item.quality  * 100) ;
+        quality_nbr := Cint(quality_real);
+    
+        if (damage_nbr > 90)
+            damage_descr := "good";
+        elseif (damage_nbr >= 60)
+            damage_descr := "acceptable";
+        elseif (damage_nbr >= 40)
+            damage_descr := "fair";
+        else
+            damage_descr := "poor";        
+        endif
+    
+    
+        if (quality_nbr > 100)
+            quality_descr := "exceptional";
+        elseif (quality_nbr >= 80)
+            quality_descr := "excellent";    
+        elseif (quality_nbr >= 60)
+            quality_descr := "decent";
+        elseif (quality_nbr >= 40)
+            quality_descr := "moderate";
+        else
+            quality_descr := "low";        
+        endif
+    
+        Sendsysmessage (character, "This item is of " + quality_descr + " quality, and is in " + damage_descr + " condition.");
+    else
+        SendSysmessage (character, "I can't quite tell . . .");
+    endif
+endprogram
+
+
+
+
+

@@ -1,0 +1,51 @@
+use os;
+use uo;
+use util;
+
+include "include/client";
+include "include/statmod";
+include "include/spellrestrictions";
+include "include/spellattack";
+
+program cast_WEAKEN( parms )
+
+	local circle := 1;
+	local caster;
+	local cast_on;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_on := parms[3];
+		send_attack(cast_on,caster, 8);
+	else
+		caster := parms;
+		cast_on := CanTargetSpell(caster, circle, TGTOPT_HARMFUL + TGTOPT_CHECK_LOS );
+		if (!cast_on)
+			return;
+		endif
+	endif
+
+	if (Reflected(cast_on))
+		cast_on := caster;
+		if (GetObjProperty( caster, "mr") = "1")
+			EraseObjProperty(caster, "mr");
+			SendSysMessage(caster, "Your magic reflect spell saved you!");
+			return;
+		endif
+	endif
+
+	PlaySoundEffect(cast_on, SFX_SPELL_WEAKEN);
+	PlayObjectCenteredEffect( cast_on, FX_CURSE_EFFECT, 7,7);
+
+	if (!CanMod(cast_on, "str"))
+		SendSysMessage(caster,"Already under the influence!");
+		return;
+	endif
+
+	local magery := GetSkill(caster, SKILLID_MAGERY);
+	local mod_amount := Resisted(circle,caster,cast_on,(GetModAmount( magery )));
+	local duration := GetModDuration( magery );
+
+	DoTempMod(cast_on, "str", 0 - mod_amount, duration);
+
+endprogram

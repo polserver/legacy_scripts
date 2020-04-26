@@ -1,0 +1,38 @@
+use uo;
+use os;
+use util;
+
+include "include/client";
+
+program poisondamage (creature)
+    local poison_level;
+    set_critical( 1 );
+
+    while (1)
+        poison_level := Cint(GetObjProperty(creature, "poison_level"));
+        print( "poison_level: " + poison_level );
+        if (poison_level = 0)
+            return;
+        endif
+        
+        
+        print( "Applying " + 3 * poison_level + " poison damage to " + creature.name );
+
+        ApplyRawDamage(creature, 3 * poison_level);
+
+
+        
+            // PlayObjectCenteredEffect( creature, FX_CURSE_EFFECT, 10,10); 
+        PlaySoundEffect(creature, SFX_SPELL_POISON);
+        poison_level := poison_level -1;
+        SetObjProperty(creature, "poison_level",cstr(poison_level));
+        if (creature.dead)
+            SetObjProperty(creature,"poison_level", "");
+            return;
+        endif
+        sleep( 10 );
+        
+    endwhile
+endprogram
+
+

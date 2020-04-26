@@ -1,0 +1,16 @@
+
+use uo;
+use os;
+
+program cmd_shutdown()
+
+   print("Saving World State");
+   Broadcast("Saving World State");
+   if(SaveWorldState())
+      print("Done saving");
+      Broadcast("Done saving");
+   else
+   	  print("Save error");
+   endif
+
+endprogram

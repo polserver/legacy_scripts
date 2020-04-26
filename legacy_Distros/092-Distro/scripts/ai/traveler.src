@@ -1,0 +1,261 @@
+//
+//original code by Charles Haustron
+//
+//added gump and tweaked the money code and changed some of the code
+// Zulu - zuluhotel@hotmail.com
+
+use uo;
+use os;
+use npc;
+
+include "include/eventid";
+include "include/randname";
+include "include/clock";
+include "include/math";
+include "include/vetement";
+
+include "include/objtype";
+include "include/client";
+
+Global me:= self();
+global locations := ReadConfigFile("::traveling");
+if(!locations)
+	return;
+endif
+
+const UOBJ_GOLDCOIN   := 0x0EED;
+
+global comands := { "travel",
+		"price",
+                "hail",
+                "hello",
+                "hi",
+                "buy",
+                "sell",
+                "goodbye",
+                "bye",
+                "farewell"
+};
+
+global layout := {
+"page 0",
+"nodispose",
+"resizepic 0 0 3600 280 250",
+"tilepic 28 68 3948",
+"text 20 15 600 0",
+"text 26 162 600 1",
+"text 20 210 1117 2",
+"text 110 210 1117 3",
+"page 1"
+};
+
+global data := {
+"What destination would you like?",
+"$500",
+"Player Gold:",
+"0"
+};
+
+if( me.name["<random>"] )
+  case( randomint(2) )
+  0: me.graphic := 400; me.gender := 0;
+  1: me.graphic := 401; me.gender := 1;
+  endcase
+  SetName ( me , RandomName( me ) + " the Travel Agent");
+  Habille ( me , "Mage" );
+
+endif
+
+
+EnableEvents( EVID_ITEM_GIVEN);
+EnableEvents( EVID_SPEECH,2);
+EnableEvents(EVID_DAMAGED + EVID_ENGAGED);
+
+while (1)
+	local ev := wait_for_event( 30 );
+	if (ev)
+		case(ev.type)
+			EVID_SPEECH:
+                         TurnToward(ev.source);
+			 ProcessSpeech(ev.source, ev.text);
+			EVID_ITEM_GIVEN: ProcessItem(ev.source, ev.item);
+			EVID_DAMAGED:
+			EVID_ENGAGED:  say("Guards! Help!");
+		endcase
+	endif
+endwhile
+
+function ProcessSpeech(who, text)
+
+local cmd;
+foreach st in comands
+	if(text[st])
+		cmd := st;
+		break;
+	endif
+endforeach
+
+case(cmd)
+        "hail"  : say("Hail to thee!  Wouldst thou like to travel?");
+        "hello" : say("Hail to thee!  Wouldst thou like to travel?");
+        "hi"    : say("Hail to thee!  Wouldst thou like to travel?");
+        "buy"   : BuildTravelGump(who);
+        "sell"  : say("You have nothing I wish to buy."); 
+	"travel": BuildTravelGump(who);
+	"price" : say("Each gate costs 500 gold pieces.");
+        "bye"   : say("Fare thee well.");
+        "goodbye" : say("Farewell.");
+        "farewell" : say("Fare thee well.");
+endcase
+endfunction
+
+function BuildGate(who, Op)
+
+	Local i, X, Y, Z, elm, Gate1, Gate2;
+
+	if (!GetPayment(who, 500))
+	  return;
+	endif
+
+	//Get Location Props
+	elm := FindConfigElem(locations, Op);
+	X := GetConfigInt(elm, "x");
+	Y := GetConfigInt(elm, "y");
+	Z := GetConfigInt(elm, "z");
+
+	Say("Thanks!");
+	sleepms(500);
+	Say("Vas Rel Por");
+	PerformAction( me, ANIM_CAST_DIR );		
+	sleepms(4500);
+
+	//Create Gates
+	set_critical(1);
+
+	Gate1 := CreateItemAtLocation(who.x , who.y+1, who.z, UOBJ_BLUE_MOONGATE, 1);
+	Gate1.movable :=0;
+	Gate1.graphic :=1;
+	Gate2 := CreateItemAtLocation(x, y, z, UOBJ_BLUE_MOONGATE, 1);
+	Gate2.graphic :=1;
+	Gate2.movable :=0;
+
+	SetObjProperty(gate1, "GateDestX", Gate2.x);
+	SetObjProperty(gate1, "GateDestY", Gate2.y);
+	SetObjProperty(gate1, "GateDestZ", Gate2.z);
+
+	SetObjProperty(gate2, "GateDestX", Gate1.x);
+	SetObjProperty(gate2, "GateDestY", Gate1.y);
+	SetObjProperty(gate2, "GateDestZ", Gate1.z);
+
+	set_critical(0);
+
+	PlaySoundEffect( self(), SFX_SPELL_GATE_TRAVEL );
+
+	For (i:=6899;i<=6907;i:=i+1)
+	   Gate1.graphic := i;
+	   Gate2.graphic := i;
+	   sleepms(150);
+	Endfor
+
+	Gate1.graphic := UOBJ_BLUE_MOONGATE;
+	Gate2.graphic := UOBJ_BLUE_MOONGATE;
+
+	sleep(30);
+
+	For (i:=6907;i>=6899;i:=i-1)
+	   Gate1.graphic := i;
+	   Gate2.graphic := i;
+	   sleepms(150);
+	Endfor
+
+	DestroyItem(Gate1);
+	DestroyItem(Gate2);
+
+endfunction
+
+
+function ProcessItem(who, item)
+
+if(item.objtype = UOBJ_GOLDCOIN) //eh o viajante e eh money
+	say("Thanks!");
+	DestroyItem(item);
+else
+	say("Yucks! I do not have a use for this.");
+	MoveItemToContainer(item, who.backpack);
+endif
+
+endfunction
+
+
+function PlayerGold(who)
+
+        local backpack := EnumerateItemsInContainer (who.backpack);
+	local goldamount := 0;
+
+        foreach item in backpack
+                if (item.objtype = UOBJ_GOLDCOIN)
+			goldamount := goldamount + item.amount;
+                endif
+        endforeach
+
+	data[4] := goldamount;
+
+endfunction
+
+function GetPayment (who, price)
+   
+   if (who.spendgold( price ))
+   	return 1;
+   else
+	say ( "You do not have " + price + " gold coins!");
+ 	return 0;
+   endif
+
+endfunction
+
+
+function BuildTravelGump(who)
+
+	Local Location;
+	Local pagecount := 2, pagesize := 0, pagelocation;
+	
+	Local i:=1;
+	Local elm := FindConfigElem(locations, i);
+
+	PlayerGold(who);
+
+	While (elm)
+		pagesize := pagesize + 1;
+		if (pagesize>5)
+			pagesize := 1;
+			layout.append("button 230 210 5601 5605 0 " + pagecount);
+			if (pagecount>2)
+			layout.append("button 200 210 5603 5607 0 " + (pagecount-2));
+			endif
+			layout.append("page " + pagecount);
+			pagecount := pagecount +1;
+		endif
+		Location := GetConfigString(elm, "name");
+
+		pagelocation := 20+(30*pagesize);
+		layout.append("button 90 " + pagelocation + " 210 211 1 0 " + i);
+		data.append(Location);
+		layout.append("text 125 " + pagelocation + " 600 " + (i+3));
+		i:=i+1;
+		elm := FindConfigElem(locations, i);
+	endwhile
+
+	if (pagecount>2)
+		layout.append("button 200 210 5603 5607 0 " + (pagecount-2));
+	endif
+
+	var res := SendDialogGump( who, layout, data );
+
+	if (res[0]=0)
+		say ("Please drop by again.");
+		return;
+	endif
+
+	BuildGate(who, res[0]);
+
+endfunction

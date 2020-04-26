@@ -1,0 +1,55 @@
+include "include/firewall";
+include "include/spellrestrictions";
+
+program spell_firefield( parms )
+
+	local circle := 4;
+	local caster;
+	local thetarget;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		thetarget := parms[3];
+	else
+		caster := parms;
+		thetarget := CanTargetArea(caster, circle);
+		if (!thetarget)
+			return;
+		endif
+	endif
+
+	local fields := {};
+
+	local listeners := {};
+	local sufferers := {};
+
+	local x := thetarget.x;
+	local y := thetarget.y;
+	local z := thetarget.z;
+
+	case (get_direction (caster, x, y, z))
+		"north" : fields:= CreateNorthSouthField(caster, UOBJ_FIREFIELD_NS, x, y, z, 5);
+		"south" : fields:= CreateNorthSouthField(caster, UOBJ_FIREFIELD_NS, x, y, z, 5);
+		"east"  : fields:= CreateEastWestField(caster, UOBJ_FIREFIELD_EW, x, y, z, 5);
+		"west"  : fields:= CreateEastWestField(caster, UOBJ_FIREFIELD_EW, x, y, z, 5);
+		default:  
+			case (randomint(2))
+				0: fields:= CreateNorthSouthField(caster, UOBJ_FIREFIELD_NS, x, y, z, 5);
+        	  		1: fields:= CreateEastWestField(caster, UOBJ_FIREFIELD_EW, x, y, z, 5);
+			endcase
+	endcase
+	
+	detach();
+	local duration := 20 + ( Cint(GetSkill( caster, SKILLID_MAGERY ) ) / 3 );
+
+	local i;
+        for (i := 1; i <= 5; i := i + 1)
+        	PlaySoundEffect(fields[i], SOUND_EFFECT_FIREFIELD);
+		sleep(duration/4);
+	endfor
+
+	foreach fieldpart in fields
+        	DestroyItem(fieldpart);
+	endforeach
+
+endprogram

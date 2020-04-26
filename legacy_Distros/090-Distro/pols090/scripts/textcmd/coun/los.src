@@ -1,0 +1,15 @@
+use uo;
+
+program loscheck( chr )
+    SendSysMessage( chr, "Select something to check Line-of-Sight to." );
+    var what := Target( chr, TGTOPT_NOCHECK_LOS );
+    if (what)
+        if (CheckLineOfSight( chr, what ))
+            SendSysMessage( chr, "You have line-of-sight to that." );
+        else
+            SendSysMessage( chr, "You do not have line-of-sight to that." );
+        endif
+    endif
+endprogram
+
+  

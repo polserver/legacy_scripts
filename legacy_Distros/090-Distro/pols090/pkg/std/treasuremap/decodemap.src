@@ -1,0 +1,125 @@
+////////
+// decodemap.src
+//
+// Checks the character's Cartogrphy skill to see if 
+// the map can be read. If so, it creates a new, readable
+// map and a digging tool. Also picks a random location
+// for the treasure to be.
+//
+// Not in this script: Use the tool created and target the
+// map to use and then the ground to dig for that treasure.
+//
+// Author: Racalac, 4/24/99
+//
+////////
+
+use uo;
+use cfgfile;
+use util;
+
+include "include/client";
+include "include/objtype";
+
+Const UOBJECT_DIGGINGTOOL := 0x6008;
+
+program decode_map( character , map )
+
+     local cfgfile := ReadConfigFile( "itemdesc" );
+     local elem := FindConfigElem( cfgfile , map.objtype );
+     local maplevel := GetConfigInt( elem , "Level" );
+
+     local maxlevel := GetMaxMapLevel( character );
+
+     if( maplevel > maxlevel )
+        SendSysmessage( character , "You cannot comprehend the map." );
+     else
+        if( CheckSkill( character, SKILLID_CARTOGRAPHY , (maplevel*20) , (maplevel*20) ) )
+           CreateTreasureMap( character , map , maplevel );
+        else
+           SendSysmessage( character , "You understand the map, but fail to decode it." );
+        endif
+     endif
+
+
+endprogram
+
+
+
+function GetMaxMapLevel( character );
+
+     local skill := GetSkill( character , SKILLID_CARTOGRAPHY );
+
+     if( skill >= 100 )
+        return 5;
+     elseif( skill >= 80 )
+        return 4;
+     elseif( skill >= 60 )
+        return 3;
+     elseif( skill >= 40 )
+        return 2;
+     elseif( skill >= 20 )
+        return 1;
+     else
+        return 0;
+     endif
+
+endfunction
+
+
+function CreateTreasureMap( character , oldmap , maplevel);
+
+     local map := CreateItemInBackpack( character , UOBJ_MAP1 , 1 );
+
+     SetObjProperty( map , "level" , maplevel );
+     SetObjProperty( map , "decoder" , character.serial );
+
+     SetTreasureCoords( map );
+
+     SendSysmessage( character , "You successfully decode the map!" );
+
+     DestroyItem( oldmap );
+
+     local tool := CreateItemInBackpack( character , UOBJECT_DIGGINGTOOL , 1 );
+     SetName( tool , "a Treasure digging tool" );
+
+endfunction
+
+
+function SetTreasureCoords( map );
+
+     local cfgfile := ReadConfigFile( "treasure" );
+     local num := GetConfigMaxIntKey( cfgfile );
+
+     local pick := (RandomInt( num ) + 1);
+
+     local elem := FindConfigElem( cfgfile , pick );
+
+     local x := GetConfigInt( elem , "X" );
+     local y := GetConfigInt( elem , "Y" );
+     local z := GetConfigInt( elem , "Z" );
+
+     SetObjProperty( map , "chestx" , x );
+     SetObjProperty( map , "chesty" , y );
+     SetObjProperty( map , "chestz" , z );
+
+
+     SetName( map , "a treasure map" );
+     if( x < 265 )
+        map.xwest := 0;
+     else
+        map.xwest := x-265;
+     endif
+
+     if( y < 260 )
+        map.ynorth := 0;
+     else
+        map.ynorth := y-260;
+     endif
+
+     map.xeast := x+265;
+     map.ysouth := y+260;
+     map.gumpwidth := 200;
+     map.gumpheight := 200;
+
+endfunction
+

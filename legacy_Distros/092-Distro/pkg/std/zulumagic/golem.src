@@ -1,0 +1,94 @@
+// golem wand
+// based on MeteorRaine's test script
+// updated by zuu@zuluhotel.com
+// April 13, 2000
+
+use util;
+
+include "include/spellrestrictions";
+include "include/client";
+
+program cast_golem( who, item )
+
+	ReserveItem(item);
+
+	if (! IsWandEquipped (who, item) )
+		SendSysmessage(who,"You need to equip that to use it.");
+		ReleaseItem(item);
+		return;
+	endif
+
+        local charges := Cint(GetObjProperty(item, "charges"));
+
+    if (charges)
+
+	local loop := 5;
+
+	Performaction(who, 0x11);
+
+	while ( loop >0)
+		sleep(1);
+		loop := loop -1;
+	endwhile
+
+        charges := charges - 1;
+        SetObjProperty(item, "charges", charges);
+
+	if (charges = 0)
+	SendSysmessage(who,"The wand is out of charges.");
+	destroyitem(item);
+	endif
+
+        StartSpell(who);
+    endif
+
+endprogram
+
+
+function StartSpell( who )
+
+	local origform := who.graphic;
+	local magery := cint(GetSkill(who, SKILLID_MAGERY));
+
+	if (!GetObjProperty(who,"origform"))
+		SetObjProperty(who,"origform",origform);
+	else
+		PlaySoundEffect(who,0x005d);
+		PlayObjectCenteredEffect(who, 0x3735,0x0a, 0x1e);
+		SendSysMessage(who,"Hopefully you don't normally look like that.");
+		return;
+	endif
+	
+	local place, newitem := 0x1224 + randomint(5);
+	
+	who.graphic := 600;
+	who.frozen := 1;
+	place := CreateItemAtLocation( who.x, who.y, who.z, newitem, 1 );
+	place.movable := 0;
+	place.decay := ReadGameClock() + 30;
+
+	detach();
+	sleep(magery * 2);
+	who.graphic := origform;
+	who.frozen := 0;
+	destroyitem(place);
+	EraseObjProperty(who,"origform");
+	
+endfunction
+
+
+function IsWandEquipped (who,wand)
+
+	if ( (!Accessible(who,wand)) or (distance(who,wand) > 1) )
+        	return 0;
+    	endif
+
+    	foreach item in listequippeditems(who)
+    		if (wand.serial = item.serial )
+			return 1;
+		endif
+	endforeach
+
+	return EquipItem(who,wand );
+
+endfunction

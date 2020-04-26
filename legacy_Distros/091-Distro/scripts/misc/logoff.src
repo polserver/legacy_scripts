@@ -1,0 +1,16 @@
+use uo;
+
+program logoff( character )
+    // print( "logoff: " + character.name );
+    // SendSysMessage( character, "You just logged off!" );
+    
+    // online time counter
+    var sessiontime := ReadGameClock() - GetObjProperty(character,"logontime");
+    var timer := GetObjProperty(character,"onlinetimer");
+    if(!timer)
+    	timer := 0;
+    endif
+    SetObjProperty(character,"onlinetimer",timer+sessiontime);
+    // end online time counter
+    
+endprogram

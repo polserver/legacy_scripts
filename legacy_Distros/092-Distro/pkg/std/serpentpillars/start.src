@@ -1,0 +1,9 @@
+// serpent pillar - version .1
+// updated April 16, 2000
+// zulu (zulu@zuluhotel.com)
+
+Use uo;
+Use os;
+
+
+start_script( "setpillars");	

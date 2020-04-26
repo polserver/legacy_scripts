@@ -1,0 +1,211 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+//  cooking.src: for using foods on ovens or combining with other foods
+//
+//  A food item is double-clicked, and used on either food or an oven.
+//
+//  Modifications:
+//      19990414 ENS reformatted, cleaned up
+//                   restructured so cookit is used for campires too
+//                   mixit never inited newname; removed it
+//
+//  TODO: 
+//    Find out why sometimes a for-loop is used to create n items,
+//        while sometimes a non-1 'amount' is passed to the create function
+//    is_oven appears to include too many objtypes.
+//    mixit doesn't consume items if the skills check fails
+//    Create() calls are not checked; if they fail, raw materials will be
+//        lost.
+//    When mixing items together, if skills check fails, nothing is consumed
+//
+/////////////////////////////////////////////////////////////////////////////
+
+use uo;
+use util;
+use os;
+use cfgfile;
+
+include "include/client";
+include "include/objtype";
+include "include/utility";
+
+program Cook( character, stuff )
+    local targetted;
+    local use_on;
+
+    if (! Accessible( character, stuff))
+        SendSysmessage( character, "You can't reach that!" );
+        return;
+    endif
+   
+    SendSysmessage(character, "Select an object to use this on");
+  
+  
+    targetted := TargetCoordinates(character);
+        
+    if (targetted.item.objtype) then  //targetted an item
+        use_on := targetted.item;
+    elseif (targetted.mobile.objtype)
+       SendSysmessage (character, "How are you going to use this on that?");
+       return;
+    else
+        use_on := targetted;      //targetted an item in the world
+    endif
+    
+    if (is_oven(use_on.objtype) or (use_on.objtype = UOBJ_CAMPFIRE))
+        cookit(character, stuff, use_on);
+    else
+        mixit(character, stuff, use_on);
+    endif
+endprogram
+
+
+
+global config;
+global elem;
+
+
+
+function mixit(character, stuff, use_on)
+    local key_id;
+    config := ReadConfigFile( "cooking" );
+    key_id := cstr(stuff.objtype) + "+" + cstr(use_on.objtype);
+    local thestring := cstr(key_id);
+
+    elem := FindConfigElem(config, thestring);
+
+    if (!elem)
+        SendSysmessage (character, "You don't have a recipe for this");
+        return;
+    endif
+
+    local need_oven := GetConfigInt(elem, "need_oven");     
+    local skill_needed := GetConfigInt(elem, "skill_needed");
+    local points  :=  GetConfigInt(elem, "points");
+    local amount1 := GetConfigInt(elem, "amount1");
+    local amount2 := GetConfigInt(elem, "amount2");
+    local product_amount := GetConfigInt(elem, "product_amount");
+    local leftover := GetConfigInt(elem, "leftover");
+    local leftover_amount := GetConfigInt(elem, "leftover_amount");
+    local product:= GetConfigInt(elem, "product");
+
+    if ((stuff.amount < amount1) or (use_on.amount < amount2))
+        SendSysmessage (character, "You don't have enough ingredients");
+        return;
+    endif
+
+    if (CheckSkill(character, SKILLID_COOKING, skill_needed, points) )
+        SendSysmessage (character, "You mix the ingredients together");
+
+        local can_make := min(cint(stuff.amount/amount1), 
+                              cint(use_on.amount/amount2));
+        if (need_oven = 1)
+            SendSysmessage (character, "Select an oven to cook this on");
+            local theoven := TargetCoordinates(character);
+            
+            if (!theoven)
+                return;
+            endif
+           
+            if (! is_oven(theoven.objtype))
+                SendSysmessage (character, "You must cook that on an oven!");
+                return;
+            endif
+            
+                //
+                // FIXME why is this done with a for-loop, 
+                // and below with amount <> 1 ?
+                //
+            
+            local j;
+            for (j := 1; j <= can_make* product_amount; j := j + 1)
+                CreateIteminBackpack(character, product, 1);
+            endfor
+        else
+            CreateIteminBackpack(character, product, product_amount *can_make);
+        endif
+
+        if (leftover)
+            CreateIteminBackpack(character, leftover, leftover_amount * can_make);
+        endif
+        SubtractAmount(stuff, amount1 * can_make);
+        SubtractAmount(use_on, amount2 * can_make);
+    endif
+endfunction
+
+
+
+// cookit - an item is used on an oven
+//          cooks or consumes entire stacks
+function cookit(character, stuff, use_on)
+    
+    config := ReadConfigFile( "cooking" );
+    elem := FindConfigElem(config, stuff.objtype);
+    
+    if (!elem)
+        SendSysmessage (character, "You don't have a recipe for this.");
+        return;
+    endif      
+
+    local need_oven := GetConfigInt(elem, "need_oven");
+
+    if (need_oven and (!is_oven( use_on.objtype)))
+        SendSysmessage (character, "You need an oven to cook this!");
+        return;
+    endif
+    
+    local skill_needed := GetConfigInt(elem, "skill_needed");
+    local points  :=  GetConfigInt(elem, "points");
+    local newname := GetConfigString(elem, "newname");
+    
+    SendSysmessage (character, "That's beginning to smell good!");
+    sleep(2);
+    SendSysmessage (character, "Almost done!");
+    sleep(2);    
+
+    if (CheckSkill(character, SKILLID_COOKING, skill_needed, points))
+        SendSysmessage(character, 
+                       "Ahh, just right! You put the goods in your backpack");
+        local i ;
+        local product := GetConfigInt(elem, "product");
+        local thestuff;
+        
+        for (i := 1; i <= stuff.amount; i := i + 1)
+            thestuff := CreateItemInBackpack(character, product, 1);
+            if (newname)
+                Setname(thestuff, newname);
+            endif
+        endfor
+    else
+        SendSysmessage (character, "Darn! You burned it!");
+   endif
+   Destroyitem( stuff );
+
+endfunction
+
+
+        
+
+
+
+
+
+
+function is_oven (an_objtype)
+    if ((an_objtype >= 0x0461) and (an_objtype <= 0x0466))
+        return 1;
+    elseif ((an_objtype >= 0x046a) and (an_objtype <= 0x046f))
+        return 1;
+    elseif ((an_objtype >= 0x0DE3) and (an_objtype <= 0x0DE8)) 
+        return 1;
+    elseif ((an_objtype >= 0x0E31) and (an_objtype <= 0x0E33)) 
+        return 1;
+    elseif ((an_objtype >= 0x197A) and (an_objtype <= 0x19A9)) 
+        return 1;
+    elseif ( an_objtype = 0x0FB1 )
+        return 1;
+    else
+        return 0;
+    endif
+endfunction
+

@@ -1,0 +1,51 @@
+use uo;
+use os;
+use util;
+use cfgfile;
+include "include/eventid";
+
+program use_explosion(who, potion)
+  EraseObjProperty(who, "IsMeditating");
+  if(potion.movable = 0)
+    SendSysMessage(who, "You cannot drink that.");
+    return;
+  endif
+  if(!Accessible( who, potion))
+	SendSysmessage(who,"You can't get to that!");
+	return;
+  endif
+  who.hidden := 0;
+  SendSysmessage (who, "Select a target");
+  if(!getobjproperty(potion, "#bomb"))
+    local parms := {};
+    parms[1] := potion;
+    parms[2] := who;
+    start_script(":alchemy:explosiontimer", parms);
+  endif
+  setobjproperty(potion, "#bomb", 1);
+  local cast_on := TargetCoordinates( who );
+  if(!cast_on)
+    return;
+  endif
+  if(!potion)
+    return;
+  endif
+  if(!CheckLosAt(who, cast_on.x, cast_on.y, cast_on.z))
+    MoveItemtoLocation(potion, who.x, who.y, who.z, MOVEITEM_FORCELOCATION );
+    SendSysmessage(who, "You can't see that!");
+    return;
+  endif
+  if(!potion)
+    return;
+  endif
+  Detach();
+  if(!potion)
+    return;
+  endif
+  PlayMovingEffectXYZ( who.x, who.y, who.z+15, cast_on.x, cast_on.y, cast_on.z, 0x0F0D, 8, 0, 0 );
+  if(!potion)
+    return;
+  endif
+  MoveItemtoLocation(potion, cast_on.x, cast_on.y, cast_on.z, MOVEITEM_FORCELOCATION );
+endprogram
+

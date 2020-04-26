@@ -1,0 +1,18 @@
+use uo;
+
+global layout := array(
+                        "page 0",
+                        "resizepic 0 0 5120 280 200",
+                        "button 115 140 2130 2129 1 0 1",
+                        "text 100 70 500 0",
+                        
+);
+
+global data := array(  "Hello, world!"  );
+           
+program textcmd_testgump( who )
+    local res := SendDialogGump( who, layout, data );             
+    foreach elem in res
+        print( "Dialog Gump Result: " + elem );
+    endforeach
+endprogram

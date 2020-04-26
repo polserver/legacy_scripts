@@ -1,0 +1,374 @@
+use npc;
+use os;
+use uo;
+use util;
+use  cfgfile;
+use basic;
+
+
+
+
+const STATE_GUARDING := 0;
+const STATE_WANDERING := 1;
+const STATE_FOLLOWING := 2;
+Const STATE_FIGHTING := 3;
+Const STATE_FLEEING := 4;
+
+Const UOBJECT_HUMAN_MALE := 0x190;
+Const UOBJECT_HUMAN_FEMALE := 0x191;
+Const UOBJECT_ORC1 := 0x07;
+
+
+global me := npc::Self();
+
+global half_health := Cint(me.maxhp/2);
+global near_death := Cint(me.maxhp /5);
+
+global state := STATE_WANDERING;
+
+Global opponent := 0;
+Global leader  := "";
+global opponent_leader := 0;
+global me_leader := 0;
+global run_from;
+global boundingbox;
+
+function GetRandomClanName()
+        local cfile := ReadConfigFile ("clannames");
+        local int1 := Randomint(10) + 1;
+        local int2 := RandomInt(10) + 11;
+        
+        local el1 := FindConfigElem(cfile, int1);
+        local el2 := FindConfigElem(cfile, int2);
+        
+        local name1 := GetConfigString(el1, "name");
+        local name2 := GetConfigString(el2, "name");
+        local full_name := name1 + " " + name2;
+        return full_name;
+endfunction
+
+function join_clan(joiner, member)
+
+local clan := GetObjProperty(member, "leader");
+if (clan = cstr(me.serial))
+return;
+endif
+
+if (clan = "")        
+        clan := cstr(member.serial);
+endif
+
+SetObjProperty(joiner, "leader", cstr(clan));
+SetObjProperty(member, "leader", cstr(clan));
+
+if (joiner = me)
+        leader := clan;
+        me_leader := 1;
+        
+endif
+state := STATE_FOLLOWING;
+local clan_name:= "";
+local i;
+
+if (joiner.name = member.name)
+        return;
+        else
+  
+if (find(member.name, "of the ",1) > 0)
+        for (i := find(member.name, "of the ",1); i <= len(member.name); i := i + 1)
+               clan_name := clan_name + member.name[i];
+        endfor
+        SetName(joiner, (joiner.name + clan_name) + " Clan");
+else
+clan_name := " of the " + GetRandomClanName();
+Setname(member, (member.name + clan_name + " Clan"));
+Setname(joiner, (joiner.name + clan_name + " Clan"));
+endif
+endif
+endfunction
+
+
+function set_opponent(theopponent)
+        SetObjproperty(me, "theopponent",cstr(cint(theopponent)));
+        SetWarMode(1);
+        SetOpponent( theopponent );
+        opponent := theopponent;   
+        state := STATE_FIGHTING;
+endfunction
+
+function same_clan (me, him)
+local myclan;
+local hisclan;
+
+myclan := GetObjProperty(me, "leader");
+hisclan := GetObjProperty(him,"leader");
+
+if ((myclan = "") and (hisclan = ""))
+        return 0;
+endif
+if (myclan = hisclan)
+        state := STATE_FOLLOWING;
+	return 1;
+elseif (myclan = Cstr(him.serial))
+        state := STATE_FOLLOWING;
+	return 1;
+	
+elseif (hisclan = cstr(me.serial))
+        me_leader := 1;
+        state := STATE_WANDERING;
+        return 1;	
+else 
+	return -1;
+endif
+endfunction
+	
+function set_bounding_box()
+        local x1, x2, y1, y2;
+        
+        x1 := me.x;
+        y1 := me.y;
+        x2 := x1 + (randomint(50) *4) + 1;
+        y2 := y1 + (randomint(50) * 4) + 1;
+        
+        local thestring := cstr(x1) + " " + cstr(y1) + " " + cstr(x2) + " " + cstr(y2);
+        boundingbox := MakeBoundingBox(thestring);
+endfunction
+
+function is_orc(theobj)
+        if (theobj = UOBJECT_ORC1)
+        return 1;
+       else
+       return 0;
+        endif
+endfunction
+
+function move_random_direction()
+        /*
+local thenum := randomint(4) + 1;
+local dir;
+if (thenum = 1)
+        dir := "N";
+elseif (thenum = 2)
+        dir := "S";
+elseif (thenum = 3)
+        dir := "E";
+else
+         dir := "W";
+endif*/
+
+move(boundingbox);                
+        
+endfunction
+
+
+function is_human(theobj)
+        if ((theobj = UOBJECT_HUMAN_MALE) or (theobj = UOBJECT_HUMAN_FEMALE))
+                return 1;
+                else
+        return 0;
+        endif
+endfunction
+
+function GetRandomName( the_objtype )
+
+local config := ReadConfigFile("names");
+if ( !config)
+        
+        return "couldn't open names";
+endif
+
+local config2 := ReadConfigFile("name_limits");
+if ( !config2)
+      
+        return "couldn't open name_limits";
+endif
+
+local elem2 := FindConfigElem(config2, the_objtype);
+if (!elem2)
+        return "Gus";
+endif
+
+local min_name := GetConfigInt(elem2, "min");
+local max_name := GetConfigInt(elem2, "max");
+
+local therange := max_name - min_name;
+local thename := RandomInt(therange) + 1 + min_name;
+
+
+local elem := FindConfigElem(config, thename);   
+if (!elem)
+       
+        return "an orc";
+endif
+
+local return_name := GetConfigString(elem, "name");
+return return_name;
+    
+    
+endfunction
+
+function flee()
+
+        local d := distance(me, opponent);   
+        
+      
+        if (me.hp <= near_death)
+                if (d > 8)
+                RunAwayFrom( run_from );
+                else
+                move_random_direction();
+                //try to heal myself, if I have heal potions or bandages
+                endif
+        else
+        if (leader)
+        state := STATE_FOLLOWING;
+        else
+        state := STATE_WANDERING;
+        endif
+        endif
+endfunction
+
+function f_wander()
+local stilllead := 0;
+      
+foreach mobile in ListMobilesNearLocation(me.x, me.y, me.z, 15)
+    if ((cstr(mobile.serial) = leader)  and (! mobile.dead))             
+            stilllead := 1;
+            break;
+    endif
+endforeach
+
+if (!stilllead)
+state := STATE_WANDERING;
+SetObjProperty(me, leader, "");
+endif
+
+if (me.name = "default")
+local mename := GetRandomName(me.objtype);
+SetName (me,mename );
+
+endif
+
+    local nearby array;
+    if (GetObjProperty(me, "leader") = cstr(me.serial))
+        me_leader := 1;
+        else
+        me_leader := 0;
+    endif 
+    if (state = STATE_FOLLOWING  and  !me_leader )
+        WalkToward(cint(leader));
+    else
+   
+    if (me_leader)
+      move_random_direction();  
+    endif    
+    
+    
+    foreach mobile in ListMobilesNearLocation( me.x, me.y, me.z, 8 )
+        if (checkLineOfSight(me, mobile))
+         
+           if (is_human(mobile.objtype))
+                Say("Hoowah! Gunna clomp Humie!");
+                set_opponent(mobile);
+                state := STATE_FIGHTING;
+                return;
+                    
+        
+           elseif (is_orc(mobile.objtype))
+           
+                if (! same_clan(me, mobile))
+                  say("you nub in me clan. Me clomp you into me clan");
+                  set_opponent(mobile);
+                  state := STATE_FIGHTING;
+                  return;
+                
+               endif  //isorc
+            endif //human/orc
+          
+        endif    
+    endforeach
+    endif
+           
+endfunction
+
+
+function Fight()
+  
+  local d := distance(me, opponent);      
+
+    if ((opponent.dead) or (!opponent)  or (d > 10) ) 
+        SetWarMode( 0 );
+        if (leader)
+        state := STATE_FOLLOWING;
+        else
+        state := STATE_WANDERING;
+        endif
+     
+        set_critical(0);
+        return;
+    endif
+   
+   if ((same_clan(me, opponent) and (is_orc(opponent))))
+        SetWarMode( 0 );
+        if( leader)
+        state := STATE_FOLLOWING;
+        else
+        state := STATE_WANDERING;
+        endif
+   
+        set_critical(0);
+        return;
+   endif
+   
+   if ((me.hp <= near_death))
+        state := STATE_FLEEING;
+        run_from := opponent;
+   
+    endif 
+   
+   
+   if (d > 2)        
+   RunToward( opponent );
+   elseif (d > 1)
+   walktoward(opponent);
+   
+   endif 
+  
+   
+   if ((me.hp <= half_health)  )
+        if (is_orc(opponent.objtype))
+        say("me join you clan. Nub hurt mee!");
+        SetWarMode(0);
+        join_clan(me, opponent);
+        state := STATE_FOLLOWING;
+        
+        endif
+   endif
+   
+        
+
+endfunction
+
+
+if (! boundingbox)
+        Set_Bounding_Box();
+endif
+
+while (1)
+        
+       
+	if (state = STATE_WANDERING)
+	SetObjProperty(me, "state","wandering");
+	f_wander();
+        elseif (state = STATE_FIGHTING)
+        SetObjProperty(me, "state","fighting");
+        Fight();
+        elseif (state = STATE_FOLLOWING)
+        SetObjProperty(me, "state","following");
+        f_wander();
+        elseif (state = STATE_FLEEING)
+        SetObjProperty(me, "state","fleeing");
+         flee();
+    
+    endif
+endwhile

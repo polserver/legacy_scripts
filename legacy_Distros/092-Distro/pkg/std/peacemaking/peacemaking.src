@@ -1,0 +1,76 @@
+use os;
+use uo;
+use util;
+use cfgfile;
+
+include "include/client";
+include "include/objtype";
+include "include/skillpoints";
+include "include/bard";
+include "include/eventid";
+
+
+program bard_peacemake(character)
+
+	local configfile := ReadConfigFile("::npcdesc");
+	local theobj ;
+        local elem;
+	local difficulty;
+
+	if (!can_sing(character, 5)) 
+        	return;
+	endif
+
+	local instrument := findinstrument(character);
+
+	if (!instrument)
+        	SendSysmessage(character, "You don't have an instrument to play!");
+        	return;
+	endif
+
+	local range := Cint(GetSkill(character,SKILLID_PEACEMAKING)/10);
+
+	local ev := array;
+	ev.+ type;
+	ev.type := EVID_PEACEMADE;
+
+	local succeeded := 0;
+
+	foreach TheTarg in ListMobilesNearLocation(character.x,character.y,character.z,range)
+
+	if (TheTarg.warmode)
+		local theobj:= thetarg.npctemplate;
+        	local elem := FindConfigElem(configfile, theobj);
+		local difficulty;
+
+        	if (elem)
+			difficulty := elem.provoke;
+		endif
+		if (!difficulty)
+			difficulty := 100;
+		endif
+		if (difficulty > 20)
+			difficulty := difficulty - 20;
+		else
+			difficulty := 0;
+		endif
+
+		if (CheckSkill(character, SKILLID_PEACEMAKING, cint(difficulty), cint(difficulty *2)) 
+		&& (music(character, instrument, cint(difficulty) ) ))
+			sendevent(thetarg, ev);
+			PrintTextAbove(thetarg, 
+				thetarg.name + " is dazzled by the beautiful music!");
+			succeeded := 1;
+		endif
+	endif
+
+	endforeach
+
+	if (!succeeded)
+		PrintTextAbove(character, "*"+ character.name + " plays a musical instrument... poorly*");
+		music(character, instrument, 1);
+	endif
+
+	sleep(3);
+
+endprogram 

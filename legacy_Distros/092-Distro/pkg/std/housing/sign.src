@@ -1,0 +1,559 @@
+// housing
+// updated by zulu December 12, 2000
+
+use uo;
+use os;
+
+include "util/key";
+include "include/yesno";
+
+Const UOBJECT_DOORS_START := 0x0675;
+Const UOBJECT_DOORS_END   := 0x06f4;
+Const KEYSTART := 0x100E;
+Const KEYEND := 0x1013;
+Const KEYRING := 0x1011;
+
+global layout := array( 
+"page 0",
+"resizepic 0 45 2600 412 300",
+"gumppic 140 0 100",
+"text 190 30 48 0",
+"text 190 50 48 31",
+"resizepic 15 100 5100 382 25",
+"text 25 102 0 1",
+"button 78 104 5209 5003 0 1 0",
+"text 145 102 0 2",
+"button 230 104 5209 5003 0 2 0",
+"text 275 102 0 3",
+"button 360 104 5209 5003 0 3 0",
+"button 50 308 243 241 1 0 0",
+"page 1",
+"text 40 140 2302 4",
+"text 120 140 0 5",
+"text 35 180 2302 6",
+"text 250 180 0 7",
+"text 35 200 2302 8",
+"text 250 200 0 9",
+"text 150 308 2302 14",
+"button 330 308 2714 2715 1 0 1",
+"page 2",
+"text 55 130 2302 15",
+"button 25 130 2714 2715 1 0 2",
+"text 55 152 2302 16",
+"button 25 152 2714 2715 1 0 3",
+"text 55 174 2302 17",
+"button 25 174 2714 2715 1 0 4",
+"text 250 130 2302 18",
+"button 220 130 2714 2715 1 0 5",
+"text 250 152 2302 19",
+"button 220 152 2714 2715 1 0 6",
+"text 250 174 2302 20",
+"button 220 174 2714 2715 1 0 7",
+"text 250 196 2302 21",
+"button 220 196 2714 2715 1 0 8",
+"text 145 218 2302 22",
+"button 115 218 2714 2715 1 0 11",
+"text 145 240 2302 23",
+"button 115 240 2714 2715 1 0 9",
+"text 145 262 2302 24",
+"button 115 262 2714 2715 1 0 12",
+"text 145 284 2302 25",
+"button 115 284 2714 2715 1 0 10",
+"page 3",
+"text 90 130 2302 26",
+"button 60 130 2714 2715 1 0 13",
+"text 90 160 2302 27",
+"button 60 160 2714 2715 1 0 14",
+"text 90 190 2302 28",
+"button 60 190 2714 2715 1 0 16",
+"nodispose"
+);
+
+global data := array(   
+"",
+"INFO",
+"FRIENDS",
+"OPTIONS",
+"Owned by:",
+"<NAME>",
+"Number of locked down items:",
+"",
+"Number of secure containers:",
+"",
+"Number of visits this building has had:",
+"This house is improperly placed.",
+"",
+"This house is of #### design.",
+"Change the house name!",
+"List of co-owners",
+"Add a co-owner",
+"Remove a co-owner",
+"List of friends",
+"Add a friend",
+"Remove a friend",
+"Clear friend list",
+"List of banned people",
+"Ban someone from the house",
+"Remove a ban",
+"Eject someone from the house",
+"Transfer ownership of the house",
+"Demolish the house & get a deed back",
+"Change the master key",
+"Change the sign type",
+"Building type(not work)",
+" "
+);
+
+program textcmd_sign( who , sign )
+
+local hserial := getobjproperty( sign , "house_serial" );
+if(!hserial) return; endif
+local house := systemfindobjectbyserial( cint(hserial) );
+local oserial := getobjproperty( house , "ownerserial" );
+local addonitem,founditem;
+
+        SetPlaqueName( sign );
+        if( who.serial = oserial )
+            data[6] := who.name;
+            setobjproperty( sign , "lastownername" , who.name );
+        else
+            data[6] := getobjproperty( sign , "lastownername" );
+        endif
+
+        if( (getobjproperty( house , "numlockdowns" ) = error) or (getobjproperty( house , "numsecure" ) = error) )
+            AssignDefaultContainers( house );
+        endif
+
+        data[8] := getobjproperty( house , "numlockdowns" );
+        data[10] := getobjproperty( house , "numsecure" );
+
+	local i;
+
+	if (house.objtype=0x6070 or house.objtype=0x6072)
+	  for(i := 38; i <= 45; i := i + 1)
+		layout[i] :="";
+          endfor
+          layout[51]:="";
+          layout[52]:="";
+	endif
+
+	local result := SendDialogGump( who, layout, data );
+
+       local cown;
+
+          for(i := 1; i <= 5; i := i + 1)
+            if(cint(getobjproperty( house , "Co-owner" + i )) = who.serial)
+               cown := 1;
+               break;
+            endif
+          endfor
+
+        if(( oserial = who.serial ) or (cown))
+	 RefreshHouseItems( house );
+
+            case (result[0])
+                1:
+                  local newname := RequestInput( who, sign, "Enter a name for this house. (esc to exit)" );
+                  if (!newname)
+                  sendsysmessage( who, "Canceled!" );
+                  elseif( (len(newname) > 20) )
+                      sendsysmessage( who , "House sign names may not be longer than 20 characters." );
+                  elseif( len(SplitWords( newname )) > 5)
+                      sendsysmessage( who , "House sign names are limited to 5 words or less." );
+                  else
+                      SetName( sign , newname );
+                  endif
+                2:ListCoowner( house, who );
+                3:AddCoowner( house, who );
+                4:DeleteCoowner( house, who );
+                5:ListFriend( house, who );
+                6:AddFriend( house, who );
+                7:DeleteFriend( house, who );
+                8:ClearFriend( house, who );
+                9:AddBan( house, who,sign );
+                10:Eject( house,who,sign );
+                11:ListBan( house, who );
+                12:DeleteBan( house, who );
+
+                13:if( oserial = who.serial )
+                   local targetow := target( who );
+                   sendsysmessage( who , "Transfer the house to who?" );
+                   if (ChangeHouseOwner(targetow,house)=1)
+			sendsysmessage( who , "House transfer was successful." );
+                   else
+                   	sendsysmessage( who , "House transfer was NOT successful." );
+                   endif
+                   endif
+                14:if( oserial = who.serial )
+                   case (house.objtype)
+                           0x6064: CreateItemInBackpack(who,0x6019,1);
+                           0x6066: CreateItemInBackpack(who,0x601A,1);
+                           0x6068: CreateItemInBackpack(who,0x6231,1);
+                           0x606A: CreateItemInBackpack(who,0x601B,1);
+                           0x606C: CreateItemInBackpack(who,0x601C,1);
+                           0x606E: CreateItemInBackpack(who,0x601D,1);
+                   	   0x6070: CreateItemInBackpack(who,0x601E,1);
+                   	   0x6072: CreateItemInBackpack(who,0x601F,1);
+                           0x6074: CreateItemInBackpack(who,0x6020,1);
+                           0x6076: CreateItemInBackpack(who,0x6021,1);
+                           0x6078: CreateItemInBackpack(who,0x6022,1);
+                           0x607A: CreateItemInBackpack(who,0x6023,1);
+                           0x607C: CreateItemInBackpack(who,0x6024,1);
+                           0x607E: CreateItemInBackpack(who,0x6025,1);
+                           0x608C: CreateItemInBackpack(who,0x6026,1);
+                           0x608D: CreateItemInBackpack(who,0x6230,1);
+                           0x60A0: CreateItemInBackpack(who,0x6227,1);
+                           0x60A2: CreateItemInBackpack(who,0x6228,1);
+                           0x6098: CreateItemInBackpack(who,0x6229,1);
+                           0x609C: CreateItemInBackpack(who,0x622A,1);
+                           0x609A: CreateItemInBackpack(who,0x622B,1);
+                           0x609E: CreateItemInBackpack(who,0x622C,1);
+                           0x6096: CreateItemInBackpack(who,0x622D,1);
+                           0x6388: CreateItemInBackpack(who,0x622E,1);
+			   0x6BB8: CreateItemInBackpack(who,0x622F,1);
+                   endcase
+		     addonitem := cint(getobjproperty( house, "component1" ));
+		     if (addonitem) destroyitem(systemfindobjectbyserial(addonitem)); endif
+		     addonitem := cint(getobjproperty( house, "component2" ));
+		     if (addonitem) destroyitem(systemfindobjectbyserial(addonitem)); endif
+		     addonitem := cint(getobjproperty( house, "component3" ));
+		     if (addonitem) destroyitem(systemfindobjectbyserial(addonitem)); endif
+		     addonitem := cint(getobjproperty( house, "builtdeed" ));
+		     if (addonitem)
+		     founditem := destroyitem(systemfindobjectbyserial(addonitem));
+		     if (founditem<>1) founditem:=destroyitem(systemfindobjectbyserial(addonitem,1)); endif
+		     if (founditem<>1) destroyitem(systemfindobjectbyserial(addonitem,2)); endif
+		     endif
+
+		     if (house.objtype=0x608D)
+		     	foreach item in ListItemsNearLocation( sign.x, sign.y, 0, 8 )
+			   if((item.objtype=0x177d) or (item.objtype=0xb41) or (item.objtype=0xb42))
+			      destroyitem(item);
+			   endif
+			endforeach
+		     endif
+		     DestroyMulti( house );
+                   endif
+                16: if( oserial = who.serial )
+                      ChangeLocks( who , house );
+                    endif
+            endcase
+
+        endif
+
+endprogram
+
+function SetPlaqueName( sign )
+
+    local signname := sign.name;
+
+    local split := SplitWords( signname );
+
+    local j;
+    for( j := 1 ; j <= 5 ; j := j + 1 )
+        if( !split[j] )
+            split[j] := "";
+        endif
+    endfor
+
+    if( len(signname) <= 12 )
+        data[1] := signname;
+    elseif( (len(split[1]) + len(split[2]) + len(split[3]) + 2) <= 12 )
+        data[1] := split[1] + " " + split[2] + " " + split[3];
+        data[32] := split[4] + " " + split[5];
+    elseif( len(split[1]) + len(split[2]) + 1 <= 12 )
+        data[1] := split[1] + " " + split[2];
+        data[32] := split[3] + " " + split[4] + " " + split[5];
+    elseif( len(split[1]) <= 12 )
+        data[1] := split[1];
+        data[32] := split[2] + " " + split[3] + " " + split[4] + " " + split[5];
+    endif
+
+
+endfunction
+
+
+function ChangeLocks(who,house)
+
+  sendsysmessage(who,"target the new master key.");
+
+  local addonitem,newkey:=target(who);
+
+    if((newkey.objtype>=KEYSTART) and (newkey.objtype<=KEYEND) and (newkey.objtype!=KEYRING))
+        local lockid:=AllocLockId();
+
+        setobjproperty(newkey,"lockid",lockid); 
+
+        foreach item in (house.components)
+            if( ((item.objtype>=UOBJECT_DOORS_START) and (item.objtype<=UOBJECT_DOORS_END)) )
+                item.locked := 1;
+                setobjproperty(item,"lockid",lockid);
+            endif
+        endforeach
+
+   addonitem:=cint(getobjproperty(house,"component2"));
+   if (addonitem)
+        addonitem.locked:=1;
+        setobjproperty(addonitem,"lockid",lockid);
+   endif
+
+        sendsysmessage(who,"Locks have been changed.");
+    else
+        sendsysmessage(who,"That is not a key!");
+    endif
+endfunction
+
+
+function RefreshHouseItems( house )
+
+    local addonitem;
+
+
+    foreach item in (house.items)
+  	if (item.corpsetype=error or !item.corpsetype or item.corpsetype="")
+            item.decayat:=readgameclock()+5184000;  //60 RL days in the future
+	endif
+    endforeach
+
+   addonitem:=cint(getobjproperty(house,"component1"));
+   if (addonitem)
+     addonitem.decayat:=readgameclock()+5184000;
+   endif
+   addonitem:=cint(getobjproperty(house,"component2"));
+   if (addonitem)
+     addonitem.decayat:=readgameclock()+5184000;
+   endif
+   addonitem:=cint(getobjproperty(house,"component3"));
+   if (addonitem)
+     addonitem.decayat:=readgameclock()+5184000;
+   endif
+
+endfunction
+
+function AssignDefaultContainers( house )
+
+    case (house.objtype)
+       0x6064: setobjproperty(house,"numlockdowns",25);
+               setobjproperty(house,"numsecure",1);
+       0x6066: setobjproperty(house,"numlockdowns",25);
+               setobjproperty(house,"numsecure",1);
+       0x6068: setobjproperty(house,"numlockdowns",25);
+               setobjproperty(house,"numsecure",1);
+       0x606A: setobjproperty(house,"numlockdowns",25);
+               setobjproperty(house,"numsecure",1);
+       0x606C: setobjproperty(house,"numlockdowns",25);
+               setobjproperty(house,"numsecure",1);
+       0x606E: setobjproperty(house,"numlockdowns",25);
+               setobjproperty(house,"numsecure",1);
+       0x6074: setobjproperty(house,"numlockdowns",86);
+               setobjproperty(house,"numsecure",3);
+       0x6076: setobjproperty(house,"numlockdowns",108);
+               setobjproperty(house,"numsecure",5);
+       0x6078: setobjproperty(house,"numlockdowns",108);
+               setobjproperty(house,"numsecure",5);
+       0x607A: setobjproperty(house,"numlockdowns",244);
+               setobjproperty(house,"numsecure",12);
+       0x607C: setobjproperty(house,"numlockdowns",375);
+               setobjproperty(house,"numsecure",19);
+       0x607E: setobjproperty(house,"numlockdowns",577);
+               setobjproperty(house,"numsecure",29);
+       0x608C: setobjproperty(house,"numlockdowns",86);
+               setobjproperty(house,"numsecure",4);
+       0x608D: setobjproperty(house,"numlockdowns",86);
+               setobjproperty(house,"numsecure",4);
+       0x60A0: setobjproperty(house,"numlockdowns",42);
+               setobjproperty(house,"numsecure",3);
+       0x60A2: setobjproperty(house,"numlockdowns",42);
+               setobjproperty(house,"numsecure",3);
+       0x6098: setobjproperty(house,"numlockdowns",58);
+               setobjproperty(house,"numsecure",4);
+       0x609C: setobjproperty(house,"numlockdowns",85);
+               setobjproperty(house,"numsecure",6);
+       0x609A: setobjproperty(house,"numlockdowns",110);
+               setobjproperty(house,"numsecure",8);
+       0x609E: setobjproperty(house,"numlockdowns",110);
+               setobjproperty(house,"numsecure",8);
+       0x6096: setobjproperty(house,"numlockdowns",137);
+               setobjproperty(house,"numsecure",10);
+       0x6388: setobjproperty(house,"numlockdowns",137);
+               setobjproperty(house,"numsecure",10);
+       0x6BB8: setobjproperty(house,"numlockdowns",15);
+               setobjproperty(house,"numsecure",1);
+    endcase
+endfunction
+
+
+function AddFriend(house,who)
+
+    local numb:=cint(sendtextentrygump(who,"What Friend Number? (1-20)",40));
+    if (!numb or numb>20) sendsysmessage(who,"Error Number!"); return; endif
+
+    sendsysmessage(who,"Select character.");
+    local targetchr:=target(who);
+
+    if(!targetchr) sendsysmessage(who,"Canceled."); return; endif
+    if(!targetchr.acctname) sendsysmessage(who,"That cannot be added to the list."); return; endif
+    if(targetchr.acctname=getobjproperty(house,"owneracct")) sendsysmessage(who,"Canceled."); return; endif
+
+    setobjproperty(house,"friend"+numb,targetchr.serial);
+    sendsysmessage(who,"Friend "+numb+" added.");
+
+endfunction
+
+
+function DeleteFriend(house,who)
+
+    local numb:=cint(sendtextentrygump(who,"What Friend Number? (1-20)",40));
+    if (!numb or numb>20) sendsysmessage(who,"Error Number!"); return; endif
+
+    eraseobjproperty(house,"friend"+numb);
+    sendsysmessage(who,"Friend "+numb+" deleted.");
+
+endfunction
+
+
+function ListFriend(house,who)
+
+    local i,nothing:=0,friend;
+
+    for(i:=0;i<20;i:=i+1)
+      friend:=systemfindobjectbyserial(getobjproperty(house,"friend"+i));
+      if (friend) sendsysmessage(who,"Friend "+i+" - "+friend.name); nothing:=1; endif
+    endfor
+
+    if (nothing=0) sendsysmessage(who,"The list is empty."); endif
+
+endfunction
+
+
+function ClearFriend(house,who)
+
+    local i;
+
+    if (YesNo(who,"Clear List?"))
+      for(i:=0;i<20;i:=i+1)
+        eraseobjproperty(house,"friend"+i);
+      endfor
+      sendsysmessage(who,"Friend list has been cleared.");
+    else
+      sendsysmessage(who,"Canceled!");
+    endif
+
+endfunction
+
+
+function AddBan(house,who,sign)
+
+    local numb:=cint(sendtextentrygump(who,"What Ban Number? (1-20)",40));
+    if (!numb or numb>20) sendsysmessage(who,"Error Number!"); return; endif
+
+    sendsysmessage(who,"Select character.");
+    local targetchr:=target(who);
+
+    if ((!targetchr.multi) and (distance(who,sign)>20)) return; endif
+    if(!targetchr) sendsysmessage(who,"Canceled."); return; endif
+    if(!targetchr.acctname) sendsysmessage(who,"That cannot be added to the list."); return; endif
+    if(targetchr.acctname=getobjproperty(house,"owneracct")) sendsysmessage(who,"Canceled."); return; endif
+
+    setobjproperty(house,"Banned"+numb,targetchr.serial);
+    sendsysmessage(who,"Ban "+numb+" added.");
+
+endfunction
+
+
+function DeleteBan(house,who)
+
+    local numb:=cint(sendtextentrygump(who,"What Friend Number? (1-20)",40));
+    if (!numb or numb>20) sendsysmessage(who,"Error Number!"); return; endif
+
+    eraseobjproperty(house,"Banned"+numb);
+    sendsysmessage(who,"Ban "+numb+" deleted.");
+
+endfunction
+
+
+function ListBan(house,who)
+
+    local i,nothing:=0,Banwho;
+    for(i:=0;i<20;i:=i+1)
+	Banwho:=systemfindobjectbyserial(getobjproperty(house,"Banned"+i));
+	if (Banwho) sendsysmessage(who,"Banned "+i+" - "+Banwho.name); nothing:=1; endif
+    endfor
+
+    if (nothing=0) sendsysmessage(who,"The list is empty."); endif
+
+endfunction
+
+
+function Eject(house,who,sign)
+
+    local targetchr:=target(who);
+
+    if ((!targetchr.multi) and (distance(who,sign)>20)) return; endif
+    if(!targetchr) sendsysmessage(who,"Canceled."); return; endif
+    if(targetchr.acctname=getobjproperty(house,"owneracct")) sendsysmessage(who,"Canceled."); return; endif
+
+    movecharactertolocation(targetchr,sign.x,sign.y,0,MOVECHAR_FORCELOCATION);
+    sendsysmessage(who,targetchr.name+" was ejected!");
+
+endfunction
+
+
+function AddCoowner(house,who)
+
+    local numb:=cint(sendtextentrygump(who,"What Co-owner Number? (1-5)",40));
+    if (!numb or numb>5) sendsysmessage(who,"Error Number!"); return; endif
+
+    sendsysmessage(who,"Select character.");
+    local targetchr:=target(who);
+
+    if(!targetchr) sendsysmessage(who,"Canceled."); return; endif
+    if(!targetchr.acctname) sendsysmessage(who,"That cannot be added to the list."); return; endif
+    if(targetchr.acctname=getobjproperty(house,"owneracct")) sendsysmessage(who,"Canceled."); return; endif
+
+    setobjproperty(house,"Co-owner"+numb,targetchr.serial);
+    sendsysmessage(who,"Co-owner "+numb+" added.");
+
+endfunction
+
+
+function DeleteCoowner(house,who)
+
+    local numb:=cint(sendtextentrygump(who,"What Co-owner Number? (1-5)",40));
+    if (!numb or numb>5) sendsysmessage(who,"Error Number!"); return; endif
+
+    eraseobjproperty(house,"Co-owner"+numb);
+    sendsysmessage(who,"Co-owner "+numb+" deleted.");
+
+endfunction
+
+
+function ListCoowner(house,who)
+
+    local i,nothing:=0,Coowner;
+    for(i:=0;i<5;i:=i+1)
+	Coowner:=systemfindobjectbyserial(getobjproperty(house,"Co-owner"+i));
+	if (Coowner) sendsysmessage(who,"Co-owner "+i+" - "+Coowner.name); nothing:=1; endif
+    endfor
+
+    if (nothing=0) sendsysmessage(who,"The list is empty."); endif
+
+endfunction
+
+
+function ChangeHouseOwner(who,house)
+
+   local oldownerserial:=getobjproperty(house,"ownerserial");
+   if(oldownerserial=who.serial)
+       return 0;
+   elseif(who.acctname)
+       setobjproperty(house,"ownerserial",who.serial);
+       setobjproperty(house,"owneracct",who.acctname);
+       sendsysmessage(who,"House transfer was successful.");
+       sendsysmessage(who,"It would be wise to change the locks soon.");
+       return 1;
+   endif
+       sendsysmessage(who,"House transfer was NOT successful.");
+       return 0;
+
+endfunction

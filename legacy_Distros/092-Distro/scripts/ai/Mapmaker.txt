@@ -1,0 +1,5 @@
+Mapmaker version .2  by Zulu (zulu@zuluhotel.com)
+updated April 14, 2000
+based on previous code by Racalac
+
+To spawn the new npc, type .createnpc mapmaker

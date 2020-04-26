@@ -1,0 +1,178 @@
+use uo;
+use os;
+use util;
+use cfgfile;
+
+include "include/eventID";
+include "include/attributes";
+include "include/sysEvent";
+include "include/dist";
+include "util/bank";
+
+program guardnode(item)
+  item.color := 53;
+  item.invisible := 1;
+  sleep(RandomInt(100));
+  while(GetObjProperty(item, "sleep"))
+    sleep(1);
+  endwhile
+  var ng := GetGlobalProperty("noguards");
+  while(ng = "1")
+    sleep(60);
+    ng := GetGlobalProperty("noguards");
+  endwhile
+  item.color := 133;
+  var tmplate := "townguard";
+  if(!tmplate)
+    item.graphic := 0x1f1c;
+    item.color := 0;
+    return;
+  endif
+  EnableEvents(SYSEVENT_SPEECH, 30);
+  RegisterForSpeechEvents(item, 30);
+  var ev, dst, npc;
+  var who, mtmp;
+  var evnt := array;
+  evnt.+ type;
+  evnt.+ source;
+  evnt.+ text;
+  var seriallist := GetObjProperty(item, "NpcList");
+  var npclist := {};
+  foreach critter in ListMobilesNearLocation(item.x, item.y, item.z, 20);
+    if(critter.serial in seriallist)
+      npclist.append(critter);
+    endif
+  endforeach
+  var evtext;
+  var spawn := "townguard";
+  if(GetObjProperty(item, "Type") == "Mage")
+    spawn := "battlemage";
+  endif
+  var amount := 1;
+  var i, x;
+  var spawnqueue := {};
+  var children := {};
+  KillChildren(item);
+  ResetSpawnQueue(item);
+  i := RandomInt(20);
+  sleep(i);
+  var guardcounter := ReadGameClock();
+  var txt;
+  while(1)
+    if(ReadGameClock() >= guardcounter)
+      children := GetObjProperty(item, "Children");
+      spawnqueue := GetObjProperty(item, "SpawnQueue");
+      for(i:=1; i<=amount; i:=i+1);
+        if(children[i] != "Empty")
+          x := SystemFindObjectBySerial(cint(children[i]));
+          if((!x) || (x.dead))
+            spawnqueue[i] := "Empty";
+            children[i] := "Empty";
+          endif
+        endif
+      endfor
+      SetObjProperty(item, "Children", children);
+      SetObjProperty(item, "SpawnQueue", spawnqueue);
+      ResetSpawnQueue(item);
+      spawnqueue := GetObjProperty(item, "SpawnQueue");
+      for(i:=1; i<=amount; i:=i+1)
+        x := spawnqueue[i];
+        if((x != "Empty") && (x != "Active"))
+          children[i] := CreateSpawn(item);
+          spawnqueue[i] := "Active";
+        endif
+      endfor
+      SetObjProperty(item, "SpawnQueue", spawnqueue);
+      SetObjProperty(item, "Children", children);
+      guardcounter := ReadGameClock() + 1800;
+      npclist := {};
+      foreach numb in children
+        npclist.append(SystemFindObjectBySerial(cint(numb)));
+      endforeach
+    endif
+    ev := os::wait_for_event(5);
+    var evnt := array;
+    if(ev)
+      case(ev.type)
+        SYSEVENT_SPEECH: txt := lower(ev.text);
+                         if(txt["guard"])
+                           evnt.+ type;
+                           evnt.+ source;
+                           evnt.+ text;
+                           evnt.type := EVID_NODE;
+                           evnt.source := ev.source;
+                           evnt.text := ev.text;
+                           foreach mobile in npclist
+                             SendEvent(mobile, evnt);
+                           endforeach
+                         endif
+      endcase
+    endif
+  endwhile
+endprogram
+
+function KillChildren(item)
+  var i, x;
+  var children := GetObjProperty(item, "Children");
+  if(children)
+    set_critical(1);
+    foreach x in children
+      if(x != "Empty")
+        i := SystemFindObjectBySerial(cint(x));
+        SetObjProperty(i, "summoned", 1);
+        MoveCharacterToLocation(i, 5276, 1185, 0, MOVECHAR_FORCELOCATION);
+        ApplyRawDamage(i, GetHp(i)+3);
+      endif
+    endforeach
+    set_critical(0);
+  endif
+  var amount := 1;
+  var spawnqueue := {};
+  children := {};
+  for(i:=1; i<=amount; i:=i+1);
+    spawnqueue[i] := "Empty";
+    children[i] := "Empty";
+  endfor
+  SetObjProperty(item, "Children", children);
+  SetObjProperty(item, "SpawnQueue", spawnqueue);
+endfunction
+
+function ResetSpawnQueue(item)
+  var i;
+  var amount := 1;
+  var mindelay := 0;
+  var spawnqueue := GetObjProperty(item, "SpawnQueue");
+  for(i:=1; i<=amount; i:=i+1)
+    if(spawnqueue[i] == "Empty")
+      spawnqueue[i] := mindelay;
+    endif
+  endfor
+  SetObjProperty(item, "SpawnQueue", spawnqueue);
+endfunction
+
+function CreateSpawn(item)
+  var spawn := "townguard";
+  if(GetObjProperty(item, "Type") == "Mage")
+    spawn := "battlemage";
+  endif
+  var range := 5;
+  var x, y, z, success := 0;
+  var i := 1;
+  while(success == 0)
+    x := cint(item.x + RandomInt(2 * range) - range);
+    y := cint(item.y + RandomInt(2 * range) - range);
+    z := cint(GetWorldHeight(x, y));
+
+    if(CheckLosAt(item, x, y, z))
+      var i := CreateNpcFromTemplate(spawn, x, y, z);
+      success := 1;
+      return i.serial;
+    endif
+    i := i + 1;
+    if(i > 10)
+      var i := CreateNpcFromTemplate(spawn, item.x, item.y, item.z);
+      success := 1;
+      return i.serial;
+    endif
+  endwhile
+endfunction

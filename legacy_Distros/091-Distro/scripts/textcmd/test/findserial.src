@@ -1,0 +1,12 @@
+use uo;
+
+program textcmd_findserial( who, text )
+    local f := SystemFindObjectBySerial( CInt(text) );
+    if (f)
+        if (f.name)
+            SendSysMessage( who, "Found: " + f.name );
+        else
+            SendSysMessage( who, "Found: " + f.desc );
+        endif
+    endif
+endprogram

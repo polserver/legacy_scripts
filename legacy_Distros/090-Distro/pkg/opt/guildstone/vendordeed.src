@@ -1,0 +1,46 @@
+Use UO;
+
+Const UOBJECT_DOORS_START := 0x0675;
+Const UOBJECT_DOORS_END   := 0x06f4;
+
+program Place_Deed(Who, Deed)
+
+ReserveItem(Deed);
+if (!Accessible( who, deed))
+  SendSysMessage(who, "Voce nao consegue alcancar isso!");
+  return;
+endif
+Local Npc;
+If (!who.multi)
+  SendSysMessage(who, "Voce precisa estar numa casa para colocar esse item");
+  return;
+endif
+If (GetObjProperty((who.multi),"ownerserial")<>who.serial)
+  SendSysMessage(who, "Voce apenas pode colocar o item se a casa for sua!");
+  return;
+endif
+Foreach Item in ListItemsNearLocation(who.x, who.y-1, who.z, 0)
+  If ((Item.objtype>= UOBJECT_DOORS_START) AND (Item.objtype<=UOBJECT_DOORS_END))
+    SendSysMessage(who, "Esta muito perto de uma porta!");
+    return;
+  endif
+endforeach
+Foreach Item in ListItemsNearLocation(who.x, who.y+1, who.z, 0)
+  If ( (Item.objtype>= UOBJECT_DOORS_START) AND (Item.objtype<=UOBJECT_DOORS_END) )
+    SendSysMessage(who, "Esta muito perto de uma porta!");
+    return;
+  endif
+endforeach
+
+Npc:=CreateNpcFromTemplate("playervendor", who.x, who.y , who.z);
+
+If (Npc)
+  DestroyItem(deed);
+  SetObjProperty(Npc, "master", who.serial);
+  SetObjProperty(Npc, "mn", who.name);
+  SetObjProperty(Npc,"prevtamed",1);
+  Local next_pay := readgameclock() + 86400;
+  setobjproperty(Npc, "p", next_pay);
+endif
+
+endprogram

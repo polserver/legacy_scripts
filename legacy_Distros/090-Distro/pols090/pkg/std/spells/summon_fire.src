@@ -1,0 +1,23 @@
+include "../pkg/std/spells/summon";
+include "include/spellrestrictions";
+
+program summon_fire( parms )
+
+	local circle := 8;
+	local caster;
+	local cast_loc;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_loc := parms[3];
+	else
+		caster := parms;
+		cast_loc := CanTargetArea(caster, circle);
+		if (!cast_loc)
+			return;
+		endif
+	endif
+
+	summon_creature( caster, 8, "fireelemental", cast_loc  );
+
+endprogram

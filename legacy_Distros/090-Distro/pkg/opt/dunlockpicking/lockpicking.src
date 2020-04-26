@@ -1,0 +1,96 @@
+use uo;
+use os;
+use cfgfile;
+use util;
+
+include "include/client";
+include "include/dist";
+include "include/objtype";
+include "include/starteqp";
+include "util/key";
+include "include/starteqp";
+
+program pick( me, lockpick )
+
+	ReserveItem(lockpick);
+	SendSysMessage(me, "Pick what?");
+	local chest := Target(me);
+	if (!chest)
+		return;
+	endif
+
+	if ( (!Accessible(me,chest)) or (!Accessible(me,lockpick)) )
+		SendSysMessage(me, "Can't reach it!");
+		ReleaseItem(lockpick);
+		return;
+	endif
+
+	if ( GetObjProperty(chest,"spawnchest") )
+		PickSpawnChest(me, lockpick, chest);
+		ReleaseItem(lockpick);
+		return;
+	endif
+
+	SendSysMessage(me, "You have no chance of picking that lock!");
+	ReleaseItem(lockpick);
+	return;
+		
+
+endprogram
+
+function PickSpawnChest(me, lockpick, chest)
+
+	local lvl := GetObjProperty(chest,"lockpicking" );
+	if (!lvl)
+		destroyitem(chest);
+	endif
+
+	if (!chest.locked)
+		SendSysMessage(me,"That doesn't appear to be locked");
+		return;
+	endif
+
+	PlaySoundEffect(chest,SFX_242);
+	sleep(2);
+
+	local diff := (lvl * 10)+10;
+	if ( Checkskill(me,SKILLID_LOCKPICKING,diff,0) )
+		PlaySoundEffect(chest,SFX_200);
+		PrintTextAbovePrivate(chest,"*Unlocked!*",me);
+	else
+		PrintTextAbovePrivate(chest,"You fail to pick the lock.",me);
+		if (diff < 10)
+			diff := 0;
+		else
+			diff := diff -10;
+		endif
+		if (!Checkskill(me,SKILLID_LOCKPICKING,diff,0) )
+			PlaySoundEffect(chest,0xef);
+			SendSysMessage(me,"Your pick breaks!");
+			SubtractAmount(lockpick,1);
+		endif
+		return;
+	endif
+
+	set_critical(1);
+	SpawnTheChest(chest,lvl);
+	chest.locked := 0;
+	local allchests := GetGlobalProperty("unlockedchests");
+	if (!allchests)
+		allchests[1]:=chest.serial;
+	else
+		allchests[len(allchests)+1]:=chest.serial;
+	endif
+	SetGlobalProperty("unlockedchests",allchests);
+	set_critical(0);
+
+	ReleaseItem(lockpick);
+
+endfunction
+
+function SpawnTheChest(chest, lvl)
+
+	local lootgroup := (108+lvl);
+	MakeLoot( chest , lootgroup );
+
+endfunction

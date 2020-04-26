@@ -1,0 +1,62 @@
+use uo;
+use os;
+use basic;
+
+
+////////////////////////////////////////////////
+//
+//   DeMod: a program to remove mods after time passes.
+//
+//   created by Dream Weaver  23 Sept 99
+//
+//   Yeah, I could do some global script or something, 
+//   but hell, there aren't all that many mods going around 
+//   at one time
+//
+//   10/14/99 Changed paralyze to wear off also - Dundee
+//		
+///////////////////////////////////////////////
+
+
+
+program demod(parms)
+
+local mod := lower(parms[1]);
+local who := parms[2];
+local amt := parms[3];
+local duration := parms[4];
+
+
+if (who.npctemplate)
+        sleep(duration);
+        undo_mod(who, mod, amt);
+else
+     local retval := 0;
+        
+     while (!retval)
+        sleep(duration);
+        retval := undo_mod(who, mod, amt);
+     endwhile
+endif
+
+endprogram
+
+function undo_mod(who, mod, amt)
+
+if (who && !who.dead)
+
+        case (mod)
+                "str": 	who.strength_mod := who.strength_mod - amt; 
+                "dex": 	who.dexterity_mod := who.dexterity_mod - amt;
+                "int": 	who.intelligence_mod := who.intelligence_mod - amt;
+                "ar" : 	who.ar_mod := who.ar_mod - amt;
+                "p"  : 	
+			who.frozen := 0;
+			who.SetParalyzed(0);
+        endcase
+        return 1;
+else
+        return 0;
+endif
+
+endfunction

@@ -1,0 +1,3 @@
+program textcmd_setintmod( who,  intmod )
+    who.intelligence_mod := CInt(intmod);
+endprogram

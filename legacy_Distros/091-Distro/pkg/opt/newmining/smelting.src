@@ -1,0 +1,135 @@
+////////////////
+// smelting.src
+//
+// Turns normal or colored ore into its respective ingot.
+// Some ores are harder to work with than others.
+//
+// Author: Racalac, 5/8/99
+//
+// Modifications: 
+//     19990525 Syz moved UOBJ_XX definitions to include/objtype.inc
+//     20000426 Puck use of ingottable.cfg
+//
+////////////////
+
+use uo;
+use cfgfile;
+
+include "include/client";
+include "include/objtype";
+
+Global ingottable := {};
+
+program smelt_that_ore ( character , ore )
+
+    getingottable(character);
+
+    foreach ingot in ingottable
+      if (ore.objtype = ingot.OreID)
+        SmeltOre(character , ore , ingot);
+        return 0;
+      endif
+    endforeach
+    SendSysmessage( character , "You can't smelt that." );
+
+endprogram
+
+function SmeltOre( character , ore , ingot )
+
+	ReserveItem(ore);
+
+    if ( !Accessible( character, ore ) )
+        SendSysmessage( character, "You can't reach that." );
+        return;
+    endif
+
+    Local Near_Items := ListItemsNearLocation(character.x, character.y, character.z,2);
+    foreach forge in Near_Items
+    	if ( ((forge.objtype >= UOBJ_FORGE_START) and (forge.objtype <= UOBJ_FORGE_END)) or (forge.objtype = UOBJ_SMALL_FORGE) )
+		local skill := Getskill( character , SKILLID_MINING );
+		if (skill < ore.MinSkill)
+		  SendSysMessage(character, "You don`t know how to smelt that");
+		  return;
+		endif
+
+        	if ( checkskill( character, SKILLID_MINING, ingot.MinSkill, ingot.PointValue ) )
+   			
+    			local amount := GetAmount( ore ) * ingot.Amount;
+			local SuccMsg := ingot.SuccMsg;
+			local pos := find(SuccMsg,"#",1);
+			if (pos)
+	  		  local s := CStr(SuccMsg);	  
+	  		  local prestr := s[1,pos-1];
+	  		  local poststr := s[pos+1,len(s)-pos];
+	  		  s := amount;
+	  		  if (prestr)
+	  		    s := prestr + s;
+	  		  endif
+	  		  if (poststr)
+	    		    s := s + poststr;
+	  		  endif
+			  SuccMsg := s;
+			endif
+            		local ingots := CreateItemInBackpack( character, ingot.ID, amount );
+            		DestroyItem( ore );
+            		SendSysmessage( character, SuccMsg );
+			return;
+		else
+        		SubtractAmount( ore, 1 );
+        		SendSysmessage( character, "You destroy some ore." );
+			return;
+		endif
+    	endif
+    endforeach
+    SendSysmessage( character, "You must be near a forge to smelt ore!" );
+    
+endfunction
+
+function getingottable(character)
+	Local ingot array;
+
+	ingot.+ID;
+	ingot.+OreID;
+        ingot.+Amount;
+        ingot.+MinSkill;
+        ingot.+PointValue;
+        ingot.+SuccMsg;
+
+	Local config := ReadConfigFile("ingottable");
+	Local itemdesc := ReadConfigFile("itemdesc");
+	
+	Local maxKey := GetConfigMaxIntKey(config);
+	Local Key;
+
+	for( Key := 0; Key <= maxKey; Key := Key + 1)
+	  local elem := config[Key];
+
+	  ingot.ID := elem.ID;
+	  ingot.OreID := elem.OreID;
+          ingot.Amount := elem.Amount;
+          ingot.MinSkill := elem.MinSkill;
+          ingot.PointValue := elem.PointValue;
+          ingot.SuccMsg := elem.SuccMsg;
+
+	  local pos := find(ingot.SuccMsg, "$", 1);
+
+  	  if (pos)
+	    Local Item := FindConfigElem(itemdesc, ingot.ID); 	    
+	    Local ItemName := CStr(Item.Name);
+	    local s := CStr(ingot.SuccMsg);	  
+	    local prestr := s[1,pos-1];
+	    local poststr := s[pos+1,len(s)-pos];
+	    s := ItemName;
+	    if (prestr)
+	      s := prestr + s;
+	    endif
+	    if (poststr)
+	      s := s + poststr;
+	    endif
+	    ingot.SuccMsg := s;
+	  endif	  
+	  
+	  local ingotindex := len(ingottable)+1;
+	  ingottable[ingotindex] := ingot;
+        endfor
+endfunction

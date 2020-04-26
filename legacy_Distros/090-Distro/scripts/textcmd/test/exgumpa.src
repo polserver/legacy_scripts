@@ -1,0 +1,24 @@
+
+use uo;
+use os;
+
+global layout := {
+	"page 0",
+	"resizepic 0 0 5100 200 350",
+	// "nomove",
+	"text 28 5 32 0",			
+	"textentry 125 300 150 50 32 1050 0", // 300=360
+	"checkbox 10 10 210 211 1 2002",
+	"checkbox 10 30 210 211 0 2001",
+    "button 115 140 2130 2129 1 0 2003",
+	"nodispose"
+};
+
+global data := {
+	"Select your hairstyle",
+    "hej",
+    "third line"
+};
+
+
+include "textcmd/test/exgump";

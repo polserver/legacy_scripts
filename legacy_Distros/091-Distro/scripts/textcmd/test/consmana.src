@@ -1,0 +1,5 @@
+use uo;
+
+program textcmd_consmana( who, parms )
+	SendSysMessage( who, "ConsumeMana: " + ConsumeMana( who, CInt(parms) ) );
+endprogram

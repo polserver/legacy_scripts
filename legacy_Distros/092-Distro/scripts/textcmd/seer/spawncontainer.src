@@ -1,0 +1,90 @@
+//Author: Racalac, 1/15/99
+//Issues: Must write necessary data to file before it becomes useful.
+//
+//Update: 1/31/99, 30 minutes before the Super Bowl...
+//This command now prompts you for a location, then an npc type (human, animal, monster), then 
+//     for a specific npc in that category (from spawndef.cfg, must add new npcs to both npcdesc
+//     AND spawndef.cfg for them to be available). This then appends the spawns.cfg with the needed
+//     data.
+
+Use uo;
+Use cfgfile;
+Use os;
+Use basic;
+include "include/spawn";
+
+Global spawn_cfg := ReadConfigFile( "spawndef" );
+Global spawns ;
+
+program spawn( character, templatename )
+
+if (!Icanspawn(character))
+        SendSysmessage(character, "Someone else is spawning right now.");
+        return;
+endif
+
+
+local spawnerfile;
+local tempname;
+
+if ( GetGlobalProperty("danspawner") )
+        spawnerfile := ":danspawner:spawns";
+
+else
+        spawnerfile := ":spawner:spawns";
+endif
+
+spawns := ReadConfigFile(spawnerfile);
+
+
+    SendSysmessage( character, "Select a place to spawn." );
+    local where := TargetCoordinates( character );
+
+    if(!spawn_cfg)
+      Print("ach! Cant find the config file!");
+    endif
+    
+    local maxentry := GetConfigMaxIntKey(spawn_cfg);
+
+
+    tempname := templatename;
+
+    local elemkey := (GetConfigMaxIntKey(spawns)) + 1;
+
+    local props := array;
+    local prop := array;
+    prop .+ pname;
+    prop .+ pvalue;
+
+    prop.pname := "objtype";
+    prop.pvalue := tempname;
+    props[1] := prop;
+
+    prop.pname := "x";
+    prop.pvalue := where.x;
+    props[2] := prop;
+
+    prop.pname := "y";
+    prop.pvalue := where.y;
+    props[3] := prop;
+
+    prop.pname := "z";
+    prop.pvalue := where.z;
+    props[4] := prop;
+    
+    prop.pname := "type";
+    prop.pvalue := "C";
+    props[5] := prop;
+    
+local tlevel := RequestInput( character, character.backpack, "Whate lootgroup should this container hold?" );
+    prop.pname := "level";
+    prop.pvalue := tlevel;
+    props[6] := prop;
+    
+    AppendConfigFileElem(spawnerfile, "Spawn", elemkey, props );
+
+    UnloadConfigFile( spawnerfile );
+    EraseObjProperty(character, "canspawn" );
+endprogram
+
+

@@ -1,0 +1,113 @@
+// this code is based on the toxic field
+// update by zulu   zuluhotel@hotmail.com
+// feb 28 2000
+
+include "include/client";
+include "include/fields";
+include "include/spellrestrictions";
+
+Const UOBJ_FIREFIELD_NS := 0x398c;
+Const UOBJ_FIREFIELD_EW := 0x3996;
+Const SOUND_EFFECT_FIREFIELD:= 0x1DE;
+
+program spell_firefield( who, item )
+
+	ReserveItem(item);
+
+	if (! IsWandEquipped (who, item) )
+		SendSysmessage(who,"You need to equip that to use it.");
+		ReleaseItem(item);
+		return;
+	endif
+
+        local charges := Cint(GetObjProperty(item, "charges"));
+
+    if (charges)
+
+	local loop := 5;
+
+	Performaction(who, 0x11);
+
+	while ( loop >0)
+		sleep(1);
+		loop := loop -1;
+	endwhile
+
+        charges := charges - 1;
+        SetObjProperty(item, "charges", charges);
+
+	if (charges = 0)
+	SendSysmessage(who,"The wand is out of charges.");
+	destroyitem(item);
+	endif
+
+        StartSpell(who);
+    endif
+
+endprogram
+
+
+function startspell (who)
+
+	local fields1 := {};
+	local fields2 := {};
+	local fields3 := {};
+	local fields4 := {};
+
+	local listeners := {};
+	local sufferers := {};
+
+	local x := who.x;
+	local y := who.y;
+	local z := who.z;
+
+
+	fields1:= CreateNorthSouthField(who, UOBJ_FIREFIELD_NS, x, y-2, z, 3);
+	fields2:= CreateNorthSouthField(who, UOBJ_FIREFIELD_NS, x, y+2, z, 3);
+	fields3:= CreateEastWestField(who, UOBJ_FIREFIELD_EW, x+2, y, z, 3);
+	fields4:= CreateEastWestField(who, UOBJ_FIREFIELD_EW, x-2, y, z, 3);
+
+	detach();
+	local duration := 40 + ( Cint(GetSkill( who, SKILLID_MAGERY ) ) / 3 );
+
+	local i;
+        for (i := 1; i <= 5; i := i + 1)
+        	PlaySoundEffect(fields1[i], SOUND_EFFECT_FIREFIELD);
+        	PlaySoundEffect(fields2[i], SOUND_EFFECT_FIREFIELD);
+        	PlaySoundEffect(fields3[i], SOUND_EFFECT_FIREFIELD);
+        	PlaySoundEffect(fields4[i], SOUND_EFFECT_FIREFIELD);
+		sleep(duration/8);
+	endfor
+
+	foreach fieldpart in fields1
+        	DestroyItem(fieldpart);
+	endforeach
+
+	foreach fieldpart in fields2
+        	DestroyItem(fieldpart);
+	endforeach
+	foreach fieldpart in fields3
+        	DestroyItem(fieldpart);
+	endforeach
+	foreach fieldpart in fields4
+        	DestroyItem(fieldpart);
+	endforeach
+
+endfunction
+
+
+function IsWandEquipped (who,wand)
+
+	if ( (!Accessible(who,wand)) or (distance(who,wand) > 1) )
+        	return 0;
+    	endif
+
+    	foreach item in listequippeditems(who)
+    		if (wand.serial = item.serial )
+			return 1;
+		endif
+	endforeach
+
+	return EquipItem(who,wand );
+
+endfunction

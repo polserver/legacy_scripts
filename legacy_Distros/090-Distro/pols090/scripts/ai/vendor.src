@@ -1,0 +1,39 @@
+Use npc;
+Use os;
+Use uo;
+
+Global britvend, inventory, bought;
+
+// Better to use GetProperty here,of course
+britvend := FindStorageArea( "Britain Vendors" );
+if (!britvend)
+	exit;
+endif
+
+inventory := FindRootItemInStorageArea( britvend, "Vendor 1" );
+bought := FindRootItemInStorageArea( britvend, "Vendor 1 Temp" );
+if (!inventory)
+	exit;
+endif
+if (!bought)
+	exit;
+endif
+
+global me := Self();
+
+	if (getobjproperty(me, "frozen"))
+		me.frozen := 1;
+	endif
+
+while (1)
+	Local ev;
+	ev := os::wait_for_event( 10 );
+	if (ev)
+		//print( "Event Type: " + ev.type );
+		//print( "Event Source: " + ev.source );
+		//say( "Someone said: '" + ev.text + "'" );
+		if (ev.text["buy"]) 
+			SendBuyWindow( ev.source, inventory, self(), bought );
+		endif
+	endif
+endwhile

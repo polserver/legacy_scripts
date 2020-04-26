@@ -1,0 +1,247 @@
+//Changes made by DC on 1/9/99: Changed all for loops to foreach, use Distance() function instead of dist in this script
+
+use npc;
+use os;
+use uo;
+use util;
+use  cfgfile;
+use basic;
+
+include "include/randname";
+
+
+
+const STATE_WANDERING := 1;
+Const STATE_FIGHTING := 2;
+Const STATE_FLEEING := 3;
+
+Const UOBJECT_HUMAN_MALE := 0x190;
+Const UOBJECT_HUMAN_FEMALE := 0x191;
+Const UOBJECT_CORPSE := 0x2006;
+Const UOBJECT_BLOOD := 0x122d;
+Const UOBJECT_MEAT := 0x09f1;
+Const MOVING_EFFECT_FIREBALL  := 0x36D4; 
+
+
+global me := npc::Self();
+
+global hunger_level := 5000;
+global near_death := Cint(me.maxhp /5);
+
+global state := STATE_WANDERING;
+
+Global opponent := 0;
+global run_from;
+global boundingbox;
+
+
+function cast_meteor( caster )
+
+    local parms array;
+    
+
+    local targets := ListMobilesNearLocation(opponent.x,opponent.y, opponent.z,4); //FIXME: change range to be skill based
+    PerformAction(me,0x0c);
+
+    foreach mobile in targets
+       if( (mobile.serial != caster.serial) and (mobile.dead = 0) and (CheckLineOfSight( caster, mobile )) )
+	   Local dmg := randomint((cint(70* me.hp)/me.maxhp));
+	   PlayMovingEffect(caster, mobile ,MOVING_EFFECT_FIREBALL, 10,1,1);
+	   applydamage(mobile, dmg);          
+	endif
+    endforeach
+
+state := STATE_WANDERING;
+endfunction
+
+
+function set_bounding_box()
+        local x1, x2, y1, y2;
+        
+        x1 := me.x - 1000;
+        y1 := me.y - 1000;
+        x2 := x1 + (randomint(4000) *4) + 1;
+        y2 := y1 + (randomint(4000) * 4) + 1;
+        
+        local thestring := cstr(x1) + " " + cstr(y1) + " " + cstr(x2) + " " + cstr(y2);
+        boundingbox := MakeBoundingBox(thestring);
+endfunction
+
+function move_random_direction()
+
+move(boundingbox);                
+        
+endfunction
+
+
+function is_human(theobj)
+        if ((theobj.objtype = UOBJECT_HUMAN_MALE) or (theobj = UOBJECT_HUMAN_FEMALE))
+           return 1;
+        elseif (GetObjProperty(theobj, "master") > "")
+           return 1;
+        else
+           return 0;
+        endif
+endfunction
+
+
+function flee()
+        local d := Distance( me, opponent);   
+      
+        if (me.hp <= near_death)
+                if (d > 8)
+                   RunAwayFrom( run_from );
+                else
+                   move_random_direction();
+                   //try to heal myself, if I have heal potions or bandages
+                endif
+        else
+             state := STATE_WANDERING;
+        endif
+endfunction
+
+function f_wander()
+   local nearby := ListMobilesNearLocation(me.x, me.y, me.z, 5);
+
+   foreach mobile in nearby
+
+     if (( mobile.dead <1) and (CheckLosAt( me, mobile.x, mobile.y, mobile.z ))) 
+        if ((hunger_level <= 0) or (is_human(mobile)) ) 
+          //print ("I'm hungry and will attack anything");
+          SetOpponent(mobile);
+          opponent := mobile;
+          SetWarMode(1);
+          state := STATE_FIGHTING;
+          return;
+       elseif (hunger_level <= 500)   //hungry
+          //print ("I'm hungry, but won't attack other predators");
+          if (Cint(GetObjProperty(mobile, "p")) <= 0 )
+            SetOpponent(mobile);
+            opponent := mobile;
+            SetWarMode(1);
+            state := STATE_FIGHTING;
+            return;
+          endif
+      elseif (hunger_level <= 5000) //somewhat hungry, so attack prey
+          //print ("I'm hunting");
+          if (Cint(GetObjProperty(mobile, "p")) = -1 )
+            //  print (mobile.objtype + " is near, and I'm hungry");
+            SetOpponent(mobile);
+            opponent := mobile;
+            SetWarMode(1);
+            state := STATE_FIGHTING;
+            return;
+          endif
+      endif
+    endif  
+endforeach
+
+
+local conf := ReadConfigFile("corpses");
+
+nearby := ListItemsNearLocation(me.x, me.y, me.z, 5);
+
+foreach thing in nearby
+
+   
+    if ((thing.objtype = UOBJECT_CORPSE) and (GetObjProperty(thing, "cut") != "1"))
+   
+    
+        while ( Distance( me , thing ) >=1 )
+         
+          walktoward(thing);
+        endwhile        
+        
+	local c_type := thing.corpsetype;
+        local elem := FindConfigElem(conf,c_type);
+        local item1 := GetConfigint(elem, "item1");
+        local amount1 := GetConfigint(elem, "amount1");
+        local item2 := GetConfigint(elem, "item1");
+        local amount2 := GetConfigint(elem, "amount1");
+        local meat_amount:= 0;
+        
+        if ((item1 = UOBJECT_MEAT) or (item2 = UOBJECT_MEAT))
+           meat_amount := (amount1 * 500);
+        endif
+
+        SetObjProperty(thing, "cut","1");
+        local theblood:= CreateItemAtLocation(thing.x, thing.y, thing.z, UOBJECT_BLOOD, 1);
+        hunger_level := hunger_level + meat_amount;
+          // item decay handled by core, v069+
+          // local parms array;
+          // parms[1] := thing;
+          // parms[2] := theblood;
+          // start_script("misc/decay",parms);
+        break;
+   endif
+endforeach
+
+
+move_random_direction();
+endfunction
+
+
+function Fight()
+ 
+  local d := Distance( me, opponent );      
+
+    if ((opponent.dead) or (!opponent)  or (d > 10) ) 
+        SetWarMode( 0 );
+        state := STATE_WANDERING;
+        set_critical(0);
+        return;
+    endif
+     
+
+   
+   if ((me.hp <= near_death))
+        state := STATE_FLEEING;
+        run_from := opponent;
+   endif 
+   
+   local chance;
+   if (d > 2)        
+     	 RunToward( opponent );
+  	 chance := randomint(10);
+  
+      if (chance = 1)
+           cast_meteor(me);
+      endif
+  
+   elseif (d > 1)
+      walktoward(opponent);
+   else
+      chance := randomint(15);
+    
+      if (chance = 1)
+         cast_meteor(me);
+      endif
+   
+   endif        
+
+endfunction
+
+if( me.name["<random>"] )
+   SetName ( me , RandomName( me ) );
+endif
+
+
+if (! boundingbox)
+        Set_Bounding_Box();
+endif
+
+while (1)
+        hunger_level := hunger_level - 1;
+      
+	if (state = STATE_WANDERING)
+	SetObjProperty(me, "state","wandering");
+	f_wander();
+        elseif (state = STATE_FIGHTING)
+        SetObjProperty(me, "state","fighting");
+        Fight();
+        elseif (state = STATE_FLEEING)
+        SetObjProperty(me, "state","fleeing");
+         flee();
+    
+    endif
+endwhile

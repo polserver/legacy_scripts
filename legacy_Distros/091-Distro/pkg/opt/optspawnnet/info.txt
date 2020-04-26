@@ -1,0 +1,57 @@
+Changed by Shinigami (Shinigami@gmx.net)
+
+If u've changed your cfg's -> don't overwrite your own one (make a backup etc.)
+
+dspawnr.src    - ReFormatting
+globalhide.src - "Use uo;" included
+globalprop.src - "Use uo;" included
+globalshow.src - "Use uo;" included
+hiderune.src   - "Use uo;" included
+showrune.src   - "Use uo;" included
+spawnnet.inc   - ReWrite
+spawnnet.src   - ReWrite
+sspawnr.src    - ReWrite
+start.src      - ReFormatting
+config.txt     - Some Infos
+
+U can set language by modify 
+  Const MsgLanguage:=0; // 1=German, 0=English
+in spawnnet.src and sspawnd.src
+
+NOTE: U've to _copy_ spawnnet.inc into pol/scripts/include/ too. (or u change all your
+spawnnet.inc using files to use only one copy.)
+
+ReCompile all your files (or all spawnnet.inc using files) 
+
+Shini
+
+--------------------------------------------------------------------------------------
+
+Usable Properties (in the Gump):
+
+Min. SpawnTime [Minutes]
+Max. SpawnTime [Minutes]
+Max. Amount [NPCs/Items]
+SpawnRange [Landtiles]
+Note [String]
+SpawnType = NPC/Item/Container
+
+NPC
+  Flags -> Grouping
+	   Anchoring
+  Template = (template-name from npcdesc.cfg) or (number -> groups.cfg)
+  Group Amount
+
+Items
+  Flags -> Grouping
+           In Container
+           Hold old Items [in Container]
+  Template = (template-name from ::itemdesc.cfg) or (number -> igroups.cfg)
+  Group Amount
+
+Container
+  Flags -> Moving Spawn
+           Empty Container
+           Hold old Items
+  Template = template-name from ::itemdesc.cfg for Container
+  Loot-Group = number -> nlootgroup.cfg (starteqp.inc)

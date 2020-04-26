@@ -1,0 +1,13 @@
+Use uo;
+
+program listnear( character )
+    Local coords := TargetCoordinates( character );
+    
+    if (coords)
+        foreach item in ListItemsNearLocation( coords.x, coords.y, coords.z, 4 )
+            SendSysMessage( character, item.desc + "(" + Hex(item.serial) + ")" );
+            print(item.desc);
+        endforeach
+    endif
+endprogram
+

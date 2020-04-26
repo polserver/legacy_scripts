@@ -1,0 +1,85 @@
+use uo;
+use os;
+use util;
+use cfgfile;
+
+include "include/spellrestrictions";
+include "include/client";
+
+program cast_incognito( caster )
+
+	if (!can_cast(caster, 5))
+        	return;
+	endif
+
+	if (!GetObjProperty( caster , "realname"))
+		SetObjProperty( caster , "realname" , caster.name );
+	endif
+
+	local newname := AssignName(caster);
+	SetName ( caster , newname );
+	PlaySoundEffect(caster, SFX_1E3);
+	PrintTextAbovePrivate (caster,"Your new name is " + newname, caster);
+
+	detach();
+	set_critical(1);
+	sleep( 60 * Cint(GetSkill( caster, SKILLID_MAGERY )/10 ) );
+
+	SetName ( caster , GetObjProperty( caster , "realname" ) );
+	EraseObjProperty( caster , "realname" );
+	PrintTextAbovePrivate (caster,"Your name is " + caster.name + ", again.", caster);
+	PlaySoundEffect(caster, SFX_1E3);
+
+endprogram
+
+function AssignName( me )
+
+	local index := "MALE";
+	if (me.graphic = 401)
+		index := "FEMALE";
+	endif
+
+
+    local cfg := ReadConfigFile( "incognito" );
+
+	if (!cfg)
+		SendSysMessage(me,"Unable to read incognito.cfg");
+		return;
+	endif
+
+    local elem := FindConfigElem( cfg , index );
+    local number := GetConfigInt( elem , "Count" );
+
+    local dice_str := "1d" + cstr(number);
+
+    local choice := RandomDiceRoll( dice_str );
+    local entry := "Name" + choice;
+
+    local str := GetConfigString( elem , entry );
+    local title := PreserveTitle( me );
+   
+    str := str + title;
+
+    return( str );
+
+endfunction
+
+
+function PreserveTitle( me )
+
+  local myname := me.name;
+  local start := find( myname , ">" , 1 );
+
+if( !start )
+  return;
+endif
+
+  local title := myname[ start+1 , (len( myname ) - 8) ];
+
+if( !title )
+  return("");
+endif
+
+  return( title );
+
+endfunction

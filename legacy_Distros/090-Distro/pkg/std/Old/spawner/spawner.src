@@ -1,0 +1,99 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+// SPAWNER.SRC - spawns creatures at spawn points according to spawn.cfg
+//
+// Author: DT
+//
+// Modifications:
+//     19990516 ens Total rewrite - doesn't pre-read spawns.cfg
+//     199905xx ens Use core::mobilecount to regulate spawn
+//
+/////////////////////////////////////////////////////////////////////////////
+
+use uo;
+use cfgfile;
+use os;
+use util;
+
+const DEFAULT_MAX_MOBILES := 1500;
+const DEFAULT_ENABLED := 1;
+
+var max_mobiles;
+var enabled;
+
+program spawner()
+    // print("spawner active");
+    var system := polcore();
+
+    while (1)
+        read_configuration();
+        
+        local mobile_count := system.mobilecount;
+        if ( mobile_count < MAX_MOBILES )
+            spawn_all();    
+        else
+            // print( "Spawner: There are already " + mobile_count + " mobiles" );
+        endif
+        
+        sleep(300); // 5 minutes
+    endwhile
+endprogram
+
+
+function read_configuration()
+    max_mobiles := GetGlobalProperty( "Spawner:MaxMobiles" );
+    if (max_mobiles = error)
+        max_mobiles := DEFAULT_MAX_MOBILES;
+        SetGlobalProperty( "Spawner:MaxMobiles", max_mobiles );
+    endif
+
+    enabled := GetGlobalProperty( "Spawner:Enabled" );
+    if (enabled = error)
+        enabled := DEFAULT_ENABLED;
+        SetGlobalProperty( "Spawner:Enabled", enabled );
+    endif
+endfunction
+
+function spawn_all()
+    local spawns_cfg := ReadConfigFile("spawns");
+
+    if (!spawns_cfg)
+        syslog("unable to read spawns.cfg");
+        return;
+    endif
+
+    local num_spawns := GetConfigMaxIntKey( spawns_cfg );
+    local i;
+    for( i := 1; i < num_spawns; i := i + 1 )
+        var spawnidx := RandomInt( num_spawns ) + 1;
+        // print( "Spawning element:  " + spawnidx );
+        local spawn_elem := spawns_cfg[ spawnidx ];
+        if (spawn_elem)
+            spawn( spawn_elem );
+        endif
+    endfor
+endfunction
+
+
+function spawn( spawndef )
+    // print( "spawndf: " + spawndef );
+    local x, y, z;
+    if (spawndef.x)
+        x := spawndef.x;
+        y := spawndef.y;
+        z := spawndef.z;
+    else
+        local rect := SplitWords( spawndef.rect );
+        local minx := CInt(rect[1]);
+        local miny := CInt(rect[2]);
+        local maxx := CInt(rect[3]);
+        local maxy := CInt(rect[4]);
+        x := minx + RandomInt( maxx - minx + 1 );
+        y := miny + RandomInt( maxy - miny + 1 );
+        z := GetMapInfo( x, y ).z;
+    endif
+    
+    // print( "Spawning " + spawndef.template + " at " + x + "," + y + "," + z );
+    CreateNpcFromTemplate( spawndef.template, 
+                           x, y, z );
+endfunction

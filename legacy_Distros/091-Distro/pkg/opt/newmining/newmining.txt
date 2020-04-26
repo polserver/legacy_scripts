@@ -1,0 +1,31 @@
+With this mining-package you can setup up to 32 sorts of ore and 32 sorts of ingots.
+Or you can "misuse" and oretype to dig jewels or other stuff. All is configured by 
+configfiles ( oretable and ingottable ). The configs are described in the files itself.
+
+To install the package copy the content of this zip into 
+Pol\pkg\std\mining
+overwriting all existing files
+
+Cause i moved the ore to objecttype 0x6300-0x631F and ingots to 0x6320-0x633F, you might have to adjust some other scripts:
+objtype.inc 		change the const's of Ingots and ore to the new numbers - and 
+			recompile all ingots/ore-using scripts ;)
+blacksmithy.src, make_blacksmith_items.src, tinkering.src
+			adjust to the new Item-ID's and maybe others 
+menus.cfg		adjust Item-ID for Goldingot
+
+If you have a running system - you could have other problems - if already ingots or 
+orepiles are existing, the server will crah after reboot, cause the old numbers aren`t 
+found anymore. I fixed this by replacing the old ID-numbers with the new ones in:
+Pol\data\items.txt
+Pol\data\npcequip.txt
+Pol\data\objects.txt
+Pol\data\pcequip.txt
+Pol\data\items.txt
+Pol\data\storage.txt
+
+If this would be too much work, you can let the old numbers exist and make additional ones
+maybe - but you have to change some parts of my scripts then. 
+
+If you have problems - feel free to contact me: 
+Puck, MoonRealm
+sascha@schneefloeckchen.de

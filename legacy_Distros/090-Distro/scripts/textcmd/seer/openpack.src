@@ -1,0 +1,30 @@
+use uo;
+
+include "include/NPCBackpacks";
+
+program textcmd_pack( who, template )
+
+	local me := Target( who,TGTOPT_NOCHECK_LOS );
+	if (!me)
+		return;
+	endif
+
+	if (!me.backpack)
+		local newbackpack := CreateItemAtLocation(me.x, me.y, me.z, 0xe75,1);
+		if (!EquipItem(me, newbackpack))
+			return;
+		endif
+	endif
+
+	local mypack := FindMyPack(me.serial);
+
+	foreach item in enumerateitemsincontainer(mypack)
+		if (item.container.serial = mypack.serial)
+			moveitemtocontainer(item, me.backpack);
+		endif
+	endforeach
+
+	SendOpenSpecialContainer( who, me.backpack );
+
+
+endprogram

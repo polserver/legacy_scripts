@@ -1,0 +1,122 @@
+use uo;
+use os;
+use util;
+include "include/math";
+include "include/eventid";
+include "include/client";
+const UOBJ_PITCHER_FULL := 0x09a7;
+const UOBJ_PITCHER_EMPTY := 0x09f0;
+const UOBJ_KEG := 0x1940;
+const UOBJ_HOPS := 0x1aa2;
+const UOBJ_WHEAT := 0x1ebd;
+
+program use_pitcher(character, pitcher)
+
+if (pitcher.graphic = UOBJ_PITCHER_FULL)
+        sendsysmessage(character, "What do you want to use that on?");
+        local what := targetcoordinates(character);
+        if (!islocationaccessible(character, what.x, what.y , what.z))
+                sendsysmessage(character, "That's too far away!");
+                return;
+        endif
+        
+        foreach mob in listmobilesnearlocation(what.x, what.y, what.z, 1)
+                local ev;
+                ev.+type := EVID_ENGAGED;
+                ev.+source := character;
+                sendevent(mob, ev);
+                playsoundeffect(character, 0x11);
+                sendsysmessage(mob, character.name + " wets you down with water!");
+        endforeach
+        foreach thing in listitemsnearlocation(what.x, what.y, what.z, 0)
+                if (thing.objtype = UOBJ_KEG)
+                        do_ferment(character, thing);
+                endif
+                if (getobjproperty(thing, "w"))
+                       setobjproperty(what, "w", getobjproperty(what, "w") + 1);
+                else
+                        setobjproperty(what, "w", 1);
+                endif
+        endforeach
+
+else
+        sendsysmessage(character, "Where you you want to fill this?");
+        local where := targetcoordinates(character);
+        if (islocationaccessible(character, where.x, where.y , where.z))
+                //he's close enough
+                if (is_water(getmapinfo(where.x, where.y).landtile))
+                       pitcher.graphic := UOBJ_PITCHER_FULL;
+                       playsoundeffect(character, 0x11);
+                else
+                        sendsysmessage(character,"You can't get water from a stone!");
+                endif
+        else
+                sendsysmessage(character, "You can't reach that");
+        endif
+endif
+
+endprogram
+
+function do_ferment(character, thing)
+
+local hops := FindObjtypeInContainer( thing, UOBJ_HOPS );
+local wheat := FindObjtypeInContainer( thing, UOBJ_WHEAT );               
+if (hops && wheat)
+       sendsysmessage(character, "You start the fermentation process");
+        if (checkskill(character, SKILLID_ALCHEMY, -1, 100))
+                setobjproperty(thing, "alequal", randomint(4) + 1);
+                setobjproperty(thing, "ale", readgameclock() + (60*60*24*3));
+                thing.usescript := "ale";
+        else
+                setobjproperty(thing, "alequal", 0);
+                setobjproperty(thing, "ale", readgameclock() + (60*60*24*3));
+                thing.usescript := "ale";
+        endif
+else
+        Sendsysmessage(character, "You are still missing some ingredients");
+        return;
+endif
+
+endfunction
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+function IsLocationAccessible( character, x, y, z )
+    local xd, yd, zd;
+    xd := character.x - x;
+    if (xd < -2 or xd > 2) 
+   
+    return 0;
+    endif
+    yd := character.y - y;
+    if (yd < -2 or yd > 2) 
+    
+    return 0;
+    endif
+    
+   
+
+    return CheckLosAt( character, x, y, z );
+endfunction          
+
+
+function is_water(theobj)
+        if ((theobj.objtype >= 1796) and (theobj.objtype <= 0x17b2) )
+                return 1;
+        elseif ((theobj.objtype >= 0x346e) and (theobj.objtype <= 0x3530))
+                return 1;
+        elseif ((theobj.landtile >= 1796) and (theobj.landtile <= 0x17b2) )
+                return 1;
+        elseif ((theobj.landtile >= 0x346e) and (theobj.landtile <= 0x3530))
+                return 1;
+        else
+                return 0;
+        endif
+endfunction     

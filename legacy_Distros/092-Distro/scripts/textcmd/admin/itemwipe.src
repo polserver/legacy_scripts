@@ -1,0 +1,19 @@
+use uo;
+use os;
+
+program itemwipe( you, text )
+
+    local params := SplitWords( text );
+    local wipex := CInt( params[1] );
+    local wipey := CInt( params[2] );
+    local radius := CInt( params[3] );
+
+  local i := 0;
+  SendSysMessage( you, "Wiping items near " + wipex +", "+ wipey +", 0");
+	foreach item in ListItemsNearLocation( wipex, wipey, 0, radius )
+		DestroyItem( item );
+		i:=i+1;
+        endforeach
+  SendSysMessage( you, "Total Items Nuked: " + i);
+
+endprogram

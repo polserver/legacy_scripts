@@ -1,0 +1,36 @@
+//Author: Racalac, 1/10/99
+//Updated 10/9/99
+
+use uo;
+
+include "include/client";
+include "include/spellrestrictions";
+
+program telekinesis ( caster )
+
+	local circle := 3;
+
+	local cast_on := CanTargetThing(caster, circle, TGTOPT_HARMFUL + TGTOPT_NOCHECK_LOS );
+	if (!cast_on)
+		return;
+	endif
+
+	if( cast_on.npctemplate or cast_on.account )
+		PrintTextAbovePrivate( caster, "You cannot will it to move." , caster );
+		return;
+	endif
+
+	if( cast_on.multi )
+		SendSysmessage( caster , "You cannot use that on items inside houses." );
+		return;
+	endif
+
+	PlaySoundEffect( caster , SFX_SPELL_TELEKINESIS );
+	if (MoveItemToContainer( cast_on, caster.backpack, x := -1, y := -1 ))
+		PrintTextAbovePrivate( caster, "You pick up the item with your mind." , caster );
+	else
+		PrintTextAbovePrivate( caster, "You cannot will it to move." , caster );
+	endif
+
+endprogram
+

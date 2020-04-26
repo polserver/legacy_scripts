@@ -1,0 +1,41 @@
+use os;
+use uo;
+
+include "include/client";
+include "include/spellrestrictions";
+
+include "include/res";
+include "include/respenalty";
+
+program spell_resurrect( parms )
+
+	local circle := 8;
+	local caster;
+	local cast_on;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_on := parms[3];
+	else
+		caster := parms;
+		cast_on := CanTargetSpell(caster, circle, TGTOPT_HELPFUL + TGTOPT_CHECK_LOS );
+		if (!cast_on)
+			return;
+		endif
+	endif
+
+	if (!cast_on.dead)
+		SendSysMessage(caster,"That isn't dead!");
+		return;
+	endif
+
+	PlaySoundEffect(caster, SFX_SPELL_RESSURECTION);
+	PlaySoundEffect(cast_on, SFX_SPELL_RESSURECTION);
+
+	if(ResNow(cast_on)=1)
+		Resurrect( cast_on );
+		//check for res penalties
+		ResPenalties(cast_on);
+	endif
+
+endprogram

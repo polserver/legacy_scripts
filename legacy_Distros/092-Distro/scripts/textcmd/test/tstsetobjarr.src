@@ -1,0 +1,5 @@
+use uo;
+
+program tstsetobjarr( who, params )
+    SetObjProperty( who, "testarr", { 3,5,7,9 } );
+endprogram

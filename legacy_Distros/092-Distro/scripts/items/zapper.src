@@ -1,0 +1,23 @@
+Use uo;
+
+// include objtype
+// include skillid
+
+// Constants
+
+
+program on_zap( character, item )
+    Local theitem;
+    
+    SendSysMessage( character, "Select item to zap." );
+
+    theitem := Target( character, "" ); 
+    if (theitem = 0) // cancelled, or targetting error
+        return;
+    endif
+    
+    SetObjProperty(theitem, "tname", "a zapped item");
+    SetObjProperty(theitem, "charges", 100);
+    SendSysmessage (character, "Item zapped");
+endprogram
+

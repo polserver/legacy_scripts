@@ -1,0 +1,7 @@
+use uo;
+
+program textcmd_zadd( who, zdiff )
+    zdiff := CInt( zdiff );
+
+    MoveCharacterToLocation( who, who.x, who.y, who.z + zdiff );
+endprogram

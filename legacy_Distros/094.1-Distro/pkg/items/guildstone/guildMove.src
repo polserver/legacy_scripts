@@ -1,0 +1,80 @@
+use uo;
+use os;
+
+include "include/canAccess";
+const UOBJECT_DOORS_START := 0x0675;
+const UOBJECT_DOORS_END := 0x06f4;
+const UOBJ_GUILDSTONE := 0xa390;
+const UOBJ_GUILDSTONE_GRAPHIC := 0x0ed4;
+
+program packed_stone(who,stone)
+  EraseObjProperty(who, "IsMeditating");
+  EraseObjProperty(who, "HealTimer");
+    if(!can_access(who, stone))
+    return;
+  endif
+  if(!ReserveItem(stone))
+    return;
+  endif
+  var guild_id:=GetObjProperty(stone,"guild_id");
+  var guild:=FindGuild(guild_id);
+  var gm:=findgm(guild);
+  if(gm[2]!=who.serial) SendSysMessage(who,"Only the Guild Master can place the stone.");
+    return;
+  endif
+  if(not Accessible(who,stone))
+    SendSysMessage(who,"You cannot access that item!");
+    return;
+  endif
+  var check := 0;
+  var owner := GetObjProperty(who.multi, "owneracct");
+  var coowners := GetObjProperty(who.multi, "coownlist");
+  if(owner == who.acctname)
+    check := 1;
+  elseif(who.serial in coowners)
+    check := 1;
+  endif
+  if(check == 0)
+    SendSysMessage(who, "You must be in a house you own to  place this.");
+    return;
+  endif
+  foreach item in ListItemsNearLocation(who.x,who.y,who.z,2)
+    if ((item.objtype>=UOBJECT_DOORS_START) && (item.objtype<=UOBJECT_DOORS_END))
+      if((((item.x == who.x +1) || (item.x == who.x -1)) && (item.y == who.y)) || (((item.y == who.y +1) || (item.y == who.y -1)) && (item.x == who.x)))
+        SendSysMessage(who, "This is too close to the door.");
+        return;
+      endif
+    endif
+  endforeach
+  foreach item in ListItemsNearLocation(who.x,who.y,who.z,30)
+    if(item.objtype==UOBJ_GUILDSTONE && (item.multi.serial==who.multi.serial))
+      SendSysMessage(who,"Only one guildstone can be placed in a house.");
+      return;
+    endif
+  endforeach
+  var hs := who.multi;
+  foreach thing in (hs.components)
+    if((thing.objtype == 0xbd2) || (thing.objtype == 0xbd0))
+      hs := thing.serial;
+      break;
+    endif
+  endforeach
+  stone.movable :=1;
+  MoveItemToLocation(stone,who.x,who.y,who.z,MOVEITEM_FORCELOCATION);
+  stone.movable:=0;
+  stone.newbie :=1;
+  stone.graphic := UOBJ_GUILDSTONE_GRAPHIC;
+  stone.usescript:="";
+  SetObjProperty(stone, "houseserial", hs);
+endprogram
+
+function findgm(guild)
+  var returninfo:={"In Vote","0"},i,all:=guild.members,gm:=guild.getprop("gm");
+  for(i:=1;i<=all.size();i:=i+1)
+    if (all[i].serial==gm)
+      returninfo[1] := all[i].name;
+      returninfo[2] := all[i].serial;
+    endif
+  endfor
+  return returninfo;
+endfunction

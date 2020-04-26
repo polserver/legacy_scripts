@@ -1,0 +1,84 @@
+use uo;
+use util;
+
+include "include/reportmurder";
+include "include/possess";
+include "include/playmusic";
+
+program chrdeath(corpse,ghost)
+
+dismount(ghost, corpse);
+
+// Support for Possess/Unpossess Text Commands
+if ( getobjproperty(ghost,"possess") )
+  unpossesscorpse(ghost, corpse);
+endif
+
+UnEquipStuff(ghost, corpse);
+
+SetObjProperty(corpse, "ghostserial", CStr(ghost.serial) );
+
+// Play the "death" music midi
+PlayMusic( ghost, "2A" );
+
+//if player has reportable murders, send the report gump
+if(len(ghost.reportables)>0)
+	SendReportGump(ghost);
+endif
+
+endprogram
+
+function dismount(me,corpse)
+
+	local mount := GetEquipmentByLayer( corpse, 25 );
+	foreach item in enumerateitemsincontainer(corpse)
+		if (item.objtype = 0xF021)
+			mount := item;
+			break;
+		endif
+	endforeach
+	if (!mount)
+		return;
+	endif
+	if(GetObjProperty(mount,"summoned"))
+		destroyitem(mount);
+		return;
+	endif
+	local critter := "";
+		case (mount.graphic)
+		0x3ea2: critter := "horse";
+		0x3e9f: critter := "horse2";
+		0x3ea0: critter := "horse3";
+		0x3ea1: critter := "horse4";
+		0x3ea6:	critter := "llama";
+		0x3ea3:	critter := "desertostard";
+		0x3ea4:	critter := "frenziedostard";
+		0x3ea5:	critter := "forestostard";
+	endcase
+
+	local animal := CreateNPCFromTemplate (critter, me.x, me.y, me.z);
+	animal.facing := me.facing;
+	animal.color := mount.color;
+	animal.name := GetObjProperty (mount, "petname");
+	SetObjProperty(animal, "happyness", GetObjProperty(mount,"happyness") );
+	SetObjProperty(animal, "friends", GetObjProperty(mount,"friends") );
+	SetObjProperty(animal, "friends_name",GetObjProperty(mount,"friends_name") );
+	SetObjProperty(animal, "master", GetObjProperty(mount,"master") );
+	SetObjProperty(animal, "script", GetObjProperty(mount,"script") );
+	SetObjProperty (animal, "prevtamed", 1);
+	animal.script := "tamed";
+	RestartScript (animal);
+	DestroyItem( mount );
+
+endfunction
+
+function UnEquipStuff( ghost, corpse )
+
+        //use ListRootItemsInContainer( corpse ) if you have it:
+        foreach item in EnumerateItemsInContainer( corpse)
+                if ( getobjproperty( item, "a_equipped" ) )
+                        EraseObjProperty( item, "a_equipped");
+                endif
+        endforeach
+
+endfunction

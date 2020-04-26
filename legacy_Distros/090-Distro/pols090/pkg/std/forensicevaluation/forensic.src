@@ -1,0 +1,59 @@
+use uo;
+include "include/client";
+
+const UOBJ_PROOF := 0xBE34;
+
+program forensic(who)
+
+sendsysmessage(who, "What would you like to evaluate?");
+
+local what := target(who, TGTOPT_CHECK_LOS);
+
+if (!what)
+        Sendsysmessage(who, "Targetting cancelled");
+        return;
+endif
+
+local strmessage;
+
+if (checkskill(who, SKILLID_FORENSICS, -1, 75))
+
+        local poisoner := getobjproperty(what, "p");
+        if (poisoner)
+                SendSysmessage(who, "This appears to have been poisoned by " + poisoner);
+                strmessage := what.desc + " was poisoned by " + poisoner;
+        endif
+        
+        local vendor := getobjproperty(what, "v");
+        
+        if(vendor)
+                Sendsysmessage(who, "This was sold by " + vendor);
+                strmessage := what.desc + " was sold by " + vendor;
+        endif
+        
+        local chopper := getobjproperty(what, "c");
+        
+        if (chopper)
+                Sendsysmessage(who, "This corpse was cut up by " + chopper);
+                strmessage := what.desc + " was brutally chopped up by " + chopper;
+        endif
+        local picker := getobjproperty(what, "L");
+        if (picker)
+                sendsysmessage(who, "This lock was picked by " + picker);
+                strmessage := what.desc + " was picked by the scurrilous " + picker;
+        endif
+        
+        if (!poisoner and !vendor and !chopper and !picker)
+                SendSysmessage(who, "You find no clues");
+        else
+                local proof := createiteminbackpack(who, UOBJ_PROOF, 1);
+                proof.name := "Evidence indicates that " + strmessage;
+                setobjproperty(proof, "serial", what.serial);
+        endif
+
+else
+        SendSysmessage(who, "You find no clues");
+endif
+
+endprogram
+

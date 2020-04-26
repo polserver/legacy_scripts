@@ -1,0 +1,21 @@
+use os;
+use uo;
+use boat;
+
+program textcmd_setskill( who, text )
+    local params := SplitWords( text );
+    local targ := target(who);
+    local skill := CInt( params[1] );
+    local basevalue := CInt( CDbl(params[2]) * 10 );
+    local rawvalue := BaseSkillToRawSkill( basevalue );
+
+    if (skill != error && rawvalue != error)
+        print( "Setting Raw Skill " + skill + " to " + rawvalue );
+        local res := SetRawSkill( targ, skill, rawvalue );
+        if (res = error)
+            SendSysMessage( who, "Unable to set raw skill: " + res.errortext );
+        else
+            SendSysMessage( who, "New Effective Skill: " + GetSkill(who,skill) );
+        endif
+    endif
+endprogram

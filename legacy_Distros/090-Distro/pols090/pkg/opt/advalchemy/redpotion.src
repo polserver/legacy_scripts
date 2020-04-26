@@ -1,0 +1,23 @@
+use os;
+use uo;
+use util;
+use cfgfile;
+include "drinkpotion";
+include "include/tempmod";
+program drink_blue (character, potion)
+if (!checkifcandrink(character))
+        return;
+endif
+    local potion_strength := get_potion_strength(potion);
+
+
+    if (is_poison(potion))
+        do_poison(character, potion);
+    else
+           empty_bottle(character, potion);
+                
+           SendSysmessage (character, "Sorry! Not working yet!");
+
+    endif
+
+endprogram

@@ -1,0 +1,63 @@
+/////////////////////////////////////////////////////////
+//vet.src
+//
+//Just like healing, but works on tamed NPCs
+//
+// Author: Dream Weaver
+//
+//////////////////////////////////////////////////////////
+
+use uo;
+use util;
+use cfgfile;
+use os;
+include "include/client";
+
+  
+Global config;
+Global elem;
+
+
+program use_bandages ( parms )
+ 	
+local patient := parms[1];
+local character := parms[2];
+local item := parms[3];
+
+
+    local skill_lvl := Cint( GetSkill( character, SKILLID_VETERINARY  ) / 10 );
+
+    config := ReadConfigFile( "healing");
+    elem := FindConfigElem( config, skill_lvl ); 
+   
+    if ( (patient.graphic = CID_HUMAN_MALE) or (patient.graphic = CID_HUMAN_FEMALE) )
+        SendSysmessage(character, "You can only use this skill on animals!");
+        return;
+    endif
+
+    heal(character, patient, item);
+    SetObjProperty(character, "#heal",cint(readgameclock()) + 20);
+
+    
+    
+endprogram
+
+
+function heal( character , patient , bandages )
+
+    local max_heal := Cint(GetElemProperty( elem, "max" ) );
+
+    if ( CheckSkill( character, SKILLID_VETERINARY , -1, 80 ) )
+
+       local points_healed := RandomInt( max_heal ) + 1;
+       HealDamage( patient, points_healed );
+       SendSysmessage ( character , "You have healed " + points_healed + " hit points." );
+   
+    else
+        SendSysmessage ( character , "You were unsuccessful at binding the wound." );
+    endif
+  
+    SubtractAmount( bandages , 1 );
+ 
+endfunction
+

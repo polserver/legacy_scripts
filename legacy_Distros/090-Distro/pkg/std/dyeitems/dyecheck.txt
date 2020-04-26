@@ -1,0 +1,52 @@
+Dye System - version .4
+Created by Zulu Jan 10, 2000 - updated April 5, 2000
+
+** version. 4 **
+I have gotten rid of the cprop dye i1 part of this package. It uses too much memory and the new system is more powerful. There is now a dyeitems.cfg file where you add what items can be dyed. There is a sample file with most common items done.
+
+the entry player # = what cmd level they need to dye the item.
+
+item 0x1F03
+{
+player 0
+}
+
+0 = everyone
+1 = counselor, seer, gm, admin
+2 = seer, gm, admin
+3 = gm, admin
+4 = admin
+
+** uninstalling **
+If you installed version .3 then you will have to delete the cprop dye i1 entries in the itemdesc.cfg files that you added.
+
+Load the items.txt, npcequip.txt, pcequip.txt, storage.txt and pcs.txt from the /pol/data file and delete the CProp dye i1 entries.  You can load each file and do a search for CProp dye i1 and erase that line.
+
+** version. 3 ** 
+I have made some adjustments on the scripts and I have included a new setprop command. Now only Admin's will be able to dye anything. GM's will be able to dye things that have the dye flag on.
+
+It will allow players to dye "allowed" items and prevent all other items from being dyed. It allows Admin's to dye anything.
+
+*************************
+How to set up the script: 
+*************************
+Copy the dyecheck.src to the \pol\scripts\items directory.
+Copy the dyecheck.cfg to the \pol\config\ directory.
+Copy the setprop.ecl to the \pol\scripts\textcmd\gm directory.
+
+Load the itemdesc.txt in the \pol\config\ directory. Find the following entry:
+
+Item 0x0FAB
+{
+Name dyetub
+VendorSellsFor 20
+}
+
+Change it to the following:
+
+Item 0x0FAB
+{
+Name dyetub
+VendorSellsFor 20
+script dyecheck
+}

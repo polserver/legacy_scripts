@@ -1,0 +1,11 @@
+use uo;
+
+program textcmd_bcast( who, text )
+
+if (!text)
+  SendSysMessage(who, "This command broadcasts a message to all online players.  Usage: bcast <message>");
+  return;
+else
+  Broadcast( who.name + ": " + text );
+endif
+endprogram

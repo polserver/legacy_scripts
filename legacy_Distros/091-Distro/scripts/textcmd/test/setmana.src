@@ -1,0 +1,3 @@
+program textcmd_setmana( who, newmana )
+    who.mana := CInt(newmana);
+endprogram

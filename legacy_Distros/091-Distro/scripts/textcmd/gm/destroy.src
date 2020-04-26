@@ -1,0 +1,18 @@
+//
+// Destroy an item
+//
+
+use uo;
+
+program textcmd_destroy( who )
+    SendSysMessage( who, "Please target something to destroy" );
+
+    local tgt := TargetCoordinates( who );
+    if (tgt)
+        if (tgt.item)
+            DestroyItem( tgt.item );
+        else
+            SendSysMessage( who, "You can only destroy items" );
+        endif
+    endif
+endprogram

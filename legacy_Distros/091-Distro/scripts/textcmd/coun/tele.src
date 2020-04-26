@@ -1,0 +1,14 @@
+use uo;
+
+
+program textcmd_tele( who )
+    SendSysMessage( who, "Where do you want to teleport?" );
+
+    local where := TargetCoordinates( who );
+    if (where)
+        local result := MoveCharacterToLocation( who, where.x, where.y, where.z, MOVECHAR_FORCELOCATION);
+        if (!result)
+            SendSysMessage( who, result.errortext );
+        endif
+    endif
+endprogram

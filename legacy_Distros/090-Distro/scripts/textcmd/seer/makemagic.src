@@ -1,0 +1,38 @@
+use uo;
+
+include "include/yesno";
+
+program makemagic( who, spellname )
+
+	if (!spellname)
+		SendSysMessage( who, "Usage: .makemagic [spellname]" );
+		return;
+	endif
+ 
+	SendSysMessage( who, "Make What magical?" );
+	local thing := Target( who, TGTOPT_NOCHECK_LOS );
+
+	thing.usescript := ":magic:magicitems";
+	SendSysMessage( who, thing.usescript );
+
+	SetObjProperty(thing,"spellname",spellname);
+
+	local charges := cint(SendTextEntryGump( who, "Number of Charges: ", 
+				TE_CANCEL_DISABLE,TE_STYLE_NORMAL, 3));
+	SetObjProperty(thing,"charges",charges);
+
+	if ( YesNo(who,"AREA EFFECT?") )
+		SetObjProperty(thing,"tgtopt","TARGETAREA");
+	elseif ( YesNo(who,"SELF ONLY?") )
+		SetObjProperty(thing,"tgtopt","NOTARGET");
+	elseif ( YesNo(who,"HARMFUL?") )
+		SetObjProperty(thing,"tgtopt","TGTOPT_CHECK_LOS+TGTOPT_HARMFUL");
+	else
+		SetObjProperty(thing,"tgtopt","TGTOPT_CHECK_LOS+TGTOPT_HELPFUL");
+	endif
+
+	local truename := SendTextEntryGump( who, "True Name: ", 
+				TE_CANCEL_DISABLE,TE_STYLE_NORMAL, 30);
+	SetObjProperty(thing,"tname",truename);
+ 
+endprogram

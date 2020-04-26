@@ -1,0 +1,15 @@
+use os;
+use uo;
+
+program makhidden(who)
+    if (who.cmdlevel < 2)
+      return;
+    endif
+    SendSysmessage( who, "Select an item to make hidden." );
+    local item := Target( who, TGTOPT_NOCHECK_LOS );
+    if (!item)
+      SendSysmessage (who, "Targetting cancelled.");
+      return;
+    endif
+    item.invisible :=1;
+endprogram

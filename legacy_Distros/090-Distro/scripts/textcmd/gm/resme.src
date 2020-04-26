@@ -1,0 +1,13 @@
+use os;
+use uo;
+use boat;
+
+
+program textcmd_resme( who )
+    if (who.dead)
+        Resurrect( who );
+    else
+        SendSysMessage( who, "But I'm not dead yet!" );
+    endif
+endprogram
+

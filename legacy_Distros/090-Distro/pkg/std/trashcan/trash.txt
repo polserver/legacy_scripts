@@ -1,0 +1,13 @@
+Trash Can - version .1
+Created by Zulu Dec 8
+
+You can place these trash cans around each bank and players can throw away stuff. Once items are placed in the trash can, they are destroyed. The idea to make this comes from a similar item in TUS. Many thanks to Louds for helping with this script.
+
+
+*************************
+How to set up the script: 
+*************************
+
+Copy the trash.src to the \pol\scripts\items directory.
+GM's can use the command .createat 0x7007 to add a trash can.
+APPEND itemdesc.txt to the file \pol\config\itemdesc.cfg

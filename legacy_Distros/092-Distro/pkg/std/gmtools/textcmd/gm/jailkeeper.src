@@ -1,0 +1,25 @@
+use uo;
+use os;
+use cfgfile;
+
+program textcmd_jailkeeper(who)
+  local acctcfg := readconfigfile(":gmtools:accts");
+  local relday;
+  local elem;
+  local act;
+    local accounts := ListAccounts();
+    foreach account in accounts
+      elem := acctcfg[account];
+        sendsysmessage(who,"elem= " + account);
+      relday := elem.releaseday;
+      if (relday)
+        sendsysmessage(who,"releaseday= " + Cint(relday));
+        sendsysmessage(who,"time= " + readgameclock()); 
+        if (readgameclock() >= Cint(relday))
+          act := findaccount(account);
+          act.enable();
+        endif
+      endif
+    endforeach
+    UnloadConfigFile(":gmtools:accts");
+endprogram

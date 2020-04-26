@@ -1,0 +1,80 @@
+use uo;
+use os;
+
+include "include/objtype";
+include "include/client";
+
+const POINTS_MULTIPLIER := 15;
+
+program go_go_gadget_map( who, blank )
+
+	if (blank.objtype<>0x6001)
+	foreach item in EnumerateItemsInContainer(who.backpack)
+	if (item.objtype =0x6001)
+	blank:=item;
+	break;
+	endif
+	endforeach
+	endif
+
+	if (blank.objtype<>0x6001) SendSysmessage( who , "You have no blank maps" ); return; endif
+
+	if(!ReserveItem(blank)) return; endif
+
+	local choice := SelectMenuItem2( who , "Cartography");
+
+	if(!choice)
+		return;
+	endif
+
+	local props;
+	local difficulty;
+	
+	case (choice.index)
+		1: 	difficulty := 20;
+			if( CheckSkill( who, SKILLID_CARTOGRAPHY , difficulty , Cint(difficulty * POINTS_MULTIPLIER)) )
+				props := array( "local" , who.x - 265 , who.y - 260 , who.x + 265 , who.y + 260 , 200 , 200 );
+				makemap( who , props , blank );
+			else
+				SendSysmessage( who , "You are not familiar enough with the area to draw the map" );
+				DestroyItem( blank );
+			endif
+			break;
+		
+		2: 	difficulty := 50;
+			if( CheckSkill( who, SKILLID_CARTOGRAPHY , difficulty , Cint(difficulty * POINTS_MULTIPLIER) ))
+				props := array( "regional" , who.x - 850 , who.y - 800 , who.x + 850 , who.y + 800 , 400 , 400 );
+				makemap( who , props , blank );
+			else
+				SendSysmessage( who , "You are not familiar enough with the area to draw the map" );
+	   			DestroyItem( blank );
+			endif
+			break;
+		
+		3:	difficulty := 80;
+			if( CheckSkill( who, SKILLID_CARTOGRAPHY , difficulty , Cint(difficulty * POINTS_MULTIPLIER) ))
+	   			props := array( "world" , 0 , 0 , 5119 , 4095 , 500 , 400 );
+				makemap( who , props , blank );
+			else
+				SendSysmessage( who , "You are not familiar enough with the area to draw the map" );
+				DestroyItem( blank );
+			endif
+			break;
+			
+		default: SendSysmessage( who , "Oh Sh!t ... " );
+	endcase
+
+endprogram
+
+function makemap( who, mapdef , blank )
+	local map := CreateItemInBackpack( who, UOBJ_MAP1 );
+	SetName( map , ("a completed " + mapdef[1] + " map") );
+	map.xwest := mapdef[2];
+	map.ynorth := mapdef[3];
+	map.xeast := mapdef[4];
+	map.ysouth := mapdef[5];
+	map.gumpwidth := mapdef[6];
+	map.gumpheight := mapdef[7];
+	SendSysmessage( who , "You carefully scribe a detailed map and place it in your pack." );
+	DestroyItem( blank );
+endfunction

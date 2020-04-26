@@ -1,0 +1,123 @@
+
+Distro Changelog 
+
+Version 0.94.1.0:
+
+  Changed in this version:
+Disabled ICP and Nature. Both will be re-enabled in a service pack when their
+   bugs are worked out.
+Enabled the old daynight package. It will be removed when Nature is working 
+   again.
+Fixed a bug in merchant training that caused skill loss.
+Platemail gloves can now show up as magical loot.
+Fixed the animation on the spear and short spear, and made the short spear a 2-H
+   weapon.
+Added more spawns.
+
+Version 0.94.0.6
+
+ New in this version:
+Replaced the daynight package with the Nature package, which handles day/night,
+   weather, and the moon phases.
+
+ Changed in this version:
+Removed signControl spam to the debug log.
+Fixed magic item equip/unequip issues with regards to login/out as well 
+   as out of sequence modifiers (player equips and unequips repeatedly)
+   (Needs continued testing.)
+Fixed empty group bug when creating datafiles from config files in regionspawner.
+Moongates now act like OSI (bringing up a gump)
+Poison system improved, now uses the same messages as OSI.
+Summoned horses that are being ridden will now properly vanish if you log in on
+   one after the spell has expired.
+Skill arrays no longer get assigned to NPCs.
+Blacksmithy, carpentry, tailoring, tinkering gumps was made more efficient.
+
+ Removed in this version:
+Old moongate scripts no longer in use.
+
+
+Version 0.94.0.5
+
+ New in this version:
+Added changelog.
+Added vortexHit.src - energy vortex hitscript.
+Ranger armor has been added to itemdesc.cfg.
+
+ Changed in this version:
+Edited NPC damage values.
+Fixed hearing bug with barber.
+mrcspawn.src will now read either named or hex values.
+Carpentry should now return the correct number of boards.
+Changed the awarded skill points for lumberjacking.
+Fixed an endless chop loop if tool breaks.
+Removed debug code in resmelt.src (mining package).
+Fixed gate animation in gate spell.
+Black dye tubs can no longer be used to make duplicates.
+Fixed public/private bug for locking doors.
+Some optimization of spawnregion to spread out the spikes in usage.
+Added delucia inn as a safe logout spot.
+Fixed endless scroll multiplication bug in merchant stocks.
+Optimized the help system.
+flipping fancy tables will no longer sometimes produce weird tables.
+Fixed door unlock bug in key.src.
+Fixed fame game in blade.src.
+Decoded maps now say who decoded them in their description.
+You can no longer recall off of runes in a vendor.
+Staff should no longer be affected by earthquakes.
+You can no longer dig off a map that has been completed.
+You should no longer be able to inscribe over a treasure map with cartography.
+You can now gain fame from tradeskills.
+The wrestling hitscript now handles instakill from guards and playervendors.
+mainhitscript now has playervendor instakill.
+Female only armor can now be worn by females.
+You should no longer be able to redeed a house with vendors in it.
+Fixed poison trap bug.
+Fixed tool break repeat bug in mining.
+iteminfo now uses item.objtype rather than item.graphic to determine what to duplicate when adding to a stack.
+The save command can be used from the console.
+openpack.src will no longer try to open the packs of items.
+Bandages are now created in the same backpack as the original bolt and of the same color.
+Fixed transfer bugs in tamed.src.
+Carving corpses no longer drops hair and beards.
+Fixed pack full bug in makeClothItems.src.
+Upgraded motd package to version 1.1.
+Upgraded gumps package to version 2.2.
+Forks are now made of metal.
+Fixed the wizard's hat.
+The large counter and small bed are now be craftable.
+Begging is more like OSI.
+Carpentry can make musical instruments.
+Potions use objtype instead of a cfg file.
+Standardized itemdesc.cfg, padding objtypes that were <4 digits.
+Bankers now tell players how many items are in the bank box.
+Added other facing messageboard.
+If a mounted mob is despawned in regionspawner it will not leave behind a horse.
+
+
+ Removed in this version:
+Two malformed merchant nodes.
+Unused scripts/console/console.cfg- the real one is config/console.cfg
+Removed pkg/foundations/hooks/onSkillAdv and scripts/include/skillAdv- their functionality is now in pkg/foundations/hooks/attributeCore.
+
+ Known issues:
+The motd default text file needs to be changed.
+6 of the spawnregions are not spawning correctly- most likely because they are not being generated properly from the cfg file.
+ICP is failing to register 13 packages. 
+The following errors need to be fixed, as they fill the debug log:
+Script Error in 'pkg/systems/housing/signControl.ecl': 
+	Call to function SystemFindObjectBySerial:
+	Parameter 0: Expected datatype Integer, got datatype Error
+
+Script Error in 'pkg/systems/spawnregion/spawnRegion.ecl': 
+	Call to function CreateNpcFromTemplate:
+	Parameter 0: Expected datatype String, got datatype Array
+
+
+ Wish list:
+Replace the day/night package.
+Make the save game interval readable from a cfg file.
+Put the UOR houses back in.
+
+
+See http://www.sourceforge.net/projects/pol-distro for the distro's sourceforge project.

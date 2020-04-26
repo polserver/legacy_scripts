@@ -1,0 +1,41 @@
+POL090 Script contributors:
+
+Bishop Ebonhand: GMTools, Static Housing, Runebook
+Boum: Clothes and Colors
+Bzagh: Jail
+Cassandra White: Fishing
+Dreamweaver: Poison, Hitscripts,
+HellRaider: Coordinates
+Louds: Guards, Guilstone, SpawnNet
+Maverick: ItemInfo
+Mercy: IView
+Myrathi: ICP, Gumps
+Raxxla: Day/Night/Moon/Weather, Hitscripts
+Sentack: Goto
+Shinigami: Book
+Svovl: Skillcap
+Zulu: Auction, DyeItems, Help, Trashcan, Magic Un/Lock, Magic Un/Trap, Housing
+
+POL089 Script contributors:
+
+New stuff:
+Sigismund: string functions
+
+Changes:
+Sigismund: math.inc
+
+POL088 Script contributors:
+
+New stuff:
+Cassandra White: console commands
+Louds: Spawnnet system, guildstones
+Zulu: horses, wands
+Preacher: Hand of Dundee GM Tool
+
+Changes:
+Louds: Tamed AI
+Madman Across the Water: doors
+Zulu: tracking, treasuremap
+
+
+

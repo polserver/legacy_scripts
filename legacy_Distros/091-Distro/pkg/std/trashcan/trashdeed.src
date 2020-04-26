@@ -1,0 +1,59 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+// Created by Zulu (zuluhotel@home.com) Jan 06, 2000
+// - Players buy this from the Architect.
+// - dclick on the deed to create.
+// - Once the barrel is created the deed is detroyed.
+// 
+/////////////////////////////////////////////////////////////////////////////
+
+use os;
+use uo;
+
+const SEARCH_RANGE := 10;
+const TRASH_BARREL := 0x7007;
+
+program maketrash( who, deed )
+
+    ReserveItem(Deed);
+
+    SendSysMessage( who, "Where would you like your trash can");
+
+    local where := TargetCoordinates( who );
+    local place;
+
+    If ( !where )
+      SendSysMessage( who, "Cancelled");
+      return;
+    else
+      if (!checkfortrashcans(where))
+      place := CreateItemAtLocation( where.x, where.y, where.z, TRASH_BARREL, 1 );
+      else
+      SendSysMessage( who, "You cannot place your trash can here");
+      return;
+      endif
+   endif
+
+    If (!place)
+      SendSysMessage( who, "Your trash can has not been created");
+      return;
+    else
+      SendSysMessage( who, "You have successfully created a trash can");
+      DestroyItem (deed);
+    endif
+
+endprogram
+
+function checkfortrashcans(place)
+
+    local stuff := ListItemsNearLocation( place.x, place.y,place.z,SEARCH_RANGE);
+
+    foreach item in stuff
+	if( item.objtype = TRASH_BARREL )
+		return 1;
+	endif
+    endforeach
+
+    return 0;
+
+endfunction

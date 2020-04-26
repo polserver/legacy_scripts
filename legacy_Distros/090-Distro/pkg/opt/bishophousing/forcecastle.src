@@ -1,0 +1,31 @@
+use uo;
+
+program forcecastle(who)
+
+	SendSysMessage(who, "Select location to force house to.");
+	local targ := targetcoordinates(who);
+	if (!targ)
+		SendSysMessage(who, "Aborted.");
+		return;
+	endif
+
+	SendSysMessage(who, "Select a deed to place.");
+	local thedeed := target(who);
+	if (!GetObjProperty(thedeed, "housetype") )
+		sendsysmessagE(who, "Aborted.");
+		return;
+	endif
+
+	SendSysMessage(who, "Select an open place to build the house.");
+	local openloc := targetcoordinates(who);
+	if (!openloc)
+		SendSysMessage(who, "Aborted.");
+		return;
+	endif
+
+	MoveCharacterToLocation(who, targ.x, targ.y, targ.z, MOVECHAR_FORCELOCATION);
+	local house := CreateMultiAtLocation( openloc.x, openloc.y, openloc.z, CInt( GetObjProperty(thedeed,"housetype") ) );
+	MoveCharacterToLocation(who, openloc.x, openloc.y, openloc.z, MOVECHAR_FORCELOCATION);
+	MoveItemToLocation(house, targ.x, targ.y, targ.z, MOVEITEM_FORCELOCATION);
+
+endprogram

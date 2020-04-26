@@ -1,0 +1,19 @@
+use uo;
+
+program textcmd_moblos( who )
+    SendSysMessage( who, "List hostiles of what?" );
+
+    local what := Target( who );
+    if (what)
+        local inlos := ListHostiles( what, 8000 );
+        if (len(inlos))
+            foreach mobile in inlos
+                print( mobile.name );
+                SendSysMessage( who, "Hostile: " + mobile.name );
+            endforeach
+            SendSysMessage( who, "done." );
+        else
+            SendSysMessage( who, "No mobiles found." );
+        endif
+    endif
+endprogram

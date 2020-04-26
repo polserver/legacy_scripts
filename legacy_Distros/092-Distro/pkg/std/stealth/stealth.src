@@ -1,0 +1,41 @@
+/////////////////////////////////////////////////////////////////////////////
+// stealth.src                                            
+//                                                        
+// TODO: just about everything.                           
+//
+// Created: Syzygy 19990429
+//                                                        
+/////////////////////////////////////////////////////////////////////////////
+
+use uo;
+
+include "include/client";
+
+program skill_stealth( chr )
+
+    if (GetSkill( chr, SKILLID_HIDING ) < 80)
+        PrintTextAbovePrivate( chr, "You are not good enough at Hiding to do that", chr );
+        return;
+    endif
+
+    if( !chr.hidden )
+        PrintTextAbovePrivate( chr, "You must be hidden to use stealth", chr );
+        return;
+    endif
+
+    // TODO: stealthsteps != 0 should probably no be allowed? (no re-stealthing)
+
+    // TODO: The difficulty should probably depend on nearby mobiles
+    if (CheckSkill( chr, SKILLID_STEALTH, -1, 10 ) > 0)
+            // TODO: make this distance a bit random
+        chr.stealthsteps := (GetSkill( chr, SKILLID_STEALTH ) / 10) + 1;
+        PrintTextAbovePrivate( chr, "You are now moving stealthily", chr );    
+    else
+        // hmm, could be interesting to just set stealthsteps to 0 - you don't
+        // know if it worked, then.
+        chr.hidden := 0;
+        PrintTextAbovePrivate( chr, "You have revealed yourself!", chr );    
+    endif
+
+endprogram
+

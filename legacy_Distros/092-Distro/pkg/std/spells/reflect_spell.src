@@ -1,0 +1,96 @@
+use os;
+use uo;
+include "include/client";
+set_critical(1);
+
+
+program do_reflect( parms )
+
+    local caster := parms[1];
+    local cast_on := parms[2];
+    local moving_effect := parms[3];
+    local static_effect := parms[4];
+    local speed:= parms[5];
+    local loop := parms[6];
+    local explode := parms[7];
+    local rawdamage := parms[8];	
+    local thedamage := parms[9];
+    local scriptname := parms[10];
+    local script_parms := parms[11];
+    local thetarget;
+    local reflected := 0;
+
+
+if (GetObjProperty(cast_on, "mr") =  "1")  //target has MR on
+
+reflected := 1;
+SetObjProperty(cast_on, "mr", ""); 
+if (moving_effect > 0)             //moving effect
+        PlayMovingEffect(caster, cast_on, moving_effect, speed, loop, 0);
+        sleep(2);
+        if (GetObjProperty( caster, "mr") = "1") //caster has MR too
+                SetObjProperty(caster, "mr","");
+                SendSysmessage (caster, "Your magic reflect spell saved you!");
+                return;
+        else
+        SendSysmessage (caster, "The spell is reflected back to you!");
+        thetarget := caster;
+        PlayMovingEffect(cast_on, caster, moving_effect, speed, loop, explode);
+        endif      //caster w/MR
+
+else //object_centered effect
+
+ 
+PlayObjectCenteredEffect(caster, static_effect, speed, loop);
+//print ( "played effect ");
+thetarget := caster;
+
+
+endif //moving/object-centered effect
+else  //he doesn't have MR on
+
+if (moving_effect > 0)
+PlayMovingEffect(caster, cast_on, moving_effect, speed, loop, explode);
+
+else
+PlayObjectCenteredEffect(cast_on, static_effect, speed, loop);
+endif        
+thetarget := cast_on;
+endif
+
+    local magery := GetSkill(caster, SKILLID_MAGERY);
+
+if (thedamage > 0 )
+    if (checkskill(thetarget, SKILLID_MAGICRESISTANCE, magery, Cint(magery * 2 ) ))
+        Damage( cast_on, thedamage /2); 
+     else
+        damage(cast_on, thedamage);
+    endif
+     
+endif
+
+
+if (rawdamage > 0)
+        ApplyRawDamage(thetarget, Cint(rawdamage));
+   
+endif
+
+if (scriptname > "" )
+ if (script_parms > "")
+ if (reflected = 1)
+        local thetemp;
+        script_parms[1] := thetemp;
+        //print ("script_parms[1] = " + script_parms[1]);
+        script_parms[1]  := script_parms[2] ;
+         //print ("script_parms[2] = " + script_parms[2]);
+        script_parms[2] := thetemp;
+         //print ("script_parms[3] = " + script_parms[3]);
+  endif
+
+ start_script( scriptname, script_parms ); 
+else
+ start_script(scriptname);
+endif
+endif
+
+endprogram

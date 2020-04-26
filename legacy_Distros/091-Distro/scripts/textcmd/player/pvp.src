@@ -1,0 +1,15 @@
+use uo;
+
+program ispvp(who)
+
+foreach person in ListMobilesNearLocationEx( who.x,who.y,who.z, 20, 0x01 )
+        if (!person.npctemplate)
+                if (getobjproperty(person, "pvp") = "no")
+                        PrintTextAbovePrivate(person, "PvP-", who);
+                else
+                        printtextaboveprivate(person, "*OK*", who);
+                endif
+        endif
+endforeach
+
+endprogram

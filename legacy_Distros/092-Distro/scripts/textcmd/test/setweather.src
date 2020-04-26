@@ -1,0 +1,15 @@
+use uo;
+
+program setweather( who, params )
+    params := SplitWords( params );
+
+    var res := 
+      SetRegionWeatherLevel( params[1],       // region name
+                           CInt(params[2]),   // weather type
+                           CInt(params[3]),   // severity
+                           CInt(params[4]),   // aux
+                           CInt(params[5]) ); // lightoverride
+    if (!res)
+        SendSysMessage( who, "Error: " + res.errortext );
+    endif
+endprogram

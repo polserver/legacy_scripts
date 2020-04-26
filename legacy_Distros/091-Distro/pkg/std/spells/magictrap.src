@@ -1,0 +1,68 @@
+// Magic trap and Magic untrap  version .4
+// by Zulu (zulu@zuluhotel.com)   May 5, 2000
+
+use os;
+use uo;
+use util;
+
+include "include/client";
+include "include/spellrestrictions";
+include "include/checkcity";
+
+program cast_strength( parms )
+
+	local circle := 2;
+	local caster;
+	local cast_on;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_on := parms[3];
+	else
+		caster := parms;
+		cast_on := CanTargetThing(caster, circle, TGTOPT_HARMFUL + TGTOPT_CHECK_LOS );
+		if (!cast_on)
+			return;
+		endif
+	endif
+
+	if (cast_on.usescript=":traps:traps")
+		SendSysMessage(caster,"That is already trapped!");
+		return;
+	endif
+
+	if ((cast_on.multi) or (GetObjProperty(cast_on,"houseserial")) or (GetObjProperty(cast_on,"house_serial")))
+		SendSysmessage(caster, "That cannot be magic trapped!");
+		playlightningbolteffect(caster);
+		return;
+	endif
+
+	if (cast_on.locked)
+		SendSysMessage(caster,"That cannot be trapped while locked!");
+		return;
+	endif
+
+	if (((cast_on.graphic<=0x9ab) and (cast_on.graphic>=0x9a8)) or ((cast_on.graphic<=0xe43) and (cast_on.graphic>=0xe3c)) or ((cast_on.graphic<=0xe80) and (cast_on.graphic>=0xe7c)))
+
+	local magery := GetSkill(caster, SKILLID_MAGERY);
+	local trapstr := cint(magery/20);
+
+	if(checkcity(cast_on)) trapstr:=(trapstr/2); endif
+	if(trapstr<1) trapstr:=1; endif
+	if(trapstr>5) trapstr:=5; endif
+
+	if(randomint(100) > (magery/2))
+	PlaySoundEffect(caster, SFX_SPELL_MAGIC_TRAP);
+	setobjproperty(cast_on, "trap_strength", randomint(trapstr) + 1);
+	setobjproperty(cast_on, "trap_type", cstr(randomint(3) + 1));
+	cast_on.usescript := ":traps:traps";
+	else
+	PlaySoundEffect(caster, SFX_236);
+	SendSysmessage(caster, "You failed at trapping the container!");
+	endif
+
+	else
+	SendSysmessage(caster, "That cannot be magic trapped!");
+	endif
+
+endprogram

@@ -1,0 +1,20 @@
+//ver 0.43
+//spawn rune create script
+//broken
+use uo;
+use os;
+use util;
+
+  
+program create_spawnr( item )
+syslog("teste gbsfsdf ");
+
+//find a gm near to set up the rune
+foreach char in ListMobilesNearLocation(item.x, item.y, item.z, 20)
+	syslog("cato 1" + char.name);
+	if (char.cmdlevel > 2)
+		syslog("acho");
+	endif
+endforeach
+syslog("hell sdsdf");
+endprogram

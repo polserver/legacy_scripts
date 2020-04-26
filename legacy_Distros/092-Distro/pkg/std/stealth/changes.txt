@@ -1,0 +1,5 @@
+std-stealth (POL076)
+====================
+    Verified ready for release
+    First packaged version
+    - Syzygy <syzygy@pobox.com> 19990705

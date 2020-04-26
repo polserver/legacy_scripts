@@ -1,0 +1,13 @@
+use uo;
+
+program teleto(who)
+
+local what:= target(who);
+SendSysmessage(who, "Move where?");
+local where := targetcoordinates(who);
+
+if (where)
+        movecharactertolocation(what, where.x, where.y, where.z);
+endif
+
+endprogram

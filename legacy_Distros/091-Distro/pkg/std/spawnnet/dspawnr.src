@@ -1,0 +1,14 @@
+//ver 0.9.4
+//spawn rune destroy script
+//find and destroy all creatures on a box
+
+//TODO: redo it.
+use os;
+use uo;
+include "spawnnet";
+
+program dspawnr( item )
+
+    ResetSpawn( item, 1 );
+
+endprogram

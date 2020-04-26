@@ -1,0 +1,118 @@
+//////////////////////////////////////////////////////////
+//detect_hidden.src                                     //
+//                                                      //
+//Finds and reveals hidden players in the area if:      //
+//                                                      //
+// * The hider is in range (determined by your skill)   //
+// * You pass a skill check using the hider's skill     //
+//   as the difficulty                                  //
+//                                                      //
+//Finds (and shows) Trapped objects if:                 //
+//                                                      //
+// * It is in range                                     //
+// * It has a trapped prop                              //
+// * You pass a skill check                             //
+//                                                      //
+// Author: Racalac, modified 4/16/99                    //
+//////////////////////////////////////////////////////////
+
+use uo;
+use cfgfile;
+
+include "include/client";
+Include "include/listex";
+include "include/skillpoints";
+global thepoints;
+global item_cfg;
+
+Const TRAP := "hiddentrap";
+
+program detect_hidden ( detective )
+    thepoints := get_default_points(SKILLID_DETECTINGHIDDEN );
+    item_cfg := ReadConfigFile( "::itemdesc" );
+    local range := getDetectRange ( GetSkill( detective , SKILLID_DETECTINGHIDDEN  ) );
+    //Print(range);
+    local hiders := ListMobilesNearLocationEx( detective.x , detective.y , detective.z , range , LIST_HIDDEN );
+    local items  := ListItemsNearLocation( detective.x , detective.y , detective.z , range );
+    local elem;
+    local data;
+    local prop;
+    local dtct;
+    local skil;
+
+    local foundany := 0;
+    foreach mobile in hiders
+        // Print( mobile.name );
+        if( Found( detective ,  mobile) )     
+            mobile.hidden := 0;
+            foundany := 1;
+            PrintTextAbovePrivate( mobile , "You have been discovered!" , mobile );
+            PrintTextAbovePrivate( mobile , "Found someone!!" , detective );
+        endif
+    endforeach
+    
+    if (!foundany)
+        SendSysmessage( detective , "You didn't find anyone." );
+    endif
+
+    foreach item in items
+	 elem := FindConfigElem( item_cfg, item.objtype );
+         data := GetConfigString( elem, "WalkOnScript" );
+         prop := GetObjProperty(item,"trap_type");
+	 dtct := getObjProperty(item, "trapped");
+
+	 if( dtct )
+	    skil := GetSkill( detective, SKILLID_DETECTINGHIDDEN );
+	    if (skil >= 15 )
+	    PrintTextAbovePrivate( item , "Trapped" , detective);
+	    endif
+         elseif( data = TRAP)
+            if(CheckSkill( detective, SKILLID_DETECTINGHIDDEN, 20, thepoints ))
+	    PrintTextAbovePrivate( item , "Trap" , detective );
+            SetObjProperty( item , "trapped" , 1 );
+	    endif
+         elseif( prop )
+            if(CheckSkill( detective, SKILLID_DETECTINGHIDDEN, 20, thepoints ))
+	    PrintTextAbovePrivate( item , "Trapped" , detective);
+	    SetObjProperty( item , "trapped" , 1 );
+	    endif
+         endif
+
+
+    endforeach
+
+endprogram
+
+
+function Found ( finder , hider ) //FIXME: should not be 100% certain to find a hider if your skill is greater
+    local hide_skill := GetSkill( hider, SKILLID_HIDING );
+    if (CheckSkill( finder, SKILLID_DETECTINGHIDDEN, hide_skill, thepoints ) )
+        //Print( " found yu " );
+        return 1;
+    else
+        //Print( " i suk " );
+        return 0;
+    endif
+endfunction
+
+function getDetectRange( skill )
+    if( skill >= 100 )
+        return 10;
+    elseif( skill >= 90 )
+        return 9;
+    elseif( skill >= 80 )
+        return 7;
+    elseif( skill >= 70 )
+        return 6;
+    elseif( skill >= 60 )
+        return 5;
+    elseif( skill >= 50 )
+        return 4;
+    elseif( skill >= 30 )
+        return 3;
+    elseif( skill >= 10 )
+        return 2;
+    else
+        return 1;
+    endif
+endfunction

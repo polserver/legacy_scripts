@@ -1,0 +1,94 @@
+Housing Package (zulu@zuluhotel.com)
+updated May 23
+
+This is based on the works of other people.
+
+*** NOTES ***
+If you install client.exe version 2, then you do not need the houseaddon.zip file.  This is only for people that have not upgraded their UO.
+
+** Features **
+added a new house
+fixed the disappearing doors
+fixed east secure container
+plus tons of other new fixes
+
+items can be locked / unlocked inside the house
+items can be locked / unlocked outside, on house property like patios
+players can add/delete secure containers
+players can add friends so they can have access to the secure containers
+players can destroy the house and get a deed to rebuild/to sell
+players can rekey doors
+change the name of the house
+
+
+** Installing **
+append the mrcspawn.txt to the /pol/config/mrcspawn.cfg
+(making sure the deeds match)
+
+1 - back up the old /pol/std/housing and empty the directory.
+2 - copy these files into the /pol/std/housing
+3 - load /pol/data/multis.txt
+	replace 0x4000 with 0x4008
+	replace 0x4001 with 0x4009
+	replace 0x4002 with 0x400A
+	replace 0x4003 with 0x400B
+4 - load /pol/data/mrcspawn.cfg
+	find and delete the item 0x6027
+5 - load /pol/pkg/std/boating/itemdesc.cfg
+	change the line
+	    cprop   shiptype i16384
+	to
+	    cprop   shiptype i16392
+6 - copy the multi.idx and multi.mul to your UO directory and the server directory
+	make sure you have a back up.
+
+
+
+** player commands **
+i wish to lock this down
+		You can then click on any item and no one can move it.
+
+i wish to unlock this 
+		You can then click on any item that is locked and this will unlock it.
+
+
+** Secure Container Commands **
+i wish to add secure east
+		This will give you a secure container facing east/west. Only the house owner and any friends can open it. 
+
+i wish to add secure south
+		This will give you a secure container facing east/west. Only the house owner and any friends can open it. 
+
+i wish to delete secure
+		This will allow you to delete a secure container. 
+
+
+** Friends Commands **
+
+By adding a friend they will be able use the secure containers. You an add up to a total of 20 friends.
+
+i wish to add friend
+i wish to delete friend
+i wish to show friend list
+
+
+*** doors not working??? ***
+
+You need to add these items to the /doors/itemdesc.cfg package
+
+Door 0x067B
+{
+    xmod    +1
+    ymod    -1
+    script  door
+    doortype metal
+}
+
+Door 0x06ab
+{
+    xmod +1
+    ymod -1
+    script door
+    doortype wood
+}
+

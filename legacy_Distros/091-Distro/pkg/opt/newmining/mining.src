@@ -1,0 +1,350 @@
+/////////////////
+// mining.src
+//
+// By using a shovel or pickaxe on cave tile this script allows
+// the harvesting of ore. Special reagents or colored ore are 
+// possible to find. You get more ore per dig the higher your
+// skill is. 
+//
+// If a shovel is used on a swamp tile, clay is digged up and
+// can be used to make pots, jars, etc.
+//
+// Authors: DreamWeaver: 
+//               original
+//          Racalac:
+//               5/8/99 colored ore, resource use
+//          Puck:
+//               04/25/00 use of oretable.cfg
+/////////////////
+
+
+use uo;
+use cfgfile;
+use os;
+use util;
+include "include/client";
+include "include/objtype";
+include "include/utility";
+include "include/dist";
+const UOBJ_SCOOP := 0x10e7;
+Const UACTION_PICK := 0x0B;
+
+Global oretable := {};
+
+program use_picktool( character , tool )
+  local theroll;
+  local numhacks := 0;
+  SendSysmessage( character , "Select a place to mine." );
+  Local use_on := Targetcoordinates( character);
+  if (!use_on)
+    return;
+  endif
+  getoretable(character);
+  local distt := coordist( character.x, character.y, use_on.x, use_on.y );
+  if(distt > 2)
+    SendSysmessage(character,"That is too far away");
+    return;
+  endif
+  local info := GetMapInfo(use_on.x, use_on.y);
+  local static := use_on.objtype;
+  local tdiff;
+  local sx := character.x;
+  local sy := character.y;
+  local sz := character.z;
+  SendSysMessage (character, "You start mining");
+  local retval := is_swamp(info.landtile,static);
+  if(retval > 0)
+    case(retval)
+      1: digforclay(character,use_on,info.landtile, tool);
+      2: digforclay(character,use_on,static, tool);
+    endcase
+  elseif(is_minable(info.landtile, use_on.objtype) = 1) 
+	if(is_sand(info.landtile))
+      digforsand(character,use_on,info, tool);
+    else
+      mineforore(character,use_on,info, tool);
+	endif
+    sleep(1);
+    numhacks := randomint(35);
+    if(((RandomInt(100)+25) < numhacks) and (CheckSkill(character, SKILLID_MINING, 90,10)))
+	  do_something(character, tool);
+    endif
+  else 
+    sendsysmessage(character,"you cannot mine that.");
+  endif
+endprogram
+
+function getstuff (character, location , info)
+  local skill := Getskill( character , SKILLID_MINING );
+  local i;
+  local mex := character.x;
+  local mey := character.y;
+  local numwhacks := RandomInt(4);
+  for( i := 0; i < numwhacks+1 ; i := i + 1 )
+	PerformAction(character, ANIM_ATTACK_1HAND_DOWN);
+	PlaySoundEffect(character, 0x126);
+    sleepms(2200);
+  endfor
+  if( character.x != mex or character.y != mey )
+    SendSysmessage( character, "Cancelled." );
+    return;
+  endif
+  Local ResourceSum := 0;
+  Local MaxRes := 0;
+  foreach ore in oretable
+	ResourceSum := ResourceSum + ore.Resource;
+	if (ore.Resource > MaxRes)
+	  MaxRes := ore.Resource;
+	endif
+  endforeach
+  local diffi := GetHarvestDifficulty( "ore" , location.x , location.y , info.landtile );
+  if(!diffi)
+    SendSysmessage(character, "There is no ore here to mine.");
+	return 1;
+  endif
+  local index := -1;
+  local SuccessTable := {};
+  foreach ore in oretable
+	index := index + 1;
+	Local Difficulty := diffi;
+	if(skill < ore.MinSkill)
+	  continue;
+	endif
+	if(diffi < ore.MinSkill)
+	  Difficulty := ore.MinSkill;
+	endif 
+	if(CheckSkill( character, SKILLID_MINING, Difficulty , 0 ))
+	  local n;
+	  for(n:=1; n <= (ore.Resource); n:=n+1)
+	    local succlen:= len(SuccessTable)+1;
+	    SuccessTable[succlen] := index;
+	  endfor
+	endif  
+  endforeach	
+  if(len(SuccessTable) = 0)
+	SendSysmessage(character, "You fail to find any ore.");
+    return 1;
+  endif
+  local stlen := len(SuccessTable);
+  local rnd := randomint(stlen)+1;
+  local idx := SuccessTable[rnd];
+  local ore := oretable[idx+1];
+  local rawskill := GetRawSkill( character, SKILLID_MINING);
+  AwardRawPoints(character, SKILLID_MINING, ore.PointValue);
+  local amount;
+  local amountStr := CStr(ore.Amount);
+  local pos := find(amountStr,"-",1);
+  if(pos)
+	local s := amountStr;	  
+	local temp := s[1,pos-1];
+	local mini := CInt(temp);
+	temp := s[pos+1,len(s)-pos];
+	local maxi := CInt(temp);
+	amount := randomint(maxi-mini+1)+mini;  
+  else
+	amount := CInt(ore.Amount);
+  endif
+  local num := HarvestResource( "ore" , location.x , location.y , 1 , amount );
+  CreateItemInBackpack(character, ore.ID, num );
+  local SuccMsg := ore.SuccMsg;
+  pos := find(SuccMsg,"#",1);
+  if (pos)
+	local s := CStr(SuccMsg);	  
+	local prestr := s[1,pos-1];
+	local poststr := s[pos+1,len(s)-pos];
+	s := num;
+	if (prestr)
+	  s := prestr + s;
+	endif
+	if (poststr)
+	  s := s + poststr;
+	endif
+	SuccMsg := s;
+  endif
+  SendSysmessage(character, SuccMsg);
+  performaction(character, UACTION_PICK);
+  return 0;   
+endfunction
+
+function is_swamp (theobjtype,static)
+  if(((theobjtype >= 0x240) and (theobjtype <= 0x250)) or ((theobjtype >= 0x3d65) and (theobjtype <= 0x3ef0)))
+    return 1;
+  elseif((static >= 0x31F4) and (static <= 0x3285))
+    return 2;
+  else
+    return 0;
+  endif
+endfunction
+
+function SubtractResourceAmount( use_on, theamount)
+    return;
+endfunction
+
+function CheckResourceAmount(location)
+    return randomint(3);
+endfunction
+
+function is_minable(theobj, othertype)
+  if(((theobj >= 0xe2) and (theobj <= 0xe7)) or ((theobj >= 0xf3) and (theobj <= 0xf7)) or ((theobj >=
+    0x104) and (theobj <= 0x107)) or ((theobj >= 0x110) and (theobj <= 0x113)) or ((theobj >= 0x122) and (theobj <=
+    0x125)) or ((theobj >= 0x1d3) and (theobj <= 0x1da)) or ((theobj >= 0x21f) and (theobj <= 0x230)) or
+    ((theobj >= 0x232) and (theobj <= 0x23B)) or ((theobj >= 0x6cd) and (theobj <=0x6d1)) or ((theobj >= 0x6da) and
+    (theobj <= 0x6dd)) or ((theobj >= 0x6eb) and (theobj <= 0x6fe)) or ((theobj >= 0x70d) and (theobj <= 0x714)) or
+    ((theobj >= 0x71d) and (theobj <= 0x720)) or ((theobj >= 0x72b) and (theobj <= 0x732)) or ((theobj >= 0x73b) and
+    (theobj <= 0x73e)) or ((theobj >= 0x749) and (theobj <= 0x750)) or ((theobj >= 0x759) and (theobj <= 0x75c)) )
+    return 1;
+  elseif( (othertype >= 0x053b) and (othertype <= 0x0553) and (othertype != 0x0550 ) )
+    return 1;
+  elseif( (theobj = 0xDF) or (theobj = 0x75) or (theobj = 0xDE) )
+    return 1;
+  else
+    return 0;
+  endif
+endfunction
+
+function is_sand(theobj)
+  if((theobj >= 0x0016  ) and (theobj <=  0x004b  ) or  (theobj >= 0x011e  ) and (theobj <= 0x012d   ) or
+    (theobj >=  0x0192 ) and (theobj <= 0x01ab   ) or  (theobj >= 0x01b9  ) and (theobj <= 0x01d1   ) or
+    (theobj >= 0x0282  ) and (theobj <=  0x0291  ) or  (theobj >= 0x03b7  ) and (theobj <=  0x03ca  ) or
+    (theobj >= 0x064b  ) and (theobj <= 0x0672   ) )
+    return 1;
+  else
+    return 0;
+  endif
+endfunction
+
+function digforclay(character,use_on,landtile, tool)
+  if(tool.objtype !=UOBJ_SCOOP && tool.objtype != UOBJ_SHOVEL)
+    sendsysmessage(character, "You can only use scoops or shovels to dig for clay");
+    return;
+  endif
+  local tdiff := GetHarvestDifficulty( "clay", use_on.x, use_on.y, landtile);
+  if(CheckSkill(character, SKILLID_MINING, tdiff, 10))
+    local theamount;
+    local theroll := randomint(10) + 1;
+    local clay_amount := HarvestResource( "clay" , use_on.x , use_on.y , 1 ,2);
+    if(clay_amount = 0)
+      SendSysmessage(character, "There's no clay here.");
+      return 1;
+    elseif(clay_amount < 2)
+      theamount := clay_amount;
+    else
+      theamount := 2;
+    endif
+    local thecntr;
+    for(thecntr := 1; thecntr <= theamount; thecntr := thecntr + 1)
+      local theclay :=CreateItemInBackpack(character, UOBJ_CLAY, 1);
+      local ItemName := GetAmount(theclay) + "Clay Ingots";
+      Setname (theclay, ItemName);
+    endfor
+	performaction(character, UACTION_PICK);
+	PlaySoundEffect(character, SFX_50);            
+    SendSysmessage(character, "You put some clay in your backpack");
+  else
+    SendSysmessage (character, "You fail to find any clay");
+  endif
+  return 0;
+endfunction
+
+function digforsand(character,use_on,info, tool)
+  if(tool.objtype !=UOBJ_SCOOP && tool.objtype != UOBJ_SHOVEL)
+    sendsysmessage(character, "You can only use scoops or shovels to dig for sand");
+    return 0;
+  endif
+  local tdiff := GetHarvestDifficulty( "sand", use_on.x , use_on.y , info.landtile );
+    performaction(character, UACTION_PICK);
+    PlaySoundEffect(character, SFX_HAMMER); 
+  if(CheckSkill( character, SKILLID_MINING,tdiff  , 10))
+    local sandamount := HarvestResource( "sand" , use_on.x , use_on.y , 1 , 2 );
+    local thecntr;
+    for(thecntr := 1; thecntr <= sandamount; thecntr := thecntr + 1)
+      local theclay :=CreateItemInBackpack(character, UOBJ_SAND, 1);
+      performaction(character, UACTION_PICK);
+      sleep(1);
+      local ItemName := GetAmount(theclay) + " Sand";
+      Setname (theclay, ItemName);
+    endfor
+    performaction(character, UACTION_PICK);
+    PlaySoundEffect(character, SFX_50); 
+    return 0;
+  else
+   SendSysmessage(character, "You fail to find any sand");
+   return 0;
+ endif
+endfunction
+
+function mineforore(character,use_on,info, tool)
+  if(tool.objtype = UOBJ_SCOOP or tool.objtype =  UOBJ_SHOVEL)
+    sendsysmessage(character, "You need a pick to mine ore!");
+    return;
+  endif
+  if(CheckSkill( character, SKILLID_MINING, -1, 30))
+    return GetStuff(character, use_on , info); 
+  else
+    SendSysmessage(character, "You cannot prospect any ore.");
+    return;
+  endif
+endfunction
+
+function do_something(character, tool )
+  local tnum := RandomInt(5);
+  local it;
+  case (tnum)
+    0: it := createnpcfromtemplate("earthelemental", character.x -1 , character.y, character.z);
+	   if(!it.errortext)
+         SendSysmessage(character, "You attract the attention of an earth elemental");
+       endif
+    1: it := createnpcfromtemplate("slime", character.x -1, character.y, character.z);
+	   if (!it.errortext)
+		 SendSysmessage(character, "A slime oozes over to see what you're doing");  
+	   endif
+    2: it := CreateIteminContainer(character.backpack,0x6003,1);
+	   SendSysMessage(character,"You discover a tattered old map!");
+    3: it := CreateIteminContainer(character.backpack,0x0F25,1);
+	   sendsysmessage(character, "You find a chunk of fossilized sap!");
+    4: sendsysmessage(character, "Oh no, your tool breaks!");
+	   DestroyItem (tool);
+  endcase
+endfunction
+
+function getoretable(character)
+  Local ore array;
+  Local ingot;
+  ore.+ID;
+  ore.+Amount;
+  ore.+MinSkill;
+  ore.+PointValue;
+  ore.+Resource;
+  ore.+SuccMsg;
+  Local config := ReadConfigFile("oretable");
+  Local itemdesc := ReadConfigFile("itemdesc");
+  Local maxKey := GetConfigMaxIntKey(config);
+  Local Key;
+  for( Key := 0; Key <= maxKey; Key := Key + 1)
+	local elem := config[Key];
+	ore.ID := elem.ID;
+    ore.Amount := elem.Amount;
+    ore.MinSkill := elem.MinSkill;
+    ore.PointValue := elem.PointValue;
+    ore.Resource := elem.Resource;
+    ore.SuccMsg := elem.SuccMsg;
+	local pos := find(ore.SuccMsg, "$", 1);
+  	if(pos)
+	  Local Item := FindConfigElem(itemdesc, ore.ID); 	    
+	  Local ItemName := CStr(Item.Name);
+	  local s := CStr(ore.SuccMsg);	  
+	  local prestr := s[1,pos-1];
+	  local poststr := s[pos+1,len(s)-pos];
+	  s := ItemName;
+	  if (prestr)
+	    s := prestr + s;
+	  endif
+	  if (poststr)
+	    s := s + poststr;
+	  endif
+	  ore.SuccMsg := s;
+    endif
+	local oreindex := len(oretable)+1;
+	oretable[oreindex] := ore;
+  endfor
+endfunction

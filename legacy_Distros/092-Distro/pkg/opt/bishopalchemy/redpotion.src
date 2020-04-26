@@ -1,0 +1,27 @@
+use os;
+use uo;
+use util;
+use cfgfile;
+include "drinkpotion";
+
+program drink_blue (who, potion)
+  EraseObjProperty(who, "IsMeditating");
+  if(potion.movable = 0)
+    SendSysMessage(who, "You cannot drink that.");
+    return;
+  endif
+  if(!checkifcandrink(who, "red"))
+    return;
+  endif
+  local potion_strength := get_potion_strength(potion);
+  if(potion_strength = 3)
+	who.stamina := who.maxstamina;
+  else
+	local heal_amount := RandomDiceRoll("5d6+3");
+    if((heal_amount + who.stamina)  > who.maxstamina)
+	  heal_amount := who.maxstamina - who.stamina;
+    endif
+	who.stamina := who.stamina + heal_amount;
+  endif
+  empty_bottle(who, potion);
+endprogram

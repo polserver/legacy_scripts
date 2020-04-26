@@ -1,0 +1,73 @@
+/////////////////////////////////////////////////////////////////////////////
+//  Dye System - version .4
+// Created by Zulu (zulu@cadvision.com) Jan 10, 2000
+// - Updated April 5, 2000
+//
+// to add items, load dyeitems.cfg
+//
+// item <object type>
+// {
+// player <cmd level>
+// }
+//
+/////////////////////////////////////////////////////////////////////////////
+
+use os;
+use uo;
+use cfgfile;
+
+Global dye_cfg :=ReadConfigFile( "dyeitems" );
+
+program dyecheck( who, dyetub )
+
+    ReserveItem(dyetub);
+
+    local element, allowdye :=10;
+    
+    SendSysMessage(who, "Select something to dye.");
+    
+    Local item := Target( who, TGTOPT_NOCHECK_LOS );
+
+    ReserveItem(item);
+
+    if (NOT Accessible(who, item))
+      SendSysmessage( who, "You cannot reach that!" );
+      Releaseitem(dyetub);
+      Releaseitem(item);
+      return;
+    endif
+
+    If (!item)
+      SendSysMessage(who, "Cancelled");
+      Releaseitem(dyetub);
+      Releaseitem(item);
+      return;
+    endif
+
+    if (!dye_cfg)
+      SendSysmessage (who, "Could not open dyeitems.cfg");
+      syslog( "Unable to open dyeitems.cfg" );
+      Releaseitem(dyetub);
+      Releaseitem(item);
+      return;
+    endif
+    
+    element :=FindConfigElem (dye_cfg, item.objtype);
+
+    if (element)
+      allowdye :=Cint(GetConfigInt(element, "player"));
+    else
+      allowdye := 4;
+    endif
+
+    If (who.cmdlevel>=allowdye)
+      item.color :=dyetub.color;
+      PlaySoundEffect( who, 0x241 );
+    else  
+      SendSysMessage(who, item.desc + " cannot be colored.");
+    endif
+
+    Releaseitem(dyetub);
+    Releaseitem(item);
+
+endprogram

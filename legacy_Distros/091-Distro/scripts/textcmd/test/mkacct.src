@@ -1,0 +1,16 @@
+use uo;
+
+program mkacct( who, params )
+    params := SplitWords( params );
+    if (len(params) = 2) 
+        params[3] := 1; 
+    endif
+
+    SendSysMessage( who, "Creating account " + params[1] );
+    var res := CreateAccount( params[1], params[2], CInt(params[3]) );
+    if (res)
+        SendSysMessage( who, "Account created" );
+    else
+        SendSysMessage( who, "Error creating account: " + res.errortext );
+    endif
+endprogram

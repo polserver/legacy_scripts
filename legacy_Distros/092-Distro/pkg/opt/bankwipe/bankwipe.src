@@ -1,0 +1,60 @@
+use os;
+use uo;
+
+program storagewipe()
+
+	local endnum, npctest, startnum := GetGlobalProperty("storagestart3");
+
+	if (!startnum)
+		startnum := 1;
+		SetGlobalProperty("storagestart3", startnum);
+	endif
+
+	npctest := CreateNpcFromTemplate( "banker", 5445, 1153, 0 );
+	endnum := npctest.serial;
+	RevokePrivilege( npctest, "invul" );
+	setobjproperty(npctest, "guardkill", 1);
+	Damage( npctest, 510 );
+
+	set_critical(0);
+
+	print("Wiping orphaned bank storage locations");
+
+	local i;
+	local acct, char, charserials := {};
+	foreach acctname in ListAccounts()
+		acct := FindAccount(acctname);
+		for (i := 1; i <= 5; i := i + 1)
+		char := acct.GetCharacter(i);
+		charserials.append( char.serial );
+		endfor
+	endforeach
+
+	local worldbank := FindStorageArea( "World Bank" );
+	local bankboxname;
+	local nuked := 0;
+	for (i := startnum; i < endnum; i:= i + 1)
+		bankboxname := "Bankbox of " + i;
+		if ( FindRootItemInStorageArea( worldbank, bankboxname ) )
+
+			sleepms(100);
+			if (i in charserials)
+				print( "Box " + i + " is safe!");
+			else
+				print( "Deleting box " + i + "!");
+				DestroyRootItemInStorageArea( worldbank, bankboxname );
+				nuked := nuked + 1;
+				sleep(1);
+			endif
+		endif
+		SetGlobalProperty("storagestart3", i);
+	endfor
+
+	if (i>=endnum)
+		EraseGlobalProperty("storagestart3");
+	endif
+
+	print("Wiped "+nuked+" bank boxes!");
+
+endprogram
+

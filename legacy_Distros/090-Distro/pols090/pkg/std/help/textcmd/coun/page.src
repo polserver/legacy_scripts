@@ -1,0 +1,235 @@
+use uo;
+use util;
+use os;
+
+
+global counpages := GetGlobalProperty("counpages");
+
+global layout := array(
+	"page 0",
+	"gumppic 40 80 5100", 
+	"gumppic 50 80 5101",
+	"gumppic 140 80 5101",
+	"gumppic 230 80 5101",
+	"gumppic 320 80 5101",
+	"gumppic 410 80 5101",
+	"gumppic 500 80 5101",
+	"gumppic 590 80 5102",
+	"gumppic 40 89 5103",
+	"gumppic 40 179 5103",
+	"gumppic 40 269 5103",
+	"gumppic 590 89 5105",
+	"gumppic 590 179 5105",
+	"gumppic 590 269 5105",
+	"gumppic 40 359 5106",
+	"gumppic 50 359 5107",
+	"gumppic 140 359 5107",
+	"gumppic 230 359 5107",
+	"gumppic 320 359 5107",
+	"gumppic 410 359 5107",
+	"gumppic 500 359 5107",
+	"gumppic 590 359 5108",
+	"gumppic 50 89 5104",
+	"gumppic 140 89 5104",
+	"gumppic 230 89 5104",
+	"gumppic 320 89 5104",
+	"gumppic 410 89 5104",
+	"gumppic 500 89 5104",
+	"gumppic 50 179 5104",
+	"gumppic 140 179 5104",
+	"gumppic 230 179 5104",
+	"gumppic 320 179 5104",
+	"gumppic 410 179 5104",
+	"gumppic 500 179 5104",
+	"gumppic 50 269 5104",
+	"gumppic 140 269 5104",
+	"gumppic 230 269 5104",
+	"gumppic 320 269 5104",
+	"gumppic 410 269 5104",
+	"gumppic 500 269 5104",
+	"text 205 85 0 0",
+	"text 50 105 0 1",
+	"text 70 140 500 2",
+	"text 50 140 500 3",
+	"button 170 105 208 209 1 0 1021",
+	"button 225 110 2117 2118 0 1 0",
+	"button 255 110 2117 2118 0 2 0",
+	"button 285 110 2117 2118 0 3 0",
+	"button 315 110 2117 2118 0 4 0",
+	"button 345 110 2117 2118 0 5 0",
+	"button 375 110 2117 2118 0 6 0",
+	"button 405 110 2117 2118 0 7 0",
+	"button 445 110 2117 2118 0 8 0",
+	"button 475 110 2117 2118 0 9 0",
+	"button 505 110 2117 2118 0 10 0",
+
+);
+
+global data := array(  
+	"Counselor Page Menu, select an option",
+	"Delete all pages",
+	"D",
+	"G",
+);
+
+
+
+program textcmd_counpage( who )
+
+//all text variables, for sure need better naming and a shrink
+local i;
+local loffset;
+local toffset;
+local pagina := 1;
+local posicao := 1;
+local offset := 55;
+local lnum;
+local bnum := 1;
+local tnum := 4;
+local fboffset;
+local sboffset;
+local ftextoffset;
+local stextoffset;
+local dataoffset := 5;
+local cchar;
+local cchardata;
+local pagenum := (counpages.size()/2);
+
+for(i:=0; i<pagenum; i:=i+1)
+
+//creates the header to all pages
+if (posicao = 1)
+	layout[offset] := cstr("page " + pagina);
+	offset := offset +1;
+	pagina := pagina +1;
+endif
+
+//first button layout
+fboffset := cstr(140 + posicao*20);
+layout[offset] := cstr( "button 50 " + fboffset + " 2361 2362 1 0 " + cstr(bnum));
+
+offset := cint(offset+1);
+bnum := cint(bnum+1);
+
+
+//second button layout
+sboffset := cstr(140 + posicao*20);
+layout[offset] := cstr( "button 70 " + sboffset + " 2361 2362 1 0 " + cstr(bnum));
+
+offset := cint(offset+1);
+bnum := cint(bnum+1);
+
+
+//first text entry
+ftextoffset := cstr(135 + posicao*20);
+layout[offset] := cstr( "text 95 " + ftextoffset + " 0 " + tnum );
+
+offset := cint(offset+1);
+tnum := tnum + 1;
+
+//second  text entry
+stextoffset := cstr(135 + posicao*20);
+layout[offset] := cstr( "text 190 " + stextoffset + " 0 " + tnum);
+
+offset := cint(offset+1);
+tnum := tnum + 1;
+
+//import data from gmpages[] to data[]
+
+cchar := SystemFindObjectBySerial( cint(counpages[dataoffset-4]) );
+
+if(!cchar)
+	cchardata := cstr( "Off Line");
+else
+	cchardata := fixname(cchar.name);
+endif
+
+data[dataoffset] := cstr(cchardata);
+dataoffset := dataoffset + 1;
+
+
+
+data[dataoffset] := cstr( counpages[dataoffset-4]);
+dataoffset := dataoffset + 1;
+
+//the position counter
+if (posicao < 10)
+	posicao := posicao+1;
+else
+	posicao := 1;
+endif
+
+endfor
+
+
+local box := SendDialogGump( who, layout, data );
+
+//local result := box[0];
+
+if (box[0] = 1021)
+	counpages.shrink(0);
+	SetGlobalProperty("counpages", counpages);
+	SendSysMessage(who, "All pages were deleted");
+	return;
+elseif (box[0] = 0)
+	sendSysMessage(who, "Cancelled");
+	return;
+endif
+
+if (mod(cint(box[0]), 2))
+	local char := SystemFindObjectBySerial( cint(counpages[box[0]]) );
+        if ( cchardata = "Off Line" );
+	sendSysMessage(who, "That person is off line");
+	else
+	MoveCharacterToLocation( who, cint(char.x), cint(char.y), cint(char.z) );
+	showflame(who);
+	sendSysMessage(who, "Going to " + char.name);
+	endif
+else
+	counpages.erase(cint((box[0]-1)));
+	counpages.erase(cint((box[0]-1)));
+	SetGlobalProperty( "counpages", counpages);
+	SendSysMessage(who, "Page Deleted");
+endif
+
+
+endprogram
+
+
+
+function mod(i,j)
+
+while(i>=j)
+i := i -j;
+endwhile
+return i;
+
+endfunction
+
+function showflame(who)
+  local coolflame;
+
+  if ((who.cmdlevel>3) and (who.concealed<>1))
+    coolflame := CreateItemAtLocation( who.x, who.y, who.z, 0x3709, 1 );
+    playsoundeffect(who, 0x208);
+    sleep(3);
+    destroyitem(coolflame);
+  endif
+
+endfunction
+
+function fixname(oldname)
+
+	local split := SplitWords( oldname ), i, newname :="";
+
+	for (i := 1; i <= 2; i := i + 1)
+	
+	if (split[i])
+	  newname := newname + split[i] + " ";
+        endif
+
+	endfor
+
+	return newname;
+
+endfunction

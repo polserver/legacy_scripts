@@ -1,0 +1,45 @@
+use npc;
+use uo;
+use basicio;
+use util;
+use basic;
+use cfgfile;
+
+
+global  cfg;
+global colors ;
+global num_colors ;
+
+program addgoloc(who)
+
+
+local where := targetcoordinates(who);
+local desc := RequestInput(who, who.backpack, "How would you like to refer to this location?" ); 
+
+
+local elemkey := lower(who.name) + " " + lower(desc);
+
+    local props:= array;
+    local prop:= array;
+    prop .+ pname;
+    prop .+ pvalue;
+
+    prop.pname := "x";
+    prop.pvalue := where.x;
+    props[1] := prop;
+
+    prop.pname := "y";
+    prop.pvalue := where.y;
+    props[2] := prop;
+
+    prop.pname := "z";
+    prop.pvalue := where.z;
+    props[3] := prop;
+
+    AppendConfigFileElem( "golocs", "goloc", elemkey, props );
+
+
+unloadconfigfile("golocs");
+
+endprogram
+

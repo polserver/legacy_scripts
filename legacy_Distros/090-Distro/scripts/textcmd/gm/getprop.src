@@ -1,0 +1,94 @@
+/////////////////////////////////////////////////////////////
+// GETPROP.SRC                                             //
+//                                                         //
+// Author: DC                                              //
+// Date: 2/14/99                                           //
+//                                                         //
+// Description: An GM text command that prints the value   //
+//		of the given inherent property. Note that  //
+//		mobiles have more props than items.        //
+//                                                         //
+// Syntax: .getprop <propname>                             //
+// program textcmd_getprop: params: character using        //
+//				    property name          //
+//                	    passes the given prop text to  //
+//			    GetObjctProp and prints the    //
+//			    result.                        //
+//                                                         //
+// function GetObjctProp: Matches the given text to one of //
+//			  the known properties of the      // 
+//			  targetted object. If the prop    //
+//			  name could not be matched, it    //
+//			  throws an uninitialized error    //
+//			  which the main program catches.  //
+//                                                         //
+// TODO: Give access to props accessable only with         //
+//	 "GetObjectProperty" function.                     //
+/////////////////////////////////////////////////////////////
+
+use uo;
+use basic;
+use os;
+
+//set_debug(1);
+
+program textcmd_getprop( who, propname )
+
+    SendSysMessage( who, "Select an object" );
+
+    local obj := Target( who );
+    if (obj)
+	local value;
+
+	    value := GetObjctProp( obj , propname );
+	    if(value = "<uninitialized object>")
+	        SendSysmessage( who , "Invalid prop name!" );
+	    elseif(value)
+		SendSysmessage( who , propname + ": " + value );
+	    else
+		SendSysmessage( who , "Invalid prop name!" );
+	    endif
+    else
+	SendSysMessage(who, "Cancelled.");
+    endif
+
+endprogram
+
+
+function GetObjctProp( obj , propname )
+
+    local retstr := 0;
+    case (propname)
+	"x": 		retstr := obj.x;
+	"y": 		retstr := obj.y;
+	"z": 		retstr := obj.z;
+	"objtype": 	retstr := hex(obj.objtype);
+	"color": 	retstr := obj.color;
+	"serial": 	retstr := hex(obj.serial);
+	"height": 	retstr := obj.height;
+	"facing": 	retstr := obj.facing;
+	"name":		retstr := obj.name;
+	"warmode":	retstr := obj.warmode;
+	"gender":	retstr := obj.gender;
+	"truecolor":	retstr := obj.truecolor;
+	"hp":		retstr := obj.hp;
+	"maxhp":	retstr := obj.maxhp;
+	"mana":		retstr := obj.mana;
+	"maxmana":	retstr := obj.maxmana;
+	"stamina":	retstr := obj.stamina;
+	"maxstamina":	retstr := obj.maxstamina;
+	"strength":	retstr := obj.strength;
+        "dexterity":	retstr := obj.dexterity;
+        "intelligence":	retstr := obj.intelligence;
+        "dead":		retstr := obj.dead;
+        "ar":		retstr := obj.ar;
+	"strength_mod":	retstr := obj.strength_mod;
+	"intelligence_mod": retstr := obj.intelligence_mod;
+	"dexterity_mod": retstr := obj.dexterity_mod;
+	"graphic":	retstr := obj.graphic;
+	default:
+    endcase
+
+    return Cstr(retstr);
+endfunction
+

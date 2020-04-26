@@ -1,0 +1,136 @@
+///////////////////////////////////
+//
+// created by Syzygy
+// modified 2/4/00 by Madman Across the Water
+//    madman@well.com
+// -replaces the std pkg doors, adding functionality for
+//   some of the gates that were impossible to make work
+//   under that code.
+// -Mostly a hack of the doors.src code with the changes.src
+//   code. Removes the core function calls door.open() and door.close()
+
+use cfgfile;
+use uo;
+use os;
+
+include "include/client";
+include "doors";
+include "include/objtype";
+
+Const KEYSTART := 0x100E;
+Const KEYEND := 0x1013;
+Const KEYRING := 0x1011;
+
+program use_door( chr , door)
+
+    local itemdesc := ReadConfigFile( "itemdesc" );
+    
+    local closesound;
+    local opensound;
+    case (itemdesc[door.objtype].doortype)
+        default:
+         "stone":
+                opensound := SFX_OPEN_METAL_DOOR;
+                closesound := SFX_CLOSE_METAL_DOOR;
+
+         "wood": 
+                opensound := SFX_OPEN_WOODEN_DOOR;
+                closesound := SFX_CLOSE_WOODEN_DOOR;
+         
+         "metal": 
+                opensound := SFX_OPEN_METAL_DOOR;
+                closesound := SFX_CLOSE_METAL_DOOR;
+    endcase
+
+    if ( IsLocked (chr, door) )
+        PrintTextAbovePrivate( door, "That is locked.", chr );
+    else
+        Detach();
+        set_critical(1);
+        local whenopened := ReadGameClock();
+        if (door.graphic != door.objtype)
+            PlaySoundEffect( door, closesound );
+            close_door(door);
+            EraseObjProperty( door, "#WhenOpened" );
+        else
+            SetObjProperty( door, "#WhenOpened", whenopened );
+            PlaySoundEffect( door, opensound );
+            open_door(door);
+            sleep( 10 );
+            if (GetObjProperty( door, "#WhenOpened" ) = whenopened)
+                PlaySoundEffect( door, closesound );
+                close_door(door);
+                EraseObjProperty( door, "#WhenOpened" );
+            endif
+        endif
+    endif
+endprogram
+
+function IsLocked(me,door)
+
+	local doorlockid;
+	local keylockid;
+	local insidering;
+
+	if (!door.locked)
+		return 0;
+	else
+		doorlockid := GetObjProperty( door, "lockid" );
+		if (!doorlockid)
+			return 1;
+		endif
+		local MyKeys := EnumerateItemsInContainer(me.backpack);
+		foreach key in MyKeys
+			if ( (key.objtype >= KEYSTART ) and (key.objtype <= KEYEND) and 
+			  (key.objtype != KEYRING ) )
+				keylockid := GetObjProperty( key, "lockid" );
+				if ( (keylockid) and (keylockid = doorlockid) )
+					PrintTextAbovePrivate( door, 
+					  "You quickly unlock, use and re-lock the door", me );
+					return 0;
+				endif
+			elseif (key.objtype = KEYRING)
+				insidering := FindMyPack(key.serial);
+				foreach otherkey in EnumerateItemsInContainer(insidering)
+					keylockid := GetObjProperty( otherkey, "lockid" );
+					if (keylockid = doorlockid)
+						PrintTextAbovePrivate( door, 
+					  	  "You quickly unlock, use and re-lock the door", me );
+						return 0;
+					endif
+				endforeach
+			endif
+		endforeach
+	endif
+				
+	return 1;				
+
+endfunction
+
+function OpenTamedStorageAreas()
+
+    local bank := FindStorageArea( "Tamed Storage" );
+    if (!bank)
+        bank := CreateStorageArea( "Tamed Storage" );
+    endif
+
+    return bank;
+
+endfunction
+
+function FindMyPack(myserial)
+
+    local mybank := OpenTamedStorageAreas();
+
+    local bank_obj_name := "Bankbox  " + hex(myserial);
+
+    local bankbox := FindRootItemInStorageArea( mybank, bank_obj_name );
+
+    if (!bankbox)
+        bankbox := CreateRootItemInStorageArea(mybank, bank_obj_name, UOBJ_BANKBOX  );
+
+    endif
+    
+    return bankbox;
+
+endfunction

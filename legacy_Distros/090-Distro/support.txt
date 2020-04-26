@@ -1,0 +1,44 @@
+Internet Support Sites:
+----------
+
+World Wide Web:
+---
+
+Official POL Homepage:
+ http://vulpin.burdell.org/pol/
+
+Official POL Messageboard - for general, setup, newbie, or bug questions
+ http://www.sitepowerup.com/mb/view.asp?BoardID=100058
+
+Official POL Script Forum - for scripting, editing, or customization questions
+ http://www.cyboards.com/servlets/CyBoard?I=15&A=view
+
+Onelist Scriptforum homepage - a must for any POL admin. Ask questions on the mailing list
+                               and browse their archive of user-created POL files
+ http://www.onelist.com/group/pol-scriptforum
+
+Dreamweaver's POL Tools page - nifty tools 
+ http://dreamweaver.dyndns.com/poltools.htm
+
+Paige's Player Run Shard Resources - shard listings and other good stuff
+ http://www.paigelore.com/prsr/
+
+InsideUO - every admin's friend
+ http://dkbush.cablenet-va.com/alazane/insideuo.html
+
+
+IRC:
+---
+ Official POL IRC channel:
+  irc.stratics.com  #POL
+
+
+E-Mail / Mailing lists:
+---
+ All can be found at www.onelist.com
+
+ POL-announce - moderated announcements for new POL versions
+ POL-devel-announce - moderated announcements for new POL test versions
+ POL-scriptforum - unmoederated discussions about POL and POL scripts
+ POL-devel - unmoderated discussions about the POL core exceutable
+ 

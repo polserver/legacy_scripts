@@ -1,0 +1,26 @@
+use os;
+use uo;
+use boat;
+
+
+program textcmd_moveboat( who, text )
+    local dir := CInt(text);
+    local second := text;
+    second := second[" ", 10];      // "direction count" - get space and following
+    second := second[2,9];          // skip past the space
+    local num := CInt(second);
+    if (!num)
+        num := 1;
+    endif
+
+    SendSysMessage( who, "Move what boat?" );
+
+    local boat := Target( who );
+    if (boat)
+        local i;
+        for( i := 0; i < num; i := i + 1 )
+             MoveBoat( boat, dir );
+             sleep(1);
+        endfor
+    endif
+endprogram

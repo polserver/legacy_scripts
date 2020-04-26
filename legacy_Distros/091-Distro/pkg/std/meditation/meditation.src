@@ -1,0 +1,73 @@
+use uo;
+use os;
+use cfgfile;
+
+include "include/client";
+
+program meditate( me )
+
+	if (me.warmode)
+		SendSysMessage( me, "You cannot meditate in warmode!" );
+		return;
+	endif
+
+	local circle:=1;
+	local cfg := readconfigfile(":combat:itemdesc");
+	foreach item in ListEquippedItems(me)
+      		if ((cfg[item.objtype].blockcircle) && 
+		(cfg[item.objtype].blockcircle <= circle) 
+		&& !cfg[item.objtype].errortext) 
+			SendSysmessage(me, "Your equipment prevents you from meditating!");
+                	return;
+		endif
+	endforeach
+
+	if (me.mana >= me.maxmana)
+		SendSysMessage( me, "You are at peace." );
+		return;
+	endif
+
+	local hp := me.hp;
+	local x := me.x;
+	local y := me.y;
+	local mana := me.mana;
+	local diff := me.maxmana - me.mana;
+	local points := 100;
+	if (diff < 200)
+		local points := diff;
+	endif
+
+	SendSysMessage(me,"You begin to meditate...");
+	PlaySoundEffect(me,0xf8);
+	sleep(5);
+
+	if ( (me.x != x) or (me.y !=y) or (me.hp != hp) or (me.mana >= me.maxmana) or (me.mana < mana) )
+			SendSysMessage(me,"You are unable to concentrate.");
+			PlaySoundEffect(me,0xf6);
+			return;
+	endif
+	
+	if ( CheckSkill(me,SKILLID_MEDITATION,diff,points) )
+		me.mana := me.mana + 5;
+		if (me.mana > me.maxmana)
+			me.mana := me.maxmana;
+			SendSysMessage(me,"You stop meditating");
+			PlaySoundEffect(me,0xf6);
+			return;
+		endif
+		PlaySoundEffect(me,0xfa);
+		
+		repeat
+			me.mana := me.mana + 1;
+			sleep(1);
+		until 	( (me.x != x) or (me.y !=y) or 
+		 	(me.hp != hp) or (me.mana >= me.maxmana)
+			or (me.mana < mana) );
+		
+		SendSysMessage(me,"You stop meditating");
+		PlaySoundEffect(me,0xf6);
+	else
+		SendSysMessage(me,"You are unable to concentrate.");
+	endif
+
+endprogram

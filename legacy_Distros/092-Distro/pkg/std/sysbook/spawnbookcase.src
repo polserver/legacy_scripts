@@ -1,0 +1,44 @@
+// Bookcase Spawning system  version .3
+// created December 6, 2000
+// updated December 8, 2000
+// designed by Syzygy, Zulu and Bishop Ebonhand
+
+use uo;
+use os;
+use util;
+
+include "checkcity";
+
+program spawnbookcase(bookcase)
+
+	if(CheckCity(bookcase)<>1) return; endif
+	if(bookcase.multi) return; endif
+	if(bookcase.movable) return; endif
+	if(bookcase.locked) return; endif
+	if(getobjproperty(bookcase,"houseserial")) return; endif
+	if(getobjproperty(bookcase,"lockeddown")) return; endif
+
+	addbooks(bookcase);
+
+endprogram
+
+function addbooks(bookcase)
+
+local count:=0,books:=enumerateitemsincontainer(bookcase),i,item,max:=randomdiceroll("1d4+2");
+
+if (books.size()<>0)
+  foreach book in books
+    if (book.objtype>=0x7903 && book.objtype<=0x792E)
+        count:=count+1;
+    endif
+  endforeach
+endif
+
+if (count<max)
+  for(i:=1;i<=(max-count);i:=i+1)
+	item:=createitemincontainer(bookcase,0x7903+randomint(44),1);
+	setobjproperty(item,"casecity",1);
+  endfor
+endif
+
+endfunction

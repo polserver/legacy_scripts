@@ -1,0 +1,6 @@
+use uo;
+
+program equiptest(who,item)
+
+	return 1;
+endprogram

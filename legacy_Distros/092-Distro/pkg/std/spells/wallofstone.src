@@ -1,0 +1,63 @@
+use os;
+use uo;
+use util;
+
+include "include/client";
+include "include/fields";
+include "include/objtype";	
+include "include/spellrestrictions";
+
+program stonewall( parms )
+
+	local circle := 3;
+	local caster;
+	local thetarget;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		thetarget := parms[3];
+	else
+		caster := parms;
+		thetarget := CanTargetArea(caster, circle);
+		if (!thetarget)
+			return;
+		endif
+	endif
+
+	local fields := {};
+	local duration;
+
+	local listeners := {};
+	local sufferers := {};
+
+	local x := thetarget.x;
+	local y := thetarget.y;
+	local z := thetarget.z;
+
+	case (get_direction (caster, x, y, z))
+		"north" : fields:= CreateNorthSouthField(caster, UOBJ_STONEWALL_NS, x, y, z, 5);
+		"south" : fields:= CreateNorthSouthField(caster, UOBJ_STONEWALL_NS, x, y, z, 5);
+		"east"  : fields:= CreateEastWestField(caster, UOBJ_STONEWALL_EW, x, y, z, 5);
+		"west"  : fields:= CreateEastWestField(caster, UOBJ_STONEWALL_EW, x, y, z, 5);
+		default:  
+			case (randomint(2))
+				0: fields:= CreateNorthSouthField(caster, UOBJ_STONEWALL_NS, x, y, z, 5);
+        	  		1: fields:= CreateEastWestField(caster, UOBJ_STONEWALL_EW, x, y, z, 5);
+			endcase
+	endcase
+	
+	detach();
+	duration := Cint(GetSkill( caster, SKILLID_MAGERY ) ) * 3;
+
+	local i;
+	for (i := 1; i <= 5; i := i + 1)
+        	PlaySoundEffect(fields[i], SFX_SPELL_WALL_OF_STONE);
+	endfor        
+        
+	sleep(duration);
+
+	foreach fieldpart in fields
+        	DestroyItem(fieldpart);
+	endforeach
+
+endprogram

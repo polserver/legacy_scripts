@@ -1,0 +1,76 @@
+use uo;
+use util;
+use os;
+use cfgfile;
+include "include/skillpoints";
+include "include/client";
+
+global points := get_default_points(SKILLID_MAGICRESISTANCE );
+program field_control( item )
+  local creater := getobjproperty(item, "creater");
+  local boss := Systemfindobjectbyserial(cint(creater));
+  local fieldstrength;
+  if (boss)
+    SetScriptController(boss);
+    fieldstrength := (getskill(boss, 25)/10);
+  else
+    fieldstrength := 5;
+  endif
+  set_priority(1);
+  foreach character in listmobilesnearlocation(item.x, item.y, item.z, 0)
+    local p_level :=Cint(GetObjProperty(character, "poison_level"));
+    PlaySoundEffect(character, 0x206);
+  if (character.dead)
+    return;
+  else
+    if (checkskill(character, SKILLID_MAGICRESISTANCE ,80, points ) )
+      sendsysmessage(character,"you feel yourself resisting magical energy");
+      if ( p_level > 0)
+        PrintTextAbovePrivate (character, "You choke on the noxious fumes!", character);
+        applyrawdamage(character, 1);
+      else
+          PrintTextAbovePrivate (character, "You have been poisoned!", character);
+        SetObjProperty (character, "poison_level", fieldstrength/2);
+        start_script( ":spells:poisondamage", character );
+      endif 
+    else
+      PrintTextAbovePrivate (character, "You have been poisoned!", character);
+      if ( p_level > 0)
+        applyrawdamage(character, 3);
+      else
+        SetObjProperty (character, "poison_level", fieldstrength);
+        start_script( ":spells:poisondamage", character );
+      endif 
+    endif
+  endif
+  sleep(1); 
+  endforeach
+ 
+  foreach character in listmobilesnearlocation(item.x, item.y, item.z, 0)
+    while ((character.x = item.x) and (character.y = item.y) and !character.dead)
+      local poison_level :=Cint(GetObjProperty(character, "poison_level")); 
+      PlaySoundEffect(character, 0x206);
+      if (checkskill(character, SKILLID_MAGICRESISTANCE , 80, points ) )
+        sendsysmessage(character,"you feel yourself resisting magical energy");
+        if ( poison_level > 0)
+          PrintTextAbovePrivate (character, "You choke on the noxious fumes!", character);
+          applyrawdamage(character, 1);
+        else
+          PrintTextAbovePrivate (character, "You have been poisoned!", character);
+          SetObjProperty (character, "poison_level", fieldstrength/2);
+          start_script( ":spells:poisondamage", character );
+        endif 
+      else
+        if ( poison_level > 0)
+          PrintTextAbovePrivate (character, "You choke on the noxious fumes!", character);
+          applyrawdamage(character, 3);
+        else
+          PrintTextAbovePrivate (character, "You have been poisoned!", character);
+          SetObjProperty (character, "poison_level", fieldstrength);
+          start_script( ":spells:poisondamage", character );
+        endif
+      endif
+      sleep(1);
+    endwhile
+  endforeach
+endprogram

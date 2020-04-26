@@ -1,0 +1,59 @@
+use os;
+use uo;
+use util;
+
+include "include/client";
+include "include/spellattack";
+include "include/spellrestrictions";
+include "include/statmod";
+
+program cast_curse( parms )
+
+	local circle := 6;
+	local caster;
+	local thetarget;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		thetarget := parms[3];
+	else
+		caster := parms;
+		thetarget := CanTargetArea(caster, circle);
+		if (!thetarget)
+			return;
+		endif
+	endif
+
+	PlaySoundEffect(caster, SFX_SPELL_MASS_CURSE);
+
+	local magery := GetSkill(caster, SKILLID_MAGERY);
+	local mod_amount := GetModAmount( magery );
+	local duration := GetModDuration( magery );
+
+	detach();
+
+	foreach cast_on in ListMobilesNearLocation( thetarget.x, thetarget.y, thetarget.z, 4 );
+
+		if ( CheckLineOfSight( caster, cast_on ) )
+			PlaySoundEffect(cast_on, SFX_SPELL_MASS_CURSE);
+            		PlayObjectCenteredEffect( cast_on, FX_CURSE_EFFECT, 10,10);
+			send_attack(cast_on,caster, 46);
+
+			mod_amount := Resisted(circle,caster,cast_on,GetModAmount( magery ));
+
+			if (CanMod(cast_on, "str"))
+				DoTempMod(cast_on, "str", 0- mod_amount, duration);
+			endif
+
+			if (CanMod(cast_on, "dex"))
+				DoTempMod(cast_on, "dex", 0- mod_amount, duration);
+			endif
+
+			if (CanMod(cast_on, "int"))
+				DoTempMod(cast_on, "int", 0- mod_amount, duration);
+			endif
+		endif
+	
+	endforeach
+
+endprogram

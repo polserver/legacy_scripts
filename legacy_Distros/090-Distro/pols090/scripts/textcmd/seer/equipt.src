@@ -1,0 +1,14 @@
+//
+// Cause another to perform an action by number
+//
+
+use uo;
+
+program textcmd_action( who, template )
+    SendSysMessage( who, "Whom do you want equip from " + template + "?" );
+
+    local subject := Target( who );
+    if (subject)
+        EquipFromTemplate( subject, template );
+    endif
+endprogram

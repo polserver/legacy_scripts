@@ -1,0 +1,284 @@
+//
+// housedeed - house plan/deed double-click script
+//
+// - creates a "built" deed in placer's bank (deed possession is house ownership)
+// - creates keys (one in bank, one in backpack)
+// - places the house
+// - destroys the house plans (unbuilt deed)
+// - locks doors, and associates with new keys.
+//
+// A "built" deed will have the following custom properties:
+//    builtserial: serial of the built house, after it's built.
+// 
+// A deed's name is "A deed to a [type]" if not built, or
+// "A deed to a [type] (built)" if built. 
+//
+// TODO: the keys should probably be named.
+// 
+// 1/7/1999 ENS
+// 5/11/1999 Racalac, adapted from shipdeed.src
+//
+
+use uo;
+use os;
+
+include "util/key";
+include "util/bank";
+include "include/objtype";
+
+Const UOBJECT_DOORS_START := 0x0675;
+Const UOBJECT_DOORS_END   := 0x06f4;
+Const UOBJECT_BRASS_SIGN := 0x0bd2;
+Const UOBJECT_WOOD_SIGN := 0x0bd0;
+Const UOBJECT_TENT_CHEST := 0x0E43;
+
+program usehousedeed( character, deed )
+
+    if(!ReserveItem(deed)) return; endif
+
+    if (DeedAlreadyBuiltFrom( deed ))
+        PrintTextAbovePrivate( deed, "That house has already been built.", character );
+        destroyitem(deed);
+    else
+        Buildhouse( character, deed );
+    endif
+endprogram
+//
+// Buildhouse: build a house from a deed.
+// 
+// The character is prompted to place the house.  If the house, the new keys, and
+//    the ownership deed can be created, then they are, and the original deed is
+//    destroyed.
+//
+// TODO: Test the location for items blocking
+
+function Buildhouse( character, deed )
+
+    if(!ReserveItem(deed)) return; endif
+
+    local housetype := GetObjProperty( deed, "housetype" );
+
+    if (housetype = error)
+        PrintTextAbovePrivate( deed, "That house deed appears to be broken.", character );
+        syslog( "Deed " + deed.serial + " had no housetype property!" );
+        return;
+    endif
+
+    local where := TargetMultiPlacement( character, housetype );
+    if (!where) return; endif
+
+    // try to create the house
+
+    set_critical( 1 );
+
+    local created := CreatehouseKeysAndBuiltDeed( character, housetype, where, deed );
+    if (!created) return; endif
+
+    DestroyItem( deed );
+
+    SetObjProperty( created.builtdeed, "builtserial", created.house.serial );
+
+    local lockid := AllocLockId();
+    SetObjProperty( created.packkey, "lockid", lockid );
+    SetObjProperty( created.bankkey, "lockid", lockid );
+
+   local logdoor, item;
+
+    foreach item in (created.house.components)
+        if( ((item.objtype >= UOBJECT_DOORS_START) and (item.objtype <= UOBJECT_DOORS_END)) or item.objtype = UOBJECT_TENT_CHEST )
+            item.locked := 1;
+            SetObjProperty( item , "lockid" , lockid );
+        elseif( (item.objtype = UOBJECT_BRASS_SIGN) or (item.objtype = UOBJECT_WOOD_SIGN) )
+            SetObjProperty( item , "lockid" , lockid );
+        endif
+    endforeach
+
+    if (housetype=16496 or housetype=16498) //tents
+      item :=CreateItemAtLocation( where.x, where.y+4, where.z+3, 0xbcf, 1 );
+      item.movable:=0;
+      SetObjProperty( created.house , "component1", item.serial );
+      SetObjProperty( item , "lockid" , lockid );
+      SetObjProperty( item, "house_serial", created.house.serial );
+    endif
+    if (housetype=19384) //log home
+      logdoor :=CreateItemAtLocation( where.x+4, where.y, where.z, 0x06ad, 1 );
+      SetObjProperty( created.house , "component2", logdoor.serial );
+      logdoor.locked := 1;
+      SetObjProperty( logdoor , "lockid" , lockid );
+      SetObjProperty( logdoor, "house_serial", created.house.serial );
+      item :=CreateItemAtLocation( where.x+5, where.y-1, where.z, UOBJECT_WOOD_SIGN, 1 );
+      item.movable:=0;
+      SetObjProperty( created.house , "component1", item.serial );
+      SetObjProperty( item , "lockid" , lockid );
+      SetObjProperty( item, "house_serial", created.house.serial );
+      item :=CreateItemAtLocation( where.x+2, where.y-3, where.z+12, 0xA2C, 1 );
+      item.movable:=0;
+      SetObjProperty( created.house , "component3", item.serial );
+      SetObjProperty( item, "house_serial", created.house.serial );
+    endif
+   if (housetype=16542) // villa with light
+      item :=CreateItemAtLocation( where.x+5, where.y+5, where.z+5, 0xb22, 1 );
+      item.movable:=0;
+      SetObjProperty( created.house , "component1", item.serial );
+      SetObjProperty( item, "house_serial", created.house.serial );
+   endif
+   if (housetype=16536) // smalltower
+      item :=CreateItemAtLocation( where.x+3, where.y-2, where.z+17, 0x8a3, 1 );
+      item.movable:=0;
+      SetObjProperty( created.house , "component1", item.serial );
+      SetObjProperty( item, "house_serial", created.house.serial );
+      item :=CreateItemAtLocation( where.x-2, where.y-2, where.z+37, 0x8a0, 1 );
+      item.movable:=0;
+      SetObjProperty( created.house , "component3", item.serial );
+      SetObjProperty( item, "house_serial", created.house.serial );
+   endif
+   if (housetype=16538) // 2story log cabin
+      item :=CreateItemAtLocation( where.x+3, where.y-4, where.z+7, 0x8A5, 1 );
+      item.movable:=0;
+      SetObjProperty( created.house , "component1", item.serial );
+      SetObjProperty( item, "house_serial", created.house.serial );
+      item :=CreateItemAtLocation( where.x+3, where.y-5, where.z+11, 0x8A5, 1 );
+      item.movable:=0;
+      SetObjProperty( created.house , "component3", item.serial );
+      SetObjProperty( item, "house_serial", created.house.serial );
+   endif
+   if (housetype=16534) // marblehouse
+      item :=CreateItemAtLocation( where.x-5, where.y+4, where.z+35, 0x8a3, 1 );
+      item.movable:=0;
+      SetObjProperty( created.house , "component1", item.serial );
+      SetObjProperty( item, "house_serial", created.house.serial );
+      item :=CreateItemAtLocation( where.x-5, where.y+5, where.z+24, 0x8a4, 1 );
+      item.movable:=0;
+      SetObjProperty( created.house , "component3", item.serial );
+      SetObjProperty( item, "house_serial", created.house.serial );
+   endif
+   if (housetype=16540) // sandstonepatiohousedeed
+      item :=CreateItemAtLocation( where.x-4, where.y-2, where.z+7, 0x8a3, 1 );
+      item.movable:=0;
+      SetObjProperty( created.house , "component1", item.serial );
+      SetObjProperty( item, "house_serial", created.house.serial );
+      item :=CreateItemAtLocation( where.x-4, where.y-3, where.z+15, 0x8a3, 1 );
+      item.movable:=0;
+      SetObjProperty( created.house , "component3", item.serial );
+      SetObjProperty( item, "house_serial", created.house.serial );
+   endif
+   if (housetype=16544) // stoneshop
+      item :=CreateItemAtLocation( where.x-2, where.y+1, where.z+18, 0x8a3, 1 );
+      item.movable:=0;
+      SetObjProperty( created.house , "component1", item.serial );
+      SetObjProperty( item, "house_serial", created.house.serial );
+      item :=CreateItemAtLocation( where.x-2, where.y+2, where.z+7, 0x8a4, 1 );
+      item.movable:=0;
+      SetObjProperty( created.house , "component3", item.serial );
+      SetObjProperty( item, "house_serial", created.house.serial );
+   endif
+   if (housetype=16546) // marbleshop
+      item :=CreateItemAtLocation( where.x-2, where.y+1, where.z+14, 0x8a3, 1 );
+      item.movable:=0;
+      SetObjProperty( created.house , "component1", item.serial );
+      SetObjProperty( item, "house_serial", created.house.serial );
+      item :=CreateItemAtLocation( where.x-2, where.y+2, where.z+4, 0x8a4, 1 );
+      item.movable:=0;
+      SetObjProperty( created.house , "component3", item.serial );
+      SetObjProperty( item, "house_serial", created.house.serial );
+   endif
+
+   if (housetype=16525) // ranch house
+   local startx:=where.x+2, starty:=where.y, endx:=where.x+7, endy:=where.y+6;
+
+       while ( startx <= endx )
+        while ( starty <= endy )
+           item:=CreateItemAtLocation( startx, starty, where.z+7, 0x177d, 1 );
+           item.movable:=0;
+           starty := starty + 1;
+        endwhile
+        starty := where.y;
+        startx := startx + 1;
+	endwhile
+	CreateItemAtLocation( where.x+2, where.y, where.z+7, 0xb41, 1 );
+	CreateItemAtLocation( where.x+2, where.y+1, where.z+7, 0xb42, 1 );
+   endif
+
+endfunction
+
+//
+// CreatehouseAndParaphernalia: atomically create house, keys, and new deed
+//
+// The keys and deed, in the bankbox and backpack, are created first because
+// it's possible to delete them.  It's nontrivial to delete the house.
+//
+// Returns a structure with references to the created objects.
+//
+
+function CreatehouseKeysAndBuiltDeed( character, housetype, where, deed )
+    local bankbox := FindBankBox( character );
+    local logdoor, x:=where.x, y:=where.y, z:=where.z;
+   
+    local packkey := CreateItemInBackpack( character, UOBJ_GOLD_KEY );
+    if (!packkey)
+        PrintTextAbovePrivate( character, "My backpack is too full!", character );
+        return 0;
+    endif
+
+    local bankkey := CreateItemInContainer( bankbox, UOBJ_GOLD_KEY );
+    if (!bankkey)
+        PrintTextAbovePrivate( character, "My bankbox is too full!", character );
+        DestroyItem( packkey );
+        return 0;
+    endif
+
+    local builtdeed := CreateItemInContainer( bankbox, UOBJ_HOUSE_DEED1 );
+    SetName( builtdeed, deed.desc + " at " + x + ", " + y + ", " + z + " (built)" );
+
+    if (!builtdeed)
+        PrintTextAbovePrivate( character, "My bankbox is too full!", character );
+        DestroyItem( packkey );
+        DestroyItem( bankkey );
+        return 0;
+    endif
+
+    local house := CreateMultiAtLocation( x, y, z, housetype );
+    local sign;
+
+    SetObjProperty( house , "numlockdowns" , GetObjProperty( deed , "numlockdowns" ));
+    SetObjProperty( house , "numsecure" , GetObjProperty( deed , "numsecure" ));
+    SetObjProperty( house , "ownerserial" , character.serial );
+    SetObjProperty( house , "owneracct" , character.acctname );
+    SetObjProperty( house , "builtdeed" , builtdeed.serial );
+
+    if (housetype=19384 or housetype=16496 or housetype=16498)
+	house.movable:=0;
+	house.visible:=1;
+    endif
+
+    if (!house)
+        PrintTextAbovePrivate( character, "I can't place the house there.", character );
+        print(house.errortext);
+        DestroyItem( packkey );
+        DestroyItem( bankkey );
+        DestroyItem( builtdeed );
+        return;
+    endif
+
+    local result array;
+    
+    result .+ packkey := packkey;
+    result .+ bankkey := bankkey;
+    result .+ builtdeed := builtdeed;
+    result .+ house := house;
+    
+    return result;
+endfunction
+
+
+//
+// A deed has been built from if it has a "builtserial" custom property.
+//
+
+function DeedAlreadyBuiltFrom( deed )
+    if (GetObjProperty( deed, "builtserial" ))
+        return 1;
+    else
+        return 0;
+    endif
+endfunction

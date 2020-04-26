@@ -1,0 +1,157 @@
+------------------------------------------------------------------------------
+gmtools.src
+------------------------------------------------------------------------------
+
+Include "include/gumputil"; // Added by Shinigami
+
+// [...]
+
+function maintainaccountgump(who, trg)
+    // [...]
+    SetNotes(trg.name); // Modified by Shinigami
+    // [...]
+      3: Notes(trg.name, accounttool); //notes(who, trg.name); // Modified by Shinigami
+    // [...]
+endfunction
+
+//function Setnotes(acctname)
+//  local act := FindAccount(acctname);
+//  local note := act.getprop("notes");
+//  if (!note or note = error)
+//    note := "";
+//  endif
+//  local split := SplitWords(note);
+//  local j;
+//  for( j:= 1; j<=120; j:= j + 1 )
+//    if( !split[j] )
+//      split[j] := "";
+//    endif
+//  endfor
+//  if( len(note) <= 30 )
+//    testdata[26] := note;
+//  else
+//    testdata[26] :=  split[1]  + " " +  split[2]  + " " +  split[3]  + " " +  split[4]  + " " +  split[5]  + " " +  split[6]  + " " +  split[7]  + " " +  split[8]  + " " +  split[9]  + " " + split[10];
+//    testdata[27] := split[11]  + " " + split[12]  + " " + split[13]  + " " + split[14]  + " " + split[15]  + " " + split[16]  + " " + split[17]  + " " + split[18]  + " " + split[19]  + " " + split[20];
+//    testdata[28] := split[21]  + " " + split[22]  + " " + split[23]  + " " + split[24]  + " " + split[25]  + " " + split[26]  + " " + split[27]  + " " + split[28]  + " " + split[29]  + " " + split[30];
+//    testdata[29] := split[31]  + " " + split[32]  + " " + split[33]  + " " + split[32]  + " " + split[35]  + " " + split[36]  + " " + split[37]  + " " + split[38]  + " " + split[39]  + " " + split[40];
+//    testdata[30] := split[41]  + " " + split[42]  + " " + split[43]  + " " + split[44]  + " " + split[45]  + " " + split[46]  + " " + split[47]  + " " + split[48]  + " " + split[49]  + " " + split[50];
+//    testdata[31] := split[51]  + " " + split[52]  + " " + split[53]  + " " + split[54]  + " " + split[55]  + " " + split[56]  + " " + split[57]  + " " + split[58]  + " " + split[59]  + " " + split[60];
+//    testdata[32] := split[61]  + " " + split[62]  + " " + split[63]  + " " + split[64]  + " " + split[65]  + " " + split[66]  + " " + split[67]  + " " + split[68]  + " " + split[69]  + " " + split[70];
+//    testdata[33] := split[71]  + " " + split[72]  + " " + split[73]  + " " + split[74]  + " " + split[75]  + " " + split[76]  + " " + split[77]  + " " + split[78]  + " " + split[79]  + " " + split[80];
+//    testdata[34] := split[81]  + " " + split[82]  + " " + split[83]  + " " + split[84]  + " " + split[85]  + " " + split[86]  + " " + split[87]  + " " + split[88]  + " " + split[89]  + " " + split[90];
+//    testdata[35] := split[91]  + " " + split[92]  + " " + split[93]  + " " + split[94]  + " " + split[95]  + " " + split[96]  + " " + split[97]  + " " + split[98]  + " " + split[99]  + " " + split[100];
+//    testdata[36] := split[101] + " " + split[102] + " " + split[103] + " " + split[104] + " " + split[105] + " " + split[106] + " " + split[107] + " " + split[108] + " " + split[109] + " " + split[110];
+//    testdata[37] := split[111] + " " + split[112] + " " + split[113] + " " + split[114] + " " + split[115] + " " + split[116] + " " + split[117] + " " + split[118] + " " + split[119] + " " + split[120];
+//  endif
+//endfunction
+
+Function SetNotes(acctname) // Added by Shinigami
+  Local act:=FindAccount(acctname);
+  Local note:=act.GetProp("notes");
+  If ((!note) Or (note=error))
+    note:="";
+  EndIf
+  Local split:=SplitWords(note);
+  Local width:=0;
+  Local lines:=0;
+  Local index:=1;
+  While ((index<=Len(split)) And (lines<=12))
+    If (width=0)
+      Local testword:=split[index];
+      lines:=lines+1;
+      testdata[24+lines]:=testword;
+      width:=GumpTextWidthFast(testword);
+      index:=index+1;
+    Else
+      Local testword:=" "+split[index];
+      Local testwidth:=GumpTextWidthFast(testword);
+      If (width+testwidth<CInt(500/1.5))
+        testdata[24+lines]:=testdata[24+lines]+testword;
+        width:=width+testwidth;
+        index:=index+1;
+      Else
+        width:=0;
+      EndIf
+    EndIf
+  EndWhile
+  If (lines>12)
+    testdata[23+lines]:=testdata[23+lines]+"...";
+  Else
+    While (lines<12)
+      lines:=lines+1;
+      testdata[24+lines]:="";
+    EndWhile
+  EndIf
+EndFunction
+
+// [...]
+
+//function notes(who, acctname);
+//  local act := FindAccount(acctname);
+//  local oldnotes := act.getprop("notes");
+//  if (!oldnotes)
+//    oldnotes := "";
+//  endif
+//  local newnotes := cstr(SendTextEntryGump( who, "add to the notes file here, better system being worked on. [max 100 words]", 200 ));
+//  act.setprop("notes", oldnotes + " " + newnotes);
+//endfunction
+
+Function Notes(acctname, result) // Added by Shinigami
+  Local note:=result[25];
+  note[1, Find(note, ": ", 1)+1]:="";
+  Local subnote;
+  Local i;
+  For (i:=26; i<=36; i:=i+1)
+    subnote:=result[i];
+    subnote[1, Find(subnote, ": ", 1)+1]:="";
+    If (subnote<>"")
+      note:=note+" "+subnote;
+    EndIf
+  EndFo
+  Local act:=FindAccount(acctname);
+  act.setprop("notes", note);
+EndFunction
+
+// [...]
+
+------------------------------------------------------------------------------
+accountlayout.inc
+------------------------------------------------------------------------------
+
+global testlayout := array(
+
+  // [...]
+
+                                         // Added by Shinigami
+"textentry 30 260 500 20 910 25 25",        //modify notes text     (white)
+"textentry 30 280 500 20 910 26 26",        //modify notes text     (white)
+"textentry 30 300 500 20 910 27 27",        //modify notes text     (white)
+"textentry 30 320 500 20 910 28 28",        //modify notes text     (white)
+"textentry 30 340 500 20 910 29 29",        //modify notes text     (white)
+"textentry 30 360 500 20 910 30 30",        //modify notes text     (white)
+"textentry 30 380 500 20 910 31 31",        //modify notes text     (white)
+"textentry 30 400 500 20 910 32 32",        //modify notes text     (white)
+"textentry 30 420 500 20 910 33 33",        //modify notes text     (white)
+"textentry 30 440 500 20 910 34 34",        //modify notes text     (white)
+"textentry 30 460 500 20 910 35 35",        //modify notes text     (white)
+"textentry 30 480 500 20 910 36 36",        //modify notes text     (white)
+//"text     30 260  910     25     ",         //modify notes text     (white)
+//"text     30 280  910     26     ",         //modify notes text     (white)
+//"text     30 300  910     27     ",         //modify notes text     (white)
+//"text     30 320  910     28     ",         //modify notes text     (white)
+//"text     30 340  910     29     ",         //modify notes text     (white)
+//"text     30 360  910     30     ",         //modify notes text     (white)
+//"text     30 380  910     31     ",         //modify notes text     (white)
+//"text     30 400  910     32     ",         //modify notes text     (white)
+//"text     30 420  910     33     ",         //modify notes text     (white)
+//"text     30 440  910     34     ",         //modify notes text     (white)
+//"text     30 460  910     35     ",         //modify notes text     (white)
+//"text     30 480  910     36     ",         //modify notes text     (white)
+
+// [...]
+
+------------------------------------------------------------------------------
+gumputil.inc
+------------------------------------------------------------------------------
+
+place it in /pol/scripts/include/

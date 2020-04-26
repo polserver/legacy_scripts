@@ -1,0 +1,176 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+//  carpentry.src - carpentry tool doubleclick script
+//
+//  Modifications:
+//    19990414 ENS restructured logic a bit
+//    19990423 RAC set created objects movable
+//
+//  NOTE: Furnature only faces one way, the "open" armoire gfx doesnt open as a 
+//        Container and wont switch to the closed gfx.
+//
+/////////////////////////////////////////////////////////////////////////////
+
+use uo;
+use cfgfile;
+use os;
+use util;
+
+include "util/key";
+include "util/repair";
+include "include/client";
+include "include/objtype";
+include "include/skillpoints";
+/* to do:
+
+remove  hardcoding of skill pointvalue
+use array to check for boardsm etc
+set a quality property on the item (and hitpoints?)
+
+
+*/
+
+    
+global carpentry_cfg := ReadConfigFile( "carpentry" );    
+global itemcfg := readconfigfile(":combat:itemdesc");
+global thepoints;
+
+function is_carpenter_item (stuff)
+    local elem := findconfigelem(carpentry_cfg, stuff.objtype);
+    if (elem)
+        return 1;
+    else
+        return 0;
+    endif
+endfunction
+
+program MakeCarpentryItems( character)
+
+    local logs;
+    local skill;          //skill needed to create the item
+    local element;        // entry in smith_config
+    local material;       //amount of material needed to create the item
+    local retval;
+    local max_hp;
+    local quality;
+    local itemname;
+thepoints :=  get_default_points(SKILLID_CARPENTRY);
+
+
+    SendSysmessage( character, "What would you like to use that on?" );
+   
+    logs := Target( character, "" );
+    if (!logs)
+        SendSysmessage( character, "Targetting cancelled" );
+        return;
+    endif
+
+    if (not Accessible( character, logs))
+        SendSysmessage( character, "You don't have any logs!" );
+        return;
+    endif
+    
+    if (is_carpenter_item(logs))
+        repair_item(character, logs, SKILLID_CARPENTRY);
+    endif
+     
+    if (logs.objtype != UOBJ_LOGS)
+        SendSysmessage(character, "You can only use that on wood!");
+        return;
+    endif
+
+    if (!carpentry_cfg)
+        SendSysmessage (character, "Could not open carpentry.cfg");
+        return;
+    endif
+    
+    local  what := SelectMenuItem2 ( character, "carpentry" );
+
+    if ( what.index < 1)
+        SendSysmessage( character, "Targetting cancelled" );
+        return;
+    endif
+
+        material := cint(carpentry_cfg[what.objtype].material);
+        skill :=  cint(carpentry_cfg[what.objtype].skill);
+        max_hp := cint(itemcfg[what.objtype].maxhp);
+        itemname := carpentry_cfg[what.objtype].Name;
+        
+    if( material and skill and itemname )
+    else
+        return;
+    endif
+
+    //first, check to see that they have enough wood
+
+    if ( GetAmount(logs)  < material )
+        SendSysmessage (character, "You don't have enough wood!");
+        return;
+    endif  //getamount
+     
+  if (CheckSkill( character, SKILLID_CARPENTRY, skill, thepoints ))
+    set_critical(1);
+     SubtractAmount( logs, material );
+    set_critical(0);
+    retval := PlaySoundEffect(character, SFX_HAMMER);
+    sleep (2);
+    retval := PlaySoundEffect(character, SFX_HAMMER);
+    sleep (2);
+    retval := PlaySoundEffect(character, SFX_HAMMER);
+    sleep (2);
+        
+    Local theitem := CreateItemInBackpack( character, what.objtype, 1 );
+    if (!theitem)
+        return;         // hmm, create failed.  backpack full?
+                        // FIXME macro exploit
+    endif
+
+    theitem.movable := 1;    
+
+   
+    
+    //now, I need to set the quality
+    if (CheckSkill( character, SKILLID_CARPENTRY, 90,thepoints) and randomint(100) < 4)
+        //they make an exceptional item
+        quality := 1.5;
+        theitem.quality := quality;
+        theitem.hp := theitem.maxhp;
+        SetObjProperty(theitem, "type","c");
+        SetName(theitem, "Exceptional " + itemname);
+        SendSysmessage (character, "You make an exceptional item and put it in your pack");
+    else
+        //regular-quality
+        quality := (60 + (cint(getskill(character, SKILLID_CARPENTRY)/2)))/100.0;
+        theitem.quality := quality;
+        theitem.hp := theitem.maxhp;
+        SetObjProperty(theitem, "type","c");
+        SetName(theitem,  itemname );
+        SendSysmessage( character, "You create the item and place it in your pack." );
+    endif
+    
+    
+    //now onto lockable chests . . .hardcoding lockable chests, boxes)
+    if ((theitem.objtype in array( UOBJ_CHEST, UOBJ_BOX )) or (carpentry_cfg[theitem.objtype].lockable)) 
+        local tinker:= CheckSkill( character, SKILLID_TINKERING, 40, thepoints );
+        if (tinker)
+            SetObjProperty(theitem, "lockable","1");
+            local lockid := AllocLockId();
+            theitem.locked := 1;
+            local thekey := CreateItemInBackpack( character, UOBJ_COPPER_KEY, 1 ); 
+            SetObjProperty(thekey, "lockid",lockid);
+            SetObjProperty(theitem,"lockid",lockid);
+            SendSysmessage (character, "You will find the key in your backpack.");
+        endif //tinker
+    endif //getobjtype is chest
+
+  else
+      SubtractAmount( logs, cint(material/2) );
+      SendSysmessage( character, "You destroy some wood." );
+      return;
+  endif //checkskill  
+ 
+endprogram
+
+
+
+

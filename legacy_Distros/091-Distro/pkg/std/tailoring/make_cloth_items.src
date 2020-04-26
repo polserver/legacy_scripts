@@ -1,0 +1,271 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+//  Tailoring: Original Code by Racalac
+//  Updated: 8/25/1999   By: Sentack
+//  TODO: Move all the UOBJ objects to "include/objtype.inc"
+//
+//  NOTES: Lines 129 and 196 are optional statments that are designed to
+//    replace lines 127 and 194.  They are used to remove a random amount of
+//    cloth from the players inventory instead of just one unit of cloth
+//    as does the OSI way of dealing with failer.  Sometimes you lose a little
+//    while other times you lose a lot.  But never more then the amount of 
+//    cloth the object original was going to take.
+/////////////////////////////////////////////////////////////////////////////
+
+use uo;
+use cfgfile;
+use os;
+use util;
+
+include "include/client";
+
+Const UOBJ_SEWING_KIT   := 0x0F9D;
+Const UOBJ_BOLT_START   := 0x0F95; // Bolts <Initial Tile>
+Const UOBJ_BOLT_END     := 0x0F9C; // Bolts <Final Tile>
+Const UOBJ_CLOTH_STARTS := 0x175D; // Real cloth
+Const UOBJ_CLOTH_END    := 0x1768; // Real cloth
+Const UOBJ_MUTLI_CLOTH  := 0x1765; // What we will turn bolts into after they have been used.
+
+Const UOBJ_HIDES_START  := 0x1078;
+Const UOBJ_HIDES_END    := 0x1079;
+
+Const UOBJ_ONYX_HIDE    := 0X7020;
+Const UOBJ_DRAGON_HIDE  := 0X7021;  // Red hide
+Const UOBJ_GREEN_HIDE   := 0X7022;  // Malachite green
+Const UOBJ_AZURE_HIDE   := 0X7023;  // Blue
+Const UOBJ_OLIVE_HIDE   := 0X7024;
+Const UOBJ_SAND_HIDE    := 0X7025;  // Sandy-Grey hide
+
+Const SCISSORS_SOUND    := 0x0249;
+
+Global tailor_cfg       := ReadConfigFile( "tailoring" );
+Global leather_cfg      := ReadConfigFile( "leather" );
+
+function MakeClothItems( character, cloth )
+  local skill;         // Amount of skill required to perform the task
+  local element;       // The item the player wishes to create
+  local material;      // The amount of material it will take to make the item
+  local retval;        // Stores a value but never used.  Stores the result of Playing Sound Effects
+  local mainclothused; // Pointer to the cloth being used in the end.
+  local boltcount;     // Total number of bolts available, if any
+  local totalcloth;    // How much cloth do we have total
+
+  // Determine if the user does have access to the cloth
+  if (not Accessible( character, cloth))
+    SendSysmessage( character, "You dont have any cloth!" );
+    return;
+  endif
+
+  // Open up the tailor config file.
+  if (!tailor_cfg)
+    SendSysmessage (character, "Could not open tailoring.cfg");
+    syslog( "Unable to open tailoring.cfg" );
+    return;
+  endif
+
+  // Ask the user what they would like to make
+  local what := SelectMenuItem2 ( character, "tailoring" );
+
+  // Determine exactly what the player selected to make.  <Sentack: What if they try and cancel out now?>
+  element := FindConfigElem ( tailor_cfg, what.objtype );
+
+  // Determine the material and skill required to make the item and inform the player
+  if (element)
+    material := GetConfigInt(element, "material");
+    skill    := GetConfigInt(element, "skill");
+    SendSysmessage (character, "(" + material + " yards of cloth and " + skill + " skill)");
+  endif
+
+  if ((cloth.objtype >= UOBJ_BOLT_START) and (cloth.objtype <= UOBJ_BOLT_END))
+    totalcloth := cloth.amount * 50;  // Number of bolts * 50 Yards each.
+  else
+    totalcloth := cloth.amount;  // Just the amount
+  endif
+  
+  if (what.objtype) // if the user did pick an object, then we are going to use cloth
+
+    if (totalcloth >= material )
+      
+      //bandages use all the cloth
+      if (what.objtype = 0x0e21)
+	material := (totalcloth);
+      endif
+
+      if ((cloth.objtype >= UOBJ_BOLT_START) and (cloth.objtype <= UOBJ_BOLT_END))
+        boltcount := cloth.amount;
+        DestroyItem(cloth);
+        mainclothused := CreateItemInBackpack(character, UOBJ_MUTLI_CLOTH, boltcount * 50);
+      else
+        mainclothused := cloth;
+      endif
+  
+      if ( CheckSkill( character, SKILLID_TAILORING, skill, skill*4 ) )
+        makenoise(character,retval);
+        
+        if (what.objtype = 0x0e21)
+	  Local theitem := CreateItemInBackpack (character, what.Objtype, Cint(material/2));
+	else	
+          Local theitem := CreateItemInBackpack (character, what.Objtype, 1);
+	endif
+
+        SubtractAmount(mainclothused, material);
+        SendSysmessage(character, "You create the item and place it in you pack.");
+	if (mainclothused.amount)
+          SendSysmessage(character, "Cloth remaining: " + mainclothused.amount);
+	endif
+      else
+        SendSysmessage (character, "You failed, ruining some cloth.");
+
+	//failure on bandages only ruins 2 cloth
+	if (what.objtype = 0x0e21)
+		material := 2;
+      	endif
+
+	SubtractAmount(mainclothused, (material/2)+1);
+	if (mainclothused.amount)
+          SendSysmessage(character, "Cloth remaining: " + mainclothused.amount);
+	endif
+      endif
+
+    else
+      SendSysmessage (character, "Not enough cloth.");
+    endif
+
+  else
+    return; 
+  endif
+
+endfunction
+
+
+function MakeLeatherItems (character, leather)
+  local skill;
+  local element;
+  local material;
+  local retval;
+
+  if (not Accessible( character, leather))
+    SendSysmessage( character, "You dont have any leather!" );
+    return;
+  endif
+
+  if (!leather_cfg)
+    SendSysmessage (character, "Could not open leather.cfg");
+    syslog( "Unable to open leather.cfg" );
+    return;
+  endif
+
+  local what := SelectMenuItem2 ( character, "leatherworking" );
+
+  element := FindConfigElem ( leather_cfg, what.objtype );
+
+  if (element)
+    material := (Cint(GetElemProperty(element, "material" )));
+    skill := Cint(GetElemProperty( element, "skill" ));
+    SendSysmessage (character, "(" + material + " hides and " + skill + " skill)");
+  endif
+
+  if (GetAmount(leather) >= material )
+    if (CheckSkill( character, SKILLID_TAILORING, skill, skill*4 ))  
+      makenoise(character,retval);
+      Local theitem := CreateItemInBackpack (character, what.Objtype, 1);
+      if (theitem)
+                      if (getskill(character, SKILLID_TAILORING) > 90) 
+                        if (randomint(20) = 1)
+                                theitem.quality := 1.5;
+                                theitem.hp := theitem.maxhp;
+                                theitem.name := theitem.desc + " (Exceptional)";
+                                sendsysmessage(character, "You've made an exceptional item!");
+                        else
+                                theitem.quality := (60 + (randomint(getskill(character, SKILLID_TAILORING))/2))/100.0;
+                                theitem.hp := theitem.maxhp;
+                        endif
+                else
+                                theitem.quality := (60 + (randomint(getskill(character, SKILLID_TAILORING))/2))/100.0;
+                                theitem.hp := theitem.maxhp;
+                endif
+        theitem.color := leather.color;
+	SubtractAmount( leather, material );
+        SendSysmessage(character, "You create the item and place it in you pack.");
+      elseif ( !(what.objtype) )
+        return;
+      endif 
+    else
+      SendSysmessage (character, "You failed, ruining some leather.");
+      SubtractAmount(leather, RandomInt(material+1));  
+    endif
+  else
+    SendSysmessage(character,"You dont have enough hides for that");
+  endif
+
+endfunction
+
+
+program use_sewing_kit( character, sewing_kit )
+  SendSysmessage( character, "What cloth do you want to use?" );
+  
+  // Ask the user for the target item be it cloth or leather.
+  Local use_on := Target( character, TGTOPT_CHECK_LOS );
+  Local his_skill := GetSkill( character , SKILLID_TAILORING );
+  
+  // If the user aborts, then quit
+  if (!use_on)
+    return;
+  endif
+
+  // Get the object type.
+  local obj_type := use_on.objtype;
+  reserveitem(use_on);
+  if ( ((obj_type >= UOBJ_BOLT_START)  and (obj_type <= UOBJ_BOLT_END)) or   // Bolts
+       ((obj_type >= UOBJ_CLOTH_STARTS) and (obj_type <= UOBJ_CLOTH_END)) )  // stacks of cloth
+    // if it's of cloth type, then being the clothing process
+    MakeClothItems(character, use_on);
+  
+  elseif ( (obj_type = UOBJ_HIDES_START) or (obj_type = UOBJ_HIDES_END) )
+    // if it's of Leather type, then begin the leather process
+    MakeLeatherItems(character, use_on);
+  elseif ( (obj_type = UOBJ_SAND_HIDE) and ( his_skill >= 70 ) )
+	MakeLeatherItems(character, use_on);
+  elseif ( (obj_type = UOBJ_OLIVE_HIDE) and ( his_skill >= 80 ) )
+	MakeLeatherItems(character, use_on);
+  elseif ( (obj_type = UOBJ_GREEN_HIDE) and ( his_skill >= 85 ) )
+	MakeLeatherItems(character, use_on);
+  elseif ( (obj_type = UOBJ_ONYX_HIDE) and ( his_skill >= 90 ) )
+	MakeLeatherItems(character, use_on);
+  elseif ( (obj_type = UOBJ_AZURE_HIDE) and ( his_skill >= 95 ) )
+	MakeLeatherItems(character, use_on);
+  elseif ( (obj_type = UOBJ_DRAGON_HIDE) and ( his_skill >= 99 ) )
+	MakeLeatherItems(character, use_on);
+  
+  elseif ( (obj_type = UOBJ_SAND_HIDE) and ( his_skill <= 70 ) )
+	SendSysmessage( character , "You have no chance to successfully work with that material." );
+  elseif ( (obj_type = UOBJ_OLIVE_HIDE) and ( his_skill <= 80 ) )
+	SendSysmessage( character , "You have no chance to successfully work with that material." );
+  elseif ( (obj_type = UOBJ_GREEN_HIDE) and ( his_skill <= 85 ) )
+	SendSysmessage( character , "You have no chance to successfully work with that material." );
+  elseif ( (obj_type = UOBJ_ONYX_HIDE) and ( his_skill <= 90 ) )
+	SendSysmessage( character , "You have no chance to successfully work with that material." );
+  elseif ( (obj_type = UOBJ_AZURE_HIDE) and ( his_skill <= 95 ) )
+	SendSysmessage( character , "You have no chance to successfully work with that material." );
+  elseif ( (obj_type = UOBJ_DRAGON_HIDE) and ( his_skill <= 99 ) )
+	SendSysmessage( character , "You have no chance to successfully work with that material." );
+  else
+    // else warn the user that they made a mistake on there selection.
+    SendSysmessage (character, "You can only use that on cloth!");
+    return;
+  endif	
+endprogram
+
+function makenoise(character,retval)
+
+      retval := PlaySoundEffect(character, SCISSORS_SOUND);
+      sleep (1);
+      retval := PlaySoundEffect(character, SCISSORS_SOUND);
+      sleep (1);
+      retval := PlaySoundEffect(character, SCISSORS_SOUND);
+      sleep (1);
+      retval := PlaySoundEffect(character, SCISSORS_SOUND);
+      sleep (1);
+
+endfunction
+

@@ -1,0 +1,24 @@
+
+use uo;
+
+program change_cmdlevel( who, level )
+    SendSysMessage( who, "Change whose CmdLevel?" );
+    local player := Target( who, TGTOPT_NOCHECK_LOS );
+ 
+    if( !player.npctemplate and !player.amount )
+        case (level)
+            "test":     player.cmdlevel := 5;
+            "admin":    player.cmdlevel := 4;	
+            "gm":	player.cmdlevel := 3;
+            "seer":	player.cmdlevel := 2;
+            "coun":	player.cmdlevel := 1;
+            "player":	player.cmdlevel := 0;
+	    default: 	SendSysmessage( who , "Not a valid CmdLevel." );		
+        endcase	
+
+    else
+    	SendSysmessage( who , "Not a player" );
+    endif
+
+endprogram
+

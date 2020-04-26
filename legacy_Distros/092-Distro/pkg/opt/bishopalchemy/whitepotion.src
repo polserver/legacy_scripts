@@ -1,0 +1,27 @@
+use os;
+use uo;
+use util;
+use cfgfile;
+include "drinkpotion";
+include "include/statmod";
+
+program drink_blue (who, potion)
+  EraseObjProperty(who, "IsMeditating");
+  if(potion.movable = 0)
+    SendSysMessage(who, "You cannot drink that.");
+    return;
+  endif
+  if(!CanMod(who, "str"))
+	SendSysMessage(who,"Already under the influence!");
+	return;
+  endif
+  if(!checkifcandrink(who, "white"))
+    return;
+  endif
+  local potion_strength := get_potion_strength(potion);
+  empty_bottle (who, potion);
+  case(potion_strength)
+    1:  DoTempMod(who, "str", 10,  60);
+    3:  DoTempMod(who, "str", 20, 180);
+  endcase
+endprogram

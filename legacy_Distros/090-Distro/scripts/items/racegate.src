@@ -1,0 +1,36 @@
+use uo;
+use util;
+use basic;
+
+program walkon_racegate(who, me)
+
+local equipt := getobjproperty(me, "equipt");
+local strmod := cint(getobjproperty(me, "strmod"));
+local intmod := cint(getobjproperty(me, "intmod"));
+local dexmod := cint(getobjproperty(me, "dexmod"));
+local graphic := cint(getobjproperty(me, "graphic"));
+local color := cint(getobjproperty(me, "color"));
+local sound := cint(getobjproperty(me, "sound"));
+local racename := getobjproperty(me, "race");
+
+
+if (sound)
+        playsoundeffect(who, sound);
+endif
+
+equipfromtemplate(who, equipt);
+who.setstr(who.strength + strmod);
+who.setdex(who.dexterity + dexmod);
+who.setint(who.intelligence + intmod);
+
+if (graphic)
+        who.graphic := graphic;
+endif
+
+if (color)
+        who.color := color;
+        who.truecolor := color;
+endif
+setobjproperty(who, "race", racename);
+who.name := who.name + " [" + racename + "]";
+endprogram

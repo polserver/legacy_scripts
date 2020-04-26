@@ -1,0 +1,653 @@
+//ver 0.9.3a
+//spawn rune script
+//TODO:
+//	-add misc functions: test group, test spawn area, spawn rating and other profiling tools
+
+
+
+
+
+use uo;use os;
+use util;
+use cfgfile;
+include "spawnnet";
+
+global layout := array(
+			"page 0",
+			"resizepic 30 100 5120 270 151",
+			"text 45 109 1500 0",
+			"text 156 109 1500 1",
+			"text 51 135 1000 4",
+			"text 194 135 600 5",
+			"text 51 155 1000 6",
+			"text 197 155 600 7",
+			"text 51 175 1000 8",
+			"text 161 175 600 9",
+			"text 51 195 1000 10",
+			"text 161 195 600 11",
+			"text 51 215 1000 12",
+			"text 224 215 600 13",
+
+			"button 264 138 2117 2118 1 0 102",
+			"button 264 158 2117 2118 1 0 103",
+			"button 264 178 2117 2118 1 0 104",
+			"button 264 198 2117 2118 1 0 105",
+
+			"resizepic 30 253 5120 475 85",
+			"text 45 262 1000 14",
+			"text 51 280 600 15",
+			"text 95 305 2000 16",
+			"text 155 305 2000 17",
+			"text 222 305 2000 18",
+			"text 289 305 2000 19",
+
+			"button 125 265 2117 2118 1 0 107",
+			"button 132 308 2117 2118 1 0 108",
+			"button 199 308 2117 2118 1 0 109",
+			"button 265 308 2117 2118 1 0 110",
+			"button 337 308 2117 2118 1 0 111",
+
+			"resizepic 302 100 5120 203 151",
+			"text 310 110 1500 20",
+			"text 310 135 1000 21",
+			"text 410 135 600 22",
+			"text 310 155 1000 23",
+			"text 410 155 600 24",
+			"text 310 175 1000 25",
+			"text 410 175 600 26",
+			"text 310 195 1000 27",
+			"text 410 195 600 28",
+			"text 310 215 1000 37",
+			"text 350 215 600 38",
+
+			"button 474 138 2117 2118 0 2 0",
+			"button 474 158 2117 2118 0 3 0",
+			"button 474 178 2117 2118 1 0 101",
+			"button 474 198 2117 2118 1 0 250",
+			"button 474 218 2117 2118 1 0 106",
+			"page 1",
+			"page 2",
+			"resizepic 506 100 5120 100 151",
+			"text 510 135 1000 29",
+			"text 510 155 1000 30",
+			"text 510 175 1000 31",
+			"text 510 195 1000 32",
+
+			"button 580 138 1209 1210 1 0 200",
+			"button 580 158 1209 1210 1 0 201",
+			"button 580 178 1209 1210 1 0 202",
+			"button 580 198 1209 1210 1 0 203",
+
+			"page 3",
+			"resizepic 506 100 5120 130 151",
+			"text 510 135 1000 33",
+			"text 510 155 1000 34",
+			"text 510 175 1000 35",
+			"text 510 195 1000 36",
+
+			"checkbox 620 138 2362 2361 0 1001",
+			"checkbox 620 158 2362 2361 0 1002",
+			"checkbox 620 178 2362 2361 0 1003",
+			"checkbox 620 198 2362 2361 0 1004",
+			"button 530 218 2130 2129 3 0 300",
+
+);
+
+global data := array(
+
+	"Spawn Rune # ",
+	"",
+	"Template Options",
+	"",
+	"Min. Spawn Time:",
+	"",
+	"Max. Spawn Time:",
+	"",
+	"Max. Number:",
+	"",
+	"Spawn Range:",
+	"",
+	"",//remove
+	"",//remove
+	"Note: (Edit   )",
+	"",
+	"Save",
+	"Delete",
+	"Reset",
+	"Cancel",
+	"Template Options",
+	"Spawn type:",
+	"",
+	"Flags:",
+	"",
+	"Template:",
+	"",
+	"",
+	"",
+	"NPC",
+	"Item",
+	"Container",
+	"None",
+	"",
+	"",
+	"",
+	"",
+	"Aux:",
+	"",
+);
+
+
+// This just calls the gump on startup
+global who,item;
+program spawnr_script( who1, item1 )
+who := who1;
+item := item1;
+dogump ();
+endprogram
+
+
+// Open up the spawn gump
+function dogump()
+if (who.cmdlevel < 3)
+	SendSysMessage(who, "You don't have the privilege to use this rune");
+	item.graphic := 1;
+	return 0;
+endif
+
+local spawnnet := GetObjProperty( item, "spawnnet" );
+if (!spawnnet)
+	data[2] := "<NOT ACTIVE>";
+else
+	data[2] := spawnnet;
+endif
+
+data[6] := GetObjProperty( item, "mintime");
+data[8] := GetObjProperty( item, "maxtime");
+data[10] := GetObjProperty( item, "maxamount");
+data[12] := GetObjProperty( item, "range");
+data[16] := GetObjProperty( item, "note");
+data[27] := GetObjProperty(item, "template");
+local aux := GetObjProperty( item, "aux");
+data[39] := aux;
+
+local props :=cint(GetObjProperty(item, "flags"));
+if(props < 0x1000)
+	props := 0x1000;
+	SetObjProperty(item, "flags",0x1000);
+endif
+
+props := cstr(hex(props));
+
+local type := props[3,1];
+type := cint(type);
+local flags := props[4,1];
+flags := "0x"+flags;
+flags := cint(flags);
+flags := GetFlags(flags);
+
+local amount := props[5,2];
+amount := "0x"+amount;
+amount := cint(amount);
+
+data[29] := cstr(amount);
+
+case(type)
+	1: data[23]:="NPC";
+	   data[28]:="Max amount";
+	   data[34]:="Grouping";
+	   data[35]:="Anchor";
+	   data[36]:="Nothing";
+	   data[37]:="Nothing";
+
+	2: data[23]:="Item";
+	   data[28]:="Pile amount"; //must be aux value,
+	   data[34]:="Grouping";
+	   data[35]:="Cont. Spawn";
+	   data[36]:="Itemgroup";
+	   data[37]:="Leave b item";
+	   if(flags[2])
+		if(!aux)
+			data[39] := "Container not set";
+		else
+			data[39] := "Container set";
+		endif
+	   endif
+
+	3: data[23]:="Container";
+	   data[28]:="Loot Level";
+	   data[34]:="Moving spawn";
+	   data[35]:="No Check";
+	   data[36]:="Clean old item";
+	   data[37]:="Leave b item";
+	   if(!aux)
+		data[39] := "No Container";
+	   else
+		data[39] := "Container found";
+	   endif
+
+	   default: data[23]:="Not Set";
+endcase
+
+data[25] := "";
+if(flags[1])
+	data[25] := data[25] + "1";
+	layout[65][28] :="1";
+endif
+if(flags[2])
+	data[25] := data[25] + " 2";
+	layout[66][28] :="1";
+endif
+if(flags[3])
+	data[25] := data[25] + " 3";
+	layout[67][28] :="1";
+endif
+if(flags[4])
+	data[25] := data[25] + " 4";
+	layout[68][28] :="1";
+endif
+
+
+local box := SendDialogGump( who, layout, data );
+
+local savecheck := 0;
+local dupecheck := 0;
+local keeprun:=1;
+case (box[0])
+	101: changedata("template");
+	    if(!spawnnet)
+		item.name := "A Spawn Rune";
+	    else
+		processname(type,flags);
+	    endif
+	102: changedata("mintime");
+	103: changedata("maxtime");
+	104: changedata("maxamount");
+	105: changedata("range");
+	107: changedata("note");
+	106: if((type =2 and flags[2]) or (type = 3))
+		SendSysMessage(who, "Aux is read-only");
+	     else
+		changedata("aux");
+	     endif
+        108: savecheck := checkrune();
+	     if(savecheck = 1)
+			dupecheck := AddRefresh(item.serial);
+			SendSysMessage(who, "Rune spawn saved.");
+	     elseif (savecheck = 2)
+			dupecheck := AddCreated(item.serial);
+			if (dupecheck = 1)
+				SendSysMessage(who, "Rune spawn saved.");
+			else
+				SendSysMessage(who, "Changes cannot be made until AFTER the first spawn appears.");
+			endif
+             else
+			SendSysMessage(who, "Rune spawn NOT saved!");
+	     endif
+
+        109: DestroyItem(item);
+                SendSysMessage(who, "The rune and its related spawns have been deleted.");   		keeprun :=0;
+
+	110: ResetSpawn(item, 0);
+	200: Changetype(1);
+	201: Changetype(2);
+	202: Changetype(3);
+	203: //Changetype(4);
+	     SendSysMessage(who, "Option disabled");
+
+	250: ChangeAmount();
+
+	300: ChangeFlags(box.keys);
+	default: SendSysMessage(who, "Cancelled");
+		 keeprun :=0;
+endcase
+
+if(keeprun)
+	dogump();
+endif
+endfunction
+
+function Changetype(type)
+local props;
+props := cstr(hex(cint(GetObjProperty(item, "flags"))));
+props[3,1] :=cstr(type);
+props := cint(props);
+SetObjProperty(item, "flags", props);
+
+endfunction
+
+
+function ChangeAmount()
+
+local value := SendTextEntryGump( who, "Enter the new value to "+data[28],TE_CANCEL_ENABLE,TE_STYLE_NUMERICAL,255);
+
+if(!value)
+	SendSysMessage(who, "Canseled");
+	return 0;
+endif
+
+value := cint(value);
+if(value > 0xFF)
+	SendSysMessage(who, "Invalid number, maximum is 255");
+	return 0;
+endif
+
+local ts;
+if(value < 0x10)
+	value := hex(value);
+	ts := "0"+value[3];
+else
+	value := hex(value);
+	ts := value[3,2];
+endif
+
+local props := cstr(hex(cint(GetObjProperty(item, "flags"))));
+props[5,2] := ts;
+
+SetObjProperty(item, "flags", cint(props));
+endfunction
+
+
+function ChangeFlags(flags)
+
+local result := { };
+foreach flag in flags
+	if (flag > 1000)
+		result[(flag-1000)] :=1;
+	endif
+endforeach
+
+local i, val:=0;
+for(i:=1;i<5;i:=i+1)
+	if(result[i])
+		val := val + exp2(i-1);
+	endif
+endfor
+
+
+val:=cstr(hex(val));
+
+local props;
+props := cstr(hex(cint(GetObjProperty(item, "flags"))));
+props[4,1] := val[3,1];
+props := cint(props);
+SetObjProperty(item, "flags", props);
+
+endfunction
+
+
+function changedata(type)
+
+local value := SendTextEntryGump( who, "Enter the new value to " + type, 10 );
+if (!value)
+	SendSysMessage(who, "Cancelled");
+	return 0;
+endif
+
+if(cint(value) >0 or value ="0") //valid int
+	value := cint(value);
+else
+	if(type = "template" or type = "note")
+		value := cstr(value);
+	else
+		SendSysMessage(who, "Invalid data type");
+		return 0;
+	endif
+endif
+
+SetObjProperty(item, type, value);
+SendSysMessage(who, "You have set " +type+ " to " +value);
+return 1;
+endfunction
+
+
+//test all props of a rune
+function checkrune()
+/*
+Routine:
+//done
+-check fields that are tipe independant
+	mintime
+	maxtime
+	range
+	maxamount
+//done
+-check the composed field
+	flags
+	type
+	max num
+//done
+-check fields with  dependancy
+	amount
+	aux
+	template
+//done
+-check flags for any incompatibility
+//done
+-check if the rune is online
+//not needed but should be a nice idea
+-send some warnings and advices
+*/
+
+local spawnnet := GetObjProperty(item, "spawnnet");
+
+if(!spawnnet or spawnnet = error)
+	spawnnet :=0;
+endif
+//1st stage
+if(check("mintime") = -1)
+	return 0;
+endif
+if(check("maxtime") != 0)
+	return 0;
+endif
+
+if(GetObjProperty(item,"maxtime") < GetObjProperty(item,"mintime"))
+	SendSysMessage(who, "The maxtime must be greater than the mintime");
+	return 0;
+endif
+
+if(check("range") = -1)
+	return 0;
+endif
+if(check("maxamount") !=0)
+	return 0;
+endif
+
+//2nd stage
+local props := cstr(hex(cint(GetObjProperty(item, "flags"))));
+local temp,opts := {};
+
+//type
+temp := "0x"+props[3,1];
+temp := cint(temp);
+if(!temp or temp > 3)
+	Sendsysmessage(who, "Bad or disabled spawn type");
+	return 0;
+endif
+opts[1] := temp;
+
+//flags
+temp := "0x"+props[4,1];
+temp := hex(cint(temp));
+if(temp > 0xF)
+	SendSysMessage(who, "Bad flags options");
+	return 0;
+endif
+
+opts[2] := GetFlags(temp);
+
+//max num
+temp := "0x"+props[5,2];
+temp := cint(temp);
+if(!temp or temp > 0xFF)
+	SendSysMessage(who, "Bad amount");
+	return 0;
+endif
+
+opts[3] := temp;
+local temp2,temp3;
+case(opts[1])
+	1: temp := GetObjProperty(item,"template");
+	   if(temp > 0)
+		temp3 := GetConfigStringArray( FindConfigElem(ReadConfigFile("groups"), temp), "spawn");
+		if(!temp3 or temp3.errortext)
+			SendSysMessage(who, "Bad group entry, look at groups.cfg for "+temp+" entry");
+			return 0;
+		endif
+		temp2 := CreateNpcFromTemplate( temp3[RandomInt(cint(len(temp3)))+1], 5283,1184,0 );
+		if (temp2.errortext or temp2 = error)
+			SendSysMessage(who, "Bad npc template type in group.cfg. Check the '" + temp + "' entry.");
+			return 0;
+		endif
+   	   else
+		temp2 := CreateNpcFromTemplate( temp, 5283,1184,0 );
+		if (temp2.errortext or temp2 = error)
+			SendSysMessage(who, "NPC template not found, check the template field for errors.");
+			return 0;
+		endif
+	   endif
+	   RevokePrivilege( temp2, "invul" );
+	   SetObjProperty(temp2, "guardkill", 1);
+	   ApplyRawDamage( temp2, (temp2.maxhp+1) );
+
+	   if(opts[2][1])  //grouping
+		if(opts[3] > GetObjProperty(item, "maxamount"))
+			SendSysMessage(who, "Max number can't be greater than Max Amount, since it's impossible");
+			SendSysMessage(who, "to spawn more creatures than the limit at once.");
+			return 0;
+		endif
+	   endif
+
+	2: temp := GetObjProperty(item,"template");
+	   if(temp > 0)
+		temp3 := GetConfigStringArray( FindConfigElem(ReadConfigFile("igroups"), temp), "spawn");
+		if(!temp3 or temp3.errortext)
+			SendSysMessage(who, "Bad group entry, look at igroups.cfg for "+temp+" entry");
+			return 0;
+		endif
+		temp2 := CreateItemAtLocation(5283,1184,0, temp3[RandomInt(cint(len(temp3)))+1], opts[3]);
+		if (temp2.errortext or temp2 = error)
+			SendSysMessage(who, "Bad item template type in igroup.cfg. Check the '" + temp + "' entry.");
+			return 0;
+		endif
+   	   else
+		temp2 := CreateItemAtLocation(5283,1184,0, temp, opts[3]);
+		if (temp2.errortext or temp2 = error)
+			SendSysMessage(who, "Item  template not found, check the template field for errors.");
+			return 0;
+		endif
+	   endif
+	   destroyitem(temp2);
+	   if(opts[2][3] < 1 or !opts[2][3]) //pile amount is not defined
+		SendSysMessage(who, "Pile amount is not set");
+		return 0;
+	   endif
+
+	   if(opts[2][1] and opts[2][2])
+		SendSysMessage(who, "You can't use grouping and container spawn together, disable ether one");
+		return 0;
+	   endif
+
+	   if(opts[2][1])  //grouping
+		temp := GetObjProperty(item, "aux");
+		if(!temp or temp = error or temp.errortext)
+			SendSysMessage(who,"Max amount is not set");
+			return 0;
+		endif
+		if(temp > GetObjProperty(item, "maxamount"))
+			SendSysMessage(who, "Max number can't be greater than Max Amount, since it's impossible");
+			SendSysMessage(who, "to spawn more creatures than the limit at once.");
+			return 0;
+		endif
+	   endif
+
+	   if(opts[2][2]) //container spawn
+		if(!item.container)
+			SendSysMessage(who, "Mother container not found, move the rune to the proper container");
+			return 0;
+		else
+			var cnt := item.container;
+			while(cnt.container.serial)
+				cnt := cnt.container;
+			endwhile
+			var spn := GetObjProperty(cnt,"spawnnet");
+			//checks if need to set the spawnnet prop on the container
+			if(!spn and spawnnet)
+				SetObjProperty(cnt, "spawnnet", spawnnet);
+				SendSysMessage(who,"The TL container have been set to hold spawn runes");
+			endif
+			SetObjProperty(item, "aux", cnt.serial);
+		endif
+		if(opts[2][4])
+			SendSysMessage(who, "Cannot use 'leave base items' with container spawn");
+			return 0;
+		endif
+	   endif
+
+	3: temp := GetObjProperty(item,"template");
+	   temp2 := CreateItemAtLocation(5283,1184,0, temp, opts[3]);
+	   if(temp2.errortext or temp2 = error)
+			SendSysMessage(who, "Container template not found, check the template field for errors.");
+			return 0;
+	   endif
+	   if(EnumerateItemsInContainer(temp2) = error)
+		SendSysMessage(who, "Template is not a container");
+		return 0;
+	   endif
+	   destroyitem(temp2);
+endcase
+
+if(!spawnnet)
+	return 2;
+endif
+return 1;
+
+endfunction
+
+
+
+function processname(type, flags)
+
+local template := GetObjProperty(item, "template");
+local temp,temp2;
+case(type)
+	1: if(!cint(template))
+		item.name := template + " NPC spawn";
+	   else
+		item.name := "group " + template + " NPC spawn";
+	   endif
+
+	2: temp := CreateItemAtLocation(item.x,item.y,item.z, cint(template), 1);
+	   temp2 := temp.desc;
+	   destroyitem(temp);
+	   if(flags[3])
+		   item.name := " group " +temp2 + " item spawn";
+	   else
+		item.name := temp2 + " item spawn";
+	   endif
+
+	3: temp := CreateItemAtLocation(item.x,item.y,item.z, cint(template), 1);
+	   temp2 := temp.desc;
+	   destroyitem(temp);
+	   item.name := temp2 + " container spawn";
+endcase
+
+endfunction
+
+
+// -1 error, 0 normal, 1 prop ==0
+function check(prop)
+
+local temp := cint(GetObjProperty(item, prop));
+if(temp = error or temp.errortext)
+	SendSysMessage(who, "Field " +prop+ " is showing problems");
+	return -1;
+endif
+
+if(temp < 1)
+	return 1;
+endif
+
+return 0;
+
+endfunction

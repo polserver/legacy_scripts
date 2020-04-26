@@ -1,0 +1,3 @@
+program textcmd_setstrmod( who, strmod )
+    who.strength_mod := CInt(strmod);
+endprogram

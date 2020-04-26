@@ -1,0 +1,27 @@
+use uo;
+use util;
+use os;
+use util;
+
+program makeswarm (character, template)
+
+local x;
+local y;
+local z;
+local tempname := splitwords(template);
+local count := tempname[1];
+local templ := tempname[2];
+local startx := character.x - cint(count);
+local starty := character.y - cint(count);
+local endx := character.x + cint(count);
+local endy := character.y + cint(count);
+
+for (x := startx; x <= endx; x := x + 1)
+        for (y := starty; y <= endy; y := y + 1)
+                print ("creating " + templ + " at " + x + " , " + y );
+                createnpcfromtemplate(templ, x, y, getmapinfo(x,y).z);
+                sleepms(500);
+        endfor
+endfor
+
+endprogram        

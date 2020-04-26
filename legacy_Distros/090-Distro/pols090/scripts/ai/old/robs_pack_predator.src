@@ -1,0 +1,223 @@
+////////////////////////////////////////////////////////////////
+//
+//  Rob's pack predator
+//
+//  Pack predators have a few defining characteristics:
+//
+//  1. They organize around a leader
+//  2. They can take orders from the leader (!)
+//  3. They can span across several species (!)
+//
+//  A pack predator without a leader is, essentially, just
+//  another wandering predator.
+//
+///////////////////////////////////////////////////////////////
+use npc;
+use uo;
+
+include "util/creature";
+include "util/buddies";
+include "util/spawn";
+include "util/conflicts";
+
+//////////////////////////////////////////////////////////////
+
+global mypack         := 0;
+global half_health    := Cint(me.maxhp / 2);
+global BadGuy_leader  := 0;
+global samePackType   := 0;
+global samePack       := 0;
+
+Const  HATE_HUMIES    := 0;
+Const  LEADER_SAYS_SO := 1;
+Const  MY_PACK_BETTER := 2;
+Const  PACK_WAR       := 3;
+
+function no_clans ( him )
+     
+   local hisLeader := Cint( GetObjProperty( him, "leader" ) );
+
+   if (((me = Leader.serial) or (hisLeader = him.serial))  // at least one of us is a leader
+     and (Leader != hisLeader) )                          // and we're in different packs
+      return 1;
+   else
+      return 0;
+   endif
+
+endfunction
+
+
+function set_BadGuy( badGuy, fight_reason )
+
+   SetObjProperty(me, "BadGuy", badGuy.serial);
+   co_target( badGuy );
+   if (fight_reason = 0)     say( "I hate humies!" );
+   elseif (fight_reason = 1) say( "Leader say we fight!" );
+   elseif (fight_reason = 2) say( "My pack better than yours!" );
+   elseif (fight_reason = 3) say( "Pack war!" );
+   endif
+
+endfunction
+
+////////////////////////////////////////////////////////
+//
+//  I will join their pack
+//
+////////////////////////////////////////////////////////
+function join_his_pack( member )
+
+   Leader := Cint( GetObjProperty(member, "leader") );
+
+   if (me = Leader.serial)
+      return;
+   endif
+
+   if (Leader = "")  // guess who gets promoted?
+      Leader := member;
+      SetObjProperty( member, "leader", Leader.serial );
+      say( "Me leader!" ); 
+   else
+      say( "Me join" );
+   endif
+
+   SetObjProperty( me, "leader", Leader.serial );
+
+endfunction
+
+/////////////////////////////////////////////////////////////////
+//
+//   Utility Functions
+// 
+/////////////////////////////////////////////////////////////////
+function same_pack ( him )
+
+   if (Leader = 0)
+      return 0;
+   endif
+
+   local hisLeader := Cint( GetObjProperty( him, "leader" ) );
+
+   if ( Leader = hisLeader )
+      return 1;
+   else
+      return 0;
+   endif
+
+endfunction
+
+
+function dealWithPotentialRecruit( recruit )
+
+   local hisPackType := Cint(GetObjProperty(recruit, "pack_type"));
+
+   if (hisPackType = pack_type)
+      samePackType := 1;
+
+      if (same_pack( recruit ))
+         samePack := 1;
+      else
+         samePack := 0;
+
+         local packOrder := Cint( GetObjProperty( recruit, "pack_order" ) );
+
+         if ( packOrder > pack_order)
+            join_his_pack( recruit );        // ok, sign me up
+         elseif ( packOrder = pack_order and BadGuy = 0 )
+            set_BadGuy( recruit, MY_PACK_BETTER );
+         endif
+
+         return 1;
+      endif
+   else
+      samePackType := 0;
+   endif
+
+   return 0;
+
+endfunction
+
+function packLookForTrouble()
+
+   local me     := npc::Self();
+   local nearby := ListMobilesInLineOfSight(me, 5);
+   local crowd  := len( nearby );
+
+   foreach dude in nearby
+
+
+      if ( dealWithPotentialRecruit( dude ) )
+         return crowd;
+      elseif ( Hunger > Cint( GetObjProperty(dude, "aggression") ) // hunting            
+         or ( co_human(dude) and me.hp<me.maxhp ) )            // hunted! 
+         co_target( dude );
+         return crowd;
+      endif
+
+   endforeach
+
+   return crowd;
+
+endfunction
+
+function attendToBusiness()
+
+   //
+   //  The leader's enemy is my enemy
+   //
+   local BadGuy := GetObjProperty( Leader, "BadGuy");
+
+   if (BadGuy)
+      set_BadGuy( BadGuy, LEADER_SAYS_SO );
+      return;                  // found trouble
+   endif
+
+   packLookForTrouble();
+
+endfunction
+
+
+
+function Fight()
+
+   if (Cint(BadGuy) = Cint(me.serial)) // why fight myself?
+      say( "Silly me!  I was fighting myself!" );
+      co_untarget();
+      return; 
+   endif
+  
+   co_fight();
+
+   if ( samePack )
+      co_untarget();
+      return;
+   endif
+     
+   if ((me.hp <= half_health) )
+      if (samePackType)
+         join_his_pack(BadGuy);
+         co_untarget();
+      endif
+   endif
+
+endfunction
+
+///////////////////////////////////////////////////////
+//
+//   Main
+//
+///////////////////////////////////////////////////////
+bu_setDistances( 4, 14 );
+
+while (1)
+     
+   co_eatTheDead();
+
+   if (BadGuy)
+      Fight();
+   elseif (bu_follow( Leader ) = 0)
+      cr_wander();
+   endif
+
+   attendToBusiness();
+
+endwhile

@@ -1,0 +1,45 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+// sspeak.src: Spirit Speak skill script
+//
+// Author: ens
+//
+// Modified: 19990414 ENS fixed sound effect
+//
+/////////////////////////////////////////////////////////////////////////////
+
+use uo;
+use os;
+
+include "include/client";
+
+//  Hmm, what happens if you use spiritspeak while this is running?
+//
+
+program spiritspeak( character )
+    print( "spiritspeak skill" );
+
+    if (CheckSkill( character, SKILLID_SPIRITSPEAK, -1, 20 ))
+        SendSysMessage( character, "You contact the netherworld." );
+    
+        // TODO: DisableSkillUseFor( character, 10 /* seconds */ );
+
+        Detach();
+
+        // TODO: character.hear_ghosts := 1;
+
+        Local i;
+        for( i := 0; i < 4; i := i + 1 )
+                // TODO: make this sound private to the character.
+            PlaySoundEffect( character, SFX_SKILL_SPIRITSPEAK );
+
+            Sleep( 30 );
+        endfor
+
+        // TODO: character.hear_ghosts := 0;
+    else
+        SendSysMessage( character, "You fail to communicate with the netherworld." );
+    endif
+endprogram
+
+

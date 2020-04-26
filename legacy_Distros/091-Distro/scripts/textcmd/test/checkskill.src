@@ -1,0 +1,35 @@
+use os;
+use uo;
+
+set_critical(1);
+
+program textcmd_checkskill( who, skillid )
+    skillid := CInt(skillid);
+
+    local diff;
+    PrintTextAbove( who, "Checking Skill " + skillid + ": " + GetSkill( who, skillid ) );
+    PrintTextAbove( who, "CheckSkill(-1): " + test_checkskill( who, skillid, -1 ) + "%");
+    sleepms( 1500 );
+    for( diff := 0; diff <= 110; diff := diff + 10 )
+        PrintTextAbove( who, "CheckSkill("+diff+"): " + test_checkskill( who, skillid, diff ) + "%");
+        sleepms( 1500 );
+    endfor
+endprogram
+
+function test_checkskill( who, skillid, diff )
+    local good, bad;
+
+    good := 0;
+    bad := 0;
+
+    local i;
+    for( i := 0; i < 100; i := i + 1 )
+        if (CheckSkill( who, skillid, diff, 0 ))
+            good := good + 1;
+        else
+            bad := bad + 1;
+        endif
+    endfor
+
+    return good;
+endfunction

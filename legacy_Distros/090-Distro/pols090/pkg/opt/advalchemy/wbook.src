@@ -1,0 +1,45 @@
+use uo;
+use os;
+
+Program Write_Recipe(user,item)
+  Local use_on := Target( user );
+  Local NewRecipe;
+  if (!use_on)
+      SendSysMessage(user, "Targetting Cancelled");
+      return 0;
+  endif
+  
+  
+  if ( use_on.objtype=0xA100 )
+    Local PotionID:= GetObjProperty( item, "PotionID");
+    Local Recipes:= GetObjProperty( use_on, "recipes");
+ 
+    Local potions := SplitWords( recipes);
+    Local i;
+
+    For (i:=1;i<=len(potions);i:=i+1)
+      If (Cint(Potions[i])=Cint(PotionID))
+        i:=0;
+        break;
+      endif
+    endfor
+    If (!i)
+      SendSysMessage(user, "This Recipe is already in the book");
+      return 0;
+      else
+         If (recipes="blank")
+           NewRecipe:=cstr(potionID);
+           setobjproperty(use_on, "recipes", NewRecipe);
+           else
+             NewRecipe:=Recipes+" "+cstr(PotionID);
+             setobjproperty(use_on, "recipes", NewRecipe);
+         endif             
+        SubtractAmount(item, 1);      
+        SendSysMessage(user, "The Recipe was added to the Book");
+    endif
+    
+    else
+      SendSysMessage(user, "This can only be used on Recipe Books!");
+      return 0;
+  endif
+endprogram

@@ -1,0 +1,89 @@
+//
+// NOTES: someone with 10 int, and 10 mana, will be shown with
+//        "notable reserves of mana".  Is this desired?
+//
+
+use uo;
+use os;
+
+include "include/client";
+include "include/skillpoints";
+program evalint( character )
+   
+    local thepoints := get_default_points(SKILLID_EVALINT);
+    SendSysMessage( character, "Select a target." );
+    local subject := Target(character);
+
+    if (!subject) // targetting cancelled
+        return;
+    endif
+    
+    if (!subject.intelligence)
+        sendsysmessage(character, "That's not very bright, and neither are you for trying to evaluate it!");
+        return;
+    endif
+    
+    if (CheckSkill(character,SKILLID_EVALINT, -1, thepoints))
+        local intel := subject.intelligence;
+        if (intel > 0)
+            local intdesc := GetIntDesc( intel );
+    
+            local percentmana := 100 * subject.mana / subject.maxmana;
+            local manadesc := GetManaDesc( percentmana );
+
+            PrintTextAbovePrivate(subject, "The subject is " + intdesc + " and has " + manadesc, character); 
+        else
+            PrintTextAbovePrivate(subject, "You can't discern anything about that!", character);   
+        endif    
+    else
+        PrintTextAbovePrivate(subject, "You're not sure . . .", character);
+    endif
+
+endprogram
+
+//
+// these could be converted to CASE statements 
+//   case ((intel+9)/10) 
+//          1: 
+//          2: 
+//          3: 4:
+// probably more readable this way, though.
+// a ranged case would be nice.
+//          21 .. 40:
+//          21 to 40: return "not very bright";
+//
+
+function GetIntDesc( intel )
+    if (intel <= 10)
+            return "about as smart as a rock";
+    elseif (intel <= 20) 
+            return "quite stupid";
+    elseif (intel <= 40 )
+            return "not very bright";
+    elseif (intel <= 60 )
+            return "of average intelligence";
+    elseif (intel <= 80 )
+            return "rather bright";
+    elseif (intel <= 100 )
+            return "very intelligent";
+    else
+            return "of godlike wisdom";
+    endif
+endfunction
+
+function GetManaDesc( percentmana )
+    if (percentmana <= 10)
+            return "almost no mana left";
+    elseif (percentmana <= 20) 
+            return "low mana";
+    elseif (percentmana <= 40 )
+            return "moderate mana";
+    elseif (percentmana <= 60 )
+            return "good mana levels";
+    elseif (percentmana <= 80 )
+            return "high mana levels";
+    else  
+            return "notable reserves of mana";                         
+    endif   
+endfunction
+

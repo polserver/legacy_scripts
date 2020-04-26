@@ -1,0 +1,35 @@
+use os;
+use uo;
+use util;
+
+include "include/client";
+
+// FIXME effects?
+
+program effect_poison( parms )
+
+        
+    local cast_on := parms[1];
+    local caster := parms[2];
+    local thepoison := parms[3];
+    local poison_level;
+    
+
+
+    SendSysmessage (cast_on, "You have been poisoned by " + caster.name);
+
+
+
+
+    poison_level := Cint(GetObjProperty(cast_on, "poison_level"));
+    if (poison_level > 0 )
+            SendSysmessage (cast_on, "You have been poisoned");
+            poison_level := poison_level + thepoison;
+            SetObjProperty(cast_on, "poison_level",cstr(poison_level));
+    else
+            poison_level := poison_level + thepoison;
+            SetObjProperty(cast_on, "poison_level",cstr(poison_level));
+            start_script( "poisondamage", cast_on ); 
+    endif
+
+endprogram

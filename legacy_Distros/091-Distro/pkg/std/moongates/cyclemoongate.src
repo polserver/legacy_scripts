@@ -1,0 +1,45 @@
+///////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////
+//  CYCLEMOONGATE.SRC - controlscript for system moongates.
+//
+//  This script cycles the location the moongate "points" to.
+//
+//  Author: Ignatius 1999/05/29
+//
+////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////
+
+use os;
+use uo;
+
+program cycle_moongate( moongate )
+
+    var indexCurrent;
+    var indexSelf    := GetObjProperty( moongate , "IndexSelf" );
+
+	while (1)
+       
+        // wait 5 minutes between cycles.
+        // this oughta be changed later when the day/night/time system
+        // is evolved a litte bit more.
+        sleep(300);
+
+        indexCurrent := GetObjProperty( moongate , "IndexCurrent" );
+        
+        indexCurrent := indexCurrent + 1;
+
+        // check so we don't point at our own location.
+        if( indexCurrent = indexSelf )
+            indexCurrent := indexCurrent + 1;
+        endif
+
+        // check so we point at a valid location ( 1 - 8 ).
+        if( indexCurrent > 8 )
+            indexCurrent := 1;
+        endif
+
+        SetObjProperty( moongate, "IndexCurrent", indexCurrent );
+
+	endwhile
+endprogram
+

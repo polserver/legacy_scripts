@@ -1,0 +1,18 @@
+use uo;
+use cfgfile;
+include "include/client";
+
+program clean(who, reg)
+
+if (checkskill(who, SKILLID_ALCHEMY, -1, 50))
+        local cfg := readconfigfile("::itemdesc");
+        local what := cfg[reg.objtype].product;
+        local howmuch := cfg[reg.objtype].produceamount;
+        createiteminbackpack(who, what, howmuch);
+        destroyitem(reg);
+        sendsysmessage(who, "You successfully cull the reagent");
+else
+        destroyitem(reg);
+        sendsysmessage(who, "You pick the plant down to nothing");
+endif
+endprogram

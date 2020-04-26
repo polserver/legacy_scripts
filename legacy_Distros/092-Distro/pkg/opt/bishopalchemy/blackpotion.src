@@ -1,0 +1,19 @@
+use os;
+use uo;
+use cfgfile;
+include "drinkpotion";
+
+program drink_blue(who, potion)
+  EraseObjProperty(who, "IsMeditating");
+  if(potion.movable = 0)
+    SendSysMessage(who, "You cannot drink that.");
+    return;
+  endif
+  if(!checkifcandrink(who, "black"))
+    return;
+  endif
+  empty_bottle(who, potion);
+  PlaySoundEffect(who, 0x1e4);
+  PlayObjectCenteredEffect( who, 0x373a, 10,10);
+  who.setlightlevel( 0, 1800 );
+endprogram

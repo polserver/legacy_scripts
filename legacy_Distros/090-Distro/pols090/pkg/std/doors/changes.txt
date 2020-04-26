@@ -1,0 +1,11 @@
+std-doors (POL076)
+==================
+4/5/00[Madman Across the Water] Rewrite for complete functionality
+11/15/99 [Dundee]	Added autosearch for keys in pack and on keyrings.
+
+    Verified ready for release.
+    First packaged version.
+    - Syzygy <syzygy@pobox.com> 19990704
+
+Added several more door types 
+	-- Dream Weaver (19991102)

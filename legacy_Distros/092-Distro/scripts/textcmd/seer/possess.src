@@ -1,0 +1,28 @@
+// .possess command v1.0
+// Author: Dundee
+// Allows players to take control of NPCs, similar to the "control"
+// command in Sphere.  Just type .possess and target the NPC.  Use
+// the .unpossess command to go back to your own body.  NOTE:
+// Requires the file possess.inc to be in your scripts/
+// include directory at compile time.
+
+use uo;
+use os;
+
+include "include/client";
+include "include/possess";
+
+program textcmd_possess( me )
+
+	set_critical(1);
+
+	local npc := Target( me , TGTOPT_NOCHECK_LOS );
+	if (!npc.npctemplate)
+		sendsysmessage(me, "That is not an NPC!");
+		return;
+	endif
+
+	possess(me, npc);
+
+endprogram
+

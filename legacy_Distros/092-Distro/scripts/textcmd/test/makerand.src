@@ -1,0 +1,27 @@
+use os;
+use uo;
+use util;
+
+include "include/client";
+
+program textcmd_makerand( who, howmany )
+    howmany := CInt( howmany );
+    SendSysMessage( who, "Creating " + howmany + " items" );
+    
+    set_priority( 50 );
+    
+    local x, y, z, item;
+
+    while (howmany > 0)
+        x := RandomInt( 6144 );
+        y := RandomInt( 4096 );
+        z := GetMapInfo( x, y ).z;
+        item := CreateItemAtLocation( x, y, z, 0xF7B, 1 );
+        if (item)
+            item.decayat := 0;
+            howmany := howmany - 1;
+        endif
+        DestroyItem( item );
+    endwhile // FIXME if 'endfor' here, prints an incorrect error!
+    SendSysMessage( who, "Done creating items!" );
+endprogram

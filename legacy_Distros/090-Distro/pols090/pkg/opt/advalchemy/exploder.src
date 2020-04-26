@@ -1,0 +1,55 @@
+use uo;
+use cfgfile;
+use os;
+use util;
+
+Const MOVING_EFFECT_PURPLE_POTION  := 0x0F0D; 
+Const SOUND_EFFECT_EXPLOSION	   := 0x208; 
+Const EFFECT_EXPLOSION             := 0x36b0;
+program exploder(parms)
+
+var potions := {0xdc08, 0xdc09, 0xdc07};
+
+    local itemdef := readconfigfile("itemdesc");
+
+    if (!itemdef)
+        print ("couldn't open itemdesc");
+        return;
+    endif
+
+    local telem := itemdef[parms[1].objtype];
+    if (! telem)
+        print ("Couldn't find elem " + cstr(parms[1].objtype));
+    endif
+
+    local potion_strength := telem.Strength;
+    local thecenter := parms[1];
+    
+    while (thecenter.container)
+        thecenter := thecenter.container;
+    endwhile
+    
+     SetScriptController( parms[2] );
+     PlayObjectCenteredEffect( parms[1], EFFECT_EXPLOSION, 7 , 0x10 );
+     parms[1].graphic := 1;
+     
+     foreach critter in ListMobilesNearLocationEx( thecenter.x,thecenter.y,thecenter.z, potion_strength, LISTEX_FLAG_NORMAL + LISTEX_FLAG_HIDDEN );
+        PlayObjectCenteredEffect( critter, EFFECT_EXPLOSION, 7 , 0x10 );
+        PlaySoundEffect( critter,  SOUND_EFFECT_EXPLOSION );
+        local dmg := ( Randomint(19) + 1 ) * potion_strength;
+        dmg := dmg + 2;
+         ApplyRawDamage(critter, dmg ); // note this is raw damage
+     endforeach
+     
+     foreach item in ListItemsNearLocation( thecenter.x,thecenter.y,thecenter.z, potion_strength)
+        if (item.objtype in potions and item.serial != parms[1].serial)
+                local parm := array;
+                parm[1] := item;
+                parm[2] := parms[2];
+                start_script ("exploder", parm);
+        endif
+     endforeach
+     destroyitem(parms[1]);     
+endprogram
+
+     

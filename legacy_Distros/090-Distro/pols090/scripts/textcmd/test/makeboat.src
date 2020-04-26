@@ -1,0 +1,24 @@
+use os;
+use uo;
+
+program makeboat( who, boattype )
+    boattype := CInt(boattype);
+    local boatadd := (who.facing / 2) - 1;
+    if (boatadd < 0) 
+        boatadd := boatadd + 4;
+    endif
+
+    boattype := boattype + boatadd;
+
+    local where := TargetMultiPlacement( who, boattype );
+    if (where)
+        SendSysMessage( who, "You placed at " + where.x + "," + where.y + "," + where.z );
+        local result := CreateMultiAtLocation( where.x, where.y, where.z, boattype );
+        if (result)
+            SendSysMessage( who, "Bon voyage!" );
+        else
+            SendSysMessage( who, "Unable to create boat: " + result.errortext );
+        endif
+    endif
+endprogram
+

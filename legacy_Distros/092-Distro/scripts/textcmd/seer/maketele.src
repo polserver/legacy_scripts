@@ -1,0 +1,65 @@
+//# 2-way teleporter
+//Item 0x6203
+//{
+//    Name            dungtele
+//    Graphic         1FD4
+//    WalkOnScript    makedtele
+//    Movable         0
+//    Invisible       1
+//    SaveOnExit	    1
+//}
+//
+// *  - Makes the gates invisible after a period of time has elapsed.
+
+use os;
+use uo;
+
+include "include/client";
+include "include/objtype";
+
+program make_a_tele( seer )
+
+    SendSysmessage( seer, "Select a rune to gate from." );
+
+    local rune := Target( seer, TGTOPT_NOCHECK_LOS );
+
+    if (!rune)
+            SendSysmessage (seer, "Targetting cancelled.");
+            return;
+    endif
+
+    if (rune.objtype != UOBJ_RUNE)
+            SendSysmessage(seer, "You can only use this on a rune!");
+            return;
+    endif
+
+	local tox := Cint(GetObjProperty( rune, "x" ));
+	local toy := Cint(GetObjProperty( rune, "y" ));
+	local toz := Cint(GetObjProperty( rune, "z" ));
+
+    set_critical( 1 );
+    local gate1 := CreateItemAtLocation( seer.x, seer.y, seer.z, 0x6203, 1 );
+    local gate2 := CreateItemAtLocation( tox, toy, toz, 0x6203, 1 );
+    if (!gate1 or !gate2)
+        return;
+    endif
+
+    SetObjProperty( gate1, "DestX", gate2.x );
+    SetObjProperty( gate1, "DestY", gate2.y );
+    SetObjProperty( gate1, "DestZ", gate2.z );
+    SetObjProperty( gate2, "DestX", gate1.x );
+    SetObjProperty( gate2, "DestY", gate1.y );
+    SetObjProperty( gate2, "DestZ", gate1.z );
+
+    Detach();
+
+    set_critical( 0 );
+
+    sleep(30);
+    
+    set_critical(1);
+    gate1.graphic := 1;
+    gate2.graphic := 1;
+    set_critical(0);
+
+endprogram

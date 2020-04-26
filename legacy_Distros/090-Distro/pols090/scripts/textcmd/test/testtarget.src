@@ -1,0 +1,14 @@
+use uo;
+
+program textcmd_testtarget( who )
+    SendSysMessage( who, "Target something." );
+
+    local what := TargetCoordinates( who );
+    if (what)
+        if (what.item)
+            SendSysMessage( who, "You targetted an item: " + what.item.desc );
+        elseif (what.mobile)
+            SendSysMessage( who, "You targetted a mobile: " + what.mobile.name );
+        endif
+    endif
+endprogram

@@ -1,0 +1,149 @@
+use uo;
+use cfgfile;
+use os;
+use util;
+
+include "include/client";
+include "include/objtype";
+include "include/utility";
+include "include/dist";
+
+Const UACTION_CHOP := 0x0D;
+
+program use_axe( me , axe )
+
+	ReserveItem(axe);
+
+	if (! IsAxEquipped (me, axe) )
+		SendSysmessage(me,"You have to equip that to lumberjack!");
+		return;
+	endif
+
+	local Tree := TreeNearby(me);
+
+	If (Tree)
+		SendSysMessage(me, "You begin chopping...");
+		repeat			
+		until (!Do_Chops (me, axe, tree, me.x, me.y));
+	endif
+
+endprogram
+
+function Do_Chops (me, axe, tree, mex, mey)
+
+	local difficulty := GetHarvestDifficulty( "wood", tree.x, tree.y, tree.objtype );
+	if (difficulty = error)
+        	SendSysmessage(me, "There's not enough wood here to chop");
+        	return 0;
+    	endif
+
+	local i;
+	local num_chops;
+	local theamount;
+	local wood_amount;
+	local distt;
+
+	num_chops := randomint(3) + 2;
+    
+	for(i := 1; i <= num_chops; i := i + 1)
+		performaction(me, UACTION_CHOP);
+		PlaySoundEffect(me, SFX_SKILL_LUMBERJACK);
+		sleep(1);
+		if ( (me.x != mex) or (me.y != mey)  )
+			SendSysmessage(me,"You stop chopping.");
+          		return 0;
+		endif
+	endfor
+
+	if (CheckSkill(me, SKILLID_LUMBERJACKING, difficulty, difficulty*10))
+        	local theroll := randomint(100) + 1;
+    
+		if (theroll = 100)
+			if (HarvestResource( "wood", tree.x, tree.y, 1, 1 ))
+				SendSysmessage (me, "You have found some deadwood!");
+				CreateItemInBackpack(me, UOBJ_DEAD_WOOD, 1);
+				return 0;
+			endif
+        	else
+                 
+            		wood_amount := HarvestResource( "wood", tree.x, tree.y, 1, 10 );
+
+			if (wood_amount = 0)
+				SendSysmessage(me, "There's not enough wood here to chop.");
+				return 0;
+			endif
+	    
+			CreateItemInBackpack(me, UOBJ_LOGS, wood_amount);
+			SendSysmessage(me, "You put some logs in your backpack");
+			return 1;
+		endif
+	else
+		SendSysmessage(me, "You fail to get any usable wood.");
+		return 1;
+	endif
+
+endfunction
+
+function TreeNearBy (me)
+
+    SendSysmessage( me , "Select a tree to chop." );
+
+    Local tree := Targetcoordinates( me );
+    if (!tree)
+        return 0;
+    endif
+
+    local distt := coordist( me.x, me.y, tree.x, tree.y );
+    if( distt > 1 )
+        SendSysmessage(me,"That is too far away");
+        return 0;
+    endif
+
+    local difficulty := GetHarvestDifficulty( "wood", tree.x, tree.y, tree.objtype );
+    if (difficulty = error)
+	SendSysmessage(me, "There's not enough wood here to chop.");
+	return 0;
+    endif
+
+     if ( is_tree(tree.objtype) )
+	return tree;
+     else
+        SendSysmessage(me,"You cannot harvest wood from that.");
+	return 0;
+     endif
+
+endfunction
+
+function is_tree(theobj)
+        if ((theobj = 0x0c9e) or (theobj = 0x0ca8) or (theobj = 0x0caa) )
+                return 1;
+        elseif (theobj = 0x0cab)
+                return 1;
+        elseif ((theobj >= 0x0c99) and (theobj <= 0x0cea))
+                return 1;
+        elseif ((theobj >= 0x0cf3) and (theobj <= 0x0d03))
+                return 1;
+        elseif ((theobj >= 0x0d41) and (theobj <= 0x0dab))
+                return 1;
+        elseif ((theobj >= 0x0d37) and (theobj <= 0x0d38))
+                return 1;
+        else
+                return 0;
+        endif
+endfunction
+
+function IsAxequipped (me,axe)
+
+	if ( (!Accessible(me,axe)) or (distance(me, axe) > 1) )
+        	return 0;
+    	endif
+
+    	foreach item in listequippeditems (me)
+    		if (axe.serial = item.serial )
+			return 1;
+		endif
+	endforeach
+
+	return EquipItem(me, axe );
+
+endfunction

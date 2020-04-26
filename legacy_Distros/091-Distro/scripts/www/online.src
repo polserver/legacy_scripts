@@ -1,0 +1,17 @@
+use http;
+use uo;
+
+WriteHtml( "<html><head><title>POL On-Line Characters</title></head>" +
+           "<body>" +
+           "<center>:</center>" +
+           "<div align=center>" +
+           "<table border=1 cellspacing=0 cellpadding=5>" +
+           "  <tr bgcolor=#99CCFF><td>Characters Currently On-Line</td></tr>"  );
+
+foreach chr in EnumerateOnlineCharacters()
+    WriteHtml( "<tr><td>" + chr.name + "</td></tr>" );
+endforeach
+
+WriteHtml( "</table></div>" );
+
+WriteHtml( "</BODY></HTML>" );

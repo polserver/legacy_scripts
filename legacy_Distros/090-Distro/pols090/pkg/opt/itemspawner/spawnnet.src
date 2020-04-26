@@ -1,0 +1,272 @@
+//ver 0.43
+
+use uo;
+use os;
+use util;
+use cfgfile;
+use basic;
+
+include "spawnnet";
+
+
+global deletedpool := { };
+global deathpool := { };
+global createpool := { };
+global refreshpool := { };
+global runes := { };
+global TempArray := { };
+
+global cfg := ReadConfigFile ("groups");
+if(!cfg)
+	syslog("couldn't load groups.cfg, aborting");
+	return 0;
+endif
+
+Program SpawnNet()
+// BuildSpawnNet
+
+local SpawnNet:=0;
+
+var i,j,k;
+Local temp,temp2;
+
+
+runes.+x := { } ;
+runes.+y := { } ;
+//runes.+id := { } ;
+runes.+mintime := { } ;
+runes.+maxtime := { } ;
+runes.+range := { } ;
+runes.+template := { } ;
+//runes.+cfg := { } ;
+runes.+maxamount := { } ;
+runes.+amount := { } ;
+
+
+syslog("Comecando a criar o runes array, aguardar");
+
+//Start up sequence
+
+//Build Up the Runes Array
+set_critical(1);
+  foreach obj in ListObjectsInBox(0, 0, -128, 10000, 10000, 128)
+
+  if (obj.objtype = 0xa300)
+	spawnnet := cint(GetObjProperty(obj, "spawnnet"));
+	if (spawnnet)
+		if (runes.x[spawnnet])		//verifica por ids duplicados
+			syslog("runa com id duplicado: " + spawnnet + ", reposicionando");
+			TempArray.append(obj);	  //coloca no array temporario
+		else //creates all the arrays props
+			runes.x[spawnnet] := cint(obj.x);
+			runes.y[spawnnet] := cint(obj.y);
+			runes.mintime[spawnnet] := cint(GetObjProperty(obj, "mintime"));
+			runes.maxtime[spawnnet] := cint(GetObjProperty(obj, "maxtime"));
+			runes.range[spawnnet] := cint(GetObjProperty(obj, "range"));
+			runes.template[spawnnet] := GetObjProperty(obj, "template");
+			runes.maxamount[spawnnet] := cint(GetObjProperty(obj, "maxamount"));
+		endif
+	else
+		syslog("bad spawn rune at: " +obj.x + ", " +obj.y + " " +obj.z);
+	endif
+  endif
+
+  endforeach
+
+//runas com id duplicado recolocador.
+
+for(i:=0;i<=TempArray.size();i:=i+1)
+	spawnnet := (len(runes.x)+1);
+	runes.x[spawnnet] := cint(TempArray[i].x);
+	runes.y[spawnnet] := cint(TempArray[i].y);
+	runes.mintime[spawnnet] := cint(GetObjProperty(TempArray[i], "mintime"));
+	runes.maxtime[spawnnet] := cint(GetObjProperty(TempArray[i], "maxtime"));
+	runes.range[spawnnet] := cint(GetObjProperty(TempArray[i], "range"));
+	runes.template[spawnnet] := GetObjProperty(TempArray[i], "template");
+	runes.maxamount[spawnnet] := cint(GetObjProperty(TempArray[i], "maxamount"));
+endfor
+
+//limpa o array temporario
+
+TempArray := { };
+
+//Cria o array runes.amount[] baseado nas runas do mundo.
+
+for( i := 6144 ; i > 32 ; i := i  - 32)
+    for( j := 32; j < 4096; j := j + 32 )
+        for( k := -128; k <= 128; k := k + 32 )
+            foreach npc  in ListMobilesNearLocation( i, j, k, 32);
+		spawnnet := cint(GetObjProperty(npc, "spawnnet"));
+		if (spawnnet)
+			if (runes.amount[spawnnet])
+				runes.amount[spawnnet] := cint(runes.amount[spawnnet] +1);
+			endif
+		endif
+            endforeach
+        endfor
+    endfor
+endfor
+
+//Cria spawn childs para todas runas que precisem.
+for(i:=1; i <=len(runes.x); i := i+1)
+	if (runes.maxamount[i] > runes.amount[i])
+		BuildPropArray(i);
+		start_script("spawnr", TempArray);
+	endif
+endfor
+
+//zera o deathpool global
+SetGlobalProperty("deathpool", { });
+
+
+set_critical(0);
+
+  syslog("Spawn Net Created");
+  syslog("There are " +len(runes.x)+ " runes on the net");
+  syslog("SpawnNet Started");
+
+
+  while(1)
+    
+    // Take From Array Destroyed Spawn Runes
+    
+    deletedpool:=CheckDeletedPool(deletedpool);
+    
+    syslog("Going to DeletedPool Check. " + len(deletedpool) + " runes deleted");
+
+    if(len(deletedpool))
+    	For (i:=1;i<=len(deletedpool);i:=i+1) 
+    	      runes.x[Cint(deletedpool[i])]:=0;
+   	endfor
+    	deletedpool:={ };
+    endif
+
+
+    //o createpool serve soh p/ colocar novas runas no runes{}  e nada alem.
+    //os spawns sao todos controlados em deathpool.
+    //lembresse de JAMAIS colocar 1 runa em x 0 ou ela sera sempre sobrescrita por novas runas
+    //outra coisa, cada entrada no createpool eh 1 objeto.
+
+
+    CreatePool:=CheckCreatedPool(CreatePool);
+    
+    syslog("Going to CreatedPool Check. " + len(createpool) + " runes created");
+
+    if (len(CreatePool))
+    	For (i:=1;i<=createpool.size();i:=i+1) 
+		//verifica por alguma vaga no array
+		for(j:=0; j<=len(runes.x); j:=j+1)
+		temp := Createpool[j];
+			if(!runes.x[j])  //found one
+				runes.x[j] := cint(temp.x);
+				runes.y[j] := cint(temp.y);
+				runes.mintime[j] := cint(GetObjProperty(temp, "mintime"));
+				runes.maxtime[j] := cint(GetObjProperty(temp, "maxtime"));
+				runes.range[j] := cint(GetObjProperty(temp, "range"));
+				runes.template[j] := GetObjProperty(temp, "template");
+				//runes.cfg[j] := cint(GetObjProperty(temp, "cfg"));
+				runes.maxamount[j] := cint(GetObjProperty(temp, "maxamount"));
+				runes.amount[j] := cint(1);
+				SetObjProperty(temp, "spawnnnet", j );
+				BuildPropArray(temp);
+				start_script("spawnr", TempArray);
+			else
+	temp2 := cint(len(runes.x)+1);
+	runes.x[temp2] := cint(temp.x);
+	runes.y[temp2] := cint(temp.y);
+	runes.mintime[temp2] := cint(GetObjProperty(temp, "mintime"));
+	runes.maxtime[temp2] := cint(GetObjProperty(temp, "maxtime"));
+	runes.range[temp2] := cint(GetObjProperty(temp, "range"));
+	runes.template[temp2] := GetObjProperty(temp, "template");
+	runes.maxamount[temp2] := cint(GetObjProperty(temp, "maxamount"));
+	runes.amount[temp2] := cint(1);
+	SetObjProperty(temp, "spawnnnet", j);
+	BuildPropArray(temp);
+	start_script("spawnr", TempArray);
+			endif
+		endfor
+   	endfor
+    endif
+
+    createpool:={};
+
+
+    // Respawn The Runes that had dead creatures
+    //spawner goes he
+    
+   DeathPool:=CheckDeathPool(DeathPool);
+   
+   syslog("Going to DeathPool Check. "+ len(DeathPool) + " runes to respawn");   
+   
+   // In DeathPoll is the RuneSerial Number that the creature Belongs to
+   //formato do input p/ o script de spawn:
+
+
+   
+   if(DeathPool)
+	for(i:=0;i<=DeathPool.size();i:=i+1)
+		if(runes.x[DeathPool[i]])
+			runes.amount[DeathPool[i]] :=cint( runes.amount[DeathPool[i]] -1 );
+		endif
+	endfor
+
+	for(i:=0;i<=DeathPool.size();i:=i+1)
+		if(runes.x[DeathPool[i]]) //the parameters of the script
+			BuildPropArray(DeathPool[i]);
+			start_script("spawnr", TempArray);
+		endif
+	endfor
+    endif
+    DeathPool := { };
+    
+
+//Refresh Pool, change the atr of the queued runes.
+    
+    refreshpool := CheckRefreshPool(refreshpool);
+    
+    if(refreshpool)
+	For(i:=1; i<=refreshpool.size();i:=i+1)
+    		temp := SystemFindObjectBySerial(refreshpool[i]);
+		temp2 := GetObjProperty(temp, "spawnnet");
+    		if (temp2)
+        		runes.x[temp2] := cint(temp.x);
+			runes.y[temp2] := cint(temp.y);
+			runes.mintime[temp2] := cint(GetObjProperty(temp, "mintime"));
+			runes.maxtime[temp2] := cint(GetObjProperty(temp, "maxtime"));
+			runes.range[temp2] := cint(GetObjProperty(temp, "range"));
+			runes.template[temp2] := GetObjProperty(temp, "template");
+			runes.maxamount[temp2] := cint(GetObjProperty(temp, "maxamount"));
+		endif
+    	endfor
+    endif
+    temp := 0;
+    temp2 := 0;
+
+
+    syslog("Going to SpawnNet Sleep");
+    detach();
+    sleep(60);
+  endwhile;
+
+
+endprogram
+
+//loops maxtime mintime x y  range npctemplate spawnnet
+function BuildPropArray(temp)
+
+temparray[1] := cint( runes.maxamount[temp] - runes.amount[temp] );
+temparray[2] := cint( runes.maxtime[temp] );
+temparray[3] := cint( runes.mintime[temp] );
+temparray[4] := cint( runes.x[temp] );
+temparray[5] := cint( runes.y[temp] );
+temparray[6] := cint( runes.range[temp] );
+
+if(runes.template[temp] > 0)
+	temparray[7] :=GetConfigStringArray( FindConfigElem(cfg, runes.template[temp]), "spawn");
+else
+	temparray[7] := cstr( runes.template[temp] );
+endif
+
+temparray[8] := cint(temp);
+
+endfunction

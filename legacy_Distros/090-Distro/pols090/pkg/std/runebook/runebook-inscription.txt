@@ -1,0 +1,79 @@
+make these changes to inscription for crafting runebooks:
+
+
+    elseif((the_item.objtype = 0x1f14) or (the_item.objtype = 0x1f15))
+      CreateRunebook(character, the_item);
+      return;
+    else
+
+function CreateRunebook(who, the_item)
+  sendsysmessage(who,"target the scrolls you wish to make the book out of. [needs 8]");
+  local scrolls := target(who);
+  if(!reserveitem(scrolls))
+    return;
+  endif
+  if(!scrolls)
+    sendsysmessage(who,"cancelled.");
+    return;
+  endif
+  if(scrolls.objtype != 0xe34)
+    sendsysmessage(who,"those are not blank scrolls.");
+    return;
+  endif
+  if(scrolls.amount < 8)
+    sendsysmessage(who,"there are not enough blank scrolls for that.");
+    return;
+  endif
+  sendsysmessage(who,"target a recall scroll. [needs 1]");
+  local recall := target(who);
+  if(!reserveitem(recall))
+    return;
+  endif
+  if(!recall)
+    sendsysmessage(who,"cancelled.");
+    return;
+  endif
+  if(recall.objtype != 0x1f4c)
+    sendsysmessage(who,"that is not a recall scroll.");
+    return;
+  endif
+  sendsysmessage(who,"target a gate scroll. [needs 1]");
+  local gate := target(who);
+  if(!reserveitem(gate))
+    return;
+  endif
+  if(!gate)
+    sendsysmessage(who,"cancelled.");
+    return;
+  endif
+  if(gate.objtype != 0x1f60)
+    sendsysmessage(who,"that is not a gate scroll.");
+    return;
+  endif
+  if(CheckSkill(who, SKILLID_INSCRIPTION, 90, 900))
+    if((!SubtractAmount(the_item,1)) or (!SubtractAmount(scrolls, 8)) or (!SubtractAmount(recall, 1)) or (!SubtractAmount(gate, 1)))
+      foreach char in EnumerateOnlineCharacters()
+        if(char.cmdlevel > 2)
+          sendsysmessage(char, "" + who.name + " is attempting to create runebooks without consuming resources.");
+        endif
+      endforeach
+      return;
+    endif
+    if((RandomInt(GetSkill(who, SKILLID_INSCRIPTION)) + 1) > 95)
+	  PlaySoundEffect(who, SOUND_EFFECT_INSCRIPTION); 
+	  SendSysmessage (who, "You create an exceptional runebook and put it into your backpack.");
+      local book := CreateItemInBackpack(who, 0x6100);
+      SetObjProperty(book,"charges", 10);
+      SetObjProperty(book, "maxcharges", 10);
+    else
+	  PlaySoundEffect(who, SOUND_EFFECT_INSCRIPTION); 
+	  SendSysmessage (who, "You create a runebook and put it into your backpack.");
+      local book := CreateItemInBackpack(who, 0x6100);
+      SetObjProperty(book,"charges", 5);
+      SetObjProperty(book, "maxcharges", 5);
+    endif
+  else
+	SendSysmessage (who, "You fail, and destroy the rune");
+    SubtractAmount(the_item,1); 
+  endif
+endfunction

@@ -1,0 +1,29 @@
+use uo;
+use os;
+const ACTION_BOW     := 0x0020;
+
+
+program bow(who, count)
+
+
+local tcount;
+
+if (count)
+        tcount := cint(count);
+else
+        tcount := 1;
+endif
+
+local i;
+for ( i := 1; i <= tcount; i := i + 1)
+foreach critter in listmobilesnearlocation(who.x, who.y, who.z, 15)
+
+        if (critter.graphic in {0x190, 0x191})
+                PerformAction( critter, ACTION_BOW );
+        endif
+endforeach
+sleep(1);
+endfor
+
+endprogram
+

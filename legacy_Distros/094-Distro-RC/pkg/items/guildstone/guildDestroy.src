@@ -1,0 +1,39 @@
+use uo;
+use os;
+
+program guild_destroy(stone)
+  var guild_id:=GetObjProperty(stone,"guild_id");
+  var guild:=FindGuild(guild_id);
+  var i,all:=guild.members;
+  for(i:=1;i<=all.size();i:=i+1)
+    guild.removemember(all[i]);
+    EraseObjProperty(all[i],"guild_id");
+    EraseObjProperty(all[i],"fealty");
+    fixname(all[i]);
+    EraseObjProperty(all[i],"abv");
+    EraseObjProperty(all[i],"talkchat");
+    EraseObjProperty(all[i],"hearchat");
+    all[i].title_guild:="";
+    SendSysMessage(all[i],"You are no longer a member of "+guild.getprop("guildname"),3,34);
+  endfor
+  all:=guild.allyguilds;
+  if (all.size()!=0)
+    for(i:=1;i<=all.size();i:=i+1)
+      guild.removeallyguild(all[i]);
+    endfor
+  endif
+  all:=guild.enemyguilds;
+  if (all.size()!=0)
+    for(i:=1;i<=all.size();i:=i+1)
+      guild.removeenemyguild(all[i]);
+    endfor
+  endif
+  DestroyGuild(guild);
+endprogram
+
+function fixname(who)
+  var abv:=GetObjProperty(who,"abv"),result:=find(who.name," ["+abv+"]",1),name:=who.name;
+  result:=result-1;
+  name:=name[1,result];
+  who.name:=name;
+endfunction

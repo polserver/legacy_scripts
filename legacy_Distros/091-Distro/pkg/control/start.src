@@ -1,0 +1,15 @@
+//--> control <--
+//
+// CONTROL:START.SRC
+//
+// Basically, just calls the "non-critical" start script :)
+//
+// Creator: TJ Houston (Myrathi)
+// Contact: myrathi@templar.dhs.org
+//
+// Created: 05-Apr-2000
+// Updated: 11-Apr-2000
+//
+use os;
+
+start_script( ":control:check_packages" );

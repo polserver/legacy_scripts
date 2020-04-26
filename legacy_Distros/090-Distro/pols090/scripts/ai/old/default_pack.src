@@ -1,0 +1,222 @@
+use npc;
+use uo;
+use util;
+use cfgfile;
+
+const STATE_GUARDING := 0;
+const STATE_WANDERING := 1;
+const STATE_FOLLOWING := 2;
+Const STATE_FIGHTING := 3;
+Const STATE_FLEEING := 4;
+
+include "util/creature";
+include "util/spawn";
+include "util/buddies";
+include "util/conflicts";
+include "util/homeTurf";
+include "include/randname";
+
+global mypack      := 0;
+global half_health := Cint(me.maxhp/2);
+
+global state       := STATE_WANDERING;
+
+global opponent_leader := 0;
+global me_leader       := 0;
+
+
+function join_pack(joiner, member)
+
+local clan := GetObjProperty(member, "leader");
+
+if (clan = cstr(me.serial))
+return;
+endif
+
+if (clan = "")        
+        clan := cstr(member.serial);
+endif
+
+SetObjProperty(joiner, "leader", cstr(clan));
+SetObjProperty(member, "leader", cstr(clan));
+
+if (joiner = me)
+        leader := clan;
+        me_leader := 1;
+        return;
+endif
+
+state := STATE_FOLLOWING;
+/*
+local clan_name:= "";
+local i;
+
+if (joiner.name = member.name)
+        return;
+        else
+  
+if (find(member.name, "of the ",1) > 0)
+        for (i := find(member.name, "of the ",1); i <= len(member.name); i := i + 1)
+               clan_name := clan_name + member.name[i];
+        endfor
+        SetName(joiner, (joiner.name + clan_name) + " Clan");
+else
+clan_name := " of the " + GetRandomClanName();
+Setname(member, (member.name + clan_name + " Clan"));
+Setname(joiner, (joiner.name + clan_name + " Clan"));
+endif
+endif*/
+endfunction
+
+
+function same_clan (me, him)
+
+local myclan;
+local hisclan;
+
+myclan := GetObjProperty(me, "leader");
+hisclan := GetObjProperty(him,"leader");
+
+if ((myclan = "") and (hisclan = ""))
+//        print ("In same_clan, he's *not* in my clan");
+        return 0;
+        
+endif
+if (myclan = hisclan)
+//       print ("In same_clan, he's in my clan");
+	return 1;
+elseif (myclan = Cstr(him.serial))
+//      print ("In same_clan, he's in my clan");
+	return 1;
+	
+elseif (hisclan = cstr(me.serial))
+//        print ("In same_clan, he's in my clan");
+        me_leader := 1;
+        return 1;	
+else 
+//print ("In same_clan, he's *not* in my clan (in else)");
+	return -1;
+endif
+endfunction
+
+function same_type(creature)
+
+        if (Cint(GetObjProperty(creature, "pack_type")) = pack_type)
+                return 1;
+          else
+                return 0;
+        endif
+        
+endfunction
+
+
+function f_wander()
+
+    local stilllead := 0;
+    foreach mobile in ListMobilesNearLocation(me.x, me.y, me.z, 15)
+
+        if ((cstr(mobile.serial) = leader)  and (! mobile.dead))             
+                stilllead := 1;
+                break;
+        endif
+    endforeach
+
+if (!stilllead)
+state := STATE_WANDERING;
+EraseObjProperty(me, "leader");
+endif
+
+    /*
+    if (GetObjProperty(me, "leader") = cstr(me.serial))
+        me_leader := 1;
+        else
+        me_leader := 0;
+    endif */
+    
+    if (state = STATE_FOLLOWING  and  !me_leader )
+        WalkToward(cint(leader));
+    else
+   
+    if (me_leader)
+      cr_wander();  
+    endif    
+    
+    
+    
+    foreach mobile in ListMobilesInLineOfSight( me, 8 )
+       if (checkLineOfSight(me, mobile))
+          if (co_human(mobile))
+             //Say("Hoowah! Gunna clomp Humie!");
+             co_target(mobile);
+             state := STATE_FIGHTING;
+             return;
+          elseif (same_type(mobile)) //if they are compatible 
+             if (! same_clan(me, mobile)) //someone must join
+                if (cint(GetObjProperty(mobile, "pack_order")) > pack_order)
+                   say( "You better un me" );
+                   join_pack (me, mobile);
+                else
+//                   print ( "You an me same" );
+                   local rand := RandomInt(2) + 1;
+                   if (rand = 1)
+                      join_pack (me, mobile);
+                   else
+                      co_target(mobile);
+                      state := STATE_FIGHTING;
+                      return;
+                   endif
+                endif
+             endif
+          endif
+       endif
+    endforeach      
+endif
+endfunction
+
+
+function Fight()
+  
+   co_fight();
+
+   if ( same_clan(me, BadGuy) and (same_type(BadGuy)) )
+      co_untarget();
+      return;
+   endif
+     
+   if (me.hp <= half_health)
+      if (same_type(BadGuy))
+         join_pack(me, BadGuy);
+         co_untarget();
+         say( "Me follow" );
+         state := STATE_FOLLOWING;
+      endif
+   endif
+   
+endfunction
+
+
+///////////////////////////////////////////////
+//
+//  Main
+//
+///////////////////////////////////////////////
+
+// temp kludge ENS 4/6/1999
+me.script := "killpcs";
+RestartScript( me );
+
+if( me.name["<random>"] )
+   SetName ( me , RandomName( me ) );
+endif
+
+ht_setHomeTurf();
+
+while (1)
+
+   if (BadGuy)
+      Fight();
+   else
+      f_wander();
+   endif
+
+endwhile

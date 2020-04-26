@@ -1,0 +1,58 @@
+use uo;
+
+include "include/client";
+include "include/listex";
+include "include/spellrestrictions";
+
+program reveal_hider ( parms )
+
+	local circle := 6;
+	local caster;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+	else
+		caster := parms;
+		if (!can_cast(caster, circle))
+        		return;
+		endif
+	endif
+
+	local range := ( GetSkill( caster , SKILLID_MAGERY  )/10 ) - 5;
+	if (range < 1)
+		range := 1;
+	endif
+
+	local hiders := ListMobilesNearLocationEx( caster.x , caster.y , caster.z , range , LIST_HIDDEN );
+	local numfound := 0;
+
+	if(len(hiders) > 0)
+		foreach mobile in hiders
+			if( Found( caster ,  mobile) )
+				numfound := 1;
+				mobile.hidden := 0;
+				PrintTextAbovePrivate( mobile , "You have been revealed!" , mobile );
+				PrintTextAbovePrivate( mobile , "Ah ha!!" , caster );
+				PlaySoundEffect(mobile, SFX_1FE);
+			endif
+		endforeach
+	endif
+	if (!numfound)
+    		PrintTextAbovePrivate( caster , "You didnt find any anyone." , caster );
+ 	endif
+
+endprogram
+
+
+function Found ( finder , hider )
+
+	local magic_skill := Resisted(6, finder, hider, GetSkill( finder, SKILLID_MAGERY ));
+	local resist := (GetSkill( finder, SKILLID_MAGICRESISTANCE)/1.5);
+
+	if ( magic_skill > resist )
+		return 1;
+	else
+		return 0;
+	endif
+
+endfunction

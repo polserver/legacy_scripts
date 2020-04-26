@@ -1,0 +1,15 @@
+use uo;
+
+program textcmd_eraseobjproperty( who, propname )
+    print( "Property Name: " + propname );
+
+    local tgt := Target( who );
+    if (tgt)
+        local res := EraseObjProperty( tgt, propname );
+        if (res != error)
+            SendSysMessage( who, "Property " + propname + " erased." );
+        else
+            SendSysMessage( who, "Error erasing property: " + res.errortext );
+        endif
+    endif
+endprogram

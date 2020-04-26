@@ -1,0 +1,108 @@
+////////////////////////////////////////
+//
+//      spawns random reagents whenever you click the mouse. Use escape to stop
+//
+//      Author DW
+//
+///////////////////////////////////////////////
+
+Use uo;
+Use cfgfile;
+Use os;
+Use basic;
+use util;
+include "include/spawn";
+Global spawn_cfg := ReadConfigFile( ":danspawner:spawns" );
+
+
+program spawn( who, templatename )
+
+if (!Icanspawn(who))
+        SendSysmessage(who, "Someone else is spawning right now.");
+        return;
+endif
+
+
+local spawnerfile;
+local tempname;
+spawnerfile := ":danspawner:spawns";
+local spawns := ReadConfigFile(spawnerfile);
+local elemkey := GetConfigMaxIntKey(spawn_cfg) ;
+
+
+if (templatename)
+        sendsysmessage(who, "This command will add reagents to the spawn file. Each time you click the mouse another is added");
+        EraseObjProperty(who, "canspawn" );
+        return;
+endif
+
+
+
+
+
+
+while (1)
+
+    elemkey := elemkey + 1;
+    SendSysmessage( who, "Select a place to spawn." );
+    local where := TargetCoordinates( who );
+
+    if (!where)
+        EraseObjProperty(who, "canspawn" );
+        return;
+    endif
+    
+    local thereg := randomint(8) + 1;
+    local tobjtype;
+    
+    case (thereg)
+        1: tobjtype := 0x0F7A;
+        2: tobjtype := 0x0F7B;
+        3: tobjtype := 0x0F84;
+        4: tobjtype := 0x0F85;
+        5: tobjtype := 0x0F86;
+        6: tobjtype := 0x0F88;
+        7: tobjtype := 0x0F8C;
+        8: tobjtype := 0x0F8D;
+    endcase
+     
+    tempname := tobjtype;
+
+    
+
+    local props := array;
+    local prop := array;
+    prop .+ pname;
+    prop .+ pvalue;
+
+    prop.pname := "objtype";
+    prop.pvalue := tempname;
+    props[1] := prop;
+
+    prop.pname := "x";
+    prop.pvalue := where.x;
+    props[2] := prop;
+
+    prop.pname := "y";
+    prop.pvalue := where.y;
+    props[3] := prop;
+
+    prop.pname := "z";
+    prop.pvalue := where.z;
+    props[4] := prop;
+    
+    prop.pname := "type";
+    prop.pvalue := "I";
+    props[5] := prop;
+    
+
+    AppendConfigFileElem(spawnerfile, "Spawn", elemkey, props );
+
+
+    
+endwhile
+EraseObjProperty(who, "canspawn" );
+unloadconfigfile(":danspawner:spawns");
+endprogram
+
+

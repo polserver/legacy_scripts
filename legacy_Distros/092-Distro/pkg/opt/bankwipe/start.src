@@ -1,0 +1,4 @@
+Use uo;
+Use os;
+
+start_script( "bankwipe");

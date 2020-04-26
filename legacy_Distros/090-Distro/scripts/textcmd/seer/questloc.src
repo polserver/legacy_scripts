@@ -1,0 +1,63 @@
+//Author: Dream Weaver 6/3/99
+//Issues: Must write necessary data to file before it becomes useful.
+//
+//This command now prompts you for a location, then a description for the location. It then appends the results to questlocs.cfg
+
+Use uo;
+Use cfgfile;
+Use os;
+Use basic;
+
+Global quest_cfg := ReadConfigFile( "questlocs" );
+
+
+program questloc( character )
+    SendSysmessage( character, "Select a quest location." );
+    local where := TargetCoordinates( character );
+
+    if(!quest_cfg)
+      Print("ach! Cant find the config file!");
+    endif
+    
+    local maxentry := GetConfigMaxIntKey(quest_cfg);
+
+    //Print("maxentry: " + maxentry);
+
+     local loc_descr := RequestInput( character, character.backpack, "Enter a description for this location: ");
+
+     local rangex := RequestInput( character, character.backpack, "Enter the X range: ");
+     local rangey := RequestInput( character, character.backpack, "Enter the Y range: ");
+
+    local elemkey := (GetConfigMaxIntKey(quest_cfg)) + 1;
+
+    local props array;
+    local prop array;
+    prop .+ pname;
+    prop .+ pvalue;
+
+    prop.pname := "Name";
+    prop.pvalue := loc_descr;
+    props[1] := prop;
+
+    prop.pname := "x";
+    prop.pvalue := where.x;
+    props[2] := prop;
+
+    prop.pname := "y";
+    prop.pvalue := where.y;
+    props[3] := prop;
+
+    prop.pname := "rangex";
+    prop.pvalue := rangex;
+        
+    props[4] := prop;
+
+    prop.pname := "rangey";
+    prop.pvalue := rangey;
+        
+   
+    AppendConfigFileElem( "questlocs", "questloc", elemkey, props );
+
+    UnloadConfigFile( "spawns" );
+endprogram
+

@@ -1,0 +1,55 @@
+use uo;
+include "include/npcbackpacks";
+
+program textcmd_ident( who, text )
+
+    SendSysMessage( who, "Assign a keyword to whom?" );
+    local whom := Target( who );
+
+    if (!whom)
+	SendSysMessage( who, "Cancelled" );
+	return;
+    endif
+
+    if (!text)
+	SendSysMessage( who, "Cancelled" );
+	return;
+    endif
+
+    local keyword := lower("keyword"+text);
+    local response := "";
+    local itemcount := 0;
+
+	if (getobjproperty(whom, keyword ) )
+		SendSysMessage( who, "npc will no longer respond to " + text );
+		EraseObjProperty( whom, keyword );
+		return;
+	else
+		response := RequestInput( who, who.backpack, "What should their response be?");
+		setobjproperty(whom, keyword, response);
+		SendSysMessage( who, "npc will respond to "+ text + " by saying: "+ response );
+
+		SendSysMessage( who, "Target each item you wish the npc to give in exchange" );
+
+		local thetarget := Target(who, "");
+		local mypack := findmypack(whom.serial);
+                while (thetarget.objtype)
+			moveitemtocontainer(thetarget,mypack);
+			SetObjProperty(thetarget,"returnfor",lower("return"+text));
+			itemcount := 1;
+			thetarget := Target(who, "");
+        	endwhile
+	endif
+
+	if (itemcount)
+
+	response := RequestInput( who, who.backpack, "What should their response be after they have given away their item?");
+	if ( response )
+		setobjproperty( whom, lower("done" + text), response);
+	endif
+
+	endif
+
+	SendSysMessage(who,"Done.");
+
+endprogram

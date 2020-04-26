@@ -1,0 +1,66 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+//  camping.src: fires when kindling is double-clicked
+//
+//  Modified:
+//    19990414 ENS Check that kindling is on ground
+//                 Create fire where wood is, not character
+//
+//  TODO:
+//    Start timer, tell those around that it's safe to log out
+//
+/////////////////////////////////////////////////////////////////////////////
+
+use uo;
+use util;
+use os;
+
+include "include/client";
+include "include/objtype";
+include "include/skillpoints";  
+// fixme: (??) make the fire a light source
+
+program UseWood( character, wood )
+    local newitem;
+    local x;
+    local y;
+    local z;
+
+    local thepoints := get_default_points(SKILLID_CAMPING);
+    if (not Accessible( character, wood))
+        PrintTextAbovePrivate( wood, "You can't reach that!", character );
+        return;
+    endif
+
+    if (wood.container)
+        PrintTextAbovePrivate( wood, "Put that on the ground first!", character );
+        return;
+    endif
+   
+    if (CheckSkill( character, SKILLID_CAMPING, -1, thepoints ))
+        x := wood.x;
+        y := wood.y;
+        z := wood.z ;
+
+        Detach();
+        Local campfire := CreateItematLocation( x, y, z, UOBJ_CAMPFIRE, 1 );
+       
+        SubtractAmount(wood,1);
+
+        Detach();
+
+        sleep(60);
+        DestroyItem(campfire);
+
+        // todo: really need to turn to embers, etc
+
+        campfire := CreateItemAtLocation(x,y,z,UOBJ_ASHES,1);
+        sleep(60);
+        DestroyItem(campfire);
+    else
+        PrintTextAbovePrivate( wood, "You couldn't manage to start the fire.", character );
+    endif
+endprogram
+
+
+

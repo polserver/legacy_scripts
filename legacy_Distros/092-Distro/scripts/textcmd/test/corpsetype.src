@@ -1,0 +1,10 @@
+use uo;
+
+program textcmd_corpsetype( who )
+    SendSysMessage( who, "Show me the corpse." );
+
+    local corpse := Target( who );
+    if (corpse)
+        SendSysMessage( who, "Corpse Type is " + corpse.corpsetype );
+    endif
+endprogram

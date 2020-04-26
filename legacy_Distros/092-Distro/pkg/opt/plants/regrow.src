@@ -1,0 +1,11 @@
+use os;
+use uo;
+
+program regrow(parms)
+local plant := parms[1];
+local wait := cint(parms[2]);
+sleep(wait);
+local amt := getobjproperty(plant, "#amt");
+amt := amt + 1;
+setobjproperty(plant, "#amt", amt);
+endprogram

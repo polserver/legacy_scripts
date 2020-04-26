@@ -1,0 +1,237 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+// updated by Zulu (zuluhotel@home.com) Dec 24, 1999
+// - fixed <invalid> error
+// - fixed display of items and person
+// - added hearing to npc, you no longer have to be standing on him
+//   to talk to him.
+// 
+/////////////////////////////////////////////////////////////////////////////
+
+use npc;
+use os;
+use uo;
+use cfgfile;
+use util;
+use basic;
+
+include "include/eventid";
+include "include/randname";
+include "include/NPCBackpacks";
+include "include/vetement";
+
+global questlocs := ReadConfigFile("questlocs");
+global questitems := ReadConfigFile("questitems");
+global quest_type;
+global item_name ;
+global has_item ;
+global has_loc;
+global quest_reward;
+global quest_gold;
+global quest_item;
+global noun;
+global has_name;
+global quest_reward_item;
+global mybankbox;
+global mygold;
+
+Const REACT_THRESHOLD := 2;
+
+global me := Self();
+
+if( me.name["<random>"] )
+   SetName ( me , RandomName( me ) );
+   habille( me , "Clothes" );
+endif
+
+set_quest();
+
+program CastleGuard()
+    EnableEvents( EVID_SPEECH + EVID_ENGAGED + EVID_DISENGAGED + EVID_DAMAGED , 1);
+    EnableEvents( EVID_OPPONENT_MOVED , 1);
+    EnableEvents( EVID_ITEM_GIVEN , 1);
+    EnableEvents( EVID_SPEECH , REACT_THRESHOLD );
+
+	if (getobjproperty(me, "frozen"))
+		me.frozen := 1;
+	endif
+
+    SetWarMode( 0 );
+    set_priority(100);
+
+    local ev;
+    while (1)
+        ev := os::wait_for_event( 120 );
+        // print( "event type: " + ev.type );
+
+        case (ev.type)
+            EVID_SPEECH:
+	        TurnToward( ev.source );
+                if (ev.text["help"] || ev.text["quest"])
+                    say ("I am in need of help from a brave adventurer");
+                     if (quest_type = 1)
+                        say ("I really wish I had " + item_name);
+                        say ("If you bring me one I will reward you");
+
+                 elseif (quest_type = 2)
+                                say (" I once had " + item_name + ", but " + has_name + " in " + has_loc );
+                                say (" has stolen it. If you return it to me I shall reward you");
+                        
+                     else
+//say (" I desire the  " + noun+ " that  " + has_item + " in " + has_loc + " possesses.");
+say (" I desire the  " + noun+ " that  " + has_name + " in " + has_loc + " possesses.");
+                         say (" If you bring  it to me I shall reward you");
+                     endif
+                else
+                    say("Won't you help me?");
+                endif
+
+            EVID_ENGAGED:
+Say ( ev.source.name + ", I'll call a guard, if you don't stop that!");
+
+            EVID_DAMAGED:
+Say ("Help guards, I'm being attacked!");
+
+            EVID_ITEM_GIVEN:
+                // check to see if what I was given is what I want
+                //if so, give reward
+                if (quest_type = 1) 
+                
+                        if (ev.item.objtype = quest_item)
+                                MoveItemToContainer(ev.item, mybankbox);
+                                say ("Your kindness shall not be forgotten. Here is a small token of my thanks.");
+                                give_reward(ev.source);
+                                me.script := "questie";
+                                restartscript(me);
+                        else
+                                MoveItemToContainer(ev.item, mybankbox);
+                                say ("My thanks, friend!");
+                        endif
+               endif
+               if (GetObjProperty(ev.item, "iWant") = me.serial) 
+                                  MoveItemToContainer(ev.item, mybankbox);
+                                say ("Your kindness shall not be forgotten. Here is a small token of my thanks.");
+                                give_reward(ev.source);
+                                me.script := "questie";
+                                restartscript(me);
+                        else
+                                MoveItemToContainer(ev.item, mybankbox);
+                                say ("My thanks, friend!");
+               endif
+              
+               
+        endcase
+        
+        // TODO: ReturnToPost();
+    endwhile
+endprogram
+
+function set_quest()
+// type 1 : regular item in store
+// type 2 : stolen from me
+// type 3 : I want stolen
+if (getobjproperty(me, "quest_type") )
+        quest_type := getobjproperty(me, "quest_type") ;
+        item_name := getobjproperty(me, "itemname") ;
+        has_item := getobjproperty(me, "has_item") ;
+        has_loc:= getobjproperty(me, "has_loc") ;
+        quest_reward:= getobjproperty(me, "reward") ;
+        quest_gold := getobjproperty(me, "quest_gold") ;
+        quest_item := getobjproperty(me, "quest_item") ;
+        noun := getobjproperty(me, "noun") ;
+        has_name := getobjproperty(me, "has_name") ;
+        quest_reward_item:= getobjproperty(me, "quest_reward_item") ;
+else
+      
+        quest_type := randomint(3) + 1;
+        local maxelem := GetConfigMaxIntKey( questlocs);   
+
+               local telem := randomint(maxelem) + 1;
+
+        local qelem := findconfigelem(questlocs, telem);
+        if (! qelem)
+                print("couldn't find location element!");
+        endif
+        
+        local x := getconfigint(qelem, "x");
+        local y := getconfigint(qelem, "y");
+        local xrange := randomint(getconfigint(qelem, "rangex")) + 1;
+        local yrange := randomint(getconfigint(qelem, "rangey")) + 1;
+        has_loc := getconfigstring(qelem, "name");
+        
+        maxelem :=  GetConfigMaxIntKey( questitems);    
+            
+        telem := randomint(maxelem) + 1;
+        
+        qelem := findconfigelem(questitems, telem);
+        if (! qelem)
+                print("couldn't find item element!");
+        endif
+        item_name := getconfigstring(qelem, "message");
+       
+        
+        quest_item := getconfigint(qelem, "itemid");
+        
+        
+        quest_reward := getconfigint(qelem, "reward");
+        quest_gold := getconfigint(qelem, "gold");
+        
+        local difficulty := getconfigint(qelem, "difficulty");
+        
+        
+        noun := GetConfigString(qelem, "noun");
+        
+        mybankbox := FindMyPack(me.serial);
+
+
+        if (quest_type <> 1)   //that is, an item that appears on a vendor
+                local tbaddie := CreateNpcFromTemplate( "quest_target", x, y, 0);
+                SetName ( tbaddie , RandomName( me ) );
+                local hisbankbox := FindMyPack(tbaddie.serial);
+                local titem := createitemincontainer(hisbankbox, quest_item, 1);
+                setobjproperty(titem, "iWant", me.serial);
+                if (quest_type = 2) 
+                      titem.name := me.name + "'s " + noun;
+                else
+                        titem.name := tbaddie.name + "'s " + noun;
+                endif
+                has_name := tbaddie.name;
+                SetObjProperty(me, "serial", me.serial);
+                setobjproperty(tbaddie, "serial", tbaddie.serial);
+                
+                
+        endif
+        
+        if (quest_reward)
+                 quest_reward_item :=createitemincontainer(mybankbox,  quest_reward,1);
+        endif
+        if (quest_gold)
+                mygold :=createitemincontainer(mybankbox, 0xeed, quest_gold);
+        endif
+          setobjproperty(me, "quest_type" ,quest_type ) ;            
+          setobjproperty(me, "itemname",item_name) ;                
+          setobjproperty(me, "has_item",has_item) ;                 
+          setobjproperty(me, "has_loc", has_loc) ;                    
+          setobjproperty(me, "reward",quest_reward) ;                
+          setobjproperty(me, "quest_gold",quest_gold) ;             
+          setobjproperty(me, "quest_item",quest_item) ;             
+          setobjproperty(me, "noun",noun) ;                         
+          setobjproperty(me, "has_name",has_name) ;                 
+          setobjproperty(me, "quest_reward_item",quest_reward_item) ;
+
+endif
+
+
+endfunction
+
+function  give_reward(who)
+
+if (quest_reward)
+       moveitemtocontainer(quest_reward_item, who.backpack);
+endif
+if (quest_gold) 
+        subtractamount(mygold, quest_gold);
+        CreateItemInBackpack(who, 0xeed, quest_gold);
+endif
+
+endfunction

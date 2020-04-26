@@ -1,0 +1,13 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+//  ".refreshme" - Restore Hits, Mana, Stamina
+//
+//  Thanks to The Writer, from our Dev Board, for this one.
+//
+/////////////////////////////////////////////////////////////////////////////
+
+program textcmd_refreshme( who )
+    who.hp := who.maxhp; 
+    who.mana := who.maxmana;
+    who.stamina := who.maxstamina;
+endprogram

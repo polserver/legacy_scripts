@@ -1,0 +1,7 @@
+// auction  version .6
+// by Zulu (zulu@zuluhotel.com)   April 27, 2000
+
+Use uo;
+Use os;
+
+start_script( ":auction:auctionlist");	

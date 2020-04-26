@@ -1,0 +1,82 @@
+use os;
+use uo;
+use boat;
+
+const STATE_STATIONARY := 0;
+const STATE_MOVING := 1;
+
+global done := 0;
+global state;
+global relative_direction;
+global boat;
+global tillerman;
+
+function handle_speech( event )
+    local text := lower( event.text );
+    if (text["forward"] or text["unfurl sail"] or text["unfurl"])
+        state := STATE_MOVING;
+        relative_direction := 0;
+        PrintTextAbove( tillerman, "Aye, unfurling sails, Sir" );
+    elseif (text["backward"])
+        state := STATE_MOVING;
+        relative_direction := 4;
+        PrintTextAbove( tillerman, "Aye, Sir" );
+    elseif (text["stop"] or text["furl sail"] or text["furl"])
+        state := STATE_STATIONARY;
+        PrintTextAbove( tillerman, "Aye, anchors down, Sir" );
+    elseif (text["turn right"] or text["starboard"])
+        TurnBoat( boat, 1 );
+        PrintTextAbove( tillerman, "Aye, Sir" );
+        sleep(1);
+    elseif (text["turn left"] or text["port"])
+        TurnBoat( boat, 3 );
+        PrintTextAbove( tillerman, "Aye, Sir" );
+        sleep(1);
+    elseif (text["come about"])
+        TurnBoat( boat, 2 );
+        PrintTextAbove( tillerman, "Aye, Sir, coming about" );
+        sleep(1);
+    elseif (text["exit"])
+        PrintTextAbove( tillerman, "I'll be taking the day off, Sir" );
+        done := 1;
+    endif
+endfunction
+
+function continue_operation()
+    if (state = STATE_MOVING)
+        MoveBoatRelative( boat, relative_direction );
+    endif
+endfunction
+
+function boat_script()
+    RegisterForSpeechEvents( tillerman, 10 );
+
+    while (!done)
+        local event := wait_for_event( 0 );
+        if (event)
+            if ((event.type = "speech") or (event.type = "Speech"))
+                handle_speech( event );
+            endif
+        endif
+        
+        continue_operation();
+        sleep(1);
+    endwhile
+endfunction
+
+program textcmd_boat( who )
+    SendSysMessage( who, "Target the boat." );
+    boat := Target( who );
+
+    if (!boat)
+        return;
+    endif
+
+    tillerman := boat.tillerman;
+    if (!tillerman)
+        SendSysMessage( who, "There was no tillerman." );
+        return;
+    endif
+
+    boat_script();
+endprogram

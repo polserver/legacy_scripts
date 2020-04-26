@@ -1,0 +1,30 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+//  smember.src: ".smember [member]" - Display arbitrary object members
+//
+//      ".smember objtype" then target something, shows its objtype
+//      ".smember quality" then target a weapon, shows its quality
+//
+//  Works for any script-accessible member.
+//
+/////////////////////////////////////////////////////////////////////////////
+use uo;
+
+program showmember( who, params )
+    local propname, propval;
+    local space := Find( params, " ", 1 );
+    if (space)
+        propname := params[1, space-1];
+        propval := params[ space+1, len(params) ];
+    else
+        propname := params;
+        propval := "";
+    endif
+     
+    SendSysMessage( who, "SetObjProperty '" + propname + "' to '" + propval + "' on what?" );
+    local what := Target( who );
+    if (what)
+        SetObjProperty( what, propname, propval );
+        SendSysMessage( who, "Done" );
+    endif
+endprogram

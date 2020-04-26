@@ -1,0 +1,25 @@
+use uo;
+
+program  z(who, howfar)
+
+local what := target(who, TGTOPT_NOCHECK_LOS);
+
+if (!what)
+        return;
+endif
+
+local tdist;
+
+if (howfar = "")
+        tdist := 1;
+else
+        tdist := cint(howfar);
+endif
+
+var res := moveitemtolocation(what, what.x, what.y, what.z + tdist, MOVEITEM_FORCELOCATION );
+
+if (!res)
+    SendSysMessage( who, "error: " + res.errortext );
+endif
+
+endprogram

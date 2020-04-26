@@ -1,0 +1,33 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+//  smember.src: ".smember [member]" - Display arbitrary object members
+//
+//      ".smember objtype" then target something, shows its objtype
+//      ".smember quality" then target a weapon, shows its quality
+//
+//  Works for any script-accessible member.
+//
+/////////////////////////////////////////////////////////////////////////////
+use uo;
+
+program showmember( who, membername )
+    SendSysMessage( who, "Display " + membername + " of what?" );
+    local what := Target( who );
+    if (what)
+            //
+            // Note this trick: since there's an operator involved,
+            // the compiler won't change membername to "membername"
+            // like it usually does when it sees an identifier follow
+            // a dot-operator.
+            //
+        local member := what . (membername + "");
+        local extra := CInt( member );
+        if (extra) 
+            extra := " (" + Hex(extra) + ")";
+        else
+            extra := "";
+        endif
+
+        PrintTextAbovePrivate( what, "that." + membername + " = " + member + extra, who );
+    endif
+endprogram

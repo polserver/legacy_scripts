@@ -1,0 +1,98 @@
+//
+// updates onlinetimer cprop every 5 mins, checks murder count decay
+//
+//
+
+
+use uo;
+use os;
+
+const LONG_COUNT_DECAY_TIME := 144000; //40 hours
+const SHORT_COUNT_DECAY_TIME := 28800; //8 hours
+
+program timers()
+
+  while(1)
+	foreach character in EnumerateOnlineCharacters()
+		var sessiontime := ReadGameClock() - GetObjProperty(character,"logontime");
+		SetObjProperty(character, "logontime", ReadGameClock());
+    	var timer := GetObjProperty(character,"onlinetimer");
+    	if(!timer)
+	    	timer := 0;
+	    endif
+	    SetObjProperty(character,"onlinetimer",timer+sessiontime);
+	    
+	    CheckMurderCountDecay(character);
+	endforeach
+	
+	sleep(300);
+  endwhile
+endprogram
+
+function CheckMurderCountDecay(character);
+
+	var long_term_counts := GetObjProperty(character,"longmurders");
+	if(long_term_counts != error)
+		if(long_term_counts > 0)
+			CheckLongTermCounts(character);
+		endif
+	endif
+	
+    var short_term_counts := GetObjProperty(character,"shortmurders");
+    if(short_term_counts != error)
+    	if(short_term_counts > 0)
+    		CheckShortTermCounts(character);
+    	endif
+    endif
+endfunction
+    
+function CheckLongTermCounts(character);
+	
+	//this is against a character's online timer, not the gameclock.
+	var longdecaytime := GetObjProperty(character,"decaylongcountat");
+	var onlinetime := GetObjProperty(character,"onlinetimer");
+	if(onlinetime > longdecaytime) //we should decay
+		//dec long count
+		var longcount := GetObjProperty(character,"longmurders");
+		longcount := longcount - 1;
+		SetObjProperty(character,"longmurders",longcount);
+		//set next decay at
+		if(longcount > 0)
+			SetObjProperty(character,"decaylongcountat",onlinetime+LONG_COUNT_DECAY_TIME);
+			//check to see if less then 5 longterm counts (blue)
+			if( (longcount < 5) and (!GetObjProperty(character,"permared")) )
+				character.SetMurderer(0);
+			endif
+		endif
+	endif
+endfunction
+
+function CheckShortTermCounts(character);
+
+	//this is against a character's online timer, not the gameclock.
+	var shortdecaytime := GetObjProperty(character,"decayshortcountat");
+	var onlinetime := GetObjProperty(character,"onlinetimer");
+	if(onlinetime > shortdecaytime) //we should decay
+		//dec short count
+		var shortcount := GetObjProperty(character,"shortmurders");
+		shortcount := shortcount - 1;
+		SetObjProperty(character,"shortmurders",shortcount);
+		
+		if(shortcount=4) //we just went from statloss to no statloss
+			var pingpong := GetObjProperty(character,"pingpong");
+			if(!pingpong)
+				pingpong := 0;
+			endif
+			pingpong := pingpong + 1;
+			SetObjProperty(character,"pingpong",pingpong);
+			if(pingpong>=5)
+				SetObjProperty(character,"permared",1);
+			endif
+		endif
+		
+		//set next decay at
+		if(shortcount > 0)
+			SetObjProperty(character,"decayshortcountat",onlinetime+SHORT_COUNT_DECAY_TIME);
+		endif
+	endif
+endfunction

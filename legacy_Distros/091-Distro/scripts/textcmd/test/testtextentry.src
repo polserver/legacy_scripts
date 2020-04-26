@@ -1,0 +1,8 @@
+use uo;
+
+program test_textentry( who )
+    local res := SendTextEntryGump( who, "Enter a String" );
+    if (res)
+        print( "SendTextEntryGump: " + res );
+    endif
+endprogram

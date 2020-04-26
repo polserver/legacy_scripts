@@ -1,0 +1,39 @@
+// updated November 4, 2000
+// zulu (zulu@zuluhotel.com)
+
+use uo;
+use os;
+
+const UOBJ_GUILDSTONE:=0xa390;
+Const UOBJECT_DOORS_START:=0x0675;
+Const UOBJECT_DOORS_END:=0x06f4;
+
+program use_guild_deed(who,deed)
+
+if(!ReserveItem(deed)) return; endif
+if(GetObjProperty(who,"guild_id")) SendSysMessage(who,"You are already a member of a Guild."); return; endif
+if(not Accessible(who,deed)) SendSysMessage(who,"You cannot access that item!"); return; endif
+if(!who.multi) SendSysMessage(who,"You need to be in a house to use this deed."); return; endif
+if(GetObjProperty((who.multi),"ownerserial")<>who.serial) SendSysMessage(who,"Only the owner can place items in the house."); return; endif
+
+foreach item in ListItemsNearLocation(who.x,who.y,who.z,2)
+If (!item.movable or ((Item.objtype>=UOBJECT_DOORS_START) AND (Item.objtype<=UOBJECT_DOORS_END)))
+SendSysMessage(who,"This is too close to the door.");
+return;
+endif
+endforeach
+
+foreach item in ListItemsNearLocation(who.x,who.y,who.z,30)
+if(item.objtype=UOBJ_GUILDSTONE and (item.multi.serial=who.multi.serial))
+SendSysMessage(who,"Only one guildstone can be placed in a house.");
+return;
+endif
+endforeach
+
+SendSysMessage(who,"Guild Masters can move the stone once a week.");
+SendSysMessage(who,"Double click the guild stone to set it up.");
+local pos:=GetStandingHeight(who.x,who.y,who.z);
+local item:=CreateItemAtLocation(who.x,who.y,pos.z,UOBJ_GUILDSTONE,1);
+if(item) destroyitem(deed); endif
+
+endprogram

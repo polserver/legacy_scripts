@@ -1,0 +1,7 @@
+use os;
+use uo;
+
+program create_script_test_03( item )
+    print( "Create script (test 03, returns 0) called for " + item.desc );
+    return 0;
+endprogram

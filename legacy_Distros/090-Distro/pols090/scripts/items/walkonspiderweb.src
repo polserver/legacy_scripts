@@ -1,0 +1,11 @@
+use uo;
+// Thanks to Menace from the TUS dev team for letting me borrow his idea!
+include "include/tempmod";
+
+program walkon_spiderweb(character, web)
+
+sendsysmessage(character, "You are trapped in a spider web!");
+character.SetParalyzed(1);
+do_temp_mod(character, "p", 1, 15);
+
+endprogram

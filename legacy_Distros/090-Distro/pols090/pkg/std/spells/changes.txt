@@ -1,0 +1,6 @@
+Spells Package Changes
+----------------------
+11/15/99, [Dundee] change to reflect (exploit fix), summoning and nightsight (so magic items will work)
+10/29/99, [Dundee] Changed everything.
+10/3/99. [DW] Fixed a few bugs with spells, including permenant stat mod gains. See /misc/deleter for how I did it
+10/9/99, [Rac] Fixed exploit in telekinesis

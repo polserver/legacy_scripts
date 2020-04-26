@@ -1,0 +1,5 @@
+Use uo;
+
+program textcmd_dmg( who )
+    ApplyRawDamage( Target( who ), 5 );
+endprogram

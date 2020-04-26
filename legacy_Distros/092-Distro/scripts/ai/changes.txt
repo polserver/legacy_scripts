@@ -1,0 +1,19 @@
+October 2,1999
+fixed broken townguard AI
+
+September 26, 1999
+cast_offensive_spell moved into creaturespellcast.inc, and various optimizations made . Also dealt with the paralysis and stat mod bugs (see misc/demod.src)
+
+
+September 25, 1999
+I've been meditating on how hard it is to make new AI scripts. Sure, you base it on another AI, but there are so many tweaks that it's a pain to debug, right? Furthermore, each time there's new core functionality you want to try you have to go through several different files and deal with them. What a pain.
+
+Ideally, we'd like to have an OOP-esque system. Once you have  a base behavior for a critter, you'd like to "extend" it to customize the new monster, right? In the past ("default_AI" days) we tried to do this all with config file entries. We ended up with one HUGE script that worked, but ran really slowly.
+
+I played with include files a bit, and think I'm on to something here. I first split out the functionality that is common to all critters. They all have one main message pump and a fight routine. Sure, that's extended a bit for each critter, but at heart it's all the same. I split them out to main_AI_loop and fight() include files.
+
+Next, I grabbed the core events that most critters responded to, and put them in those loops. Everything else goes into critter-specific include files. I also noticed that some critters do things after each event, and also after the main event loop in combat. These were also spun off into include files.
+
+Now some critters still needed a new main AI loop (slimes, for example, or immobile critters), but in general it was easy to spin these off.
+
+The end result? I can now crank out specialized AIs fairly easily, and debug the core AI functionality pretty easily. I also think it'll be easier to implement some bard skills now. The downside, of course, is that new scripters may find the AI coding a little more complicated until they get comfortable with include files.

@@ -1,0 +1,337 @@
+use os;
+use uo;
+use util;
+use boat;
+
+include "include/eventid";
+include "include/myutil";
+include "include/client";
+include "include/yesno";
+include "util/key";
+include "plankutil";
+
+const STATE_STATIONARY := 0;
+const STATE_MOVING := 1;
+const STATE_DRIFTING := 2;
+const DELAY_DRIFTING := 15000;
+global state := STATE_STATIONARY;
+global relative_direction;
+global ms_delay_between_moves := 200;
+global boat;
+global tillerman;
+global owner := getobjproperty(boat.hold,"owner");
+
+function handle_speech( event )
+  local text := lower( event.text );
+  if (text["unfurl sail"] or text["unfurl"])
+    state := STATE_MOVING;
+    relative_direction := 0;
+  elseif (text["drift"] or text["raise anchor"])
+	state := STATE_DRIFTING;
+  elseif (text["forward"])
+	state := STATE_MOVING;
+	if (text["left"])
+      relative_direction := 7;
+    elseif (text["right"])
+      relative_direction := 1;
+	else
+      relative_direction := 0;
+    endif
+  elseif (text["back"]) // gets "backward" too
+	state := STATE_MOVING;
+    if (text["left"])
+      relative_direction := 5;
+	elseif (text["right"])
+      relative_direction := 3;
+	else
+      relative_direction := 4;
+	endif
+  elseif (text["stop"] or text["furl sail"] or text["furl"])
+	state := STATE_STATIONARY;
+  elseif (text["drop anchor"])
+    state := STATE_STATIONARY;
+  elseif (text["turn right"] or text["starboard"])
+	TurnBoat( boat, 1 );
+  elseif (text["right"])
+	state := STATE_MOVING;
+    relative_direction := 2;
+  elseif (text["turn left"] or text["port"])
+	TurnBoat( boat, 3 );
+  elseif (text["left"])
+	state := STATE_MOVING;
+    relative_direction := 6;
+  elseif (text["come about"])
+	TurnBoat( boat, 2 );
+	sleep(1);
+  endif
+  PrintTextAbove( tillerman, "Aye, Captain" );
+  if (text["full"])
+    ms_delay_between_moves := 200;
+  elseif (text["slow"])
+    ms_delay_between_moves := 1000;
+  endif
+  sleep(1);
+  if (text["one"])
+    MoveBoatRelative( boat, relative_direction );
+    state := STATE_STATIONARY;
+  endif
+endfunction
+
+function process_event( event )
+  if (event.type = EVID_SPEECH)
+    if( CanCommandMe( event.source ))
+      handle_speech( event );
+    else
+	  DryDock(event);
+    endif
+  endif
+endfunction
+
+function CanCommandMe( who )
+  if (!owner)
+	owner := getobjproperty(boat.hold,"owner");
+  endif
+  if (who.multi.serial != boat.serial)
+    return 0;
+  endif
+  if (who.serial = owner)
+    return 1;
+  endif
+  var whodist := Distance( who, tillerman );
+  foreach mob in (boat.mobiles)
+    if (Distance( mob, tillerman ) < whodist)
+      return 0;
+    endif
+  endforeach
+  return 1;
+endfunction
+
+function boat_script()
+  RegisterForSpeechEvents( tillerman, 12 );
+  local nextencounter := ReadGameClock()+120;
+  local nextsound := ReadGameClock()+5;
+  local driftcounter := 1;
+  set_critical(1);
+  local x,y;
+  while (boat)
+    case (state)
+	  STATE_MOVING:     if ( ReadGameClock() > nextsound )
+				          PlayBoatSounds();
+				          nextsound := ReadGameClock()+5;
+			            endif
+			            x := boat.x;
+			            y := boat.y;
+			            MoveBoatRelative( boat, relative_direction );
+			            if ( (x = boat.x) and (y = boat.y) )
+				          state := STATE_STATIONARY;
+				          PrintTextAbove(tillerman, "Aaargh!  We've run ashore!");
+				          SmackEveryone();
+			            endif
+                	    sleepms( ms_delay_between_moves );
+			            if ( ReadGameClock() > nextencounter )
+				          DoEncounter();
+				          nextencounter := ReadGameClock()+120;
+			            endif
+                    	while (events_waiting())
+				         process_event( wait_for_event(0) );
+                	    endwhile
+      STATE_DRIFTING:   if ( ReadGameClock() > nextsound )
+				          PlayBoatSounds();
+				          nextsound := ReadGameClock()+5;
+			            endif
+			            if ( driftcounter > 15 )
+				          MoveBoatRelative( boat, randomint(8) );
+				          driftcounter := 1;
+			            else
+				          driftcounter := driftcounter + 1;
+			            endif
+                	    sleepms(1000);
+                	    while (events_waiting())
+				          process_event( wait_for_event(0) );
+                	    endwhile
+			            if ( ReadGameClock() > nextencounter )
+				          DoEncounter();
+				          nextencounter := ReadGameClock()+120;
+			            endif
+      STATE_STATIONARY: var ev := wait_for_event( 120 );
+			            if (ev)
+				          process_event( ev);
+			            endif
+			            if ( ReadGameClock() > nextencounter )
+				          DoEncounter();
+				          nextencounter := ReadGameClock()+120;
+			            endif
+	endcase
+  endwhile
+endfunction
+
+program autostart_boat( param )
+  boat := param;
+  if (!boat)
+    syslog( "No boat! Huh?" );
+    return;
+  endif
+  tillerman := boat.tillerman;
+  if (!tillerman)
+    syslog( "No tillerman for boat at: " + (boat.x-1) +","+ boat.y +","+ boat.z );
+    DestroyMulti( boat );
+    return;
+  endif
+  boat_script();
+endprogram
+
+function DoEncounter()
+  foreach who in  ListMobilesNearLocationEx(boat.x, boat.y, 
+	GetMapInfo( boat.x, boat.y ).z, 4, LISTEX_FLAG_GHOST )
+	if ( YesNo(who,"Ressurect?") )
+	  PlaySoundEffect(who, SFX_SPELL_RESSURECTION);
+	  PlaySoundEffect(who, SFX_SPELL_RESSURECTION);
+	  Resurrect( who );
+	endif
+  endforeach
+  local who := (boat.mobiles);
+  who := who[1];
+  if (!who)
+    return;
+  endif
+  local x;
+  local y;
+  local z;
+  x := randomint(10)-5;
+  y := randomint(10)-5;
+  x := x + boat.x;
+  y := y + boat.y;
+  if (x > boat.x)
+	x := x + 5;
+  else
+	x := x - 5;
+  endif
+  if ( y > boat.y )
+	y := y + 5;
+  else
+	y := y - 5;
+  endif
+  z := GetMapInfo( x, y ).z;
+  if (z >= who.z)
+    return;
+  endif
+  local it := createnpcfromtemplate(getcritter(), x, y, z, 0);
+  if (it)
+	setobjproperty(it,"killme", 1);
+  endif
+  local ev := {};
+  ev.+type := EVID_ENGAGED;
+  ev.+source := who;
+  SendEvent(it, ev);
+endfunction
+
+function getcritter()
+  case (randomint(33))
+	0: return "walrus";
+	1: return "walrus";
+	2: return "walrus";
+	3: return "walrus";
+	4: return "walrus";
+	5: return "walrus";
+	6: return "alligator";
+	7: return "alligator";
+	8: return "alligator";
+	9: return "alligator";
+	10: return "alligator";
+	11: return "alligator";
+	12: return "waterelemental";
+	13: return "seaserpent";
+	14: return "airelemental";
+	15: return "waterelemental";
+	16: return "waterelemental";
+	17: return "waterelemental";
+	18: return "waterelemental";
+	19: return "airelemental";
+	20: return "airelemental";
+	21: return "airelemental";
+	22: return "seaserpent";
+	23: return "seaserpent";
+	24: return "waterelemental";
+	25: return "waterelemental";
+	26: return "waterelemental";
+	27: return "airelemental";
+	28: return "airelemental";
+	29: return "airelemental";
+	30: return "seaserpent";
+	31: return "seaserpent";
+	32: return "seaserpent";
+  endcase
+endfunction
+
+function DryDock(event)
+  local text := lower( event.text );
+  if (text != "drydock") 
+    return; 
+  endif
+  local me := event.source;
+  if ( getobjproperty(boat.hold,"owner") = me.serial )
+	if (!YesNo(me,"Drydock?"))
+      return; 
+    endif
+	local shiptype := getobjproperty(boat.hold,"shiptype");
+	local newboat := CreateItemInContainer(me.backpack,shiptype,1);
+	if (!newboat)
+	  SendSysMessage(me,"Your backpack is full!");
+      return;
+	endif
+	newboat.graphic := 0x14f3;
+	if (!boat.tillerman.name)
+	  newboat.name := "a toy boat";
+	endif
+	local items := (boat.items);
+	local oldmovable;
+	foreach item in items;
+	  oldmovable := item.movable;
+      item.movable := 1;
+      moveitemtolocation(item, me.x, me.y, me.z, MOVEITEM_FORCELOCATION);
+      item.movable := oldmovable;
+    endforeach
+    items := ListRootItemsInContainer(boat.hold);
+    foreach item in items;
+      moveitemtolocation(item, me.x, me.y, me.z, MOVEITEM_FORCELOCATION);
+    endforeach
+    local key := FindKey(me, boat.portplank);
+    if (boat.tillerman.name)
+      newboat.name := boat.tillerman.name;
+    endif
+    if (!DestroyBoat(me))
+	  DestroyItem(newboat);
+	else
+	  if (key)
+        DestroyItem(key);
+      endif
+	endif
+  endif
+endfunction
+
+function DestroyBoat( who )
+  var res := DestroyMulti( boat );
+  if (!res)
+	SendSysMessage( who, "Can't delete: " + res.errortext );
+	return 0;
+  endif
+  return 1;
+endfunction
+
+function SmackEveryone()
+  foreach mob in (boat.mobiles)
+	ApplyDamage(mob,Randomint(10));
+	PerformAction(mob,0x14);
+	PlaySoundEffect(mob,0x110);
+  endforeach
+endfunction
+
+function PlayBoatSounds()
+  local who := randomint( len(boat.mobiles)+1 );
+  local mobs := (boat.mobiles);
+  if ( randomint(2) = 1)
+	PlaySoundEffect(mobs[who],0x13);
+  else
+	PlaySoundEffect(mobs[who],0x14);
+  endif
+endfunction

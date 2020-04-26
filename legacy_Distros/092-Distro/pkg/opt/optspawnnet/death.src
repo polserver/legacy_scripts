@@ -1,0 +1,48 @@
+use uo;
+use cfgfile;
+use util;
+use os;
+
+include "include/starteqp";
+include "include/NPCBackpacks";
+include "include/spawnnet";
+
+
+//should add the "spawnnet" to the death pool
+program npcdeath(corpse)
+
+local spawnnet := getobjproperty(corpse,"spawnnet");
+spawnnet := cint(spawnnet);
+//syslog("Critura Morta");
+if (spawnnet)
+	AddDeath(spawnnet);
+endif
+
+
+if (getobjproperty(corpse, "rise"))
+        local parms := {};
+        parms[1] := corpse.x;
+        parms[2] := corpse.y;
+        parms[3] := corpse.z;
+        parms[4] := getobjproperty(corpse, "rise");
+        parms[5] := corpse;
+        start_script("misc/rise", parms);
+endif
+        if (getobjproperty(corpse, "guardkill"))
+                destroyitem(corpse);
+                return;
+        endif
+
+    MoveBackpackToCorpse(corpse);
+    if( GetObjProperty( corpse , "summoned" ) )
+       DestroyItem( corpse );
+    elseif( GetObjproperty( corpse , "nocorpse" ) )
+       MakeLoot (corpse , "");
+       foreach item in EnumerateItemsInContainer( corpse );
+           MoveItemToLocation( item , corpse.x , corpse.y , corpse.z,0 );
+       endforeach
+       DestroyItem( corpse );
+    else
+       MakeLoot (corpse , "");
+    endif
+endprogram

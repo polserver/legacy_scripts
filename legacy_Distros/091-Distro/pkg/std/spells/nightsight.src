@@ -1,0 +1,32 @@
+use uo;
+use util;
+
+include "include/client";
+include "include/spellrestrictions";
+
+program cast_nightsight( parms )
+
+	local circle := 1;
+	local caster;
+	local cast_on;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_on := parms[3];
+	else
+		caster := parms;
+		cast_on := CanTargetSpell(caster, circle, TGTOPT_HELPFUL + TGTOPT_CHECK_LOS );
+		if (!cast_on)
+			return;
+		endif
+	endif
+
+	PlaySoundEffect(caster, SFX_SPELL_NIGHT_SIGHT );
+	local magery := Getskill(caster, SKILLID_MAGERY);
+	foreach cast_near in ListMobilesNearLocation( cast_on.x, 
+					cast_on.y, cast_on.z, cint(magery/15) );
+		cast_near.setlightlevel( 0, magery * 60 );
+		PlayObjectCenteredEffect( cast_near, FX_BLESS_EFFECT, 10,10);
+	endforeach
+
+endprogram

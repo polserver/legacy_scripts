@@ -1,0 +1,56 @@
+use cfgfile;
+use util;
+
+
+function npc_speech(npc, event)
+        
+local index;
+local sound;
+local speech;
+local retparms array;
+local config;
+local config2;
+local elem;
+local elem2;
+local min_speech;
+local max_speech;
+
+
+config := ReadConfigFile("npc_speech");
+config2 := ReadConfigFile("npc_speech_limits");
+
+elem2 := FindConfigElem(config2, npc.objtype + "," + npc.name);
+if (!elem2)
+        elem2 := FindConfigElem(config2, npc.objtype );
+endif
+
+if (!elem2)
+        return; //no speech entries for the creature at all
+endif
+
+min_speech := GetConfigInt(elem2, "min_" + event);
+max_speech := GetConfigInt(elem2, "max_" + event);
+
+index := randomint(max_speech - min_speech) + 1 + min_speech;
+
+elem := FindConfigElem(config, Cstr(npc.objtype) + "," + npc.name + "," + event + "," + cstr(index));
+
+if (! elem)
+        elem := FindConfigElem(config, Cstr(npc.objtype) +"," + npc.name + ","  + event + ",default");
+endif
+if (! elem)
+        elem := FindConfigElem(config, Cstr(npc.objtype) +"," + npc.name +  ",default");
+endif
+if (! elem)
+        elem := FindConfigElem(config, Cstr(npc.objtype) + ",default");
+endif
+
+speech := GetConfigString(elem, "speech");
+sound := GetConfigInt(elem, "sound");
+
+retparms[1] := speech;
+retparms[2] := sound;
+
+return retparms;
+
+endfunction

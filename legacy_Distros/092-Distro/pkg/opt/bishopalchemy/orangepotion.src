@@ -1,0 +1,26 @@
+use os;
+use uo;
+use util;
+use cfgfile;
+include "drinkpotion";
+
+program drink_blue (who, potion)
+  EraseObjProperty(who, "IsMeditating");
+  if(potion.movable = 0)
+    SendSysMessage(who, "You cannot drink that.");
+    return;
+  endif
+  if(!checkifcandrink(who, "orange"))
+    return;
+  endif
+  local potion_strength := get_potion_strength(potion);
+  empty_bottle(who, potion);
+  local poison_level := Cint(GetObjProperty(who, "poison_level"));
+  if(poison_level > 0 )
+    if((RandomInt(potion_strength)*2) > poison_level)
+      PlaySoundEffect(who, SOUND_EFFECT_CURE);
+      PlayObjectCenteredEffect( who, EFFECT_SPARKLE, 10,10);
+      EraseObjProperty(who,"poison_level");
+    endif
+  endif
+endprogram

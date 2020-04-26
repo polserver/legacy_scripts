@@ -1,0 +1,38 @@
+//
+// stat cap applier
+//
+//    real simple: sets all stats back linearly if the total is over 225
+//
+//    untested!!
+//
+//
+
+use os;
+use uo;
+
+const STATCAP := 225;
+
+program statcapper( who )
+    return 0;
+
+    while (1)
+        foreach chr in EnumerateOnlineCharacters()
+
+            set_critical(1);
+            var unmod_str := chr.strength - chr.strength_mod;
+            var unmod_dex := chr.dexterity - chr.dexterity_mod;
+            var unmod_int := chr.intelligence - chr.intelligence_mod;
+
+            var total := unmod_str + unmod_dex + unmod_int;
+            if (total > STATCAP)
+                chr.setstr( unmod_str * STATCAP / total );
+                chr.setdex( unmod_dex * STATCAP / total );
+                chr.setint( unmod_int * STATCAP / total );
+            endif
+            set_critical(0);
+        endforeach
+
+        sleep( 10 * 60 );
+    endwhile    
+
+endprogram

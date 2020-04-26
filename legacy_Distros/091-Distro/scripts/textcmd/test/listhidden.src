@@ -1,0 +1,15 @@
+use uo;
+use os;
+
+include "include/listex"; 
+
+program listnear( character )
+    Local coords := TargetCoordinates( character );
+    
+    if (coords)
+        foreach mobile in ListMobilesNearLocationEx( coords.x, coords.y, coords.z, 4, LIST_HIDDEN )
+            SendSysMessage( character, mobile.name + " (" + mobile.serial + ")" );
+            print(mobile.name);
+        endforeach
+    endif
+endprogram

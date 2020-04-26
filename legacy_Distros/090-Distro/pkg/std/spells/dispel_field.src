@@ -1,0 +1,37 @@
+use uo;
+use os;
+
+include "include/client";
+include "include/spellrestrictions";
+
+program dispel_field( parms )
+
+	local circle := 5;
+	local caster;
+	local cast_area;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_area := parms[3];
+	else
+		caster := parms;
+		cast_area := CanTargetArea(caster, circle);
+		if (!cast_area)
+			return;
+		endif
+	endif
+
+	local magery := GetSkill(caster, SKILLID_MAGERY);
+	local therange := Cint(magery / 15 );
+
+	local items := ListItemsNearLocation (cast_area.x, cast_area.y, cast_area.z, therange);
+	PlaySoundEffect( caster, SFX_SPELL_DISPEL );
+    
+	foreach item in items
+		if (GetObjProperty(item, "f") = "1")
+			PlayStationaryEffect( item.x, item.y, item.z, FX_SMOKE, 0xA, 0xA );
+                	DestroyItem(item);
+		endif
+	endforeach
+   
+endprogram

@@ -1,0 +1,12 @@
+Use uo;
+
+program listnear( character )
+    Local coords := TargetCoordinates( character );
+    
+    if (coords)
+        foreach mobile in ListMobilesNearLocation( coords.x, coords.y, coords.z, 4 )
+            SendSysMessage( character, mobile.name + " (" + mobile.serial + ")" );
+            print(mobile.name);
+        endforeach
+    endif
+endprogram

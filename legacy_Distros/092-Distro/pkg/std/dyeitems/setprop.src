@@ -1,0 +1,202 @@
+/////////////////////////////////////////////////////////////
+// SETPROP.SRC
+//
+// Author: DC
+// Date: 2/14/99
+//
+// Description: An GM text command that changes the value
+//      of the given inherent property. Note that
+//      mobiles have more props than items and
+//      some properties are read-only.
+//
+// Syntax: .setprop <propname> <value>
+// program textcmd_setprop: params: character using
+//                  text
+//              Splits the param text into 2
+//              strings (propname and value)
+//                      passes the given prop and
+//              value to SetObjctProp and
+//              prints the old and new values
+//              if the write was successful.
+//
+// function SetObjctProp: Matches the given text to one of
+//            the known properties of the
+//            targetted object. If the prop
+//            name could not be matched, it
+//            throws an uninitialized error
+//            which the main program catches.
+//            only writable props are listed.
+//
+// TODO: Give access to props setable only with
+//   "SetObjectProperty" function.
+//
+//   ********
+//   **NOTE**: to change an object's name, use "rename" cmd
+//   ********
+// updated by zulu (zulu@cadvision.com)
+/////////////////////////////////////////////////////////////
+
+use uo;
+use basic;
+use os;
+use cfgfile;
+
+Global dye_cfg :=ReadConfigFile( ":dyeitems:dyeitems" );
+
+program textcmd_setprop( who, text )
+
+    local props := SplitWords( text );
+    if( !(props[1]) )
+        SendSysmessage( who , "Syntax: .setprop [propname] [amount]" );
+    elseif( props[1] && !(props[2]) )
+        SendSysmessage( who , "Syntax: .setprop [propname] [amount]" );
+    endif
+
+    local propname := props[1];
+    local amount := Cint( props[2] );
+    local element, allowdye :=10, amount_str := props[2];
+
+    if( amount < 0 )
+        SendSysmessage( who , "The new value must be > 0" );    
+    endif
+
+    SendSysMessage( who, "Select an object" );
+
+    local obj := Target( who );
+    if (obj)
+
+     If(propname = "color")
+
+    if (!dye_cfg)
+    SendSysmessage (who, "Could not open dyeitems.cfg");
+    syslog( "Unable to open dyeitems.cfg" );
+    return;
+    endif
+
+    element := FindConfigElem ( dye_cfg, obj.objtype );
+
+    if (element)
+    allowdye := GetConfigInt(element, "player");
+    endif
+
+    If (who.cmdlevel<allowdye)
+      SendSysMessage( who, obj.desc + " cannot be colored");
+      return;
+    endif
+
+     endif
+
+        local value;
+        local newvalue;
+
+        value := GetObjctProp( obj , propname );
+
+        if(value = "<uninitialized object>")
+            SendSysmessage( who , "Invalid prop name!" );
+        elseif(value)
+            SendSysmessage( who , propname + " was: " + value );
+
+            if( SetObjctProp( obj , propname , amount, amount_str ) );
+                newvalue := GetObjctProp( obj , propname );
+                
+                        if( newvalue = value )
+                    SendSysmessage( who , "Property unchanged." );
+                elseif(newvalue)
+                    SendSysmessage( who , propname + " now: " + newvalue );
+                else
+                    SendSysmessage( who , "Error occured." );
+                endif
+
+            else
+                SendSysmessage( who , "Could not write to " + propname + "." );
+            endif
+
+        else
+            SendSysMessage(who, "Could not get property!");
+        endif
+
+    else
+        SendSysMessage(who, "Cancelled.");
+    endif
+
+endprogram
+
+
+function GetObjctProp( obj , propname )
+
+    local retstr := 0;
+    case (propname)
+        "x":        retstr := obj.x;
+        "y":        retstr := obj.y;
+        "z":        retstr := obj.z;
+        "objtype":  retstr := obj.objtype;
+        "color":    retstr := obj.color;
+        "serial":   retstr := obj.serial;
+        "height":   retstr := obj.height;
+        "facing":   retstr := obj.facing;
+        "name":     retstr := obj.name;
+        "gender":   retstr := obj.gender;
+        "truecolor":    retstr := obj.truecolor;
+        "hp":       retstr := obj.hp;
+        "maxhp":    retstr := obj.maxhp;
+        "mana":     retstr := obj.mana;
+        "maxmana":  retstr := obj.maxmana;
+        "stamina":  retstr := obj.stamina;
+        "maxstamina":   retstr := obj.maxstamina;
+        "strength": retstr := obj.strength;
+        "dexterity":    retstr := obj.dexterity;
+        "intelligence": retstr := obj.intelligence;
+        "dead":     retstr := obj.dead;
+        "ar":       retstr := obj.ar;
+        "strength_mod": retstr := obj.strength_mod;
+        "intelligence_mod": retstr := obj.intelligence_mod;
+        "dexterity_mod": retstr := obj.dexterity_mod;
+        "graphic":  retstr := obj.graphic;
+        "hidden":   retstr := obj.hidden;
+        "quality":  retstr := obj.quality;
+        "dmg_mod":  retstr := obj.dmg_mod;
+        "maxhp_mod":retstr := obj.maxhp_mod;
+        "ar_mod":   retstr := obj.ar_mod;
+        "sellprice":retstr := obj.sellprice;
+        "cmdlevel": retstr := obj.cmdlevel;
+        "newbie":   retstr := obj.newbie;
+        default:    
+    endcase
+
+    return Cstr(retstr);
+endfunction
+
+// amount_str is only used if the value isn't really an integer
+function SetObjctProp( obj , propname , amount, amount_str )
+
+    local retstr := 1;
+    case (propname)
+        "x":        MoveItemtoLocation( obj , amount , obj.y , obj.z, 0 );
+                    MoveCharacterToLocation( obj , amount , obj.y , obj.z );
+        "y":        MoveItemtoLocation( obj , obj.x , amount , obj.z, 0 );
+                    MoveCharacterToLocation( obj , obj.x , amount , obj.z );
+        "z":        MoveItemtoLocation( obj , obj.x , obj.y , amount + MOVEITEM_FORCELOCATION, 0);
+                    MoveCharacterToLocation( obj , obj.x , obj.y , amount + MOVEITEM_FORCELOCATION, 0 );
+        "gender":   obj.gender := amount;
+        "graphic":  obj.graphic := amount;
+        "color":    obj.color := amount;
+        "hp":       obj.hp := amount;
+        "mana":     obj.mana := amount;
+        "stamina":  obj.stamina := amount;
+        "strength": obj.strength_mod := amount;
+        "intelligence": obj.intelligence_mod := amount;
+        "dexterity":    obj.dexterity_mod := amount;
+        "facing":   obj.facing := amount;
+        "hidden":   obj.hidden := amount;
+        "quality":  obj.quality := CDbl(amount_str);
+        "dmg_mod":  obj.dmg_mod := amount;
+        "maxhp_mod":obj.maxhp_mod := amount;
+        "ar_mod":   obj.ar_mod := amount;
+        "sellprice": obj.sellprice := amount;
+        "cmdlevel":  obj.cmdlevel := amount;
+        "newbie":    obj.newbie := amount;
+        default:    retstr := 0;
+    endcase
+
+    return retstr;
+endfunction

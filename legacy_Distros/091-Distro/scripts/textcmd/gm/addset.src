@@ -1,0 +1,188 @@
+use uo;
+use cfgfile;
+
+ 
+program makeset( who , range)
+        local prop2 := array;
+        local props2 := array;
+        prop2.+ name;
+        prop2.+ value;
+        
+        local numprops2 := 1;
+        local numthings := 0;
+        local things := array;
+        local theitem:= array;
+        local ttype;
+        sendsysmessage(who, "Select the center of the set area (radius " + range + ")");
+        local whereleft := targetcoordinates(who);
+local thesetname := Requestinput(who, who.backpack , "What would you like to call this set?");
+        
+        
+        local stuff := ListItemsNearLocation( whereleft.x,whereleft.y,whereleft.z, cint(range));
+        theitem.+ objtype;
+        theitem.+ x;
+        theitem.+ y;
+        theitem.+ z;
+        theitem.+ color;
+        theitem.+ script;
+        theitem.+ type;
+        theitem.+ key;
+        theitem.+ name;
+
+        foreach thing in stuff
+            
+
+                theitem.type := "item";
+                theitem.script := theitem.usescript;
+                theitem.objtype := thing.objtype;
+                theitem.name := thing.desc;
+                numthings := numthings + 1;
+                
+                theitem.x := whereleft.x - thing.x;
+                theitem.y := whereleft.y - thing.y;
+                theitem.z := whereleft.z - thing.z;
+                theitem.color := thing.color;
+                things[numthings] := theitem;
+        endforeach
+
+        local cfg := ReadConfigfile("sets");
+        local intkey := GetConfigMaxIntKey( cfg);
+        
+        intkey := intkey + 1;
+        
+ 
+        foreach item in things
+        
+        local prop := array;
+        local props := array;
+        prop.+ name;
+        prop.+ value;
+        local num_props := 1;
+        
+
+        
+                prop.name := "objtype";
+                prop.value := item.objtype;
+                props[num_props] := prop;
+                num_props := num_props + 1;
+                
+                
+                prop.name := "x";
+                prop.value := item.x;
+                props[num_props] := prop;
+                num_props := num_props + 1;
+                
+                prop.name := "y";
+                prop.value := item.y;
+                props[num_props] := prop;
+                num_props := num_props + 1;
+                
+                prop.name := "z";
+                prop.value := item.z;
+                props[num_props] := prop;
+                num_props := num_props + 1;
+                
+                prop.name := "color";
+                prop.value := item.objtype;
+                props[num_props] := prop;
+                num_props := num_props + 1;
+                
+                
+                ttype := "setitem";
+             
+                
+                AppendConfigFileElem( "sets", ttype, intkey, props );
+                item.key := intkey;
+               
+                
+                prop2.name := "item";
+                prop2.value := intkey;
+                intkey := intkey + 1;
+                props2[numprops2] := prop2;
+                numprops2 := numprops2 + 1;
+                
+        endforeach
+        
+        
+        foreach thing in listmobilesnearlocationex( whereleft.x,whereleft.y,whereleft.z, cint(range),0x01);
+           if (thing.name != who.name) 
+
+                theitem.type := "setmobile";
+                theitem.script := theitem.script;
+                theitem.objtype := thing.npctemplate;
+                theitem.name := thing.name;
+                numthings := numthings + 1;
+                
+                theitem.x := whereleft.x - thing.x;
+                theitem.y := whereleft.y - thing.y;
+                theitem.z := whereleft.z - thing.z;
+                theitem.color := thing.color;
+                things[numthings] := theitem;
+           endif
+        endforeach
+
+     
+       
+        intkey := intkey + 1;
+        
+ 
+        foreach item in things
+        
+        local prop := array;
+        local props := array;
+        prop.+ name;
+        prop.+ value;
+        local num_props := 1;
+        
+
+        
+                prop.name := "objtype";
+                prop.value := item.objtype;
+                props[num_props] := prop;
+                num_props := num_props + 1;
+                
+                prop.name := "name";
+                prop.value := item.name;
+                props[num_props] := prop;
+                num_props := num_props + 1;
+                
+                prop.name := "x";
+                prop.value := item.x;
+                props[num_props] := prop;
+                num_props := num_props + 1;
+                
+                prop.name := "y";
+                prop.value := item.y;
+                props[num_props] := prop;
+                num_props := num_props + 1;
+                
+                prop.name := "z";
+                prop.value := item.z;
+                props[num_props] := prop;
+                num_props := num_props + 1;
+                
+                prop.name := "color";
+                prop.value := item.objtype;
+                props[num_props] := prop;
+                num_props := num_props + 1;
+                
+                              
+                ttype := "setmobile";
+             
+                
+                AppendConfigFileElem( "sets", ttype, intkey, props );
+                item.key := intkey;
+               
+                
+                prop2.name := "item";
+                prop2.value := intkey;
+                intkey := intkey + 1;
+                props2[numprops2] := prop2;
+                numprops2 := numprops2 + 1;
+                
+        endforeach
+        
+        
+        AppendConfigFileElem( "sets", "set", thesetname, props2 );
+        unloadconfigfile("sets");
+endprogram

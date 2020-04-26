@@ -1,0 +1,59 @@
+Stuff to do:
+===========
+  Tailoring: make bolts always have 50 yards, using changes them to stacks of cloth
+
+POL076
+------
+1.Added "Questie" AI -- NPC for "I want" quests 6/2/99 DCT
+2.Added NPCBackpacks.inc. This function returns a storage area that can be used as an NPC's backpack. loot.inc checks this same area when the critter dies, to make sure the loot goes on the body.
+3. Added speech.inc and speechgroup.cfg as an initial attempt at a multilevel, generic speech system.
+
+POL075
+------
+5/xx/99: Rewritten the teleporter/moongatesystem. TODO: make them mg:s 
+Ultima style (4 or 5). Right now they only cycle every 5 mins.
+
+5/25/99:
+1. Cleanup of some UOBJ_XXX constants-moved from scripts into objtype.inc -Syz
+
+5/24/99:
+1. Removed util/skillid.inc; all scripts use include/client.inc now -Syz
+2. Changed all spell scripts to use client.inc constants for effects -Syz
+     Note, a lot of scripts use FX_SPELL_CURSE and FX_SPELL_BLESS,
+           which is probably wrong.
+
+5/22/99:
+1. Changed most for-loops that wanted to be foreach-loops to use foreach -Syz
+2. Changed spawner to pick a spawn site randomly, rather than first-last -Syz
+3. Moved a lot of scripts from ai/ to ai/old; see ai/old/readme.txt -Syz
+   This includes vortex_ai; this probably should be rewritten ASAP.
+4. Added script for starting equipment generation, starteqp.cfg needs filled. -Syz
+
+POL074
+------
+5/11/99:
+1. Merchants turn toward their patrons when interacting
+2. Added house deed functionaility. House deeds can be bought, placed, and keys created.
+   All the doors will be locked to the same key. The house sign can be renamed if you have
+   the right house key.
+3. Defined merchant types Tailor, Leatherworker, Provisioner, Carpenter, Architect
+4. Spawns.cfg can have 'rect' entries, and will spawn inside the rectangle specified
+
+POL073
+------
+5/9/99:
+
+1. Commands to shave hair and beards ( buzz and shave )
+2. Makeregs changed to make only non-pagan reagents and places them in a new pack
+   rather than cluttering your top-level pack.
+
+5/8/99:
+1. Mining:
+   * Works on mountainsides!
+   * Uses the resource system!
+   * Now featuring colored ores! (new ores: bronze, dull copper, copper, onyx(black), pyrite(gold), malachite(green), and azurite(blue)) I'll put up a screenshot of the colors if anyone wants me to make one.
+   * The latter ores are harder to find and smelt than the previous ones.
+2. Blacksmithy:
+   * Un-hardcoded the skill points values for success.
+   * only higher skilled smiths can use the new minerals (60 skill minimum: for bronze) to make colored items.
+   * Other minor bugfixes/code cleans.

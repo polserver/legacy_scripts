@@ -1,0 +1,234 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+//  Castle Guards wait around, hoping someone will say "attention"
+//  so they can salute.  If attacked, or if someone says 
+//  "fight", then they fight until someone says "hold" or
+//  their attacker disengages.
+//
+//  When someone walks to within 5 squares, they say "Halt! Who goes here?"
+//    This seems to cause a moment of lag at the client - not sure why, yet
+//    If I comment out the body of the EVID_ENTEREDAREA section, that goes away,
+//    So I suspect that may be related to screen redraw.
+//
+//  Castle guards don't use much system resources when they're guarding,
+//  and need to be fast when they're fighting, so they always run critical.
+//
+//  Author: ENS
+//
+//  Created: 12/98
+//
+//  Newest Modifications:
+//    19990123 ENS Uses events for detecting nearby movement
+//
+//
+/////////////////////////////////////////////////////////////////////////////
+
+use npc;
+use os;
+use uo;
+
+include "include/eventid";
+include "include/randname";
+include "include/anchors";
+include "include/dist";
+include "include/speech";
+include "include/vetement";
+
+// TODO: move these to include/client.inc
+const UACTION_LOOK_AROUND   := 0x05;
+const UACTION_SALUTE        := 0x21;
+
+const HALT_THRESHOLD := 5; // how close before he barks?
+
+global me := Self();
+if( me.name["<random>"] )
+   SetName ( me , RandomName( me ) );
+       set_priority(50);
+       Habille( me , GetObjProperty(me,"equipt") );
+       set_priority(1);
+endif
+
+
+
+program CastleGuard()
+    EnableEvents( EVID_SPEECH + EVID_ENGAGED + EVID_DISENGAGED + EVID_DAMAGED,HALT_THRESHOLD);
+    EnableEvents( EVID_ENTEREDAREA + EVID_LEFTAREA, HALT_THRESHOLD );
+    EnableEvents( EVID_OPPONENT_MOVED );
+    EnableEvents( EVID_ITEM_GIVEN );
+    drop_anchor();
+
+	if (getobjproperty(me, "frozen"))
+		me.frozen := 1;
+	endif
+
+    SetWarMode( 0 );
+    set_priority(100);
+    SetAnchor( me.x, me.y, 10, 25 );
+
+    local ev;
+    while (1)
+        ev := os::wait_for_event( 120 );
+        // print( "event type: " + ev.type );
+        case (ev.type)
+            EVID_SPEECH:
+                RespondToSpeech(me,ev.text);
+                if (ev.text["attention"])
+                    Salute( ev.source );
+                elseif (ev.text["fight"])
+                    Fight( ev.source );
+		        endif
+
+            EVID_ENGAGED:
+                Fight( ev.source );
+
+            EVID_DAMAGED:
+                say( "Hey! That tickles!" );
+                print( "I just took " + ev.damage + " points of damage!" );
+                if (ev.source)
+                    Fight( ev.source );
+                else
+                    say( "What sinister force is this!" );
+                endif
+
+            EVID_ENTEREDAREA:
+                Say( "Halt! Who goes there?" );
+                sleepms( 500 );
+                PerformAction( me, UACTION_LOOK_AROUND );
+            
+            EVID_ITEM_GIVEN:
+                Say( "Bah!  I have no need for " + ev.item.desc );
+                Say( "Art thou trying to bribe me?" );
+                MoveItemToLocation( ev.item, me.x, me.y, me.z, MOVEITEM_FORCELOCATION );
+                if (ev.source)
+                    Fight( ev.source );
+                endif
+
+            default:
+                if (ev)
+                    //print( "Unknown event type " + ev.type + " from " + ev.source );
+                    //print( ev );
+                endif
+
+        endcase
+        
+        // TODO: ReturnToPost();
+    endwhile
+endprogram
+
+/////////////////////////////////////////////////////////////////////////////
+//
+//  To Salute, a guard will turn toward the salutee,
+//  salute, then turn to his original facing.
+//
+/////////////////////////////////////////////////////////////////////////////
+function Salute( who )
+    local save_facing := me.facing;
+
+    TurnToward( who );
+    PerformAction( me, UACTION_SALUTE );
+    PlaySoundEffect( me, 0x15D ); // a death sound
+    sleep(2);
+
+    if (save_facing != me.facing)
+        Move( save_facing );
+    endif
+endfunction
+
+/////////////////////////////////////////////////////////////////////////////
+//
+//  A guard fights singlemindedly, until his quarry is dead.
+//  The only way out is to say "hold", or to disengage.
+//  Before commencing fighting, a guard will salute his opponent.
+//
+/////////////////////////////////////////////////////////////////////////////
+function Fight( opponent )
+if (opponent.cmdlevel > 0)
+        setwarmode(0);
+        opponent := 0;
+        return;
+endif
+    TurnToward( opponent );
+    PerformAction( me, UACTION_SALUTE );
+    say( "Have at thee!" );
+    sleep(2);
+
+    DisableEvents( EVID_ENTEREDAREA + EVID_LEFTAREA );
+    DisableEvents( EVID_ITEM_GIVEN );
+
+    SetOpponent( opponent );
+
+    local waittime;
+  outer:
+    while (opponent and !opponent.dead)
+        waittime := CloseDistance( opponent ) * 15;
+
+        local ev := wait_for_event( waittime );
+        // print( "event type: " + ev.type );
+        case (ev.type)
+            EVID_SPEECH:
+                if (ev.text["hold"])
+                    say( "Very well then." );
+                    break outer;
+                endif
+            
+            EVID_DISENGAGED:
+                if (ev.source.serial = opponent.serial)
+                    say( "Had enough, then?" );
+                    break outer;
+                endif
+
+            EVID_ENGAGED:
+            EVID_DAMAGED:
+                if (ev.source)
+                    if (ev.source.serial != opponent.serial)
+                        TurnToward( ev.source );
+                        say( "I'll gladly fight thee after this battle is ended." );
+                        say( "Until then, kindly desist thy actions." );
+                        sleep(1);
+                        TurnToward( opponent );
+                    else
+                        if (ev.type = "damage")
+                            print( "I just took " + ev.damage + " points of damage." );
+                        endif
+                    endif
+                endif
+
+            EVID_OPPONENT_MOVED:
+                
+                
+            EVID_ENTEREDAREA:
+            EVID_LEFTAREA:
+                // ignore both of these
+        endcase
+    endwhile
+
+    EnableEvents( EVID_ITEM_GIVEN );
+    EnableEvents( EVID_ENTEREDAREA + EVID_LEFTAREA, HALT_THRESHOLD );
+    SetWarMode( 0 );
+endfunction
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+//  CloseDistance - close the distance between self and an opponent.
+//  Returns: 1 if distance is 0 or 1 (no move necessary)
+//           0 if distance is >= 2 (may still need to move)
+//
+//  This is a .EM-file candidate.
+//
+/////////////////////////////////////////////////////////////////////////////
+function CloseDistance( opponent )
+    case Distance( me, opponent )
+        1:              // the most likely, so first 
+        0:
+            return 1;
+        
+        2:
+            WalkToward( opponent );
+            return 0;
+
+        default:
+            RunToward( opponent );
+            return 0;
+    endcase
+endfunction

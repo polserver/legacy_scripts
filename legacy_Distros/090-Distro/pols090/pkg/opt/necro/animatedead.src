@@ -1,0 +1,59 @@
+use uo;
+use os;
+use util;
+
+include "include/client";
+
+var spelldelay := 3;
+
+program cast_raise_dead(caster)
+    
+    SpeakPowerWords(caster, 66);
+
+	While (spelldelay > 0)
+		PerformAction(caster, ANIM_CAST_DIR);
+		spelldelay := spelldelay - 1;
+		sleep(1);
+	endwhile
+	sleepms(500);
+
+	if (!ConsumeMana(caster, 66))
+		PlayObjectCenteredEffect(caster, FX_SPELL_FAIL, 7, 7);
+		PlaySoundEffect(caster, SFX_5B);
+		SendSysMessage(caster, "Insufficient Mana.");
+		return;
+	endif
+	
+	if (!ConsumeReagents(caster, 66))
+		PlayObjectCenteredEffect(caster, FX_SPELL_FAIL, 7, 7);
+		PlaySoundEffect(caster, SFX_5B);
+		SendSysMessage(caster, "Insufficient Reagents.");
+		return;
+	endif
+
+	if (!CheckSkill(caster, SKILLID_MAGERY, 70, 0))
+		PlayObjectCenteredEffect(caster, FX_SPELL_FAIL, 7, 7);
+		PlaySoundEffect(caster, SFX_5B);
+		return;
+	endif
+
+    local thecritter;
+
+    local parms := {};
+    local npctemplate := "blank";
+
+    parms .+ script := "tamed";
+    npctemplate := "zombie";
+
+	local casttarg := target(caster);
+	if (casttarg.objtype <> 0x2006)
+		SendSysMessage(caster, "That is not a corpse!");
+		return;
+	endif
+			
+	thecritter := CreateNPCfromTemplate(npctemplate, casttarg.x, casttarg.y, casttarg.z, parms);
+	SetObjProperty(thecritter,"master", caster.serial);
+    PlaySoundEffect(caster, 0x022b);
+
+
+endprogram

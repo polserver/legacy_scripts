@@ -1,0 +1,24 @@
+use uo;
+use os;
+include "include/client";
+
+global poison_sleep := cint(getglobalproperty("poisoninterval"));
+program poison(parms);
+
+var who := parms[1];
+var dmg := parms[2]*3;
+while(getobjproperty(who, "p2") &&!who.dead)
+	 
+	applyrawdamage(who, dmg);
+	PlaySoundEffect(who, SFX_SPELL_POISON);
+	local level := cint(getobjproperty(who, "p2"));
+	level := level - 1;
+	if (!level)
+		eraseobjproperty(who, "p2");
+		who.SetPoisoned(0);
+	else
+		setobjproperty(who, "p2", level);
+	endif
+	sleep(poison_sleep-2);
+endwhile
+endprogram

@@ -1,0 +1,87 @@
+use npc;
+use uo;
+use basicio;
+use util;
+use basic;
+use cfgfile;
+
+include "include/randname";
+include "include/objtype";
+include "include/spawn";
+global  cfg;
+global colors ;
+global num_colors ;
+
+program npc(who)
+
+if (!Icanspawn(who))
+        SendSysmessage(who, "Someone else is spawning right now.");
+        return;
+endif
+
+local  spawns := readconfigfile(":danspawner:spawns");
+local elemkey := (GetConfigMaxIntKey(spawns)) ;
+local ttemplate;
+
+local where := targetcoordinates(who);
+
+
+
+while (where.x)
+
+elemkey := elemkey + 1;
+
+local templatename;
+
+
+ 
+local which := randomint(7) + 1;
+
+case (which)
+       1: templatename := "rat";
+       2: templatename := "grat";
+       3: templatename := "spider";
+       4: templatename := "scorp";
+       5: templatename := "giant_serpent";
+       6: templatename := "snake";
+       7: templatename := "slime";
+endcase
+
+ttemplate := templatename;
+    
+
+local it := CreateNpcFromTemplate( ttemplate, where.x, where.y, where.z);
+
+
+ 
+
+    local props:= array;
+    local prop:= array;
+    prop .+ pname;
+    prop .+ pvalue;
+
+    prop.pname := "template";
+    prop.pvalue := ttemplate;
+    props[1] := prop;
+
+    prop.pname := "x";
+    prop.pvalue := where.x;
+    props[2] := prop;
+
+    prop.pname := "y";
+    prop.pvalue := where.y;
+    props[3] := prop;
+
+    prop.pname := "z";
+    prop.pvalue := where.z;
+    props[4] := prop;
+
+    AppendConfigFileElem( ":danspawner:spawns", "Spawn", elemkey, props );
+
+where := targetcoordinates(who);
+
+endwhile
+EraseObjProperty(who, "canspawn" );
+unloadconfigfile(":danspawner:spawns");
+endprogram
+

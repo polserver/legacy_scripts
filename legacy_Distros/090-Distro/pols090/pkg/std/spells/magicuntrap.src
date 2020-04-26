@@ -1,0 +1,57 @@
+// Magic trap and Magic untrap  version .4
+// by Zulu (zulu@zuluhotel.com)   May 5, 2000
+
+use os;
+use uo;
+use util;
+
+include "include/client";
+include "include/spellrestrictions";
+include "include/skillpoints";
+
+program cast_strength( parms )
+
+	local circle := 2;
+	local caster;
+	local cast_on;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_on := parms[3];
+	else
+		caster := parms;
+		cast_on := CanTargetThing(caster, circle, TGTOPT_HELPFUL + TGTOPT_CHECK_LOS );
+		if (!cast_on)
+			return;
+		endif
+	endif
+
+	if ((cast_on.multi) or (GetObjProperty(cast_on,"houseserial")) or (GetObjProperty(cast_on,"house_serial")))
+		SendSysMessage(caster,"That is not trapped!");
+		return;
+	endif
+
+
+	if ((cast_on.usescript="") or (cast_on.usescript<>":traps:traps"))
+		SendSysMessage(caster,"That is not trapped!");
+		return;
+	endif
+
+	local magery := GetSkill(caster, SKILLID_MAGERY);
+	local removetrap := GetSkill(caster, SKILLID_REMOVETRAP);
+
+	if (randomint(magery)>(removetrap/2))
+	(CheckSkill(caster,SKILLID_REMOVETRAP,-1,get_default_points(SKILLID_REMOVETRAP)));
+	PlaySoundEffect(caster, SFX_SPELL_MAGIC_UNTRAP);
+	EraseObjProperty( cast_on, "trap_type" );
+	EraseObjProperty( cast_on, "trap_strength" );
+        cast_on.usescript := "";
+        SendSysmessage(caster, "You disarm the trap!");
+	else
+	local dmg := randomint(30 * cint(GetObjProperty( cast_on, "trap_strength" ))); 
+	ApplyDamage(caster, (dmg/4));
+	PlaySoundEffect(caster, SFX_11F);
+	SendSysmessage(caster, "You failed at disarming the trap!");
+	endif
+	
+endprogram

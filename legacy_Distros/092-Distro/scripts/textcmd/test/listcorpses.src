@@ -1,0 +1,13 @@
+use uo;
+
+include "include/objtype";
+
+program listnear( character )
+    local coords := TargetCoordinates( character );
+    
+    if (coords)
+        foreach corpse in ListItemsNearLocationOfType( coords.x, coords.y, coords.z, 5, UOBJ_CORPSE )
+            PrintTextAbovePrivate( corpse, corpse.desc, character );
+        endforeach
+    endif
+endprogram

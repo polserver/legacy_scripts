@@ -1,0 +1,9 @@
+use uo;
+use os;
+
+program textcmd_repr(who)
+  local theitem := target(who);
+  theitem.quality := 1.5;
+  theitem.maxhp   := 200;
+  theitem.hp      := 200;
+endprogram

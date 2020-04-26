@@ -1,0 +1,16 @@
+Serpent Pillar - version .1
+updated April 16, 2000
+zulu (zulu@zuluhotel.com)
+
+I gave up playing UO long before the T2A showed up.  Anything related to T2A, I have to go on what players and staff tell me is the UO way.
+
+What I want to do was get the serpent pillars working.  I have found out, there are two magic words required to travel from one pillar to the other.  I originally was under the impression that it was a location trigger.
+
+Anyways, I have completed the script and it works just like the OSI version.  It completes the serpent pillar graphics and is triggered by the magic password.  This is changeable by editing the itemdesc.cfg file.  It then teleports the ship and contents to the new location.  I'm not really sure of the sound effects played, but I put in a electrical charge sound while being transported.
+
+At least, I believe that's the way it should work.
+
+
+** installing **
+unzip pillar.zip to /pol/pkg/opt/pillar
+compile directory and restart pol

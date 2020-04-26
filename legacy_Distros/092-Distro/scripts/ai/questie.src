@@ -1,0 +1,244 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+// updated by Zulu (zuluhotel@home.com) Dec 24, 1999
+// - fixed <invalid> error
+// - fixed display of items and person
+// - added hearing to npc, you no longer have to be standing on him
+//   to talk to him.
+// 
+/////////////////////////////////////////////////////////////////////////////
+
+use npc;
+use os;
+use uo;
+use cfgfile;
+use util;
+use basic;
+
+include "include/eventid";
+include "include/randname";
+include "include/npcbackpacks";
+//include "ai/setup/modsetup";
+
+global questlocs_cfg	:= ReadConfigFile( "questlocs" );
+global questitems_cfg	:= ReadConfigFile( "questitems" );
+
+global quest_type;
+global item_name;
+global has_item;
+global has_loc;
+global quest_reward;
+global quest_gold;
+global quest_item;
+global noun;
+global has_name;
+
+const REACT_THRESHOLD := 2;
+
+global me := Self();
+
+if( me.name["<random>"] )
+	SetName ( me , RandomName( me ) );
+	EquipFromTemplate( me , "Clothes" );
+endif
+
+SetQuest();
+
+program Questie()
+
+	EnableEvents( EVID_SPEECH + EVID_ENGAGED + EVID_DISENGAGED + EVID_DAMAGED , 1);
+	EnableEvents( EVID_OPPONENT_MOVED , 1);
+	EnableEvents( EVID_ITEM_GIVEN , 1);
+	EnableEvents( EVID_SPEECH , REACT_THRESHOLD );
+
+	if( getobjproperty(me, "frozen") )
+		me.frozen := 1;
+	endif
+
+	SetWarMode( 0 );
+
+	local ev;
+	while (1)
+		ev := os::wait_for_event( 120 );
+
+		case (ev.type)
+			EVID_SPEECH:
+				TurnToward( ev.source );
+				if( ev.text["help"] || ev.text["quest"] )
+					Say( "I am in need of help from a brave adventurer" );
+					if( quest_type = 1 )
+						Say( "I really wish I had " + item_name );
+						Say( "If you bring me one I will reward you" );
+
+				 	elseif( quest_type = 2 )
+						Say( "I once had " + item_name + ", but " + has_name + " in " + has_loc );
+						Say( "has stolen it. If you return it to me I shall reward you" );
+						
+					else
+						Say( "I desire the " + noun+ " that " + has_name + " in " + has_loc + " possesses." );
+						Say( "If you bring it to me I shall reward you" );
+					endif
+				else
+					say("Won't you help me?");
+				endif
+
+			EVID_ENGAGED:
+				Say ( ev.source.name + ", I'll call a guard, if you don't stop that!");
+
+			EVID_DAMAGED:
+				Say ("Help guards, I'm being attacked!");
+				SetObjProperty(me,"guardkill",1);
+				SetObjProperty(ev.source,"guardkill",1);
+				me.hidden := 1;
+				sleep(90);
+				me.hidden := 0;
+
+			EVID_ITEM_GIVEN:
+				if( quest_type = 1 ) 
+					if( ev.item.objtype = quest_item )
+						DestroyItem(ev.item);
+						Say( "Your kindness shall not be forgotten. Here is a small token of my thanks." );
+						GiveReward(ev.source);
+						RestartScript(me);
+					else
+						MoveItemToContainer(ev.item, ev.source.backpack);
+						Say( "I have no use of this!" );
+					endif
+					
+			   	elseif( GetObjProperty(ev.item, "iWant") = me.serial ) 
+					DestroyItem(ev.item);
+					Say("Your kindness shall not be forgotten. Here is a small token of my thanks.");
+					GiveReward(ev.source);
+					RestartScript(me);
+				else
+					MoveItemToContainer(ev.item, ev.source.backpack);
+					Say( "I have no use of this!" );
+				endif
+		endcase
+	endwhile
+	
+endprogram
+
+function SetQuest()
+// type 1 : regular item in store
+// type 2 : stolen from me
+// type 3 : I want stolen
+	if( getobjproperty( me, "quest_type" ) )
+		quest_type	:= GetObjProperty( me, "quest_type");
+		item_name	:= GetObjProperty( me, "itemname");
+		has_item	:= GetObjProperty( me, "has_item");
+		has_loc		:= GetObjProperty( me, "has_loc");
+		quest_reward	:= GetObjProperty( me, "reward");
+		quest_gold	:= GetObjProperty( me, "quest_gold");
+		quest_item	:= GetObjProperty( me, "quest_item");
+		noun		:= GetObjProperty( me, "noun");
+		has_name	:= GetObjProperty( me, "has_name");
+		
+	else
+		quest_type	:= randomint(3) + 1;
+		
+		// For the location
+		local maxelem	:= GetConfigMaxIntKey( questlocs_cfg );   
+		local telem	:= RandomInt( maxelem ) + 1;
+		local qelem	:= FindConfigElem( questlocs_cfg , telem );
+		if( !qelem )
+			return;
+		endif
+		
+		local x		:= GetConfigInt( qelem , "x" );
+		local y		:= GetConfigInt( qelem , "y" );
+		local xrange	:= RandomInt( GetConfigInt( qelem , "rangex" ) ) + 1;
+		local yrange	:= RandomInt( GetConfigInt( qelem , "rangey" ) ) + 1;
+		has_loc		:= GetConfigString( qelem , "name" );
+
+		
+		// For the item
+		maxelem		:= GetConfigMaxIntKey( questitems_cfg );
+		telem		:= RandomInt( maxelem ) + 1;
+		qelem		:= FindConfigElem( questitems_cfg , telem );
+		qelem		:= findconfigelem(questitems_cfg, telem);
+		if( !qelem )
+			return;
+		endif
+		
+		quest_item	:= GetConfigInt( qelem , "itemid" );
+		quest_reward	:= GetConfigInt( qelem , "reward" );
+		quest_gold	:= GetConfigInt( qelem , "gold" );
+		item_name	:= GetConfigString( qelem , "message" );
+		noun		:= GetConfigString( qelem , "noun" );
+
+		if( quest_type != 1 ) // Item held by a npc
+			local tbaddie := CreateNpcFromTemplate( "quest_target" , x , y , 0 );
+			SetName( tbaddie , RandomName( me ) );
+			
+			local hispack := tbaddie.backpack;
+
+			if (!hispack)
+				hispack := CreateItemAtLocation( tbaddie.x , tbaddie.y , tbaddie.z , 0x0e75 , 1 );
+				EquipItem( tbaddie , hispack );
+			endif
+
+			local titem := CreateItemInBackpack( tbaddie , quest_item , 1 );
+			
+			SetObjProperty( titem , "iWant" , me.serial );
+			if( quest_type = 2 ) 
+				titem.name := me.name + "'s " + noun;
+			else
+				titem.name := tbaddie.name + "'s " + noun;
+			endif
+			
+			has_name := tbaddie.name;
+		endif
+
+		SetObjProperty( me, "quest_type" , quest_type );			
+		SetObjProperty( me, "itemname"	 , item_name );				
+		SetObjProperty( me, "has_item"   , has_item );				 
+		SetObjProperty( me, "has_loc"    , has_loc );					
+		SetObjProperty( me, "reward"     , quest_reward );				
+		SetObjProperty( me, "quest_gold" , quest_gold );			 
+		SetObjProperty( me, "quest_item" , quest_item );			 
+		SetObjProperty( me, "noun"       , noun );						 
+		SetObjProperty( me, "has_name"   , has_name );				 
+	endif
+
+endfunction
+
+
+function GiveReward( who )
+
+	if( quest_reward )
+		CreateItemInBackpack( who , quest_reward );
+	endif
+	
+	if( quest_gold ) 
+		CreateItemInBackpack( who , 0xeed , quest_gold );
+	endif
+	
+	ResetQuest();
+
+endfunction
+
+
+function ResetQuest()
+
+	EraseObjProperty( me, "quest_type");
+	EraseObjProperty( me, "itemname");
+	EraseObjProperty( me, "has_item");
+	EraseObjProperty( me, "has_loc");
+	EraseObjProperty( me, "reward");
+	EraseObjProperty( me, "quest_gold");
+	EraseObjProperty( me, "quest_item");
+	EraseObjProperty( me, "noun");
+	EraseObjProperty( me, "has_name");
+
+	quest_type	:= 0;
+	item_name	:= 0;
+	has_item	:= 0;
+	has_loc		:= 0;
+	quest_reward	:= 0;
+	quest_gold	:= 0;
+	quest_item	:= 0;
+	noun		:= 0;
+	has_name	:= 0;
+
+endfunction

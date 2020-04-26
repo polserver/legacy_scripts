@@ -1,0 +1,121 @@
+use uo;
+use os;
+use cfgfile;
+
+include "/include/client";
+
+global cfg := ReadConfigFile("::npcdesc");
+
+program animal_lore(who)
+
+local targ := target(who);
+if(!targ.maxhp or targ.acctname)
+	SendSysMessage(who, "You must target a creature");
+	return;
+endif
+
+local elem := cfg[targ.npctemplate];
+
+local tamedif := elem.tameskill;
+tamedif := tamedif/2;
+local phisical := "";
+local health := "";
+local tameinfo := "";
+local poison := "";
+local tameskill := GetSkill( who , SKILLID_TAMING );
+
+if(CheckSkill(who, 2, -1 , 50))
+	
+	phisical := GetStr(targ.strength/20);
+
+	health := GetHealth(10*targ.hp/targ.maxhp);
+	if (Cint(GetObjProperty(targ, "poison_level")) > 0 )
+		poison := ", and it's poisoned";
+	endif
+
+	if(tamedif)
+		if (CheckSkill(who, SKILLID_TAMING, tamedif/2 , tamedif/5) )
+			if(GetObjProperty( targ , "prevtamed" ))
+				tameinfo := "The animal have been previosly tamed";
+			else
+				tameinfo := "The animal have never been tamed";
+			endif
+			if(tameskill < tamedif)
+				tameinfo := tameinfo + " but you have no change to do so";
+			else
+				tameinfo := tameinfo + " and you can try do soo";
+			endif
+		endif
+	else
+		tameinfo := "The creature cannot be tamed";
+	endif
+
+	local thirdline := "";
+	if(targ.script["tamed"])
+		thirdline := "The animal is tamed and "+GetHungry(GetObjProperty(targ,"happyness"));
+	endif		
+
+	PrintTextAbovePrivate(targ, "The " +targ.name+" looks "+ phisical+ " and " + health +poison , who);
+	sleep(1);
+	PrintTextAbovePrivate(targ, tameinfo, who);
+	sleep(1);
+	PrintTextAbovePrivate(targ, thirdline , who);
+else
+	PrintTextAbovePrivate(targ, "You fail to understand anything about the animal", who);
+endif
+
+
+
+endprogram
+
+function GetStr(temp)
+case(temp)
+	0: return "very weak"; //0-19
+	1: return "weak"; //20-39
+	2: return "like an average man"; //40-59
+	3: return "somewhat strong"; //60-79
+	4: return "strong"; //80-99
+	5: return "very strong"; //100-119
+	6: return "strong like a Titan";//120-139
+	7: return "strong like a Dragon";//140-159
+	default: return "strong beyond comprehension"; //160+
+endcase
+
+endfunction
+
+
+function GetHealth(percentage)
+
+case(percentage)
+	0: return "near death";    //0-9 life
+	1: return "in bad shape";  //10-19
+	2:
+	3: return "in poor health"; //20-39
+	4:
+	5: return "in fair health"; //40-59
+	6:
+	7: return "in good health"; //60-79
+	default: return "in excellent shape";  //80+
+endcase
+
+endfunction
+
+function GetHungry(hungry)
+
+local status := "";
+case(hungry)
+	1: status := "confused";
+	2: status := "extremely unhappy";
+	3: status := "rather unhappy";
+	4: status := "unhappy";
+	5: status := "content, I suppose";
+	6: status := "content";
+	7: status := "happy";
+	8: status := "rather happy";
+	9: status := "very happy";
+	10: status := "extremely happy";
+	11: status := "wonderfully happy";
+endcase
+return status;
+
+endfunction

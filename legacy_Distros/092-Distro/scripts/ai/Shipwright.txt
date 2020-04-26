@@ -1,0 +1,8 @@
+shipwright npc - version .2
+updated April 14, 2000  (zulu@zuluhotel.com)
+
+Here is the shipwright.  Take a look at this package, it has a lot of new ships over the standard architect.  You will have to remove the ship deeds from the architect.
+
+You can place these npc's in the custom houses and they will sell boat deeds. Another good place for them is by docks.
+
+To spawn the new npc, type .createnpc shipwright

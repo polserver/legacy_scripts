@@ -1,0 +1,27 @@
+Known Bugs
+==========
+
+gump dialog cleanup?  .gotog w/ escape seems not to
+  -- need "nodispose" in the gump layout description
+
+.spawncontainer woodenchest [5] z-coordinate?
+
+"ach! cant find tracklem"
+web server is susceptible to DoS attacks
+Hitting Ctrl-C early in startup can cause an AV on exit
+Clients sometimes lockup on teleports into areas with lots of items.
+
+largepatiohouse at 5283, 487, 15 ?
+Large Patio Houses have some problems; the data in the client .mul files isn't
+  quite right, so for now they don't work.
+
+
+Linux
+=====
+
+
+Unexplained crashes
+===================
+    in the drop item handler, dropping an item in another.  looks like it happened
+     in toplevel_owner, getting item->container.
+    in undo_get_item, trying to move the dragged item into a backpack

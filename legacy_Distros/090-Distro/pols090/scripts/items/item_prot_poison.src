@@ -1,0 +1,35 @@
+use uo;
+use os;
+
+include "include/client";
+
+
+Const SOUND_EFFECT_PROT := 0x1e9;
+Const EFFECT_SPARKLE  := 0x374a;
+
+
+function use_item( caster, item )
+    local charges := Cint(GetObjProperty(item, "charges"));
+
+    if (charges > 0)
+            charges := charges - 1;
+            PlaySoundEffect(caster, SOUND_EFFECT_PROT);
+            PlayObjectCenteredEffect( caster, EFFECT_SPARKLE, 10,10);
+            SetObjProperty(caster, "poison_level","-5");
+            SetObjProperty(item, "charges",cstr(charges));
+    endif
+endfunction
+
+
+program item_prot_poison( character, wand )
+    local charges := Cint(GetObjProperty(wand, "charges"));
+
+    while (charges > 0)
+        if (GetObjProperty(character, "poison_level") >= "0")
+            use_item(character, wand );
+        endif
+
+        sleep(5);
+        charges := Cint(GetObjProperty(wand, "charges"));
+    endwhile
+endprogram

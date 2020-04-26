@@ -1,0 +1,13 @@
+
+use uo;
+
+program textcmd_showstats( who, action )
+    SendSysMessage( who, "Select a mobile" );
+
+    local mobile := Target( who );
+    if (mobile)
+        PrintTextAbovePrivate( mobile, "Str: " + mobile.strength, who );
+        PrintTextAbovePrivate( mobile, "Dex: " + mobile.dexterity, who );
+        PrintTextAbovePrivate( mobile, "Int: " + mobile.intelligence, who );
+    endif
+endprogram

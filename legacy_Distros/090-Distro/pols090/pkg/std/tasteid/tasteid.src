@@ -1,0 +1,66 @@
+use uo;
+use cfgfile;
+
+include "include/client";
+
+Const UOBJECT_FLASK_EMPTY:= 0x1832;
+Const UOBJECT_FLASK_FULL := 0x1834;
+Const UOBJECT_FLASK_HEATED := 0x1833;
+
+
+include "include/skillpoints";
+
+
+program do_tasteid( character )
+    local thepoints := get_default_points(SKILLID_TASTEID);
+    local the_item;
+    local contents;
+    local poison_level;
+    local poison_descr;
+    local content_descr;
+    local alchemcfg := ReadConfigFile("::itemdesc");
+    
+    SendSysMessage( character, "Select an object to taste." );
+    the_item := target(character, "");
+    if (!the_item)
+        SendSysmessage(character, "Targetting cancelled.");
+        return;
+    endif 
+    
+    content_descr := "";
+    if (CheckSkill( character, SKILLID_TASTEID, -1, thepoints ))
+        
+        poison_level := Cint(GetObjProperty(the_item, "poison_level"));
+
+        case poison_level
+            1: poison_descr := "a lesser poison.";
+            2: poison_descr := "a regular poison.";
+            3: poison_descr := "a greater poison.";
+            4: poison_descr := "a deadly poison.";
+            5: poison_descr := "an extremely deadly poison.";
+            default: poison_descr := "nothing out of the ordinary.";
+        endcase            
+    else
+        poison_descr := "nothing out of the ordinary.";
+    endif
+    
+    if (content_descr = "")
+            SendSysmessage(character, "This contains " + poison_descr);
+    endif
+    
+    local itemdesc := alchemcfg[the_item.objtype].sname;
+    
+    if (itemdesc)
+        SendSysmessage(character, "It seems to be " + itemdesc);
+        setname(the_item, itemdesc);
+    endif
+
+endprogram
+
+
+
+
+
+
+
+

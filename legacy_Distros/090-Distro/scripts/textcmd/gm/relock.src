@@ -1,0 +1,28 @@
+use uo;
+
+include "util/key";
+
+program relock( who )
+
+    SendSysmessage( who , "Target a KEY first." );
+    local key := Target( who , "" );
+    if(! key)
+       SendSysmessage( who , "Cancelled." );
+       return;
+    endif
+
+    SendSysmessage( who , "Target a door or Container now." );
+    local LockedItem := Target( who , "" );
+
+    if(! lockeditem)
+       SendSysmessage( who , "Cancelled." );
+       return;
+    endif
+
+    local lockid := GetObjProperty(key, "lockid");
+
+    SetObjProperty( lockeditem , "lockid" , lockid );
+    
+    SendSysmessage( who , "Changed the item to match that key." );
+
+endprogram

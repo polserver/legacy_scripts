@@ -1,0 +1,28 @@
+//////////////////////////////////////
+// ngoto.src -- go to an online player
+//
+// Usage: .goto [playername]
+//        if playername is not given,
+//        a menu will open and prompt
+//        you to choose one.
+//
+// Author: Racalac
+//
+// Modified from goto.src to use
+// SelectOnlineCharacter function
+//
+//////////////////////////////////////
+
+use uo;
+
+include "include/selchar";
+
+program textcmd_goto( character, whom )
+
+    var onlinechr := SelectOnlineCharacter( character, whom, "Goto" );
+    if (onlinechr)
+        MoveCharactertoLocation(character, onlinechr.x, onlinechr.y, onlinechr.z);
+    endif
+
+endprogram
+

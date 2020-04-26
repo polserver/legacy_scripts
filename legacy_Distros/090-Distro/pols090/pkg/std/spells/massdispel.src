@@ -1,0 +1,41 @@
+use uo;
+
+include "include/client";
+include "include/spellattack";
+include "include/spellrestrictions";
+
+program mass_dispel ( parms )
+
+	local circle := 7;
+	local caster;
+	local cast_on;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_on := parms[3];
+	else
+		caster := parms;
+		cast_on := CanTargetArea(caster, circle);
+		if (!cast_on)
+			return;
+		endif
+	endif
+
+	local magery := GetSkill(caster, SKILLID_MAGERY);
+	local range := Cint(magery / 15);
+	local targets := ListMobilesNearLocation( cast_on.x, cast_on.y , cast_on.z , range );
+
+	foreach mobile in targets
+		local summoned := GetObjProperty( mobile, "summoned");
+		if ((summoned = 1) and ( CheckLosAt( mobile, cast_on.x , cast_on.y , cast_on.z ) ))
+			send_attack(mobile,caster, 54);
+			PlaySoundEffect( mobile , SFX_SPELL_MASS_DISPEL );
+			if (!checkskill(mobile,SKILLID_MAGICRESISTANCE, magery, 50)) then
+				PlayStationaryEffect( mobile.x, mobile.y, mobile.z, FX_SMOKE, 0xA, 0xA );
+				MoveCharacterToLocation(mobile,0,0,0,MOVECHAR_FORCELOCATION);
+				ApplyDamage( mobile , mobile.maxhp + 3 );
+			endif
+		endif
+	endforeach
+
+endprogram

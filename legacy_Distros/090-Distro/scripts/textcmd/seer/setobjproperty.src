@@ -1,0 +1,11 @@
+use uo;
+
+program addobjproperty( who, text )
+	local params := SplitWords( text );
+	local item := Target( who );
+	SetObjProperty( item, params[1], cstr(params[2]) );
+
+	Print("objprop: " + GetObjProperty( item , params[1] ) );
+
+         
+endprogram

@@ -1,0 +1,56 @@
+use uo;
+use cfgfile;
+use os;
+program plant_seed(character, seed)
+
+local cfg := readconfigfile("::itemdesc");
+
+if (!cfg)
+        return;
+endif
+
+local where := targetcoordinates(character);
+
+
+Sendsysmessage(character, "Where would you like to plant this?");
+
+if (!where)
+        sendsysmessage(character, "Targetting cancelled!");
+        return;
+endif
+
+if (!is_plantable(getmapinfo(where.x, where.y).landtile))
+        sendsysmessage(character, "You cannot plant there!");
+        return;
+endif
+
+local parms := {};
+parms[1] := where;
+parms[2] := cfg[seed.objtype].plant;
+start_script("seedling", parms);
+subtractamount(seed,1);
+sendsysmessage(character, "You plant the seed");
+
+endprogram
+
+function is_plantable(maptile)
+if (maptile >= 0x3 and maptile <= 0x15) 
+        return 1;
+elseif (maptile >= 0x7d and maptile <= 0xa2) 
+        return 1;
+elseif (maptile >= 0xac and maptile <= 0xdb) 
+        return 1;        
+elseif (maptile >= 0x14c and maptile <= 0x174) 
+        return 1;        
+elseif (maptile >= 0x579 and maptile <= 0x5ad) 
+        return 1;        
+elseif (maptile >= 0x5e3 and maptile <= 0x618) 
+        return 1;        
+elseif (maptile >= 0x6a1 and maptile <= 0x6c2) 
+        return 1;        
+elseif (maptile >= 0x3d65 and maptile <= 0x3ef0) 
+        return 1;        
+else
+        return 0;
+endif
+endfunction

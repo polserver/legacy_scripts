@@ -1,0 +1,47 @@
+use uo;
+use os;
+include "guildstone";
+
+Const UOBJECT_DOORS_START := 0x0675;
+Const UOBJECT_DOORS_END   := 0x06f4;
+
+program packed_stone(who,item)
+
+if(!ReserveItem(item)) return; endif
+
+local guild := LoadGuildByserial(item.serial);
+if(guild[1][1] != who.serial)
+	SendSysMessage(who, "You are already a member of a guild.");
+	return;
+endif
+if(!who.multi)
+	SendSysMessage(who, "You need to be in a house to use this deed.");
+	return;
+endif
+
+if(GetObjProperty((who.multi),"ownerserial")<>who.serial)
+	SendSysMessage(who, "Only the owner can place items in the house.");
+	return;
+endif
+
+foreach item in ListItemsNearLocation(who.x, who.y, who.z, 2)
+	If (!item.movable or ((Item.objtype>= UOBJECT_DOORS_START) AND (Item.objtype<=UOBJECT_DOORS_END) ) )
+		SendSysMessage(who, "This is too close to the door.");
+		return;
+	endif
+endforeach
+
+foreach item in ListItemsNearLocation(who.x, who.y, who.z, 30)
+	if(item.objtype = UOBJ_GUILDSTONE and (item.multi.serial = who.multi.serial))
+		SendSysMessage(who, "Only one guildstone can be placed in a house.");
+		return;
+	endif
+endforeach
+item.movable :=1;
+MoveItemToLocation( item, who.x, who.y, who.z, MOVEITEM_FORCELOCATION );
+item.movable :=0;
+item.graphic := UOBJ_GUILDSTONE_GRAPHIC;
+item.usescript := "guildstone";
+
+
+endprogram

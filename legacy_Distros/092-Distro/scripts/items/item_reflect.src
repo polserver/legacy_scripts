@@ -1,0 +1,33 @@
+use uo;
+use os;
+
+include "include/client";
+
+Const SOUND_EFFECT_REFLECT := 0x215; // probably wrong
+Const EFFECT_SPARKLE  := 0x374a;
+
+function use_item( caster, item )
+    local  charges := Cint(GetObjProperty(item, "charges"));
+    if (charges > 0)
+            charges := charges - 1;
+            PlaySoundEffect(caster, SOUND_EFFECT_REFLECT);
+            PlayObjectCenteredEffect( caster, EFFECT_SPARKLE, 10,10);
+            SetObjProperty(caster, "mr","1");
+            SetObjProperty(item, "charges",cstr(charges));
+    endif
+endfunction
+
+
+program item_reflect( character, wand )
+    local  charges := Cint(GetObjProperty(wand, "charges"));
+
+    while (charges > 0)
+        if (GetObjProperty(character, "mr") != "1")
+            use_item(character, wand );
+        endif
+
+        sleep(5);
+        charges := Cint(GetObjProperty(wand, "charges"));
+    endwhile
+
+endprogram

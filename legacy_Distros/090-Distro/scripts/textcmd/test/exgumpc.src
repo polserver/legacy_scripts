@@ -1,0 +1,19 @@
+use uo;
+
+var layout := {
+    "page 0",
+    "resizepic 0 0 5120 280 200",
+    "button 115 140 2130 2129 1 0 101",
+    "text 100 50 500 0",
+    "textentry 100 80 150 50 32 1050 1",
+	"checkbox 10 10 210 211 1 2002",
+	"checkbox 10 30 210 211 0 2001",
+};
+
+var data := {
+    "Hello, world!",
+    "hello back!"
+};
+
+include "textcmd/test/exgump";
+         

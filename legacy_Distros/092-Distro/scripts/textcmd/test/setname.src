@@ -1,0 +1,10 @@
+use os;
+use uo;
+
+program textcmd_setname( speaker, newname )
+    SendSysMessage( speaker, "Select object of which to set name" );
+    local tgt := Target( speaker );
+    if (tgt)
+        tgt.name := newname;
+    endif
+endprogram

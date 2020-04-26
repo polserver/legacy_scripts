@@ -1,0 +1,13 @@
+use uo;
+
+program textcmd_setlight( who, text )
+    local tparams := SplitWords( text );
+
+    print( "Region Name: " + tparams[1] );
+    print( "Light Level: " + tparams[2] );
+
+    local res := SetRegionLightLevel( tparams[1], CInt(tparams[2]) );
+    if (!res)
+        SendSysMessage( who, "Error setting light level: " + res.errortext );
+    endif
+endprogram

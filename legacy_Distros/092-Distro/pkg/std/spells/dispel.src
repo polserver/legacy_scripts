@@ -1,0 +1,38 @@
+use uo;
+use os;
+
+include "include/client";
+include "include/spellrestrictions";
+
+program dispel ( parms )
+
+	local circle := 6;
+	local caster;
+	local cast_on;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_on := parms[3];
+	else
+		caster := parms;
+		cast_on := CanTargetSpell(caster, circle, TGTOPT_HARMFUL + TGTOPT_CHECK_LOS );
+		if (!cast_on)
+			return;
+		endif
+	endif
+
+	local magery := GetSkill(caster, SKILLID_MAGERY);
+	local summoned := GetObjProperty( cast_on, "summoned");
+
+	if (summoned = 1)
+		PlaySoundEffect( caster , SFX_SPELL_MANA_VAMPIRE );
+		if (!checkskill(cast_on,SKILLID_MAGICRESISTANCE, magery, 50)) then
+			PlayStationaryEffect( cast_on.x, cast_on.y, cast_on.z, FX_SMOKE, 0xA, 0xA );
+			MoveCharacterToLocation(cast_on,0,0,0,MOVECHAR_FORCELOCATION);
+			damage( cast_on , cast_on.maxhp + 3 );
+		endif
+	else
+		SendSysmessage( caster , "You could not dispel the creature." );
+	endif
+
+endprogram

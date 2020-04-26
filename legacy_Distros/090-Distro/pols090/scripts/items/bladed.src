@@ -1,0 +1,292 @@
+use cfgfile;
+use uo;
+use os;
+use util;
+include "include/client";
+include "include/objtype";
+const GFX_UNSHORN_SHEEP := 0xcf;
+const GFX_SHORN_SHEEP := 0xdf;
+const UOBJ_WOOL := 0xdf8;
+program use_blade( user, blade )
+    
+    SendSysmessage( user, "What would you like to use that on, " + user.name + "?" );
+    Local use_on := TargetCoordinates( user );
+    if (! use_on)
+        return;
+    endif
+    if (use_on.mobile.graphic = GFX_UNSHORN_SHEEP)
+        carvewool(user, use_on.mobile);
+    
+    elseif (use_on.item.objtype = UOBJ_LOGS)
+        CarveLogs( user, use_on.item );
+    elseif(use_on.item.objtype = UOBJ_CORPSE)
+        Carve_Corpse(user, use_on.item);
+    elseif (is_fish(use_on.item.objtype ))
+        CarveFish(user,use_on.item);
+    elseif (is_tree(use_on.objtype ))
+        CarveTree(user,use_on.item);    
+    else
+    
+        SendSysmessage( user, "I don't know how to use those items together." );
+    endif
+endprogram
+
+function carvewool(user, sheep)
+if (distance(user, sheep) > 3)
+        sendsysmessage(user, "You are too far away!");
+        return;
+endif
+
+sheep.graphic := GFX_SHORN_SHEEP;
+createiteminbackpack(user, UOBJ_WOOL, 3);
+detach();
+sleep(3600);
+sheep.graphic := GFX_UNSHORN_SHEEP;
+endfunction
+
+Global BowcraftConfigFile := ReadConfigFile( "bowcraft" );
+
+function is_tree(theobj)
+        if ((theobj = 0x0c9e) or (theobj = 0x0ca8) or (theobj = 0x0caa) )
+                return 1;
+        elseif (theobj = 0x0cab)
+                return 1;
+        elseif ((theobj >= 0x0c99) and (theobj <= 0x0cea))
+                return 1;
+        elseif ((theobj >= 0x0cf3) and (theobj <= 0x0d03))
+                return 1;
+        elseif ((theobj >= 0x0d41) and (theobj <= 0x0dab))
+                return 1;
+        else
+                return 0;
+        endif
+endfunction
+
+
+
+
+function is_fish(theobj)
+        if ((theobj >= UOBJ_FISH_START) and (theobj <= UOBJ_FISH_END) )
+                return 1;
+        elseif ((theobj >= UOBJ_SFISH_START) and (theobj <= UOBJ_SFISH_END))
+                return 1;
+        else
+                return 0;
+        endif
+endfunction
+
+
+function CarveTree(user, use_on)
+   CreateItemInBackpack(user, UOBJ_KINDLING, 1);
+   DestroyItem(use_on);
+   SendSysmessage(user, "You chip off some kindling and put it in your backpack");
+   //subtract 1 from that tree's resources      
+        
+endfunction
+
+function CarveFish(user, use_on)
+
+	ReserveItem(use_on);
+
+	local num_steaks := (4 * use_on.amount);
+
+        PlaySoundEffect(user, SFX_57);
+	PerformAction( user, ANIM_SALUTE );
+	CreateItemInBackpack(user, UOBJ_FISHSTEAK, num_steaks);
+	DestroyItem(use_on);
+	sleep(1);
+	
+	SendSysmessage(user, "You carve the fish steaks and put them in your backpack");
+
+endfunction
+
+function CreatableObjects( character, logs )
+    Local objtypes := GetMenuObjTypes( "BowcraftCarving" );
+    objtypes := ApplyConstraint( objtypes, 
+                                 BowcraftConfigFile, 
+                                 "material", 
+                                 GetAmount(logs) );
+        /*
+            objtypes := ApplyConstraint( objtypes,
+                                         BowcraftConfigFile,
+                                         "skillrequired",
+                                         GetSkill(character,SKILLID_BOWCRAFT) );
+        */
+
+
+    return objtypes;
+endfunction
+
+function carve_corpse(character, cadaver)
+        
+        local conf := ReadConfigFile("corpses");
+        local c_type := cadaver.corpsetype;
+        local elem := FindConfigElem(conf,c_type);
+        
+        if (GetObjProperty(cadaver, "cut") = "1")
+        
+            local can_chop := GetConfigInt(elem, "cut");
+            if (can_chop)
+                foreach thing in enumerateitemsincontainer(cadaver)
+                        moveitemtolocation(thing, cadaver.x, cadaver.y, cadaver.z, MOVEITEM_NORMAL );
+                endforeach
+                local myhead := CreateItemAtLocation(cadaver.x, cadaver.y, cadaver.z, UOBJ_HEAD, 1);
+                Setobjproperty(myhead, "serial", hex(GetObjProperty(cadaver, "serial")));
+                local aname := cadaver.name;
+                aname["A Corpse of"] := "";
+                myhead.name := "The head of " + aname;
+                CreateItemAtLocation(cadaver.x, cadaver.y, cadaver.z, UOBJ_ARM, 1);
+                CreateItemAtLocation(cadaver.x, cadaver.y, cadaver.z, UOBJ_ARM, 1);
+                CreateItemAtLocation(cadaver.x, cadaver.y, cadaver.z, UOBJ_LEG, 1);
+                CreateItemAtLocation(cadaver.x, cadaver.y, cadaver.z, UOBJ_LEG, 1);
+                CreateItemAtLocation(cadaver.x, cadaver.y, cadaver.z, UOBJ_TRUNK, 1);
+                CreateItemAtLocation(cadaver.x, cadaver.y, cadaver.z, UOBJ_HEART, 1);
+                CreateItemAtLocation(cadaver.x, cadaver.y, cadaver.z, UOBJ_BLOOD, 1);
+                destroyitem(cadaver);
+            endif
+            SendSysmessage( character, "You cannot get any more from this corpse." );
+        else
+            SetObjProperty(cadaver, "cut","1");
+            local item1 := GetConfigString(elem, "item1");
+            local amount1 := GetConfigint(elem, "amount1");
+            local item2 := GetConfigString(elem, "item2");
+            local amount2 := GetConfigint(elem, "amount2");
+
+            if (amount1)
+               CreateItemInContainer(cadaver, item1, amount1);
+               SendSysMessage(character, "You place the items on the corpse.");
+            endif
+
+            if (amount2)
+               CreateItemInContainer(cadaver, item2, amount2);
+            endif
+
+           local theblood:= CreateItemAtLocation(cadaver.x, cadaver.y, cadaver.z, UOBJ_BLOOD, 1);
+           detach();
+           sleep(120);
+           DestroyItem(cadaver);
+           sleep(60);
+           DestroyItem(theblood);
+        endif
+        
+endfunction
+
+
+function CarveLogs( character, logs )
+
+	ReserveItem(logs);
+
+    Local creatable := CreatableObjects( character, logs );
+
+    Local selection := SelectMenuItem2( character, "BowcraftCarving" );
+    if (!selection) // cancelled
+        return;
+    endif
+    
+    Local what := selection.objtype;
+
+    print( "CarveLogs: Would make " + what );
+
+    if (not Accessible( character, logs ))
+        SendSysmessage( character, "I can't access the logs to make that." );
+        return;
+    endif
+
+    Local ObjectConfig := FindConfigElem( BowcraftConfigFile, what );
+    if (!ObjectConfig)
+        SendSysMessage( character, "The cosmos frowns upon your activities, or something." );
+        return;
+    endif
+
+    Local material := CInt(GetElemProperty( ObjectConfig, "Material" ));
+
+	local x := character.x;
+	local y := character.y;
+
+	SendSysMessage (character, "You begin carving...");
+
+	repeat
+
+    if (material > logs.amount)
+	SendSysMessage(character,"You run out of logs and stop carving.");
+        return;
+    endif
+
+    Local difficulty := GetConfigInt( ObjectConfig, "Difficulty" );
+    Local pointvalue := GetConfigInt( ObjectConfig, "PointValue" );
+
+    PlaySoundEffect(character, SFX_56);
+    PerformAction( character, ANIM_SALUTE );
+    sleep (2);
+    PlaySoundEffect(character, SFX_56);
+    PerformAction( character, ANIM_SALUTE );
+    sleep (2);
+
+
+    if (CheckSkill( character, SKILLID_BOWCRAFT, difficulty, pointvalue ))
+        if (what = UOBJ_SHAFTS)
+            Local shafts := CreateItemInBackpack( character, what, logs.amount );
+            if (shafts)
+                SubtractAmount( logs, logs.amount );
+                SendSysmessage( character, "You create some shafts and place them in your pack." );
+		return;
+            endif
+        elseif (what = UOBJ_BOW)
+            Local bow := CreateItemInBackpack( character, what );
+            if (bow)
+                setquality(character, bow);
+                SubtractAmount( logs, material );
+                SendSysMessage( character, "You create a bow and place it in your pack." );
+            endif
+	elseif (what = UOBJ_XBOW)
+            Local bow := CreateItemInBackpack( character, what );
+            if (bow)
+                setquality(character, bow);
+                SubtractAmount( logs, material );
+                SendSysMessage( character, "You create a crossbow and place it in your pack." );
+            endif
+       elseif (what = UOBJ_HEAVY_XBOW)
+            Local bow := CreateItemInBackpack( character, what );
+            if (bow)
+                setquality(character, bow);
+                SubtractAmount( logs, material );
+                SendSysMessage( character, "You create a heavy crossbow and place it in your pack." );
+            endif
+        else
+            SendSysmessage( character, "I don't know how to make that." );
+            return;
+        endif
+    
+    else
+        SubtractAmount( logs, RandomInt(material)+1 );
+        SendSysmessage( character, "You destroy some logs." );
+    endif
+
+        sleep(1);
+
+	until ((character.x != x) or (character.y != y));
+
+	SendSysMessage(character,"You stop carving.");
+
+endfunction
+
+
+function setquality(character, bow)
+
+if (checkskill(character, SKILLID_BOWCRAFT, 95,1)) //they created an exceptional bow
+        local tname;
+        case (bow.objtype)
+                UOBJ_BOW: tname := "bow";
+                UOBJ_XBOW: tname := "crossbow";
+                UOBJ_HEAVY_XBOW:  tname := "heavy crossbow";
+        endcase
+        
+        bow.name := "Exceptional " + tname + " [crafted by " + character.name + "]";
+        bow.quality := 1.5;
+else
+        bow.quality := randomint(65) + cint((getskill(character, SKILLID_BOWCRAFT)/2));
+endif
+
+bow.hp := bow.maxhp;
+
+endfunction

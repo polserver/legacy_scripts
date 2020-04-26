@@ -1,0 +1,25 @@
+use uo;
+
+include "util/key";
+
+program makekey ( who )
+
+    SendSysmessage( who , "Target a door or Container now." );
+    local LockedItem := Target( who , "" );
+
+    if(! lockeditem)
+       SendSysmessage( who , "Cancelled." );
+       return;
+    endif
+
+    local lockid := GetObjProperty(LockedItem, "lockid");
+
+    if (! lockid)
+	SendSysmessage( who , "There's no lock on that." );
+    else
+	local key := CreateItemInBackpack( who , 0x100F , 1 );
+	SetObjProperty( key , "lockid" , lockid );    
+    	SendSysmessage( who , "Created a key to match that lock." );
+    endif
+
+endprogram

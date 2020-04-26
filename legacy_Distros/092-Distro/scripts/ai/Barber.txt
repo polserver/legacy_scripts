@@ -1,0 +1,12 @@
+barber - version .3
+created by Zulu (zulu@cadvision.com) January 31, 2000
+updated August 10, 2000
+
+I have also included Sentack's training code. I have updated his code a bit.
+
+The barber can train skills for players.
+Players can buy hair and facial hair.
+Players can buy hair dye.
+
+To create a npc use the command 
+.createnpc barber

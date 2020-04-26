@@ -1,0 +1,24 @@
+use os;
+use uo;
+use boat;
+
+program textcmd_kill( who )
+    local tgt := TargetCoordinates( who );
+    
+    if (tgt.mobile)
+        local obj := tgt.mobile.npctemplate;
+        local x := tgt.mobile.x;
+        local y := tgt.mobile.y;
+        local z := tgt.mobile.z;
+        
+        local mob := tgt.mobile;
+
+       
+            RevokePrivilege( mob, "invul" );
+            setobjproperty(mob, "guardkill", 1);
+            Damage( mob, mob.hp );
+            detach();
+            sleep(2);
+            createnpcfromtemplate(obj,x,y,z);
+    endif
+endprogram

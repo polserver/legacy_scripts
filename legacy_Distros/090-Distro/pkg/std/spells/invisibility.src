@@ -1,0 +1,32 @@
+use uo;
+use os;
+
+include "include/client";
+include "include/spellrestrictions";
+
+program cast_invis( parms )
+
+	local circle := 6;
+	local caster;
+	local cast_on;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_on := parms[3];
+	else
+		caster := parms;
+		cast_on := CanTargetSpell(caster, circle, TGTOPT_HELPFUL + TGTOPT_CHECK_LOS );
+		if (!cast_on)
+			return;
+		endif
+	endif
+
+        PlaySoundEffect(caster, SFX_SPELL_INVISIBILITY);
+        PlaySoundEffect(cast_on, SFX_SPELL_INVISIBILITY);
+        cast_on.hidden := 1;
+
+	detach();
+	sleep (Cint(GetSkill(caster, SKILLID_MAGERY)));
+        cast_on.hidden := 0;
+	
+endprogram

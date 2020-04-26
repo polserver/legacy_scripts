@@ -1,0 +1,7 @@
+use uo;
+
+program textcmd_setarmod( who, newmod )
+    newmod := CInt(newmod);
+
+    who.ar_mod     := newmod;
+endprogram

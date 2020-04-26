@@ -1,0 +1,26 @@
+use uo;
+
+program evidence(who, evidence)
+
+local ser := getobjproperty(evidence, "serial");
+
+if (!ser)
+        Sendsysmessage(who, "This proves nothing!");
+        return;
+endif
+
+sendsysmessage(who,"Select the item to which you wish to match this evidence");
+local what := target(who, TGTOPT_CHECK_LOS);
+
+if (!what)
+        SendSysmessage(who, "Targetting cancelled");
+        return;
+endif
+
+if (what.serial = cint(ser))
+        Printtextabove(what, "This matches the evidence");
+else
+        printtextabove(what, "This does not match the evidence");
+endif
+
+endprogram        

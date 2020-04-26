@@ -1,0 +1,36 @@
+use http;
+use uo;
+
+WriteHtml( "<html><head><title>POL System Variables</title></head>" +
+           "<body>" +
+           "<center>POL System Variables:</center>" +
+           "<div align=center>" +
+           "<table border=1 cellspacing=0 cellpadding=5>" +
+           "  <tr bgcolor=#99CCFF><td>Name</td><td>Value</td></tr>"  );
+
+var system := polcore();
+
+WriteHtml( "  <tr><td>Uptime</td><td>" + format_duration( system.uptime ) + "</td></tr>" );
+WriteHtml( "  <tr><td>SysLoad</td><td>" + system.sysload + "</td></tr>" );
+
+WriteHtml( "</table></div>" );
+
+WriteHtml( "</BODY></HTML>" );
+
+function format_duration( seconds )
+    var hrs := CInt( seconds / 3600 );
+    seconds := seconds - hrs * 3600;
+    var mns := CInt( seconds / 60 );
+    seconds := seconds - mns * 60;
+
+    return CStr(hrs) + ":" + pad( mns, 2 ) + ":" + pad( seconds, 2 );
+
+endfunction
+
+function pad( value, minlen )
+    var ret := CStr( value );
+    while (len(ret) < minlen )
+        ret := "0" + ret;
+    endwhile
+    return ret;
+endfunction

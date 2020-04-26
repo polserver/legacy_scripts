@@ -1,0 +1,284 @@
+////////////////////////////////////////////////////////
+//
+// Cprop Editor - ver 0.2
+//
+// Created: Dougall
+// Updated: 19/09/01
+// Contact: dougalloogle@yahoo.com
+//
+////////////////////////////////////////////////////////
+//
+// Installation:
+//
+//	1. Place in pol\scripts\textcmd\gm\ 
+//           or pol\scripts\textcmd\admin\
+//	2. Compile
+//	3. Unload script OR start pol
+//
+////////////////////////////////////////////////////////
+//
+// Notes:
+//
+//  - to use while online type:  .propedit
+//
+//  - alter Cprop entries directly into the gump
+//
+//  - altered Cprop entries will NOT take effect
+//    until the Apply button is pressed
+//
+//  - can cope with upto 60 props on an object
+//
+//  - press the red flag in the top right corner
+//	  to toggle the gump size, this is to help
+//    with editing large Cprops such as arrays!
+//
+////////////////////////////////////////////////////////
+//
+// Warning & Disclaimer:
+//
+//	- !BE WARNED! It's really easy to make a mess of
+//	  some pretty essential Cprops with this tool.
+//
+//	- Disclaimer: ...I didn't do it.....I wasn't there
+//	  ....It wasn't me.... ....honest...
+//
+////////////////////////////////////////////////////////
+//
+// Thanks:
+//    syz for pol , myr for gumps pkg
+//    & anyone else who wants some
+//    for whatever they did.....    :-)
+//
+////////////////////////////////////////////////////////
+//
+//  TODO:
+//    - sort out what happens when changes
+//      are made to entries which are too
+//      wide for the screen.
+
+
+use uo;
+use os;
+
+include "../../../pkg/foundations/gumps/gumps";
+include "include/client";
+include "include/yesNo";
+
+// Constants
+//  - Warning ! code maybe unstable if these
+//    consts are varied!
+const MAX_X		:= 450;
+const MAX_Y		:= 300;
+const TEXT_LINES	:= 10;
+const MAX_PAGES		:= 6;
+
+// Global Variables
+var show_in_hex:=1;
+var finished := 0;
+var gump_width:=1;
+
+
+program prop_editor(who)
+	sendsysmessage(who,"Edit Cprops on what?");
+	var thing:=Target(who,"");
+	if (!thing)
+		sendsysmessage(who,"cancelled");
+		return;
+	else
+		ReserveItem(thing);
+		repeat
+			if ((!finished) and (thing))
+				sleepms(200);
+				BuildCpropGump(who,thing);
+			endif
+		until ((finished) or (!thing));
+	endif
+	if ((!thing) or (finished=2))
+		sendsysmessage(who,"Item destroyed!!");
+	else
+		ReleaseItem(thing);
+	endif
+endprogram
+
+// compose the whole gump
+function BuildCpropGump(who,thing)
+	var edit_cprop:=array;
+	var delete_cprop:=array;
+	var add_cprop:=array;
+	var propnames:=array;
+		
+	GFInitGump(0, 0);
+	GFNoDispose();
+	GFNoClose();
+	GFPage(0);
+	GFResizePic(0, 0,  BKGND_SCROLL, get_width(), MAX_Y);
+	
+	if (!show_in_hex)
+		GFTextLine(70, MAX_Y-30, COLOR_RED, "Show Hex");
+	else
+		GFTextLine(70, MAX_Y-30 , COLOR_RED, "Show Int");
+	endif
+	
+	var button,hextoggle,cancel,widthtoggle;
+	
+	button:=GFButtonID(50,MAX_Y-27,0x4b9,0x4ba,1);	
+	hextoggle:=button.keyid;				// toggle hex/int button
+		
+	button:=GFButtonID(200,MAX_Y-33,0x0ef,0x0f0,1);		// update button
+                                                        	// no need to record keyid !!                                                        
+	button:=GFButtonID(300,MAX_Y-33,0x0f1,0x0f2,1);
+	cancel:=button.keyid;					// cancel button
+	
+	button:=GFButtonID(200,37,0x4b9,0x4ba,1);
+	add_cprop:=button.keyid;                   		// add cprop button
+	
+	button:=GFButtonID(get_width()-40,10,0x01f,0x01f,1);
+	widthtoggle:=button.keyid;
+	
+	GFTextLine(40, 9, 1 , "Prop Editor:");	
+	GFTextLine(42,11,COLOR_GREEN,"Prop Editor:");
+	GFTextCrop(140, 10, 200, 25, 0 , get_name(thing));
+	
+	GFTextLine(35, 35, COLOR_RED, "Del");
+	GFTextLine(220, 35, COLOR_RED, "Add Cprop");  
+ 
+	propnames:=GetObjPropertyNames(thing);
+	var propsize := len(propnames);
+
+	var numpages := 0;
+	while ((propsize > 0) or (numpages=0))
+		propsize := propsize - TEXT_LINES;
+		numpages := numpages + 1;
+	endwhile
+	if (numpages>MAX_PAGES)
+		numpages:=MAX_PAGES;
+	endif
+	
+	var this_page,first_num,last_num;
+	for (this_page := 1; this_page <= numpages; this_page:= this_page + 1)
+		ComposeCpropPage(this_page, thing , edit_cprop, delete_cprop, numpages);
+	endfor
+	
+	var retkey := GFSendGump(who);
+
+	if (!thing)
+		finished:=2;
+		return;
+	elseif (retkey[cancel])
+		finished:=1;
+		return;
+	endif
+	if (retkey[hextoggle])
+		show_in_hex:=(!show_in_hex);
+		return;
+	elseif (retkey[widthtoggle]);
+		gump_width:=gump_width+1;
+		if (!get_width())
+			gump_width:=1;
+		endif
+		return;
+	elseif (retkey[add_cprop])
+		var get_propname:=SendTextEntryGump(who,"Enter Cprop Name");
+		if (get_propname)
+			SetObjProperty(thing,get_propname,0);
+		endif
+	endif
+	
+	var num,this_text,this_prop;
+	  
+	for (num :=1 ; num <= delete_cprop.size(); num := num +1)
+		if (retkey[delete_cprop[num]])
+			if (YesNo(who,"Confirm?"))
+				EraseObjProperty(thing,propnames[num]);
+				return;
+			endif
+		endif
+	endfor
+	
+	for (num := 1; num <= edit_cprop.size(); num := num + 1)
+		this_text:=GetNewValue(retkey[edit_cprop[num]]);
+		this_prop:=GetObjProperty(thing,propnames[num]);
+		if (this_prop and (!Cint(this_prop)) )					// it used to be a string or array
+			SetObjProperty(thing,propnames[num],this_text);			// string or array
+		elseif (Cint(this_prop))								// used to be integer and 
+			SetObjProperty(thing,propnames[num],Cint(this_text));
+		else
+			SetObjProperty(thing,propnames[num],this_text);
+		endif		
+	endfor
+	
+endfunction
+
+// Builds the cprop pages 
+function ComposeCpropPage(page, item,byref edit_cprop, byref delete_cprop, numpages)
+	var props:=GetObjPropertyNames(item);
+
+	var button,propnum,this_prop;	
+	var y := 60;
+	var ysize := 20;
+	var	first_num := TEXT_LINES * (page - 1) + 1;
+	var	last_num := TEXT_LINES * page;
+
+	GFPage(page);
+	
+	if (page = 1 and page != numpages)				 // 1st page
+		GFButtonPage(get_width() - 40, MAX_Y - 70, 0x0fc, 0x0fd, page + 1);
+	elseif (page = numpages and page != 1) 			// last page
+		GFButtonPage(get_width() - 40, 40, 0x0fa , 0x0fb, page - 1);
+	elseif (page > 1 and page < numpages) 			// mid pages
+		GFButtonPage(get_width() - 40, 40, 0x0fa , 0x0fb, page - 1);
+		GFButtonPage(get_width() - 40, MAX_Y - 70, 0x0fc, 0x0fd, page + 1);
+	endif
+	
+	if (numpages>1)
+		GFGumpPic(get_width()-68,MAX_Y-37,0xa54);
+		GFGumpPic(get_width()-65,MAX_Y-33,(page+0x8b0));
+	endif
+	
+	for (propnum := first_num; propnum <= last_num; propnum := propnum + 1)
+		if (props[propnum])
+			this_prop:=GetObjProperty(item,props[propnum]);
+			GFTextCrop(50,y,200,y+ysize,0,props[propnum]);
+			GFGumpPic(160,y+3,0x03a);
+			button:=(GFTextEntry(180,y,(get_width()-240),y+ysize,0,ToggleHex(this_prop)));
+			edit_cprop.append(button.keyid);
+			button:=GFButtonID(30,y+3,0x4b9,0x4ba,1);
+			delete_cprop.append(button.keyid);
+			y := y + ysize;
+		endif
+	endfor
+endfunction
+
+// toggles the view hex option
+function ToggleHex(check)
+	if (Cint(check) and  (show_in_hex))
+		return (Hex(check));
+	elseif (cint(check))
+		return (Cint(check));
+	else
+		return (check);
+	endif
+endfunction
+
+function get_name(thing)
+	if (thing.desc)
+		return thing.desc;
+	else
+		return thing.name;
+	endif
+endfunction
+
+// removes useless shite from entered text!
+function GetNewValue(text)
+	return text[Find(text,": ", 1)+2, len(text)];
+endfunction
+
+// Sets the gump widths for the toggle width option
+function get_width()
+	case (gump_width)
+		1:	return MAX_X;
+		2:  return MAX_X+150;
+		3:  return MAX_X+300;
+	endcase
+	return 0;
+endfunction

@@ -1,0 +1,6 @@
+use os;
+program help( who )
+  local parms := {};
+  parms[1] := who;
+  start_script( ":help:help", parms );
+endprogram

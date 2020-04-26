@@ -1,0 +1,6 @@
+use uo;
+
+program reconnect( character )
+    // print( "reconnect: " + character.name );
+    SendSysMessage( character, "Reconnected." );
+endprogram

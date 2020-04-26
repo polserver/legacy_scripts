@@ -1,0 +1,28 @@
+use uo;
+use util;
+
+program trap(who, words)
+local wrds := splitwords(words);
+
+local traptype := wrds[1];
+local traplvl := wrds[2];
+local keeptrap := wrds[3];
+
+sendsysmessage(who, "Select an item to trap");
+local what := target(who, TGTOPT_NOCHECK_LOS);
+
+if(!what)
+	Sendsysmessage(who, "Targetting cancelled");
+	return;
+endif
+
+setobjproperty(what, "trap_type", cstr(traptype));
+setobjproperty(what, "trap_strength", cstr(traplvl));
+what.usescript := ":traps:traps";
+if (keeptrap)
+	setobjproperty(what, "keep", 1);
+endif
+
+sendsysmessage(who, "trap set!");
+endprogram
+

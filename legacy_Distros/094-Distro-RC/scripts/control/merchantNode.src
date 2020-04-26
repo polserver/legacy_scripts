@@ -1,0 +1,119 @@
+use uo;
+use os;
+use util;
+use cfgfile;
+
+include "include/eventID";
+include "include/sysEvent";
+include "include/dist";
+include "util/bank";
+
+program merchantnode(item)
+  item.color := 53;
+  sleep(10);
+  while(GetObjProperty(item, "sleep"))
+    sleep(1);
+  endwhile
+  item.color := 0;
+  var rng := CInt(GetObjProperty(item, "Range"));
+  var tmplate := GetObjProperty(item, "Template");
+  if(!rng || !tmplate)
+    item.graphic := 0x1f1c;
+    return;
+  endif
+  var guardzone := 2;
+  if(!GetObjProperty(item, "GuardZone"))
+    var cfgfile := ReadConfigFile("::gzone");
+    var entries := GetConfigStringKeys(cfgfile);
+    var element, range;
+    foreach listing in entries
+      element :=  cfgfile[listing];
+      range := element.range;
+      range := SplitWords(range);
+      if((item.x >= CInt(range[1])) && (item.x <= CInt(range[3])) && (item.y >= CInt(range[2])) && (item.y <= CInt(range[4])))
+        guardzone := 1;
+        break;
+      endif
+    endforeach
+    SetObjProperty(item, "GuardZone", guardzone);
+  endif
+  RegisterForSpeechEvents(item, rng);
+  EnableEvents(SYSEVENT_SPEECH, rng);
+  var ev, dst, npc;
+  var dis := 7;
+  var who, mtmp;
+  var evnt := array;
+  evnt.+ type;
+  evnt.+ source;
+  evnt.+ text;
+  var nxt := CInt(GetObjProperty(item, "Restock")) * 60;
+  var next_restock  := ReadGameClock() + nxt;
+  var seriallist := GetObjProperty(item, "NpcList");
+  var npclist := {};
+  var critter;
+  foreach thing in seriallist
+    critter := SystemFindObjectBySerial(thing);
+    if(critter)
+      npclist.append(critter);
+    endif
+    sleepms(100);
+  endforeach
+  if(len(npclist) < len(seriallist))
+    foreach mob in EnumerateOnlineCharacters()
+      if(mob.cmdlevel > 2)
+        SendSysMessage(mob, "Merchant Node: " + item.serial + " at: " + item.x + ", " + item.y + ", " + item.z + " is improperly defined.");
+      endif
+    endforeach
+    item.graphic := 0x1f1c;
+    return;
+  endif
+  var text;
+  while(1)
+    ev := os::wait_for_event(30);
+    if(ev.type == SYSEVENT_SPEECH)
+      text := lower(ev.text);
+      who := ev.source;
+      if((tmplate == "banker") or (tmplate == "bucsbanker"))
+        if(text["bank"] || text["balance"])
+          dis := 15;
+          foreach mob in npclist
+            dst := dist(who, mob);
+            if(dst < dis)
+              dis := dst;
+              npc := mob;
+            endif
+          endforeach
+          evnt.type := EVID_NODE;
+          evnt.source := who;
+          evnt.text := ev.text;
+          SendEvent(npc, evnt);
+        endif
+      else
+        if(((text["merchant"] || text["vendor"]) && (text["buy"] || text["sell"] || text["train"] || text["teach"]))  || text["appraise"] || text["stable"] || text["showinventory"])
+          foreach mob in npclist
+            if(CheckLineOfSight(who, mob))
+              dst := dist(who, mob);
+              if(dst < dis)
+                dis := dst;
+                npc := mob;
+              endif
+            endif
+          endforeach
+          if((Distance(who, npc) <= 4) && (CheckLineOfSight(who, npc)))
+            evnt.type := EVID_NODE;
+            evnt.source := who;
+            evnt.text := ev.text;
+            SendEvent(npc, evnt);
+          endif
+        endif
+      endif
+      dis := 7;
+    endif
+    if(tmplate != "banker")
+      if(ReadGameClock() > next_restock)
+        start_script(":playervendor:restock", item);
+        next_restock  := ReadGameClock() + nxt;
+      endif
+    endif
+  endwhile
+endprogram

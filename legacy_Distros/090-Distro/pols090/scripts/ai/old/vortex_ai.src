@@ -1,0 +1,128 @@
+use npc;
+use os;
+use uo;
+use util;
+use  cfgfile;
+use basic;
+
+
+
+
+
+const STATE_WANDERING := 1;
+Const STATE_FIGHTING := 2;
+
+
+Const UOBJECT_HUMAN_MALE := 0x0190;
+Const UOBJECT_HUMAN_FEMALE := 0x0191;
+
+
+
+global me := npc::Self();
+
+
+global near_death := Cint(me.maxhp /5);
+
+global state := STATE_WANDERING;
+
+Global opponent := 0;
+global run_from;
+global boundingbox;
+
+
+
+function set_bounding_box()
+        local x1, x2, y1, y2;
+        
+        x1 := me.x - 10;
+        y1 := me.y - 10;
+        x2 := x1 + (randomint(50) *4) + 1;
+        y2 := y1 + (randomint(50) * 4) + 1;
+        
+        local thestring := cstr(x1) + " " + cstr(y1) + " " + cstr(x2) + " " + cstr(y2);
+        boundingbox := MakeBoundingBox(thestring);
+endfunction
+
+function move_random_direction()
+
+move(boundingbox);                
+        
+endfunction
+
+
+function is_human(theobj)
+        if ((theobj = UOBJECT_HUMAN_MALE) or (theobj = UOBJECT_HUMAN_FEMALE))
+                return 1;
+                else
+        return 0;
+        endif
+endfunction
+
+
+function f_wander()
+
+    local highint:= 0;
+    local highcritter ;
+
+    foreach mobile in ListMobilesNearLocation(me.x, me.y, me.z, 8)
+        if (is_human(mobile.objtype) )
+            if (mobile.intelligence > highint)    
+                highint := mobile.intelligence;
+                highcritter := mobile;
+            endif
+        endif
+    endforeach
+
+    if (highcritter.intelligence)
+        SendSysmessage(highcritter,"you are being attacked by an energy vortex!");
+        opponent := highcritter;
+        SetOpponent(highcritter);
+        state := STATE_FIGHTING;
+        SetWarMode(1);
+        return;
+    else
+
+        move_random_direction();
+    endif
+endfunction
+
+
+function Fight()
+  print ("in fight");
+  local d := distance(me, opponent);      
+print ("d = " + d);
+    if ((opponent.dead = 1) or (!opponent.hp)  or (d > 10)  ) 
+        print ("Quitting because there's no more opponent");
+        SetWarMode( 0 );
+        state := STATE_WANDERING;
+        set_critical(0);
+        return;
+    endif
+
+   
+   if (d > 2)        
+   RunToward( opponent );
+   elseif (d = 2)
+   walktoward(opponent);
+   
+   endif        
+
+endfunction
+
+
+if (! boundingbox)
+        Set_Bounding_Box();
+endif
+
+while (1)
+       
+	if (state = STATE_WANDERING)
+	SetObjProperty(me, "state","wandering");
+	f_wander();
+        elseif (state = STATE_FIGHTING)
+        SetObjProperty(me, "state","fighting");
+        Fight();
+       
+    
+    endif
+endwhile

@@ -1,0 +1,41 @@
+use os;
+use uo;
+use util;
+
+include "include/client";
+include "include/statmod";
+include "include/spellrestrictions";
+
+program cast_strength( parms )
+
+	local circle := 2;
+	local caster;
+	local cast_on;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_on := parms[3];
+	else
+		caster := parms;
+		cast_on := CanTargetSpell(caster, circle, TGTOPT_HELPFUL + TGTOPT_CHECK_LOS );
+		if (!cast_on)
+			return;
+		endif
+	endif
+
+	PlaySoundEffect(cast_on, SFX_SPELL_STRENGTH);
+	PlayObjectCenteredEffect( cast_on, FX_BLESS_EFFECT, 7,7);
+
+	if (!CanMod(cast_on, "str"))
+		SendSysMessage(caster,"Already under the influence!");
+		return;
+	endif
+
+	local magery := GetSkill(caster, SKILLID_MAGERY);
+	local mod_amount := GetModAmount( magery );
+	local duration := GetModDuration( magery );
+
+	DoTempMod(cast_on, "str", mod_amount, duration);
+
+endprogram
+

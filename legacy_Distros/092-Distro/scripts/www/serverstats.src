@@ -1,0 +1,64 @@
+use http;
+use uo;
+
+var system := polcore();
+var itemcount := GameStat( "itemcount" );
+var mobcount := gamestat("mobilecount");
+var load := system.load;
+var uptime := system.uptime;
+var struptime;
+
+
+uptime := uptime / 60;
+
+if (uptime > 60)
+        uptime := uptime /60;
+        struptime := cstr(uptime) + " hours";
+else
+        struptime := cstr(uptime) + " minutes";
+endif
+
+WriteHtml( "<html><head><title>POL Server Stats</title></head>"); 
+
+writehtml(" <body bgcolor=#FFFFCC text=#000000 link=#FF0000 vlink=#FF3300 alink=#0000CC>");
+
+
+
+
+Writehtml("<div align=center><p><font face=Verdana, Arial, Helvetica, sans-serif size=3><b>Mytharria  Reborn Server Specs</b></font></p></div>");
+
+
+Writehtml("<blockquote> ");
+Writehtml("  <div align=left> ");
+Writehtml("    <p><font face=Verdana, Arial, Helvetica, sans-serif size=2><b>Server Hardware:</b> ");
+Writehtml("      </font></p>");
+Writehtml("  </div>");
+Writehtml("  <blockquote> ");
+Writehtml("    <div align=left><font face=Verdana, Arial, Helvetica, sans-serif size=2>CPU: ");
+Writehtml("      AMD K-6 300<br>");
+Writehtml("      RAM: 192Mb<br>");
+Writehtml("      HDD: 6.2Gb UDMA<br>");
+Writehtml("      OS: NT Server 4.0 SP4<br>");
+Writehtml("      Connection: Cable modem</font></div>");
+Writehtml("  </blockquote>");
+Writehtml("  <div align=left> ");
+Writehtml("    <p><font face=Verdana, Arial, Helvetica, sans-serif size=2><b>Shard Statistics:</b></font></p>");
+Writehtml("  </div>");
+Writehtml("  <blockquote>");
+Writehtml("    <div align=left>");
+Writehtml("      <p><font face=Verdana, Arial, Helvetica, sans-serif size=2>Current number of accounts: 180<br>");
+Writehtml("        Total NPCs in the world:" +  mobcount + "<br>");
+Writehtml("        Total item count:" + itemcount + "<br>");
+WriteHtml("        Current Uptime since last restart : "+ struptime + "<br>");
+WriteHtml("        Current Server Load : " + cstr(load) + " % <br>");
+Writehtml("        Longest server uptime: 1 week<br>");
+Writehtml("        Server Timezone: Eastern Standard<br>");
+Writehtml("        Server Location: Bristol, CT USA</font></p>");
+Writehtml("    </div>");
+Writehtml("  </blockquote>");
+Writehtml("</blockquote>     "); 
+
+
+
+
+WriteHtml( "</BODY></HTML>" );

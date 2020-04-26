@@ -1,0 +1,119 @@
+//Changes made by DC on 1/9/99: 
+//Under no circumstances should this AI ever retreat. This AI should not care if 
+//its target is human. Now uses Distance() function in uo.em instead of in this script.
+//Now attacks closest opponent to it and not just the first target in the array of nearby mobiles.
+
+
+use npc;
+use os;
+use uo;
+use util;
+use  cfgfile;
+use basic;
+
+
+const STATE_WANDERING := 1;
+Const STATE_FIGHTING := 2;
+//Const STATE_FLEEING := 3;
+
+//Const UOBJECT_HUMAN_MALE := 0x0190;
+//Const UOBJECT_HUMAN_FEMALE := 0x0191;
+
+
+
+global me := npc::Self();
+
+
+//global near_death := Cint(me.maxhp /5);
+
+global state := STATE_WANDERING;
+
+Global opponent := 0;
+//global run_from;
+global boundingbox;
+
+
+
+function set_bounding_box()
+        local x1, x2, y1, y2;
+        
+        x1 := me.x - 10;
+        y1 := me.y - 10;
+        x2 := x1 + (randomint(50) *4) + 1;
+        y2 := y1 + (randomint(50) * 4) + 1;
+        
+        local thestring := cstr(x1) + " " + cstr(y1) + " " + cstr(x2) + " " + cstr(y2);
+        boundingbox := MakeBoundingBox(thestring);
+endfunction
+
+function move_random_direction()
+move(boundingbox);                
+        
+endfunction
+
+
+
+function f_wander()
+  local nearby := ListMobilesNearLocation(me.x, me.y, me.z, 8);
+       
+  local closestdist := 10;  
+  local closestopp := 0;
+
+  foreach tgt in nearby
+     local dist := Distance( me , tgt);     
+
+     if ( (dist < closestdist) and (CheckLineOfSight( me , tgt)) )          
+/*
+    	closestdist := dist;
+        closestopp := tgt;
+*/
+     endif
+  endforeach        
+
+
+  SetOpponent(closestopp);
+  opponent := closestopp;
+  SetWarMode(1);
+  state := STATE_FIGHTING;
+
+  move_random_direction();
+endfunction
+
+
+function Fight()
+  
+  local d := Distance( me, opponent );      
+
+    if ((opponent.dead) or (!opponent)  or (d > 10) ) 
+        SetWarMode( 0 );
+        state := STATE_WANDERING;
+        set_critical(0);
+        return;
+    endif
+     
+       
+   
+   if (d > 2)        
+     RunToward( opponent );
+   elseif (d > 1)
+     walktoward(opponent);
+   endif        
+
+endfunction
+
+
+if (! boundingbox)
+        Set_Bounding_Box();
+endif
+
+while (1)
+       
+	if (state = STATE_WANDERING)
+	SetObjProperty(me, "state","wandering");
+	f_wander();
+        elseif (state = STATE_FIGHTING)
+        SetObjProperty(me, "state","fighting");
+        Fight();
+    
+    endif
+endwhile

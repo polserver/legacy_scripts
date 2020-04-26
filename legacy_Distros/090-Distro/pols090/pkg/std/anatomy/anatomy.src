@@ -1,0 +1,44 @@
+use uo;
+use os;
+
+include "include/client";
+include "include/skillpoints";
+program anatomy( character )
+    local descr;
+    local percenthealth;
+
+    local thepoints := get_default_points(SKILLID_ANATOMY);
+    SendSysMessage( character, "Select a target." );
+    local subject := Target(character);
+    if (CheckSkill(character,SKILLID_ANATOMY, -1, thepoints))
+        percenthealth := Cint( (100 * subject.hp/subject.maxhp));
+        
+        if (percenthealth <= 10)
+            descr := "near death";
+        elseif (percenthealth <= 20) 
+            descr := "in bad shape";
+        elseif (percenthealth <= 40 )
+            descr := "in poor health";
+        elseif (percenthealth <= 60 )
+            descr := "in fair health";
+        elseif (percenthealth <= 80 )
+            descr := "in good health";
+        else  
+            descr := "in excellent shape";                         
+        endif   
+        
+        if (Cint(GetObjProperty(subject, "poison_level")) > 0 ) 
+            descr := descr + ", and is poisoned.";
+        endif  
+     
+        SendSysmessage (character, "The subject is " + descr);        
+    else
+        SendSysmessage (character, "You're not sure . . .");
+    endif
+
+endprogram
+
+
+
+
+

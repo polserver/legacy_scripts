@@ -1,0 +1,13 @@
+i:\094final\pol094\scripts/include/objtype.inc
+i:\094final\pol094\scripts/include/attributes.inc
+i:\094final\pol094\scripts/include/client.inc
+i:\094final\pol094\scripts/include/eventID.inc
+i:\094final\pol094\scripts/include/math.inc
+./pkg/tools/gmtools/textcmd/gm/layout.inc
+./pkg/tools/gmtools/textcmd/gm/goLayout.inc
+./pkg/tools/gmtools/textcmd/gm/info.inc
+./pkg/tools/gmtools/textcmd/gm/gotoLayout.inc
+./pkg/tools/gmtools/textcmd/gm/accountLayout.inc
+./pkg/tools/gmtools/textcmd/gm/spawnerLayout.inc
+i:\094final\pol094\scripts/util/bank.inc
+i:\094final\pol094\scripts/include/gumpUtil.inc

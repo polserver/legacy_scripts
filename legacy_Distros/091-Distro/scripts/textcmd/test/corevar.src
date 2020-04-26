@@ -1,0 +1,7 @@
+use uo;
+
+program show_corevar( who, varname )
+    var system := polcore();
+    var corevar := system . (varname + "");
+    SendSysMessage( who, "polcore()." + varname + "=" + corevar );
+endprogram

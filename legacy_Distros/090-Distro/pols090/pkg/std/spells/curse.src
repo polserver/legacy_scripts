@@ -1,0 +1,47 @@
+use os;
+use uo;
+use util;
+
+include "include/client";
+include "include/spellrestrictions";
+include "include/statmod";
+include "include/spellattack";
+
+program cast_curse( parms )
+
+	local circle := 4;
+	local caster;
+	local cast_on;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_on := parms[3];
+		send_attack(cast_on,caster, 27);
+	else
+		caster := parms;
+		cast_on := CanTargetSpell(caster, circle, TGTOPT_HARMFUL + TGTOPT_CHECK_LOS );
+		if (!cast_on)
+			return;
+		endif
+	endif
+
+	PlaySoundEffect(cast_on, SFX_SPELL_CURSE);
+	PlayObjectCenteredEffect( cast_on, FX_CURSE_EFFECT, 10,10);
+
+	local magery := GetSkill(caster, SKILLID_MAGERY);
+	local mod_amount := Resisted(circle,caster,cast_on,GetModAmount( magery ));
+	local duration := GetModDuration( magery );
+
+	if (CanMod(cast_on, "str"))
+		DoTempMod(cast_on, "str", 0- mod_amount, duration);
+	endif
+
+	if (CanMod(cast_on, "dex"))
+		DoTempMod(cast_on, "dex", 0- mod_amount, duration);
+	endif
+
+	if (CanMod(cast_on, "int"))
+		DoTempMod(cast_on, "int", 0- mod_amount, duration);
+	endif
+
+endprogram

@@ -1,0 +1,10 @@
+use os;
+use uo;
+
+program textcmd_setobjtype( speaker, newobjtype )
+    SendSysMessage( speaker, "Select object of which to set object type" );
+    local tgt := Target( speaker );
+    if (tgt)
+        tgt.objtype := CInt(newobjtype);
+    endif
+endprogram

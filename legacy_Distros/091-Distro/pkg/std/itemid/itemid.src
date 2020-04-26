@@ -1,0 +1,78 @@
+use uo;
+use os;
+use basic;
+
+include "include/client";
+include "include/skillpoints";
+
+
+program do_itemid( character )
+    local thepoints := get_default_points(SKILLID_ITEMID);
+    local the_item;
+    local true_name;
+    local ncharges;
+
+    SendSysMessage( character, "Select an object to identify." );
+    the_item := target(character, TGTOPT_CHECK_LOS);
+    if (!the_item)
+        SendSysmessage(character, "Targetting cancelled.");
+        return;
+    endif 
+    
+    if (the_item.intelligence)
+        sendsysmessage(character, "That's not an item!");
+        return;
+    endif
+    
+    if( GetObjProperty( the_item , "IDed" ) )                                    // no macro exploits, please
+        SendSysmessage( character , "That has already been identified" );
+        return;
+    endif    
+
+    if( CheckSkill( character, SKILLID_ITEMID, -1, thepoints) )
+
+        true_name := GetObjProperty(the_item, "tname");                          // This block is DW's check for enchanting.
+        if (true_name != error)                                                  // It's similar to the check for magic
+            SendSysmessage (character, true_name);                               // weapons and armor, but not good enough
+            // I'd like to put a friendlier message like "that is a ..." but     // to reuse the code.
+            // I don't want to check for vowels!
+            if (GetObjProperty(the_item, "charges") )
+                ncharges := GetObjProperty(the_item, "charges");
+                if (ncharges)
+                        SendSysmessage (character, "Charges : " + ncharges );
+                endif
+            endif
+            Setname(the_item, true_name);
+
+        elseif( GetObjProperty( the_item, "prefix" ) or GetObjProperty( the_item, "suffix" ) )    // The item is some kinda magic
+            if( GetObjProperty( the_item, "prefix" ) )                                            // if 'prefix' magic
+                local space := find( the_item.desc, "c", 1 );                                     // \
+                local currdesc := the_item.desc;                                                  //  find "a magic" and strip it off
+                local newname := currdesc[space+1,len(the_item.desc)];                            // /
+                SetName( the_item, GetObjProperty( the_item, "prefix" ) + newname );              // new name is prefix str plus old name
+                EraseObjProperty( the_item, "prefix" );                                           // delete the prefix prop
+
+                if( GetObjProperty( the_item, "suffix" ) )                                        // Might also have a suffix prop
+                    local currdesc := the_item.desc;                                              // 
+                    SetName( the_item, currdesc + " " + GetObjProperty( the_item, "suffix" )  );  // new name is old name plus suffix str
+                    EraseObjProperty( the_item, "suffix" );                                       // delete the suffix prop
+                endif
+
+            elseif( GetObjProperty( the_item, "suffix" ) )                                        // only a suffix prop
+                local space := find( the_item.desc, "c", 1 );                                     // \ 
+                local currdesc := the_item.desc;                                                  //  find "a magic" and strip it off
+                local newname := currdesc[space+1,len(the_item.name)];                            // /
+                SetName( the_item, newname + " " + GetObjProperty( the_item, "suffix" )  );       // new name is old name plus suffix str
+                EraseObjProperty( the_item, "suffix" );                                           // delete the suffix prop
+            endif
+
+            SendSysmessage( character , "It appears to be a " + the_item.desc );                  // user message
+            SetObjProperty( the_item, "IDed" , 1 );                                               // check this prop later to combat exploits
+        else
+            Sendsysmessage (character, "That is a normal item.");                                 // no magic props were found
+        endif
+    else
+        SendSysmessage (character, "I'm not sure . . .");                                         // you failed
+    endif
+       
+endprogram

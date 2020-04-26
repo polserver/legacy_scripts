@@ -1,0 +1,35 @@
+// auction  version .6
+// by Zulu (zulu@zuluhotel.com)   May 5, 2000
+
+This will allow players to buy and sell items on your shard.
+
+** Selling **
+Find an auctioneer anywhere, and type sell.  You can then click on an item in your bag.
+
+If you type help, they will explain some of the rules.
+
+** Getting items **
+If you bid on an item and want to get it.  You will get a deed that you can take to any aucitoneer and give them the ticket and you will get your item.
+
+*****
+Installing
+
+ - Unzip all the files to  \pol\pkg\opt\auction
+ - compile all the files
+ - copy auc.src to  \pol\scripts\textcmd\player
+ - copy auctioneer.src to  \pol\scripts\ai
+ - append the npcdesc.txt to  \pol\config\npcdesc.cfg
+
+
+***************
+Player Commands
+***************
+.auc
+
+All the functions are in the gump.  The barter message allows players to send other auction members messages.  You an turn this off by clicking on barter message then type off. (or on)
+
+**************
+Admin Commands
+**************
+Find any auctioneer and type holdbox and they will allow you to 
+look inside all 3 boxes.  Sell box, sold box, distrub box.

@@ -1,0 +1,68 @@
+// Magic lock and Magic unlock  version .3
+// by Zulu (zulu@zuluhotel.com)   May 5, 2000
+
+use os;
+use uo;
+use util;
+
+include "include/client";
+include "include/spellrestrictions";
+include "include/skillpoints";
+
+program cast_strength( parms )
+
+	local circle := 3;
+	local caster;
+	local cast_on;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_on := parms[3];
+	else
+		caster := parms;
+		cast_on := CanTargetThing(caster, circle, TGTOPT_HELPFUL + TGTOPT_CHECK_LOS );
+		if (!cast_on)
+			return;
+		endif
+	endif
+
+	if (!cast_on.locked)
+		SendSysMessage(caster,"That is not locked!");
+		return;
+	endif
+
+	if ((cast_on.multi) or (GetObjProperty(cast_on,"houseserial")) or (GetObjProperty(cast_on,"house_serial")))
+        	Sendsysmessage(caster, "You cannot magic unlock that!");
+        	playlightningbolteffect(caster);
+        	return;
+	endif
+
+	if (getobjproperty(cast_on, "#U"))
+        	if (getobjproperty(cast_on, "#U") > readgameclock())
+                	sendsysmessage(caster, "You must wait to pick this lock!");
+                	return;
+        	endif
+	endif
+
+	local difficulty := getobjproperty(cast_on, "LockDifficulty");
+
+	if (!difficulty)
+        	sendsysmessage(cast_on, "You can't seem to unlock that!");
+        	return;
+	endif
+
+	local magery := GetSkill(caster, SKILLID_MAGERY);
+	local lockpicking := GetSkill(caster, SKILLID_LOCKPICKING);
+
+	if(randomint(magery) > (lockpicking/2))
+	(CheckSkill(caster,SKILLID_LOCKPICKING,-1,get_default_points(SKILLID_LOCKPICKING)));
+	PlaySoundEffect(caster, SFX_SPELL_UNLOCK);
+        cast_on.locked := 0;
+        setobjproperty(cast_on, "L", caster.name);
+	else
+	PlaySoundEffect(caster, SFX_11F);
+        sendsysmessage(caster, "You fail to open the lock!");
+        setobjproperty(cast_on, "#U", readgameclock() + 30);
+	endif
+
+endprogram

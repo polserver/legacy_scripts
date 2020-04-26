@@ -1,0 +1,9 @@
+use uo;
+
+program textcmd_killem( speaker )
+    foreach mobile in ListMobilesNearLocation(speaker.x, speaker.y, speaker.z, 10)
+        if (mobile.serial != mobile.serial)
+            damage(mobile,1000);
+        endif
+    endforeach
+endprogram

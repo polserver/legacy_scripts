@@ -1,0 +1,409 @@
+use uo;
+use os;
+use cfgfile;
+
+global item;
+global who;
+
+include "guildstone";
+include "guildgumps";
+include "guildfunctions";
+
+program use_guild_stone(who1, item1)
+
+if(!reserveitem(item1)) 
+	SendSysMessage(who1,"Stone in use, hold on");
+	return;
+endif
+
+item := item1;
+who := who1;
+
+if(!GetObjProperty(item,"guild_init"));
+	if(!GetObjProperty(who,"guild_id"))
+		InitGuild();
+	endif
+	return;
+endif
+
+if (who.cmdlevel>=3)
+	SetObjProperty(who,"guild_id", item.serial);
+endif
+
+local pg := GetObjProperty(who,"guild_id");
+
+//check for player status.
+if(!pg)
+	PrintTextAbovePrivate( item, "If you want to join ask a member", who);
+	return;
+elseif(pg != item.serial)//serial da runa!
+	PrintTextAbovePrivate( item, "You are not member of this guild", who);
+	return;
+endif
+
+SendSysMessage(who,"If you want to join another guild you need to resign from this guild.");
+
+//go to the menu
+LoadGuilds();
+
+LoadDefaultGuild();
+
+player_id := FindMemberID(who.serial);
+
+if (who.cmdlevel>=3)
+	player_id:=1;
+endif
+
+LoadDefaultPlayer();
+if(!player_id)
+	syslog("can't find player on memberlist");
+	EraseObjProperty(item,"#in_use");
+	return;
+endif
+
+
+local update := GetObjProperty(item,"update");
+
+if(update)
+	PerformUpdate(update);
+endif
+BuildGuildMenu();
+
+endprogram
+
+
+function BuildGuildMenu()
+
+LoadDefaultGuild();
+LoadDefaultPlayer();
+guild_id := FindGuildID(item.serial);
+//valores do data sao hipoteticos, nao construi o gump ainda :-)
+//guild header
+data[1] := guild_struct[2] +" ("+guild_struct[1][3]+" "+guild_struct[1][2]+")";
+
+data[2] :="";
+if(len(data[1]) > MAX_LINE_LEN) //must break into a few lines...
+	var temp := SplitWords(data[1]);
+	data[1] := "";
+	while(1)
+		if(len(data[1])+len(temp[1]) > MAX_LINE_LEN) //break point
+			break;
+		endif
+		data[1] :=data[1]+temp[1]+" ";
+		temp.erase(1);
+	endwhile
+		
+	while(temp.size())
+		data[2] := data[2]+temp[1]+" ";
+		temp.erase(1);
+	endwhile
+endif
+
+//fealthy option
+//look on the member prop for the fealty_id them look on the memberlist for the name
+
+if(player_struct[4] = player_id)
+	data[7] := "to yourself";
+else
+	data[7] := "to " + guild_struct[6][player_struct[4]][2];
+endif
+
+//show abrev data
+data[9] := " your name to unguilded people. Currently ";
+//if(who.name[guild_struct[3]] and len(guild_struct[3]) >0)
+
+if(GetObjProperty(who,"abv") and len(guild_struct[3]) >0)
+	data[9] := data[9] + "on.";
+else
+	data[9] := data[9] + "off.";
+endif
+
+//acess  gm functions
+
+data[13] :=  "Access " + guild_struct[1][3] + " functions.";
+
+//war list 1
+data[14] := "View list of guilds that ";
+data[15] := "";
+data[14] := data[14] + guild_struct[2] + " has declared war on.";
+if(len(data[14]) > MAX_LINE_LEN) //must break into a few lines...
+	var temp := SplitWords(data[14]);
+	data[14] := "";
+	while(1)
+		if(len(data[14])+len(temp[1]) > MAX_LINE_LEN) //break point
+			break;
+		endif
+		data[14] :=data[14]+temp[1]+" ";
+		temp.erase(1);
+	endwhile
+		
+	while(temp.size())
+		data[15] := data[15]+temp[1]+" ";
+		temp.erase(1);
+	endwhile
+endif
+
+data[17] := guild_struct[2];
+local box := SendDialogGump(who, layout, data);
+
+local choose:=0;
+if(box[0] =1000) //canseled
+	SendSysMessage(who,"Canceled");
+	return;
+elseif(box[0] =2000) //continue
+	foreach k in (box.keys)
+		if(k >0 and k<1000)
+			choose :=k;
+			break;
+		endif
+	endforeach	
+else //weird stuff
+	return;
+endif
+if(!choose)
+	BuildGuildMenu();
+	return;
+endif
+
+
+case(choose)
+	0: return; //canseled
+	1: Recruit();
+	2: BuildDynaGumpWithChoose(2,1,0); //see current rosters
+	3: Disabled();break;//view the charter
+	4: SetFealty();
+	5: Toggle_Showing(who, player_id,0);
+	6: Resing();return;
+	7: BuildDynaGumpWithChoose(3,2,0); //view list of candidates
+	8: gm_menu();return;
+	9: BuildDynaGumpWithChoose(10,4,0);//war list
+	10: BuildDynaGumpWithChoose(11,4,0);
+	default: syslog("main menu bug: "+choose);  return;
+endcase
+sleep(3);
+
+BuildGuildMenu();
+
+
+endfunction
+
+
+function gm_menu()
+LoadDefaultGuild();
+LoadDefaultPlayer();
+
+if (who.cmdlevel=0)
+if(who.serial != guild_struct[1][1]) //not a gm
+	SendSysMessage(who,"You are not the "+guild_struct[1][3]);
+	return;
+endif
+endif
+
+otherdata[1] := guild_struct[2]+", "+guild_struct[1][3]+ " functions";
+otherdata[2] := "";
+
+if(len(otherdata[1]) > MAX_LINE_LEN) //must break into a few lines...
+	var temp := SplitWords(otherdata[1]);
+	otherdata[1] := "";
+	while(1)
+		if(len(otherdata[1])+len(temp[1]) > MAX_LINE_LEN) //break point
+			break;
+		endif
+		otherdata[1] :=otherdata[1]+temp[1]+" ";
+		temp.erase(1);
+	endwhile
+		
+	while(temp.size())
+		otherdata[2] := otherdata[2]+temp[1]+" ";
+		temp.erase(1);
+	endwhile
+endif
+
+
+
+
+
+case(guild_struct[4])
+	1: otherdata[6] :="Order guild.)";
+	   otherdata[5] := data[3]+"n";
+	2: otherdata[6] :="Chaos guild.)";
+endcase
+
+local box2 := SendDialogGump(who, otherlayout,otherdata);
+
+
+local choose:=0;
+if(box2[0] =1000) //canseled
+	SendSysMessage(who,"Canceled");
+	return;
+elseif(box2[0] =2000) //continue
+	foreach k in (box2.keys)
+		if(k >0 and k<1000)
+			choose :=k;
+			break;
+		endif
+	endforeach	
+else //weird stuff
+	return;
+endif
+if(!choose)
+	GM_Menu();
+	return;
+endif
+
+
+case(choose)
+	0: return; //canseled
+	1: SetGuildName();
+	2: SetAbrevName();
+	3: Disabled();break;//"Change the type of the guild.  (Currently a",
+	4: Disabled();break;//"Set the guild's charter.",
+	5: Dismiss();//"Dismiss a member.",
+	6: Declarewar();//"Declare war.",
+	7: DeclarePeace();//"Declare peace.",
+	8: AcceptCandidate();//"Accept a candidate seeking membership.",
+	9: RefuseCandidate();//"Refuse a candidate seeking membership.",
+	10: SetGMTitle();
+	11: GrantTitle();//"Grant  a title to another member.",
+	12: Teleport();return;//"Teleport this guildstone.",
+	13: BuildGuildMenu();return;
+	default: syslog("gm menu bug: "+choose);return;
+endcase
+gm_menu();
+
+sleep(3);
+endfunction
+
+
+
+
+/*
+
+
+		 view the charter
+		"Change the type of the guild.  (Currently a",
+		"Set the guild's charter.",
+		"Teleport this guildstone.",
+*/
+
+
+
+
+function InitGuild()//ok no members, no nothing
+SendSysMessage(who,"If you make a mistake setting up this stone, resign and buy a new stone.");
+local tname := SendTextEntryGump(who,"What is the guild name",0,1,MAX_GUILD_NAME_SIZE,"Write the name");
+if(!tname)
+	return;
+endif
+
+
+//double check the len
+if(len(tname) > MAX_GUILD_NAME_SIZE)
+	SendSysMessage(who,"Guild name can't have more than "
+			+MAX_GUILD_NAME_SIZE+" caracters");
+	return;
+endif
+
+
+//check if is unique
+if(CheckGuildList(tname,2)) //have clone
+	SendSysMessage(who, "This name is already in use");
+	return;
+endif
+
+local changetime := ReadGameClock()+(7*24*3600);
+SetObjProperty(item,"telechangetime", changetime);
+
+local insert :=len(guild_list)+ 1;
+set_critical(1);
+LoadGuilds();
+
+SetObjProperty(item,"guild_init",1);
+
+item.name := "Guildstone for " + tname;
+
+
+
+SetObjProperty(who,"guild_id",item.serial);
+guild_struct := {};
+
+guild_list[insert] := {item.serial, tname,""};
+SaveGuildList();
+
+guild_struct[1] := {who.serial,GetTrueName(who.name),"Guild Master"};
+guild_struct[2] := tname;
+guild_struct[3] := "";
+guild_struct[4] := 0;
+guild_struct[5] := "";
+guild_struct[6] := {{who.serial,GetTrueName(who.name),"Guild Master",1}};
+guild_struct[7] :=  {};
+guild_struct[8] := {};
+guild_struct[9] := {};
+SaveGuild();
+set_critical(0);
+
+endfunction
+
+
+function DestroyGuild()
+
+//just a clean-up routine
+
+//last member
+EraseObjProperty(who,"guild_id");
+
+set_critical(1);
+LoadDefaultGuild();
+guild_id := FindGuildID(item.serial);
+
+//not going to add aliance clean up  now
+local i,j,dummy,poz;
+for(i:=1;i<=len(guild_struct[7]);i:=i+1)
+
+	dummy := LoadGuildBySerial(guild_struct[7][i][1]);
+	for(j:=1;j<=len(dummy[7]);j:=j+1)
+		if(dummy[7][j][1] = item.serial)
+			poz := j;
+			break;
+		endif
+	endfor
+	var temp :=dummy[7];
+	temp.erase(poz);
+	dummy[7] := temp;
+	SetGlobalProperty("guild"+guild_struct[7][i][1],dummy);
+endfor
+
+guild_list.erase(guild_id);
+EraseGlobalProperty("guild"+item.serial);
+SaveGuildList();
+destroyitem(item);
+set_critical(0);
+endfunction
+
+
+function disabled()
+SendSysMessage(who,"This has not be implemented.");
+endfunction
+
+
+function PerformUpdate(list)
+local i;
+
+
+for(i:=1;i<=len(list);i:=i+1)
+	if(who.serial = list[i])
+		Toggle_Showing(who,player_id,1);
+		list.erase(i);
+		break;
+	endif
+endfor
+
+if(!list.size())
+	EraseObjProperty(item,"update");
+else
+	SetObjProperty(item,"update",list);
+endif
+
+endfunction
+
+

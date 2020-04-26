@@ -1,0 +1,462 @@
+use npc;
+use os;
+use uo;
+use util;
+use  cfgfile;
+
+include "include/randname";
+
+const STATE_GUARDING := 0;
+const STATE_WANDERING := 1;
+const STATE_FOLLOWING := 2;
+Const STATE_FIGHTING := 3;
+Const STATE_FLEEING := 4;
+Const UOBJECT_CORPSE := 0x2006;
+Const UOBJECT_BLOOD := 0x122d;
+Const UOBJECT_MEAT := 0x09f1;
+Const UOBJECT_HUMAN_MALE := 0x190;
+Const UOBJECT_HUMAN_FEMALE := 0x191;
+
+global conf := ReadConfigFile("corpses");
+global hunger_level := 0;
+global me := npc::Self();
+global pack_type := Cint(GetObjProperty(me, "pack_type"));
+global mypack := 0;
+global mypackorder := Cint(GetObjProperty(me, "pack_order"));
+
+
+
+// temp kludge ENS 4/6/1999
+me.script := "killpcs";
+RestartScript( me );
+
+
+global half_health := Cint(me.maxhp/2);
+global near_death := Cint(me.maxhp /5);
+
+global state := STATE_WANDERING;
+
+Global opponent := 0;
+Global leader  := "";
+global opponent_leader := 0;
+global me_leader := 0;
+global run_from;
+global boundingbox;
+
+global fight_reason;
+
+function no_clans (me, him)
+   local myclan  := Cint(GetObjProperty(me,  "leader"));
+   local hisclan := Cint(GetObjProperty(him, "leader"));
+
+   if (( (myclan = me.serial) or (hisclan = him.serial)) 
+     and (myclan != hisclan) )
+      return 1;
+   else
+      return 0;
+   endif
+endfunction
+
+
+function join_pack(joiner, member)
+
+   local clan := GetObjProperty(member, "leader");
+
+   if (clan = cstr(me.serial))
+      return;
+   endif
+
+   if (clan = "")        
+      clan := cstr(member.serial);
+   endif
+
+   SetObjProperty(joiner, "leader", cstr(clan));
+   SetObjProperty(member, "leader", cstr(clan));
+
+   if (joiner = me)
+      leader := clan;
+      me_leader := 0;
+      return;
+   endif
+
+   state := STATE_FOLLOWING;
+/*
+local clan_name:= "";
+local i;
+
+if (joiner.name = member.name)
+        return;
+        else
+  
+if (find(member.name, "of the ",1) > 0)
+        for (i := find(member.name, "of the ",1); i <= len(member.name); i := i + 1)
+               clan_name := clan_name + member.name[i];
+        endfor
+        SetName(joiner, (joiner.name + clan_name) + " Clan");
+else
+clan_name := " of the " + GetRandomClanName();
+Setname(member, (member.name + clan_name + " Clan"));
+Setname(joiner, (joiner.name + clan_name + " Clan"));
+endif
+endif*/
+endfunction
+
+
+function set_opponent(theopponent)
+   SetObjproperty(me, "opponent", cstr(cint(theopponent)));
+   SetWarMode(1);
+   SetOpponent( theopponent );
+   opponent := theopponent;   
+   state := STATE_FIGHTING;
+endfunction
+
+function same_clan (me, him)
+   local myclan;
+   local hisclan;
+
+   myclan := Cint(GetObjProperty(me, "leader"));
+   //print ("my clan : " + myclan);
+   hisclan := Cint(GetObjProperty(him,"leader"));
+   //print ("his  clan : " + hisclan);
+
+   if ((myclan = 0) and (hisclan = 0))
+    //  print ("In same_clan, neither of us have clans");
+      return 0;
+   endif
+
+   if (myclan = hisclan)
+      // print ("In same_clan, he's in my clan");
+	return 1;
+   elseif (myclan = Cstr(him.serial))
+     //print ("In same_clan, he's in my clan");
+	return 1;	
+   elseif (hisclan = cstr(me.serial))
+     //   print ("In same_clan, he's in my clan");
+        me_leader := 1;
+        return 1;	
+   else 
+      //print ("In same_clan, he's *not* in my clan (in else)");
+	return 0;
+   endif
+endfunction
+	
+function set_bounding_box()
+        local x1, x2, y1, y2;
+        
+        x1 := me.x;
+        y1 := me.y;
+        x2 := x1 + (randomint(50) *4) + 1;
+        y2 := y1 + (randomint(50) * 4) + 1;
+        
+        local thestring := cstr(x1) + " " + cstr(y1) + " " + cstr(x2) + " " + cstr(y2);
+        boundingbox := MakeBoundingBox(thestring);
+endfunction
+
+function same_type(creature)
+        if (Cint(GetObjProperty(creature, "pack_type")) = pack_type)
+                return 1;
+          else
+                return 0;
+        endif     
+endfunction
+
+function move_random_direction()
+
+move(boundingbox);                
+        
+endfunction
+
+
+function is_human(theobj)
+        if ((theobj = UOBJECT_HUMAN_MALE) or (theobj = UOBJECT_HUMAN_FEMALE))
+                return 1;
+                else
+        return 0;
+        endif
+endfunction
+
+function flee()
+        local d := distance(me, opponent);   
+        
+      
+        if (me.hp <= near_death)
+                if (d > 8)
+                RunAwayFrom( run_from );
+                else
+                move_random_direction();
+                //try to heal myself, if I have heal potions or bandages
+                endif
+        else
+        if (leader)
+        state := STATE_FOLLOWING;
+        else
+        state := STATE_WANDERING;
+        endif
+        endif
+endfunction
+
+
+function f_wander()
+if (state = STATE_FOLLOWING)
+local stilllead := 1;
+
+local ldr_dist := distance (me, cint(leader));
+if ((ldr_dist > 20) or (cint(leader).dead))
+   stilllead := 0;
+endif
+
+
+
+if (!stilllead)
+state := STATE_WANDERING;
+SetObjProperty(me, leader, "");
+leader := "";
+me_leader := 1; //left the clan
+//print ("I left the clan, because the leader was too far away");
+endif
+endif
+    local nearby array;
+    
+    if (state = STATE_FOLLOWING  and  !me_leader )
+        RunToward(cint(leader));
+    else
+   
+    if (me_leader)
+      move_random_direction();  
+    endif    
+    
+    local ldr_opponent := GetObjProperty(cint(leader), "opponent");
+    if (ldr_opponent)
+        set_opponent(ldr_opponent);
+        state := STATE_FIGHTING;
+        fight_reason := 1;
+    endif
+
+    nearby := ListMobilesNearLocation( me.x, me.y, me.z, 8 );
+    
+    foreach mobile in nearby
+        if (mobile != me)
+           if (checkLineOfSight(me, mobile))
+
+           elseif (same_type(mobile)) //if they are compatible, and one has no clan
+              //  print ("We're compatible");
+                if ((! same_clan(me, mobile)) and (no_clans(me, mobile))) //someone must join
+               //  print ("neither of us have clans, so we fight");
+                
+                if (cint(GetObjProperty(mobile, "pack_order")) > mypackorder)
+                /// print ("He is higher in the chain than I. I will join him");
+                 say( "You better un me" );
+                 join_pack (me, mobile);
+                 else
+                //  print ("We're equal ranks in the clan structure");
+                  fight_reason := 2;
+                  set_opponent(mobile);
+                  state := STATE_FIGHTING;
+                  return;
+                 endif //packorder
+
+                elseif (same_clan(me, mobile))
+                    //  print ("we're friends");
+                else
+                    // print (" we need to fight it out");
+               /* if  (same_type(mobile)) *///we each have clans already
+               fight_reason := 3;
+                 set_opponent(mobile);
+                 state := STATE_FIGHTING;
+                 return;
+                endif //same_clan
+           
+          else
+          if (( mobile.dead <1) and (CheckLosAt( me, mobile.x, mobile.y, mobile.z )))  
+        if (hunger_level > Cint( GetObjProperty( mobile, "aggression" ) ) )
+           SetOpponent(mobile);
+           opponent := mobile;
+           SetWarMode(1);
+           state := STATE_FIGHTING;
+           return;
+        endif
+        
+        if (is_human(mobile.objtype) and me.hp < me.maxhp)
+        SetOpponent(mobile);
+        opponent := mobile;
+        SetWarMode(1);
+        state := STATE_FIGHTING;
+        return;
+endif  
+endif     
+endif   //same_type
+endif //nearby[i] != me
+        endforeach
+    endif
+    
+nearby:= ListItemsNearLocation(me.x, me.y, me.z, 5);
+foreach mobile in nearby
+   // print (nearby[i].desc);
+    if ((mobile.objtype = UOBJECT_CORPSE) and (GetObjProperty(mobile, "cut") != "1"))
+   
+    
+        while (distance(me, mobile) >=1)
+        
+         walktoward(mobile);
+        endwhile
+        local c_type := mobile.corpsetype;
+        local elem := FindConfigElem(conf,c_type);
+        local item1 := GetConfigint(elem, "item1");
+        local amount1 := GetConfigint(elem, "amount1");
+        local item2 := GetConfigint(elem, "item1");
+        local amount2 := GetConfigint(elem, "amount1");
+        local meat_amount:= 0;
+        
+        if ((item1 = UOBJECT_MEAT) or (item2 = UOBJECT_MEAT))
+        meat_amount := (amount1 * 500);
+        endif
+
+        SetObjProperty(mobile, "cut","1");
+        local theblood:= CreateItemAtLocation(mobile.x, mobile.y, mobile.z, UOBJECT_BLOOD, 1);
+        hunger_level := hunger_level - meat_amount;
+          
+          // item decay handled by core, v069+
+          //local parms array;
+          //parms[1] := nearby[i];
+          //parms[2] := theblood;
+          //start_script("misc/decay",parms);
+        break;
+endif
+endforeach
+endfunction
+
+
+function Fight()
+        if (cint(opponent) = Cint(me.serial))
+                        opponent := 0;
+                        state := STATE_WANDERING;
+                     ///   print ("Why was I fighting myself?");
+                       return;
+       
+       endif
+                
+ // print ("opponent : " + cint(opponent));
+  //print ("me : " + cint(me.serial));
+  local d := distance(me, opponent);      
+  /*
+  local descr;
+  
+  if (fight_reason = 0)
+  descr := "because I hate hummies";
+  elseif (fight_reason = 1)
+  descr := "because my leader told me to";
+  elseif (fight_reason = 2)
+  descr := "for clan dominance";
+  elseif (fight_reason = 3)
+  descr := "a clan war";
+  else
+  descr := "for no reason";
+endif
+
+print ("in fighting " + descr);*/
+
+    if ((opponent.dead = 1) or (!opponent)  or (d > 10) ) 
+   // print ("he's dead, or too far away");
+        SetObjProperty(me, "opponent","");
+        SetWarMode( 0 );
+        if (leader)
+        state := STATE_FOLLOWING;
+        else
+        state := STATE_WANDERING;
+        endif
+     
+        set_critical(0);
+        return;
+    else
+       SetObjProperty(me, "opponent", cstr(opponent.serial));
+    endif
+   
+   if ((same_clan(me, opponent) and (same_type(opponent))))
+  // print ("He's in my clan, so I'm not fighting any more");
+   if (same_clan(me, opponent)) 
+      //  print ("@@@@@@@@   SAME CLAN   @@@@@@@@");
+   endif
+   if (same_type(opponent)) 
+       // print ("@@@@@@@@   SAME TYPE  @@@@@@@@");
+   endif   
+        SetWarMode( 0 );
+        if( leader)
+        state := STATE_FOLLOWING;
+        else
+        state := STATE_WANDERING;
+        endif
+   
+        set_critical(0);
+        return;
+        SetObjProperty(me,"opponent","");
+   endif
+   
+   if ((me.hp <= near_death))
+        state := STATE_FLEEING;
+        run_from := opponent;
+   
+    endif 
+   
+   
+   if (d > 2)        
+   RunToward( opponent );
+   elseif (d > 1)
+   walktoward(opponent);
+   
+   endif 
+  
+   
+   if ((me.hp <= half_health)  )
+        if (same_type(opponent))
+        SetWarMode(0);
+        join_pack(me, opponent);
+        state := STATE_FOLLOWING;
+        me_leader := 0;
+        say( "Me follow" );
+        endif
+   endif
+   
+        
+
+endfunction
+
+leader := Cint(GetObjProperty(me, "leader"));
+if (!leader)
+SetObjProperty(me, "leader", "");
+me_leader := 1;
+else
+me_leader := 0;
+endif
+
+///////////////////////////////////////////////////////
+//
+//   Main
+//
+///////////////////////////////////////////////////////
+if( me.name["<random>"] )
+   SetName ( me , RandomName( me ) );
+endif
+
+if (! boundingbox)
+        Set_Bounding_Box();
+endif
+
+while (1)
+        
+       hunger_level := hunger_level + 1;
+       setobjproperty(me,"hunger",cstr(hunger_level));
+	if (state = STATE_WANDERING)
+	SetObjProperty(me, "state","wandering");
+	f_wander();
+        elseif (state = STATE_FIGHTING)
+        SetObjProperty(me, "state","fighting");
+        Fight();
+        elseif (state = STATE_FOLLOWING)
+        SetObjProperty(me, "state","following");
+        f_wander();
+        elseif (state = STATE_FLEEING)
+        SetObjProperty(me, "state","fleeing");
+         flee();
+    
+    endif
+endwhile

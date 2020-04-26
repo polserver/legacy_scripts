@@ -1,0 +1,73 @@
+use uo;
+use util;
+use os;
+
+// FIXME key_types doesn't seem to ever get initialized.. ??
+
+include "include/client";
+
+program open_trapped_item(character, item)
+print (character.name + " Just set off a trap!");
+    local key_types array;
+    local stuff := EnumerateItemsInContainer(character.backpack);
+    local thelock := GetObjProperty(item,"lockid");
+    local has_key := 0;
+
+    foreach item in stuff
+        if (item.objtype in key_types)
+            if (GetObjProperty(item,"lockid") = thelock)
+                //he has the key
+                has_key := 1;
+                break;
+            endif
+        endif
+    endforeach
+
+    if (!has_key)
+
+        local traptype := GetObjProperty(item,"trap_type");
+        local trapstrength := GetObjProperty(item,"trap_strength");
+
+        case traptype
+            "1" :   PlaySoundEffect(character, SFX_225);
+                    local dmg := randomint(30 * cint(trapstrength));
+                    SendSysmessage(character, "You set off a needle trap!");
+                    ApplyDamage(character, dmg);
+
+		    EraseObjProperty( item, "trap_type" );
+		    EraseObjProperty( item, "trap_strength" );
+
+            "2" :   PlaySoundEffect(character, SFX_206);
+                    PrintTextAbovePrivate (character, "You have been poisoned!", character);
+                        // used to be called EFFECT_SPARKLE
+                    PlayObjectCenteredEffect( character, FX_CURSE_EFFECT, 10,10);    
+                    SetObjProperty(character, "poison_level", cstr( trapstrength));
+                    start_script( ":spells:poisondamage", character );
+		    EraseObjProperty( item, "trap_type" );
+		    EraseObjProperty( item, "trap_strength" );
+
+            "3" :   PlaySoundEffect(character, SFX_208);
+                    SendSysmessage (character, "You set off a trap!");
+                    PlayObjectCenteredEffect( character, FX_EXPLODE_3, 10,10);  
+                    local dmg := randomint(30 * cint(trapstrength)); 
+                    foreach critter in listmobilesnearlocation(character.x, character.y, character.z, cint(trapstrength))
+                    	if (!critter.npctemplate or critter.script = "tamed")
+                    		
+                    		ApplyDamage(character, dmg);
+                        endif
+                    endforeach
+                    
+		    EraseObjProperty( item, "trap_type" );
+		    EraseObjProperty( item, "trap_strength" );
+
+            default: SendSysmessage (character, "You narrowly avoid the trap!");
+        endcase
+            if (!getobjproperty(item, "keep"))
+                item.usescript := "";
+            endif
+    else
+        item.usescript := "";
+        SendSysmessage(character, "You disarm the trap");
+    endif
+
+endprogram

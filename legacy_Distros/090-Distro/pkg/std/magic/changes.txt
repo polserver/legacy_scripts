@@ -1,0 +1,25 @@
+std-magic (POL076)
+==================
+	11/15/99 Dundee:  	Charged magic items:  Use the same scripts as spells:
+				Currently only works on nightsight, and spells mobs can cast.
+
+		cprop charges = number of charges
+		cprop spellame = which spell to cast (name of spell script)
+		cprop tgtopt = target options for that spell, for example:
+				TGTOPT_CHECKLOS+TGTOPT_HARFUL
+				TGTOPT_CHECKLOS+TGTOPT_HARFUL
+				NOTARGET (for target-self spells)
+				TARGETAREA (for area-effect spells)
+		cprop tname = the item's True Name (std item-id thing here)
+		UseScript ":magic:magicitems"
+
+		Note:  All of the above will be added to HoD with a .makemagic textcommand:
+			.makemagic [spellname] t c
+			(where t is tgtopt 0 through 3, and c is charges).
+
+
+	10-27-99 Dundee:	Made it more like spellcasting - castining animation, spellwords, fizzles, etc.
+
+    Verified ready for release
+    First packaged version
+    - Syzygy <syzygy@pobox.com> 19990705

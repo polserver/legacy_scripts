@@ -1,0 +1,50 @@
+Use npc;
+Use os;
+
+
+// boundingBox = npc_make_bounding_box( npc_get_property( "BoundingBox" ) );
+// npc_move_in_bounding_box( boundingBox );
+
+function tell_my_position()
+	Local pos, text;
+
+	pos := position();
+
+	text := "My position is (" + pos.x + "," + pos.y + "," + pos.z + ")";
+	say( text );
+endfunction
+
+Global count, ev;
+count := 0;
+
+while (1)
+	move( "N" );
+	move( "N" );
+	tell_my_position();
+			// sleep( 5 );
+	
+	move( "W" );
+	move( "W" );
+	tell_my_position();
+			//sleep( 5 );
+	
+	move( "S" );
+	move( "S" );
+	tell_my_position();
+			//sleep( 5 );
+
+	move( "E" );
+	move( "E" );
+	tell_my_position();
+			//sleep( 5 );
+
+	count := count + 1;
+	say( "again I go around the ring (" + count + " times)." );
+
+	ev := wait_for_event( 10 );
+	if (ev <> 0)
+		print( "Event Type: " + ev.type );
+		print( "Event Source: " + ev.source );
+		say( "Someone said: '" + ev.text + "'" );
+	endif
+endwhile

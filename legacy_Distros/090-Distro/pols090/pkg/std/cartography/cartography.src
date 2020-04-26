@@ -1,0 +1,70 @@
+/*
+CARTOGRAPHY.SRC
+
+Author: Racalac, 2/17/99
+
+Function: Creates 3 different sizes of maps. I can't tell what region you are in right
+	  now, so it just names the map "local", "regional" , or "world". Maps dont do much
+	  right now.
+TODO: clean up those case statements.
+*/
+
+
+use uo;
+use os;
+
+//set_debug(1);
+
+include "include/objtype";
+include "include/client";
+
+program go_go_gadget_map( who, blank )
+	
+	local choice := SelectMenuItem2( who , "Cartography");
+
+	if (!choice)
+	   SendSysmessage( who , "Cancelled" );
+	   return;
+	endif
+
+	local props;
+
+	case (choice.index)
+	    1: if( CheckSkill( who, SKILLID_CARTOGRAPHY , 20 , 70 ))
+	            props := array( "local" , who.x - 265 , who.y - 260 , who.x + 265 , who.y + 260 , 200 , 200 );
+		    makemap( who , props , blank );
+		 else
+                    SendSysmessage( who , "You are not familiar enough with the area to draw the map" );
+	            DestroyItem( blank );
+		 endif
+	    2: if( CheckSkill( who, SKILLID_CARTOGRAPHY , 50 , 100 ))
+		    props := array( "regional" , who.x - 850 , who.y - 800 , who.x + 850 , who.y + 800 , 400 , 400 );
+	            makemap( who , props , blank );
+	 	 else
+		    SendSysmessage( who , "You are not familiar enough with the area to draw the map" );
+	   	    DestroyItem( blank );
+		 endif
+	    3: if( CheckSkill( who, SKILLID_CARTOGRAPHY , 80 , 150 ))
+	   	    props := array( "world" , 0 , 0 , 5119 , 4095 , 500 , 400 );
+		    makemap( who , props , blank );
+		 else
+		    SendSysmessage( who , "You are not familiar enough with the area to draw the map" );
+	            DestroyItem( blank );
+		 endif
+	    default: SendSysmessage( who , "Oh Sh!t ... " );
+	endcase
+
+endprogram
+
+function makemap( who, mapdef , blank )
+	local map := CreateItemInBackpack( who, UOBJ_MAP1 );
+	SetName( map , ("a completed " + mapdef[1] + " map") );
+	map.xwest := mapdef[2];
+	map.ynorth := mapdef[3];
+	map.xeast := mapdef[4];
+	map.ysouth := mapdef[5];
+	map.gumpwidth := mapdef[6];
+	map.gumpheight := mapdef[7];
+	SendSysmessage( who , "You carefully scribe a detailed map and place it in your pack." );
+	DestroyItem( blank );
+endfunction

@@ -1,0 +1,111 @@
+use uo;
+use os;
+use util;
+
+include "include/client";
+
+program poisondamage (creature)
+
+    if (GetObjProperty(creature, "#poisonisrunning"))
+	if ( Cint(GetObjProperty(creature, "poison_level")) )
+		return;
+	endif
+    endif
+
+	if (ProtectedFromPoison(creature))
+		return;
+	endif
+
+	SetObjProperty(creature, "#poisonisrunning",1);
+
+    local poison_level := Cint(GetObjProperty(creature, "poison_level"));
+
+    if (poison_level)
+	if (!creature.npctemplate)
+		if (!creature.poisoned)
+			creature.SetPoisoned(1);
+		endif
+	endif
+    else
+	return;
+    endif
+
+    while (1)
+        poison_level := Cint(GetObjProperty(creature, "poison_level"));
+	if (!GetObjProperty(creature, "poison_level"))
+		EraseObjProperty(creature, "#poisonisrunning");
+		SendSysMessage(creature, "The poison has run its course");
+		if (!creature.npctemplate)
+			if (creature.poisoned)
+				creature.SetPoisoned(0);	
+			endif
+		endif
+		return;
+	endif	
+        if (poison_level < 1)
+		EraseObjProperty(creature, "#poisonisrunning");
+		SendSysMessage(creature, "The poison has run its course");
+		if (!creature.npctemplate)
+			if (creature.poisoned)
+				creature.SetPoisoned(0);
+			endif
+		endif
+		return;
+	elseif (poison_level > 20)
+		poison_level := 20;
+        endif
+        SendSysMessage(creature, "Poison Damage!");
+        ApplyRawDamage(creature, RandomInt((poison_level))+1);
+
+        PlaySoundEffect(creature, SFX_SPELL_POISON);
+        poison_level := poison_level -1;
+        SetObjProperty(creature, "poison_level",cstr(poison_level));
+        if (creature.dead)
+            EraseObjProperty(creature,"poison_level");
+	    EraseObjProperty(creature, "#poisonisrunning");
+		if (!creature.npctemplate)
+			if (creature.poisoned)
+				creature.SetPoisoned(0);
+			endif
+		endif
+            return;
+        endif
+        sleep( 3 );
+    endwhile
+
+endprogram
+
+function ProtectedFromPoison(who)
+
+	local protserial := GetObjProperty(who,"#protpoison");
+	if (!protserial)
+		return 0;
+	endif
+
+	local item;
+	foreach thing in ListEquippedItems(who)
+		if ( thing.serial = protserial )
+			item := thing;
+			break;
+		endif
+	endforeach
+
+	if (!item)
+		return 0;
+	endif
+
+	local charges := GetObjProperty(item,"protpoison");
+	if (!charges)
+		eraseobjproperty(who,"#protpoison");
+		eraseobjproperty(item,"protpoison");
+		PrintTextAbovePrivate(item,item.desc + " is out of charges!",who);
+		return 0;
+	else
+		charges := charges -1;
+		setobjproperty(item,"protpoison",charges);
+		EraseObjProperty(who, "poison_level");
+		PrintTextAbovePrivate(who,item.desc + " protects you from the poison!",who);
+		return 1;
+	endif
+
+endfunction

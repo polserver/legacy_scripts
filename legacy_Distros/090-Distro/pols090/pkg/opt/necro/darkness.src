@@ -1,0 +1,23 @@
+use uo;
+
+include "include/client";
+include "include/spellrestrictions";
+
+program cast_darkness(caster)
+if (!can_cast(caster, 78))
+        return;
+endif
+
+	local cast_on := Target( caster , TGTOPT_HELPFUL + TGTOPT_CHECK_LOS);
+	if(!cast_on)
+		return;
+	endif
+
+	
+        PlaySoundEffect(caster, SFX_SPELL_NIGHT_SIGHT );
+        PlayObjectCenteredEffect( cast_on, FX_BLESS_EFFECT, 10,10);
+
+        local mager := Getskill(caster, SKILLID_MAGERY);
+        cast_on.setlightlevel( 30, mager * 60 );
+
+endprogram

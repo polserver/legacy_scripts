@@ -1,0 +1,5 @@
+use uo;
+
+program createrune( rune )
+  rune.invisible := 1;
+endprogram

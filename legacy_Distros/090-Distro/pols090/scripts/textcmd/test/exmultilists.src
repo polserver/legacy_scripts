@@ -1,0 +1,13 @@
+use uo;
+
+program exmultilists( who, membername )
+
+    local list := who.multi. (membername + "" );
+    foreach blah in list
+        if (blah.name)
+            SendSysMessage( who, blah.name );
+        else
+            SendSysMessage( who, blah.desc );
+        endif
+    endforeach
+endprogram

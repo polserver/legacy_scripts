@@ -1,0 +1,59 @@
+use os;
+use uo;
+
+include "include/client";
+include "include/objtype";
+include "include/spellrestrictions";
+
+program spell_gate( caster )
+
+	local circle := 7;
+	SendSysmessage( caster, "Select a rune to gate from." );
+	local cast_on := CanTargetThing(caster, circle, TGTOPT_CHECK_LOS );
+	if (!cast_on)
+		return;
+	endif
+
+	if (!Accessible(caster, cast_on))
+		SendSysmessage (caster, "You can't reach that!");
+	endif
+
+	if (cast_on.objtype != UOBJ_RUNE && cast_on.objtype != 0x6100) //runebook
+		SendSysmessage(caster, "You can only cast that on a recall rune!");
+		return;
+	endif
+
+	ReserveItem(cast_on);
+
+	local tox := Cint(GetObjProperty( cast_on, "x" ));
+	local toy := Cint(GetObjProperty( cast_on, "y" ));
+	local toz := Cint(GetObjProperty( cast_on, "z" ));
+
+	set_critical( 1 );
+	local gate1 := CreateItemAtLocation( caster.x, caster.y, caster.z, UOBJ_BLUE_MOONGATE, 1 );
+	local gate2 := CreateItemAtLocation( tox, toy, toz, UOBJ_BLUE_MOONGATE, 1 );
+	if (!gate1 or !gate2)
+        	return;
+	endif
+	SetObjProperty( gate1, "GateDestX", gate2.x );
+	SetObjProperty( gate1, "GateDestY", gate2.y );
+	SetObjProperty( gate1, "GateDestZ", gate2.z );
+	SetObjProperty( gate2, "GateDestX", gate1.x );
+	SetObjProperty( gate2, "GateDestY", gate1.y );
+	SetObjProperty( gate2, "GateDestZ", gate1.z );
+
+	Detach();
+
+	set_critical( 0 );
+
+	PlaySoundEffect( caster, SFX_SPELL_GATE_TRAVEL );
+
+	sleep(30);
+    
+	set_critical(1);
+	DestroyItem( gate1 );
+	DestroyItem( gate2 );
+	set_critical(0);
+
+endprogram
+

@@ -1,0 +1,106 @@
+POL 092:
+--------
+Note:  Many of the scripts in this release of the distro will NOT work with POL versions older than 092, particularly the housing, dyeitems, boats, and bishopalchemy packages; as well as selected bug fixes, like the one for scrolls inserted into spellbooks.
+
+Also, if you use the included new items file (pol/data/items), make sure you have CheckIntegrity=0 in your pol.cfg file.  Otherwise, you may run into problems with the server not booting due to items being carried on your NPCs having duplicate numbers.
+
+Major contributers to this release:  Madman Across the Water, Zulu, HellRazor, Bishop Ebonhand, Oroborous, Mike Anselmi, Magic, LKx, Talos, Shilohen, and Dundee.  Thanks everyone!  
+
+If you'd like to help the POL Distro Team in fixing and improving the base POL scripts, or to report bugs that need to be fixed, join the pol-distro Egroup at http://www.egroups.com.
+
+1.  BUG FIXES:
+
+-  Fixed a bug in the doors package where double clicking a door very quickly would sometimes result in the door coming out of its frame.  (Madman Across The Water)
+-  Fixed a bug in the tamed creatures AI that allowed players to target non-mobiles when ordering them to attack.  (Oroborous)
+-  Bugs fixed in coords.inc.  (Bishop Ebonhand)
+-  Bug fixed in the questie.src AI that allowed players to achieve unlimited rewards through an exploit.  (Shilohen)
+-  Fixed a bug with Great Hart entries in regionspawn.cfg (pol/pkg/opt/regionspawner).  (Mike Anselmi)
+-  Fixed a bug that allowed multiples of the same scroll to be added to a spellbook, increasing its weight.  (Bishop Ebonhand)
+-  Fixed a bug in change.src from the Lighting package.  (Zulu)
+-  Fixed a minor bug in the BCast text command; it used to send an empty message to all online clients if you just entered .bcast and no text, now it instead displays a useage message to the person using the command.  (HellRazor)
+-  Ostards now make the correct hit/miss/death sounds.  (HellRazor)
+-  Dye tubs now make the appropriate sound when dying items.  (HellRazor)
+
+2.  NEW/UPDATED PACKAGES:
+
+-  Replaced the pol/pkg/std/dyeitems package with one compatible with POL 092.  (Zulu)
+-  Updated the Housing, Boat, and Cartography packages in pol/pkg/std to work correctly with POL 092's new handling of multi's.  (Zulu/Bishop Ebonhand)
+-  Added a new standard package for books (sysbook) to pol/pkg/std.  Sysbook takes advantage of POL 092's ability to access the client book interface, and includes numerous pre-written books and support for books spawning in bookcases.  The old book package was moved to the pol/pkg/opt directory as an optional package and disabled.  (Zulu, Bishop Ebonhand, Syzygy).
+-  Added a new standard package, serpentpillars.  Allows ships to move between T2A and the olds lands when a player says the correct magic word at the serpent pillars.  (Zulu)
+-  Zulu's magic wands package moved from pol/pkg/opt to pol/pkg/std and updated to v0.6 (adds a few new magic wands).  (Zulu)
+-  Enticement package added as a standard package.  (LKx)
+-  Guildstone package updated to v3.00 and moved from pkg/opt to pkg/std.  Now supports guild wars, allies, titles, icons, chat, colors, and auto destroyguild.  Also, a fix to allow unlimited guild members, and one for guildstone deletes.  See the included README file to convert your data files to the updated package.  (Zulu/Magic)
+-  Auction package (pol/pkg/opt) updated to v1.4.  (Zulu)
+-  Updated fishing package to make use of math.em instead of math.inc, it was using functions in math.inc that were moved to math.em.  (HellRazor)
+-  Added optional package BishopAlchemy, with potion keg support.  (Bishop Ebonhand).
+-  Added optional package BankWipe, gets rid of the bankboxes of deleted characters (Jeff Freeman/Zulu).
+
+3.  NPC'S & ITEMS:
+
+-  Added Animal Trainer, Barber, Mapmaker, Gambler, Traveler (see text files in pol/scripts/ai).  Added Hair dye and hair styles (sold by barber).  (Zulu)
+-  Added Florist NPC (see text file in pol/scripts/ai).  Added Misc Plants (sold by florist).  (Talos)
+-  Buy and sell prices added to spyglass, now sold by mapmaker NPC.  (HellRazor)
+
+4.  CLEANUP AND MISC:
+
+-  Enabled the speech events in the merchant.src AI (as of POL 092, speech events need to be specifically enabled).  (HellRazor)
+-  Added "Weight 0" entry to the SecureContainer item in itemdesc.cfg (required as of POL 092).  (HellRazor)
+-  A new default data/items.txt file was added.  (Zulu)
+-  Removed the pol/pkg/opt/statcap package, this package was already in pol/pkg/std. (Mike Anselmi) 
+-  Removed the pol/tips directory (apparently serves no function).  (HellRazor)
+-  Removed the pol/misc directory (apparently serves no function).
+-  Removed functions from math.inc that were moved to math.em.  (HellRazor)
+-  Pol/pkg/std/lightingfoo directory removed, apparently a working directory accidentally left in the 091 distro release.  (HellRazor)
+-  Player level text command .reply was erronously removed from the 091 distro.  Needed for use with the .msg command, re-added to the distro.  (HellRazor)
+-  Clock.inc updated to add a new function.  (Orborous)
+-  New function, PlayMusic, added to include files.  See pol/scripts/include/playmusic_chart.rtf for useage instructions.  (HellRazor)
+-  Added Possess/Unpossess as Seer level commands.  Players with Seer access and above can inhabit the bodies of NPC's.  (Dundee/HellRazor)
+-  Added support for Possess/Unpossess to chrdeath.src.  (Dundee/HellRazor).
+-  The "death" midi music now playes upon character death.  (HellRazor)
+-  The .refreshme command now refreshes mana, stanima, and grants nightsight (before it only refreshed stanima).  (HellRazor)
+
+
+----------------------------------------------------------------
+
+POL091:
+- Evaluate Intelligence, Arms Lore, and Anatomy now yield the same messages
+  as on OSI.
+- Added Myr's message of the day package as an optional package.
+- Added Animal Lore back in. Dunno why it went missing.
+- When merchants die, their storage areas will be annihilated.
+- Updated the doors package.
+- Fixed hitscriptinc.inc (it was calling the wrong thing for the anatomy value.)
+- Players can log out instantly when in an inn.
+- Brought weapon and armor statistics in line with OSI's.
+- Updated the lighting package.
+- Documentation and updated cfg file for danspawner.
+- Added OSI's treasure map locations.
+- You will not be allowed to put on a piece of armor that would lower your dex
+  to 0 or below. Note that this will not prevent you from drinking a dex potion,
+  putting on plate mail, and then letting the potion wear off, but it is a start.
+- Added an optional alternate mining package.
+- Offer an optional upgrade to Spawnnet. It isn't by Spawnnet's creator, who is
+  working on the next version- this is why I made it optional. If you want to use
+  this version (and it does fix some things), make sure to use the correct include
+  files.
+- TUSReadMe removed, as it refers to a web site no longer being maintained.
+- Added Zulu's new guildstone package. If you were running an earlier version of
+  this package, please refer to the readme in opt/guildstone for how to update your
+  data files.
+- .setprop should no longer allow you to give someone a higher command level than
+  you have.
+
+
+POL090_1:
+- Added a spirit speak package and modified login.src to remove the ability to
+  hear ghosts on login.
+- Updated the optional Arena package.
+- Updated the armor equip, unequip, and destroy scripts, and also chrdeath,
+  to modify dex_mod instead of dex and also to not effect NPCs.
+- Added Dundee's boat package.
+- Updated equip.cfg and objtype.inc.
+- Cleaned up npcdesc.cfg.
+- Fixed equip errors in questie.src.
+- Repairing things with blacksmithy should no longer give skill.
+- Taming now correctly sets the master of the mount.
+- Repsys file corrected.

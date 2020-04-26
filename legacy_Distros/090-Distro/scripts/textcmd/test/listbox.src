@@ -1,0 +1,25 @@
+use uo;
+
+program listbox( who, args )
+    local params := SplitWords( args );
+    local z1 := CInt(params[1]);
+    local z2 := CInt(params[2]);
+
+    local t1 := TargetCoordinates( who );
+    if (!t1)
+        return;
+    endif
+
+    local t2 := TargetCoordinates( who );
+    if (!t2)
+        return;
+    endif
+
+    foreach object in ListObjectsInBox( t1.x, t1.y, z1,  t2.x, t2.y, z2 )
+        if (object.name)
+            print( "Object: " + object.name );
+        else
+            print( "Object: " + object.desc );
+        endif
+    endforeach
+endprogram

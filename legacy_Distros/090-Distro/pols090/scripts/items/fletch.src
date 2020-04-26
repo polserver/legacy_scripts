@@ -1,0 +1,50 @@
+use uo;
+
+include "include/client";
+include "include/objtype";
+include "include/utility";
+include "include/skillpoints";
+
+
+program on_fletch( character, shafts )
+    Local feathers;
+    local thepoints := get_default_points(SKILLID_BOWCRAFT);
+    SendSysMessage( character, "Select feathers to use." );
+
+    feathers := Target( character ); 
+    if (!feathers) // cancelled, or targetting error
+        return;
+    endif
+    
+    if (GetObjType(feathers) != UOBJ_FEATHER) 
+        SendSysMessage( character, "I can only make arrows from shafts and feathers." );
+        return;
+    endif
+
+    local choice := SelectMenuItem2( character , "fletching" );
+
+    if (Accessible( character, shafts ) and Accessible( character, feathers ))
+        if (CheckSkill( character, 
+                        SKILLID_BOWCRAFT, 
+                        -1,                     // difficulty
+                        thepoints ))                   // points
+            Local num_to_make := Min( GetAmount(shafts), GetAmount(feathers) );
+
+            
+            //print( "Would create " + num_to_make + " arrows." );
+            Local arrows := CreateItemInBackpack( character, choice.objtype, num_to_make );
+            if (arrows > 0) 
+                SubtractAmount( shafts, num_to_make );
+                SubtractAmount( feathers, num_to_make ); 
+                SendSysMessage( character, "You create some arrows and put them in your pack." );
+            endif
+            // else report error? hmm, no information on that!
+        else
+            SubtractAmount( shafts, 1 );
+            SubtractAmount( feathers, 1 );
+            SendSysMessage( character, "You destroy some materials." );
+        endif
+    else
+        SendSysMessage( character, "I can't seem to find either the shafts or the feathers!" );
+    endif
+endprogram

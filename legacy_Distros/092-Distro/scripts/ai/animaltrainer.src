@@ -1,0 +1,532 @@
+////////////////////////////////////////////////////////////////////////////
+//
+//  MERCHANT.SRC - Control script for NPC Merchants
+//
+//  A Merchant NPC must have two object property strings:
+//      MerchantType      A MerchantType found in MRCSPAWN.CFG
+//
+//  "[MerchantSerial] FS" is the merchant's "for sale" inventory.  This is
+//                      restocked periodically by MRCSPAWN.SRC
+//  "[MerchantSerial] PB" contains items bought from players, now for-sale.
+//              (this doesn't work yet)
+//
+// Updated by: Sentack - 1/14/2000
+//   Purpose: Edited 'vendor train' in the following ways
+//      NPC lists only the skills they can train PC
+//      NPC now train a PC up to 1/3rd their skill level
+//      Note that only paying an NPC part of the money isn't perfect yet.
+//      NPC returns gold if they can't train PC
+//      Test to make sure PC will be trained to the proper level for their
+//       gold
+//      Added GoldForSkillGain for future updates of skill training costs
+//
+// Upated by: Zulu (zulu@cadvision.com) March 31/2000
+//
+// added buy and sell routine
+// includes Stable Keeper script by RoTTer (daros@cebinet.com.br)
+// i have updated the stable keeper script
+// add new commands from the latest pol 087
+//
+////////////////////////////////////////////////////////////////////////////
+
+use npc;
+use basic;
+use os;
+use uo;
+
+include "include/eventid";
+include "include/randname";
+include "include/utility";
+include "include/mrcspawn";
+include "include/speech";
+include "include/client";
+include "include/vetement";
+// include "ai/setup/modsetup";
+
+const RESPAWN_MINUTES := 30;     // In how many minutes will the NPC respawn if killed.
+const MAX_SKILLS      := 48;     // There are currently 48 Skills.
+const UOBJ_GOLDCOIN   := 0x0EED; // A gold coin
+const UOBJ_METALCHEST := 0x0E7C; // A Metal Chest
+Const REACT_THRESHOLD := 2;
+
+set_priority( 50 );
+
+global buyimage  := {0x211b, 0x211c, 0x2121, 0x2124, 0x211f, 0x2120, 0x2126, 0x20f6, 0x211a, 0x2123, 0x2125, 0x2122, 0x211e, 0x211d, 0x2119, 0x20e6, 0x2108, 0x2103, 0x2101, 0x2135, 0x2136, 0x2137, 0x2127};
+
+global sellimage := {0xc9, 0xd9, 0xcc, 0xc8, 0xe2, 0xe4, 0x123, 0xdc, 0x06, 0xee, 0xcd, 0xe1, 0xd4, 0x05, 0xd6, 0xcf, 0xd1, 0xd8, 0xcb, 0xd2, 0xda, 0xdb, 0x124};
+
+global pettemplate :={"cat", "dog", "horse", "horse2", "horse3", "horse4", "horsepack", "llama", "bird", "rat", "rabbit", "wolf", "grizzly", "eagle", "panther", "sheep", "goat", "cow", "pig", "desertostard", "frenziedostard", "forestostard", "llamapack"};
+
+global storage, inv_fs, inv_pb, inv_1c;
+global merchant_type := "AnimalTrainer";
+global me := Self();
+
+if( me.name["<random>"] )
+case( randomint(2) )
+0: me.graphic := 400; me.gender := 0;
+1: me.graphic := 401; me.gender := 1;
+endcase
+SetName ( me , RandomName( me ) + " the Animal Trainer");
+Habille( me , "AnimalTrainer" );
+endif
+
+storage := FindStorageArea( "Merchant Storage" );
+
+if (!storage)
+    exit;
+endif
+
+inv_fs := find_or_create_item( storage, me.serial + " FS", UOBJ_METALCHEST );
+inv_pb := find_or_create_item( storage, me.serial + " PB", UOBJ_METALCHEST );
+inv_1c := find_or_create_item( storage, me.serial + " 1C", UOBJ_METALCHEST );
+
+if (!inv_fs or !inv_pb or !inv_1c)
+    exit;
+endif
+
+RestockInventory( merchant_type, inv_fs );
+global next_restock := ReadGameClock() + RESPAWN_MINUTES*60;
+
+EnableEvents( EVID_ITEM_GIVEN );
+EnableEvents( EVID_SPEECH , REACT_THRESHOLD );
+
+while (1)
+
+    Local ev, petname, newpet, i;
+
+    ev := os::wait_for_event( 30 );
+    if (ev)
+
+        case (ev.type)
+            EVID_SPEECH:
+                say(process_text(ev.text, "default",38));
+                if (ev.text["buy"])
+                    TurnToward( ev.source );
+                    setobjproperty(ev.source, "#buy", 1);
+                    local res := SendBuyWindow( ev.source, inv_fs, self(), inv_pb );
+                    eraseobjproperty(ev.source, "#buy");
+                    if (!res)
+                        print( "SendBuyWindow failed: " + res.errortext );
+                    endif
+                elseif (ev.text["sell"])
+                    TurnToward( ev.source );
+                    if (getobjproperty(ev.source, "#buy")=1)
+                    say( "You can't sell while buying." );
+                    else
+		    sellanimal( ev.source );
+		    endif
+                elseif ( ev.text["vendor train"] or ev.text["merchant train"] )
+                     TurnToward( ev.source );
+                     MerchantTrain( me , ev.source , ev.text );
+
+		elseif (ev.text["stable"])
+		     TurnToward (ev.source);
+		     stable(ev.source);
+                endif
+
+            EVID_MERCHANT_BOUGHT:
+                TurnToward( ev.source );
+                PrintTextAbovePrivate( self(), "The total of thy sale is " + ev.amount, ev.source );
+                foreach item in EnumerateItemsInContainer( inv_pb )
+                    DestroyItem( item );
+                endforeach
+
+            EVID_MERCHANT_SOLD:
+                TurnToward( ev.source );
+                PrintTextAbovePrivate( self(), "The total of thy purchase is " + ev.amount, ev.source );
+		set_priority(1);
+
+                foreach item in EnumerateItemsInContainer( ev.source.backpack )
+		petname := item.objtype;
+
+		if ((petname<=0x2137) and (petname>=0x20CF))
+
+		if ((petname=0x20CF) and (item.color=0x02E6))
+			   petname :="blackbear";
+
+		elseif (petname=0x2118)
+			   petname :="bear";
+		else
+		for(i:=1;i<=buyimage.size();i:=i+1)
+			if (petname=buyimage[i])
+			   petname :=pettemplate[i];
+			   break;
+			endif
+		endfor
+		endif
+
+		newpet := CreateNPCfromtemplate (petname, ev.source.x, ev.source.y,ev.source.z);
+
+		DestroyItem( item );
+                SetObjProperty (newpet, "master", ev.source.serial);
+                SetObjProperty (newpet, "prevtamed", 1);
+		newpet.script := "tamed";
+                RestartScript (newpet);
+		endif
+
+                endforeach
+		set_priority( 50 );
+
+            EVID_ITEM_GIVEN:
+	        if (ev.item.objtype=UOBJ_GOLDCOIN);
+                TrainSkill( me , ev.source , ev.item );
+		else
+		TurnToward (ev.source);
+		Load_Ticket_Data (me, ev.source, ev.item);
+		endif
+
+	endcase
+	 cleareventque();
+    elseif (ReadGameClock() > next_restock)
+        RestockInventory( merchant_type, inv_fs );
+        next_restock := ReadGameClock() + RESPAWN_MINUTES*60;
+    endif
+endwhile
+
+function cleareventque()
+
+local ev;
+repeat
+until (! (ev := os::wait_for_event(0)) );
+
+endfunction
+
+// Used to inform a player if and how much a NPC can train a player
+function MerchantTrain( me , who , text )
+
+    local skillcfg := ReadConfigFile( "::skills" ); // Link to the skills cfg file 'pol\config\skills.cfg'
+    local elem;             // used to contain the skill structure for the skill in question.
+    local i;                // Counter for various operations
+    local totaltrain := 0;  // How many skills the player can be trained in <Used as a flag>
+
+    // Get what the player says and divide it into words
+    local words := SplitWords( text );
+
+    // The third word is the skill we are looking for
+    local skill := words[3];
+
+    // Test to see if it exists, if not then player wants to know what NPC an train them
+    if( !skill )
+        local trainable := "";
+        // For each of the available skills
+        for( i := 0 ; i <= MAX_SKILLS ; i := i+1 )
+            // acquire the skills attributes.
+            elem := FindConfigElem( skillcfg , i );
+            // if the NPC has the skill
+            if( GetSkill(me , i) )
+                // if the NPC's skill is greater then the PC's
+                if ((GetSkill(me , i)/3) > GetSkill(who , i))
+                  // Add the skill to the string, and increment total train.
+                  trainable  := trainable + GetConfigString( elem , "Name" ) + ", ";
+                  totaltrain := totaltrain + 1;
+                endif
+            endif
+        endfor
+
+        // If there where skills that the PC can be trained in, list them, else say so.
+        if (totaltrain > 0)
+          say( "I can train thee in the following skills:" );
+          say(trainable);
+        else
+          say("I cannot train thee.");
+        endif
+    else
+        // The player wishes to train in a skill
+        skill := lower(skill);
+        // for each of the available skills
+        for( i := 0 ; i <= MAX_SKILLS ; i := i+1 )
+            // Acquire skill attributes
+            elem := FindConfigElem( skillcfg , i );
+            // Test to see if this skill is the one the player is referring to.
+            if( lower(GetConfigString( elem , "Name" )) = skill )
+                // Acquire the NPC's value at this skill.
+                local NPC_level := (GetSkill(me , i) / 3);
+                // Test to see if there is a skill value <Redundant check>
+                if( NPC_level != 0 )
+                    // Get PC's skill
+                    local PC_level := GetSkill( who , i );
+                    // if the pc's skill is greater then the NPC's we can do nothing
+                    if( PC_level >= NPC_level )
+                        say("I cannot teach you anymore.");
+                        return;
+                    else
+                        // Determine the cost for training the PC, and inform the PC of the cost
+                        local skillid := i;
+                        local trainmaxcost := GoldForSkillGain(NPC_level, PC_level, skillid);
+                        say( "I will train thee " + GetConfigString( elem , "Name" ) + " for " + trainmaxcost + " gold.");
+                        // Mark the PC with the skill and The cost to train in the skill
+                        SetObjProperty( who , "TrainMaxCost" , trainmaxcost );
+                        SetObjProperty( who , "TrainSkillID" , skillid );
+                        return;
+                    endif
+                endif
+            endif
+        endfor
+
+        // All else, The player named an unknown skill.
+        say("I know not of that skill.");
+     endif
+endfunction
+
+// This handles the NPC's training of the PC or the PC's donation of gold to the NPC
+// TODO: Reputation bonus if gold donation is greater then a specific amount.
+function TrainSkill( me , who , item )
+
+  local skillcfg := ReadConfigFile( "::skills" ); // Link to master skills config file
+  local variance := 0;       // The variance between the players skill and the npc's skill
+  local NPC_level := 0;      // The NPC's level at the skill
+  local PC_level := 0;       // The PC's level at the skill
+  local GoldReceived := 0;   // The amount of gold the PC did give us.
+  local New_Level := 0;      // The PC's new skill level
+  local CurrentNPCCost := 0; // The current NPC's cost for training the Player
+
+  // if the item handed to the NPC was gold and not zero <Integrity check>
+  if( (item.objtype = UOBJ_GOLDCOIN) and (item.amount != 0)  )
+     // Acquire information on what skill the PC whishes to train in.
+     local TrainMaxCost := GetObjProperty( who , "TrainMaxCost" );
+     local TrainSkillID := GetObjProperty( who , "TrainSkillID" );
+
+     // If the pc is not expecting training, then it was a donation.
+     if( (!TrainMaxCost or !TrainSkillID) and TrainSkillID != 0)
+         say( "I don't know what this is for, but thanks!" );
+         DestroyItem( item );
+         // TODO: Reputation bonus
+         // TODO: OSI has a "Desires" property with all npc's.  It's used to determine if an NPC gives out clues to a minor quest.
+         return;
+     endif
+
+     // If the NPC does have the skill
+     if( GetSkill(me , TrainSkillID) )
+          NPC_level    := GetSkill(me,  TrainSkillID) / 3; // Acquire NPC's training level
+          PC_level     := GetSkill(who, TrainSkillID);     // Acquire PC's  level
+          GoldReceived := item.amount;                     // How much gold was received
+          variance     := NPC_level - PC_level;            // How many skill points are there between the npc and player.
+          CurrentNPCCost := GoldForSkillGain(NPC_level, PC_level, TrainSkillID);
+
+          // Double check to make sure that the pc's skill is lower then the NPC's
+          if (PC_level < NPC_level)
+
+            // If what the NPC can train the player is different from what the player is expecting, adjust accordingly.
+            if (CurrentNPCCost != TrainMaxCost)
+
+              if (CurrentNPCCost > TrainMaxCost)
+                // The current NPC is better then the one we received an offer from.
+                NPC_Level := SkillGainForGold(NPC_level, PC_level, TrainSkillID, TrainMaxCost);  // Adjust the NPC's level variable to the lower skill level
+                variance  := NPC_level - PC_level;
+              else
+                // The current NPC is worse then the one we received an offer from.
+                // Determine what the cost would be for this NPC
+                if (GoldReceived > CurrentNPCCost)
+                  // The NPC can't help the player
+                  say("I cannot train thee to that level.");
+                  MoveItemToContainer( who.backpack , item );
+                  return;
+                else
+                  // The NPC can help, but we need to adjust
+                  TrainMaxCost := CurrentNPCCost;
+                endif
+              endif
+            endif
+
+            // Determine what level the player will be trained to
+            // if the PC gives the NPC the max cost or more. Train them to the fullest
+            if( TrainMaxCost <= GoldReceived )
+              New_Level := (NPC_level * 10);
+              EraseObjProperty( who , "TrainMaxCost" );  // Clear the trainmaxcost property on the PC.
+              EraseObjProperty( who , "TrainSkillID" );  // Clear the skill flag
+              // TODO: If the player gives a lot more then the training cost, grant a Reputation Bonus and/or a mini-quest clue.
+            else
+              // Train the PC to whatever percentage they can afford.
+              New_Level := ((PC_level + CInt((CDbl(variance) * (CDbl(GoldReceived) / CDbl(TrainMaxCost))))) * 10);
+              SetObjProperty( who , "TrainMaxCost" , TrainMaxCost-GoldReceived );
+            endif
+
+            say("Let me show you how it's done.");  // NPC informs player training was successful
+
+            // Set the PC's skill
+            SetRawSkill( who , TrainSkillID , BaseSkillToRawSkill(New_Level));
+
+            DestroyItem( item );  // Destroy gold
+
+            SendSysmessage( who , "Your skill increases." ); // Note increase
+
+          else
+            // PC just paid NPC to be trained but NPC doesn't have the skill.
+            say("I'm not as good as thee.  Please find another to train thee.");
+            MoveItemToContainer( who.backpack , item );
+          endif
+      else
+          // NPC does not have that skill to train the PC.  Return gold
+          Say("I don't know that skill. Why don't you ask me what i can train you in?");
+          MoveItemToContainer( who.backpack , item );
+      endif
+  else
+     // PC gave NPC something else other then gold.  Return it.
+     say("Bah, I have no use for this. Be off with ye.");
+     MoveItemToContainer( who.backpack , item );
+     // TODO: OSI has a "Desires" property with all npc's.  I think it's used to determine if an NPC
+     //  gives out clues to a minor quest or reputation bonus, depending on the item donated <Type and value>
+  endif
+
+endfunction
+
+// Used to determine cost for raising the pc's skill to the level of the NPC.
+// Note: This function is designed to handle different skills have different rates at different levels, etc.
+function GoldForSkillGain( NPC_Skill, PC_Skill, skillid )
+  local maxskill := NPC_Skill - PC_Skill;
+  return maxskill*10; // Cost equals ten times the difference.
+endfunction
+
+// Used to determine what the skill level of the PC will be for the amount of gold they gave
+// Note: This function is designed to handle different skills have different rates at different levels, etc.
+function SkillGainForGold(NPC_level, PC_level, TrainSkillID, GoldReceived)
+  return (GoldReceived/10) + PC_Level;
+endfunction
+
+function sellanimal (who)
+
+	local i;
+
+	Say ("What pet would you like to sell?");
+
+	local pet := Target(who);
+
+	if ((!pet) or (pet=""))
+		SendSysmessage (who, "Cancelled.");
+		return;
+	endif
+
+	   local tempdata	:= GetObjProperty (pet, "master");
+	   local summoned	:= GetObjProperty (pet, "summoned");
+	   local animated	:= GetObjProperty (pet, "animated");
+	   local charmed	:= GetObjProperty (pet, "charmed");
+
+	   if (!tempdata)
+		Say ("I cannot buy that.");
+		return;
+	   endif
+
+	   if ((pet.script = "tamed") and (tempdata = who.serial) and !summoned and !animated and !charmed)
+
+		if ((pet.objtype=0xd3) and (pet.color=0x02E6))
+			   CreateItemInContainer(inv_fs, 0x20CF, 1);
+
+		elseif (pet.objtype=0xd3)
+			   CreateItemInContainer(inv_fs, 0x2118, 1);
+		else
+		for(i:=1;i<=sellimage.size();i:=i+1)
+			if (pet.objtype=sellimage[i])
+			   CreateItemInContainer(inv_fs, buyimage[i], 1);
+			   break;
+			endif
+		endfor
+		endif
+
+	        local buyamount := pet.strength*2;
+
+		Say (pet.name + " is worth " + buyamount);
+		SetObjProperty (pet, "guardkill", 1);
+		pet.graphic := 1000;
+		Damage (pet, pet.hp);
+
+		CreateItemInBackpack(who, UOBJ_GOLDCOIN, buyamount);
+		return;
+
+	   elseif ( (pet.graphic = CID_HUMAN_MALE) or (pet.graphic = CID_HUMAN_FEMALE) )
+		Say ("Do I look like an Inn Keeper?!");
+	   else
+		Say ("You could sell " + pet.name + " but that is not your pet.");
+           endif
+
+endfunction
+
+function Load_Ticket_Data (me, who, ticket)
+
+        local tempdata := 0;
+        local newpet := 0;
+
+        if ((ticket.objtype = 0x186E) and (ticket.graphic = 5360))
+
+                tempdata := GetObjProperty (ticket, "petname");
+                Say ("I will get " + tempdata + " for you. One moment, please.");
+                Sleep (1);
+
+                tempdata := GetObjProperty (ticket, "pettemplate");
+                newpet := CreateNPCFromTemplate (tempdata, me.x, me.y, me.z);
+
+                tempdata := GetObjProperty (ticket, "petname");
+                newpet.name := tempdata;
+
+                tempdata := GetObjProperty (ticket, "pethp");
+                newpet.hp := tempdata;
+
+                tempdata := GetObjProperty (ticket, "petmana");
+                newpet.mana := tempdata;
+
+                tempdata := GetObjProperty (ticket, "petcolor");
+                newpet.color := tempdata;
+
+                SetObjProperty (newpet, "master", who.serial);
+                SetObjProperty (newpet, "prevtamed", 1);
+                newpet.script := "tamed";
+                RestartScript (newpet);
+
+                Say ("Take care and be sure to feed it!");
+
+                DestroyItem (ticket);
+        else
+                Say ("I have no use for that.");
+        endif
+
+endfunction
+
+function stable(who)
+	Say ("Which pet would you like to Stable");
+
+	local pet := Target (who);
+
+	if (pet)
+	   local tempdata	:= GetObjProperty (pet, "master");
+	   local summoned	:= GetObjProperty (pet, "summoned");
+	   local animated	:= GetObjProperty (pet, "animated");
+	   local charmed	:= GetObjProperty (pet, "charmed");
+
+	   if ((pet.script = "tamed") and (tempdata = who.serial) and !summoned and !animated and !charmed)
+		local price := pet.strength*2;
+		Say ("I charge " + price + " to take care of " + pet.name + ".");
+
+	   if (who.spendgold(price))
+		Say ("Keep this ticket and give it to me when you want " + pet.name + " back.");
+		local ticket := CreateItemInBackpack (who, 0x186E, 1);
+
+		Save_Pet_Data (ticket, pet);
+	   endif
+
+	   elseif ((pet.graphic = CID_HUMAN_MALE) or (pet.graphic = CID_HUMAN_FEMALE))
+		Say ("Do I look like an Inn Keeper?!");
+	   else
+		Say ("I could stable " + pet.name + " but that is not your pet.");
+	   endif
+
+        endif
+endfunction
+
+function Save_Pet_Data (ticket, pet)
+
+        var tempdata:= pet.npctemplate;
+
+        ticket.name := "Pet claim ticket - Name: " + pet.name + " - " + tempdata;
+        ticket.graphic := 5360;
+
+        SetObjProperty (ticket, "petname", pet.name);
+        SetObjProperty (ticket, "pethp", pet.hp);
+        SetObjProperty (ticket, "petmana", pet.mana);
+        SetObjProperty (ticket, "petcolor", pet.color);
+
+        SetObjProperty (ticket, "pettemplate", tempdata);
+
+        SetObjProperty (pet, "guardkill", 1);
+        pet.graphic := 1000;
+        Damage (pet, pet.hp);
+
+endfunction

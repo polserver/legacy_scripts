@@ -1,0 +1,26 @@
+use uo;
+use os;
+
+program stopwatch( who, dur )
+    dur := CInt( dur );
+    SendSysMessage( who, "Begin walking" );
+    sleep( 5 );
+    var startx, endx;
+    var starty, endy;
+    set_critical(1);
+    startx := who.x;
+    starty := who.y;
+    sleep( dur );
+    endx := who.x;
+    endy := who.y;
+    set_critical(0);
+    var dx := startx - endx;
+    var dy := starty - endy;
+    if (dx < 0) dx := -dx; endif
+    if (dy < 0) dy := -dy; endif
+    SendSysMessage( who, "x distance: " + dx );
+    SendSysMessage( who, "y distance: " + dy );
+    SendSysMessage( who, "x speed: " + dx * 60 / dur + " tiles/min" );
+    SendSysMessage( who, "y speed: " + dy * 60 / dur + " tiles/min" );
+    
+endprogram

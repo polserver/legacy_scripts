@@ -1,0 +1,94 @@
+/*
+ *  Moongate script - fires when someone walks onto a moongate
+ *
+ *
+ *  So, when someone steps into a timed moongate, the following will happen:
+ *    1.  An instance of TIMEDMOONGATE.SRC is started. 
+ *    1a. This causes the mobile to "walk on" to the destination gate!
+ *    2.  The destination gate coords are calculated based on your current
+ *    gate and the time of day.
+ *    3.  Off you go!
+ */
+
+use os;
+use uo;
+use basic;
+
+include "include/moongate";
+include "include/clock";
+
+program walk_on_moongate( mobile, gate )
+    local x, y, z;
+
+    SetDestination( gate );
+
+    x := GetObjProperty( gate, "GateDestX" );
+    y := GetObjProperty( gate, "GateDestY" );
+    z := GetObjProperty( gate, "GateDestZ" );
+
+    set_critical(1);
+   
+    MoveCharacterToLocation( mobile, x, y+1, z );
+
+endprogram
+
+
+function SetDestination( currentgate )
+
+    local i := 1;
+    local enter_gate_index := 0;
+
+//find the index of the gate i'm at
+    foreach gate in gates
+        if( (gate[1] = currentgate.x) and (gate[2] = currentgate.y) and (gate[3] = currentgate.z) )
+            enter_gate_index := i;
+        endif
+        i := i + 1;
+    endforeach
+
+//find the time, and the step
+    local time := GetTimeofDay();
+    local str_hour := time[1,2];
+    local this_hour := cint(str_hour);
+
+    //big elseif to find the current step
+    local stepnum;
+
+        //
+        // TODO: try 'stepnum := this_hour / 3;'
+        //
+
+    if( (this_hour >= 0) and (this_hour < 3) )
+        stepnum := 0;
+    elseif( (this_hour >= 3) and (this_hour < 6) )
+        stepnum := 1;
+    elseif( (this_hour >= 6) and (this_hour < 9) )
+        stepnum := 2;
+    elseif( (this_hour >= 9) and (this_hour < 12) )
+        stepnum := 3;
+    elseif( (this_hour >= 12) and (this_hour < 15) )
+        stepnum := 4;
+    elseif( (this_hour >= 15) and (this_hour < 18) )
+        stepnum := 5;
+    elseif( (this_hour >= 18) and (this_hour < 21) )
+        stepnum := 6;
+    elseif( (this_hour >= 21) and (this_hour < 24) )
+        stepnum := 7;
+    else
+        Print( "Ach! It's a time-warp cap'n!" );
+        stepnum := 0;
+    endif
+
+//find the step'th index in my gate array
+    local temp := dests[enter_gate_index];
+    local destnum := temp[stepnum+1];
+
+//use that value in the dest gate array
+    local dest := gates[destnum+1];
+
+//update dest coords
+    SetObjProperty( currentgate, "GateDestX", dest[1] );
+    SetObjProperty( currentgate, "GateDestY", dest[2] );
+    SetObjProperty( currentgate, "GateDestZ", dest[3] );
+
+endfunction

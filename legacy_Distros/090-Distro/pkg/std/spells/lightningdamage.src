@@ -1,0 +1,56 @@
+use uo;
+include "include/client";
+include "include/spellattack";
+include "include/spellrestrictions";
+
+program lightning(parms)
+
+local victim := parms[1];
+local caster := parms[2];
+local dmg := parms[3];
+
+local who;
+
+if (getobjproperty(victim, "mr") = "1")
+        sendsysmessage(victim, "Your magic reflect saves you!");
+        eraseobjproperty(victim, "mr");
+        if (getobjproperty(caster, "mr") = "1")
+                sendsysmessage(caster, "The spell is reflected back at you, but your magic resistance saves you!");
+                eraseobjproperty(caster, "mr");
+                return;
+        else
+                who := caster;
+                Sendsysmessage(caster, "Your spell is reflected back at you!");
+        endif
+else
+        who := victim;
+endif
+
+
+
+PlayLightningBoltEffect( who);
+PlaySoundEffect( who, SFX_SPELL_LIGHTNING  );
+
+if (wears_metallic(who))
+                ApplyRawDamage( who, cint(dmg )); 
+        else
+                ApplyDamage( who, cint(dmg)); 
+endif
+
+endprogram
+
+
+function wears_metallic(who)
+
+local cfg := readconfigfile(":combat:itemdesc");
+local item;
+
+foreach item in ListEquippedItems(who)
+      if ((cfg[item.objtype].blockcircle) && (cfg[item.objtype].blockcircle <= 2) && (item.layer > 2) ) 
+                print (who.name + " was wearing metallic armor, and is gonna be fried");
+                return 1;
+      endif
+endforeach
+
+return 0;
+endfunction

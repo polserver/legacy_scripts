@@ -1,0 +1,12 @@
+The following features are in development - some parts work, some parts don't.
+
+POL093-2000-01-26:
+    Added performance counters to polcore() [these still need work]
+        Number of Error objects are being created per minute:
+            polcore().error_creations_per_min
+        Task scheduler performance: mainly combat operations
+            polcore().tasks_late_per_min
+            poclore().tasks_ontime_per_min
+        Script scheduler performance:
+            polcore().scripts_late_per_min
+            polcore().scripts_ontime_per_min

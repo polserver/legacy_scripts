@@ -1,0 +1,19 @@
+use uo;
+use os;
+
+
+program rise(parms)
+
+local x := parms[1];
+local y := parms[2];
+local z := parms[3];
+local template := parms[4];
+local corpse := parms[5];
+
+sleep(10);
+if (corpse)
+        printtextabove(corpse, "the corpse begins to stir!");
+        createnpcfromtemplate(template, x, y, z);
+endif
+
+endprogram

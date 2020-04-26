@@ -1,0 +1,45 @@
+/*
+ *  Moongate script - fires when someone walks onto a moongate
+ *
+ *
+ *  PLEASE NOTE: THIS SCRIPT IS USED FOR 'GATE' SPELL MOONGATES
+ *               Maybe this is misnamed, but that's what it's for.
+ *
+ *
+ *  The "JustGated" flag is to keep you from bouncing between gates.
+ *  MoveCharacterToLocation checks the destination location for gates,
+ *      (and traps and whatever)
+ *
+ *  So, when someone steps into a moongate, the following will happen:
+ *    1.  An instance of MOONGATE.SRC is started.  It sets their JustGated,
+ *        and transports the mobile.
+ *    1a. This causes the mobile to "walk on" to the destination gate!
+ *    2.  Another instance of MOONGATE.SRC is started.  It sees JustGated is
+ *        set, and so clears it and exits.
+ *
+ *  It is assumed that gate-pairs are deleted atomically (see GATE.SRC),
+ *      hence the test for "!gate" below, after going critical - if the gates
+ *      were just destroyed, no transportation takes place.
+ *
+ */
+
+use os;
+use uo;
+
+
+program walk_on_moongate( mobile, gate )
+    local x, y, z;
+    x := GetObjProperty( gate, "GateDestX" );
+    y := GetObjProperty( gate, "GateDestY" );
+    z := GetObjProperty( gate, "GateDestZ" );
+
+    set_critical(1);
+    if (!gate or GetObjProperty( mobile, "JustGated" ))
+        EraseObjProperty( mobile, "JustGated" );
+        return;
+    endif
+   
+    if (MoveCharacterToLocation( mobile, x, y, z ))
+        SetObjProperty( mobile, "JustGated", 1 );
+    endif
+endprogram

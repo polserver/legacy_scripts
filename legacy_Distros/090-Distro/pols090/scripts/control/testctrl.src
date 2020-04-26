@@ -1,0 +1,9 @@
+use os;
+use uo;
+
+program test_control( item )
+    while (1)
+        Sleep( 10 );
+        PrintTextAbove( item, "Hello world" );
+    endwhile
+endprogram

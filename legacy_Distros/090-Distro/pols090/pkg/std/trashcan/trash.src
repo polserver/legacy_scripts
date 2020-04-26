@@ -1,0 +1,26 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+// Created by Zulu (zuluhotel@home.com) Dec 8, 1999
+// - You can place these trash cans around each bank and players can throw
+// - away stuff. Once items are placed in the trash can, they are destroyed. 
+// - This is from an idea from TUS.
+// - Thanks to Louds ( louds@geocities.com ) for the help on this script.
+// 
+/////////////////////////////////////////////////////////////////////////////
+
+use uo;
+use os;
+// 0x0050
+program trash(who, item)
+
+while(1)
+
+foreach trashitem in EnumerateItemsInContainer(item)
+    PlaySoundEffect(who , 0x226 );
+    destroyitem(trashitem);
+endforeach
+
+sleep(10);
+endwhile
+
+endprogram

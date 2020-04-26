@@ -1,0 +1,65 @@
+//////////////
+//treasurechest.src
+//
+// Spawns monsters around the chest according to
+// its difficulty level. Makes the chest a normal
+// container after the spawns are complete.
+//
+// TODO: something about locking/trapping the chest.
+//
+// Author: Racalac 4/24/99
+/////////////
+
+
+use uo;
+use cfgfile;
+use util;
+
+program treasurechest( character ,  chest )
+print("ACTIVATED");
+    local lvl := GetObjProperty( chest , "level" );
+print("lvl: " + lvl);
+    local cfgfile := ReadConfigFile( "guardians" );
+if(!cfgfile)
+print("cant find cfgfile");
+endif
+    local elem := FindConfigElem( cfgfile , lvl );
+if(!elem)
+print("cant find elem!");
+endif
+    local total := GetConfigString( elem , "total" );
+    local num := GetConfigInt( elem , "num" );
+print("total: " + total);
+print("num: " + num);
+    local limit := RandomDiceRoll( total );
+print("limit: " + limit);
+    local rand;
+    local template;
+    local i;
+
+    for( i := 1 ; i <= limit ; i := i + 1 )
+        rand := RandomInt( num ) + 1;
+        template := GetConfigString( elem , ("creature" + rand) );
+print("template: " + template);
+        CreateGuardian( chest , template );
+    endfor
+
+    SendSysmessage( character , "You unleash the treasure's guardians!" );
+
+    chest.usescript := "";
+
+endprogram
+
+
+
+function CreateGuardian( chest , template )
+
+    local dx := RandomInt( 8 ) - 4;
+    local dy := RandomInt( 8 ) - 4;
+
+    local nasty := CreateNpcFromTemplate( template , chest.x+dx , chest.y+dy , chest.z , 0 );
+
+    if( nasty = "<error>" )
+       CreateGuardian( chest , template );
+    endif
+endfunction

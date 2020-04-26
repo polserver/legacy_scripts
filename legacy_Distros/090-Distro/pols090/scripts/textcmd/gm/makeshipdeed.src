@@ -1,0 +1,28 @@
+use os;
+use uo;
+
+include "include/objtype";
+
+
+program textcmd_makeshipdeed( who, shiptype )
+    shiptype := CInt(shiptype);
+    if (validate_shiptype( shiptype ))
+        local deed := CreateItemInBackpack( who, UOBJ_SHIP_DEED1 );
+        SetObjProperty( deed, "shiptype", shiptype );
+        // TODO: get this from a config file.
+        SetName( deed, "A deed to a small boat" );
+
+        PrintTextAbovePrivate( who, "Ah, a shiny new ship deed in my backpack!", who );
+    else
+        SendSysMessage( who, "Sorry, that's not a valid ship type at this time." );
+    endif
+endprogram
+
+function validate_shiptype( shiptype )
+    case shiptype
+        0x4000:
+            return 1;
+        default:
+            return 0;
+    endcase
+endfunction

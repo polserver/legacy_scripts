@@ -1,0 +1,36 @@
+use uo;
+use os;
+
+global layout := {
+"noclose",
+"nodispose",
+"page 0",
+"gumppic 300 200 2500",
+"text 337 225 45 0",
+"text 335 250 45 1",
+"text 345 275 45 2",
+"button 380 310 2313 2312 1 0 1",
+
+};
+
+global data := {
+"Please refrain from",
+"the Out of Character",
+"chat at this time.",
+
+};
+
+
+program ooc_talk( who )
+
+   SendSysmessage( who , "Target the naughty player." );
+   var munchkin := Target( who, TGTOPT_NOCHECK_LOS );
+   
+   if( !munchkin or !munchkin.acctname )
+      SendSysmessage( who , "Cancelled" );
+      return;
+   endif
+   
+   var ret := SendDialogGump( munchkin, layout, data );
+   
+endprogram

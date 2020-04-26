@@ -1,0 +1,15 @@
+use uo;
+
+include "include/client";
+
+program buzz( who )
+
+   Sendsysmessage( who , "Who should i give a buzzcut to?" );
+   local baldy := Target( who , "" );
+
+   local hair := GetEquipmentByLayer( baldy, LAYER_HAIR );
+
+   DestroyItem( hair );
+
+endprogram
+

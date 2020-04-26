@@ -1,0 +1,51 @@
+use os;
+use uo;
+use util;
+
+include "include/client";
+include "include/spellrestrictions";
+
+program cast_summon( parms )
+
+	local circle := 8;
+	local caster;
+	local cast_loc;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		cast_loc := parms[3];
+	else
+		caster := parms;
+		cast_loc := CanTargetArea(caster, circle);
+		if (!cast_loc)
+			return;
+		endif
+	endif
+
+	local thecreature := "vortex";
+	local thecritter := CreateNPCfromTemplate(thecreature, cast_loc.x, cast_loc.y,cast_loc.z);
+	PlaySoundEffect(thecritter,SFX_SPELL_ENERGY_VORTEX);
+
+	setobjproperty(thecritter, "summoned",1);
+	setobjproperty(thecritter, "master",caster.serial);
+
+	local ev Array;
+	ev.+type := 0x0002;
+	ev.+source := 0;
+
+	foreach critter in ListMobilesInLineOfSight( thecritter, 5 )
+                ev.source := critter;
+		SendEvent(thecritter, ev);
+	endforeach
+
+	detach();
+
+	sleep( (GetSkill( caster, SKILLID_MAGERY ) ) );
+
+	PlaySoundEffect( thecritter , SFX_SPELL_MANA_VAMPIRE );
+	PlayStationaryEffect( thecritter.x, thecritter.y, thecritter.z, FX_SMOKE, 0xA, 0xA );
+	MoveCharacterToLocation(thecritter,0,0,0,MOVECHAR_FORCELOCATION);
+
+	applyrawdamage (thecritter, thecritter.hp + 3);
+
+endprogram

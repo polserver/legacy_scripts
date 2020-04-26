@@ -1,0 +1,140 @@
+// auction  version .6
+// by Zulu (zulu@zuluhotel.com)   April 27, 2000
+
+use os;
+use uo;
+use cfgfile;
+
+include "include/utility"; //storage
+
+global storage, inv_auct, inv_auct_sold, inv_auct_ticket;
+
+storage := FindStorageArea( "Merchant Storage" );
+
+if (!storage)
+    exit;
+endif
+const UOBJ_GOLDCOIN := 0xeed;
+
+inv_auct := find_or_create_item( storage, "1AUCTION1", 0xE7C );
+inv_auct_sold := find_or_create_item( storage, "0AUCTION0", 0xE7C );
+inv_auct_ticket := find_or_create_item( storage, "2AUCTION2", 0xE7C );
+
+if((!inv_auct) or (!inv_auct_sold) or (!inv_auct_ticket))
+    exit;
+endif
+
+program textcmd_online()
+ while (1)
+    anyitems();
+    anytickets();
+     sleep( 20 );
+ endwhile
+endprogram
+
+
+function updateplayers(item)
+local auctioncheck;
+local bid:=GetObjProperty(item, "bid");
+
+foreach chr in EnumerateOnlineCharacters()
+   auctioncheck := getobjproperty(chr, "auction");
+
+   if (auctioncheck = "yes")
+	if (bid = 0 )
+		SendSysMessage( chr, item.desc + " did not sell.");
+	else
+		SendSysMessage( chr, item.desc + " sold for " + bid);
+	endif
+   endif
+endforeach
+
+endfunction
+
+
+function anyitems()
+       local backpack := EnumerateItemsInContainer ( inv_auct );
+	local temp, timeleft;
+
+        foreach auction_items in backpack
+
+	timeleft := (GetObjProperty(auction_items, "time")-ReadGameClock());
+
+	if ((!timeleft) or (timeleft=""))
+	elseIf (timeleft<0)
+	   updateplayers(auction_items);
+	   fixitem(auction_items);
+	endif
+        endforeach
+
+endfunction
+
+
+function fixitem(item)
+
+local bid    := GetObjProperty(item, "bid");
+local bpack  := GetObjProperty(item, "buypack");
+local spack  := GetObjProperty(item, "sellpack");
+local seller := GetObjProperty(item, "seller");
+local buyer  := GetObjProperty(item, "buyer");
+local returnitem;
+
+   if (bid = 0 )
+	SetObjProperty (item, "owner", spack);
+   else
+	makesellerticket(bid,spack);
+	makebuyerticket (bid,item,bpack);
+   endif
+
+   EraseObjProperty(item, "seller");
+   EraseObjProperty(item, "buyer");
+   EraseObjProperty(item, "sellpack");
+   EraseObjProperty(item, "buypack");
+   EraseObjProperty(item, "msg");
+   EraseObjProperty(item, "bid");
+   EraseObjProperty(item, "starting");
+   EraseObjProperty(item, "time");
+
+   if (bid = 0 )
+        moveitemtocontainer(item, inv_auct_ticket );
+   else
+	moveitemtocontainer(item, inv_auct_sold );
+   endif
+
+endfunction
+
+
+function makesellerticket(bid,spack)
+local givebackgold := CreateItemIncontainer(inv_auct_ticket, UOBJ_GOLDCOIN, bid);
+SetObjProperty (givebackgold, "owner", spack);
+endfunction
+
+
+function makebuyerticket(bid,item,spack)
+
+local ticket := CreateItemIncontainer( inv_auct_ticket, 0x186E, 1);
+	
+        ticket.name := "Claim ticket for " + item.desc;
+        ticket.graphic := 5360;
+
+        SetObjProperty (ticket, "bid", bid);
+        SetObjProperty (ticket, "itemserial", item.serial);
+        SetObjProperty (ticket, "itemname", item.desc);
+        SetObjProperty (ticket, "owner", spack);
+
+endfunction
+
+function anytickets()
+
+	local backpack := EnumerateItemsInContainer ( inv_auct_ticket );
+	local temp;
+
+        foreach ticket in backpack
+
+	   temp := Cint(GetObjProperty (ticket, "owner"));
+	   if (MoveItemToContainer( ticket, temp, x := -1, y := -1 ))
+		EraseObjProperty (ticket, "owner");
+	   endif
+        endforeach
+
+endfunction

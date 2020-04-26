@@ -1,0 +1,6 @@
+use uo;
+use os;
+
+program on_insert(who, backpack, item, amtadded)
+  SetObjProperty(item, "#DestroyAt", ReadGameClock() + 60);
+endprogram

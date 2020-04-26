@@ -1,0 +1,40 @@
+use uo;
+
+include "include/client";
+include "include/spellrestrictions";
+
+global water := { 0xA8, 0xA9, 0x64, 0xAA, 0xAB };
+
+program cast_teleport( parms )
+
+	local circle := 3;
+	local caster;
+	local where;
+
+	if (parms[1] = "#MOB")
+		caster := parms[2];
+		where := parms[3];
+	else
+		caster := parms;
+		where := CanTargetArea(caster, circle);
+		if (!where)
+			return;
+		endif
+	endif
+
+	foreach item in ListItemsNearLocation( where.x, where.y, where.z, 4 );
+		if( (item.objtype = 61457 or item.objtype = 61458) and
+		  (GetMapInfo(where.x,where.y).landtile in water) )
+			SendSysmessage( caster, "You cannot teleport there." );
+			return;
+		endif
+	endforeach
+
+	local sx := caster.x, sy := caster.y, sz := caster.z;
+	MoveCharacterToLocation( caster, where.x, where.y, where.z );
+
+	PlayStationaryEffect( sx, sy, sz, FX_SMOKE, speed:=0xA, loop:=0xA );
+	PlayStationaryEffect( caster.x, caster.y, caster.z, FX_SMOKE, speed:=0xA, loop:=0xA );
+	PlaySoundEffect( caster, SFX_SPELL_TELEPORT );
+
+endprogram
