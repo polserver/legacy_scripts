@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svnroot/pol-distro/!svn/ver/453/releases/097/Distro/pkg/packetHooks/CharProfile
+END
+parseCharProfile.src
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svnroot/pol-distro/!svn/ver/453/releases/097/Distro/pkg/packetHooks/CharProfile/parseCharProfile.src
+END
+pkg.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/packetHooks/CharProfile/pkg.cfg
+END
+charprofile.src
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/packetHooks/CharProfile/charprofile.src
+END
+ondelete.src
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/packetHooks/CharProfile/ondelete.src
+END

@@ -1,0 +1,4 @@
+./mk1.ksh dynrelease
+
+gdb poldynrelease
+

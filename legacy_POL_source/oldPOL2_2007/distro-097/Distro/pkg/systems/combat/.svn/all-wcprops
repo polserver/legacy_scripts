@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/pol-distro/!svn/ver/1030/releases/097/Distro/pkg/systems/combat
+END
+pkg.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/systems/combat/pkg.cfg
+END
+mainHitScript.src
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/pol-distro/!svn/ver/814/releases/097/Distro/pkg/systems/combat/mainHitScript.src
+END

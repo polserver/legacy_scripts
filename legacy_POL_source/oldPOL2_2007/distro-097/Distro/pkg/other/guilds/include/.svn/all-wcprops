@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/pol-distro/!svn/ver/909/releases/097/Distro/pkg/other/guilds/include
+END
+validate.inc
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/pol-distro/!svn/ver/900/releases/097/Distro/pkg/other/guilds/include/validate.inc
+END
+report.inc
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/pol-distro/!svn/ver/897/releases/097/Distro/pkg/other/guilds/include/report.inc
+END
+ranks.inc
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/pol-distro/!svn/ver/909/releases/097/Distro/pkg/other/guilds/include/ranks.inc
+END
+settings.inc
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/other/guilds/include/settings.inc
+END
+events.inc
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/pol-distro/!svn/ver/897/releases/097/Distro/pkg/other/guilds/include/events.inc
+END
+factions.inc
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/pol-distro/!svn/ver/907/releases/097/Distro/pkg/other/guilds/include/factions.inc
+END

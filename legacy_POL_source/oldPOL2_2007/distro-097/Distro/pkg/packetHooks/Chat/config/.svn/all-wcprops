@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat/config
+END
+icp.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/pol-distro/!svn/ver/1034/releases/097/Distro/pkg/packetHooks/Chat/config/icp.cfg
+END
+uopacket.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat/config/uopacket.cfg
+END
+settings.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/pol-distro/!svn/ver/1035/releases/097/Distro/pkg/packetHooks/Chat/config/settings.cfg
+END

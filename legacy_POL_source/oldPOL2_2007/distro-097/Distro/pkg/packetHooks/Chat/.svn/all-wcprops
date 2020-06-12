@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat
+END
+pkg.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat/pkg.cfg
+END
+handleRenameConference.src
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat/handleRenameConference.src
+END
+logon.src
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/pol-distro/!svn/ver/1034/releases/097/Distro/pkg/packetHooks/Chat/logon.src
+END
+handleIgnore.src
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat/handleIgnore.src
+END
+handleMessage.src
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat/handleMessage.src
+END
+handleSpeakingPrivs.src
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat/handleSpeakingPrivs.src
+END
+handleCreateNewConference.src
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat/handleCreateNewConference.src
+END
+handleCloseChat.src
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat/handleCloseChat.src
+END
+doChat.src
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat/doChat.src
+END
+handleJoinConference.src
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat/handleJoinConference.src
+END
+handleChangePassword.src
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat/handleChangePassword.src
+END
+handleSendPrivateMessage.src
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat/handleSendPrivateMessage.src
+END
+doChatText.src
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat/doChatText.src
+END

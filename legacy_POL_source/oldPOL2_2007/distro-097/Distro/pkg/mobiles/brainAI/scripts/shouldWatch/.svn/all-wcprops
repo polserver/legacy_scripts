@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/pol-distro/!svn/ver/825/releases/097/Distro/pkg/mobiles/brainAI/scripts/shouldWatch
+END
+watchFeared.src
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svnroot/pol-distro/!svn/ver/814/releases/097/Distro/pkg/mobiles/brainAI/scripts/shouldWatch/watchFeared.src
+END
+targetAny.src
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svnroot/pol-distro/!svn/ver/825/releases/097/Distro/pkg/mobiles/brainAI/scripts/shouldWatch/targetAny.src
+END
+targetPlayers.src
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svnroot/pol-distro/!svn/ver/814/releases/097/Distro/pkg/mobiles/brainAI/scripts/shouldWatch/targetPlayers.src
+END

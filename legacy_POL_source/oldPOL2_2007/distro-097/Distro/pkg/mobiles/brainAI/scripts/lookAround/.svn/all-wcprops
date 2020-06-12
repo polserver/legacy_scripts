@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/pol-distro/!svn/ver/502/releases/097/Distro/pkg/mobiles/brainAI/scripts/lookAround
+END
+keepAwake.src
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/mobiles/brainAI/scripts/lookAround/keepAwake.src
+END
+findAttackables.src
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svnroot/pol-distro/!svn/ver/502/releases/097/Distro/pkg/mobiles/brainAI/scripts/lookAround/findAttackables.src
+END
+findFeared.src
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svnroot/pol-distro/!svn/ver/502/releases/097/Distro/pkg/mobiles/brainAI/scripts/lookAround/findFeared.src
+END

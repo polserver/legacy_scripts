@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/pol-distro/!svn/ver/1027/releases/097/Distro/pkg/items/food
+END
+pkg.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/items/food/pkg.cfg
+END
+logon.src
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/items/food/logon.src
+END
+hunger.src
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/pol-distro/!svn/ver/814/releases/097/Distro/pkg/items/food/hunger.src
+END

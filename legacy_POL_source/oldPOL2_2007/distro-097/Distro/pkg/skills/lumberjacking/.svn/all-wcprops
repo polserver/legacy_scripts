@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/pol-distro/!svn/ver/989/releases/097/Distro/pkg/skills/lumberjacking
+END
+pkg.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/skills/lumberjacking/pkg.cfg
+END
+start.src
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/skills/lumberjacking/start.src
+END
+lumberjack.src
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/pol-distro/!svn/ver/989/releases/097/Distro/pkg/skills/lumberjacking/lumberjack.src
+END
+itemdesc.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/skills/lumberjacking/itemdesc.cfg
+END

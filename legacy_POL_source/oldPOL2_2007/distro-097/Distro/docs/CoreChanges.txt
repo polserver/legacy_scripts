@@ -1,0 +1,308 @@
+-- POL097 --
+=======
+12-05 Shinigami
+        Fixed : fixed a Bug in Walking-on-Multi-Code. A Multi-Definition Door upstairs could block walking.
+
+11-02 Austin
+     Changed : POL no longer requires the presence of the following files in pol/config/ in order to start up:
+               combat.cfg, movecost.cfg, watch.cfg, armrzone.cfg, circles.cfg, spells.cfg npcdesc.cfg
+               and pol/regions/resource.cfg 
+               
+10-30 Austin
+     Fixed : Error in the internal webserver where it would sometimes only send the first part of a file.
+
+10-25 Austin
+     Added : Entry to pol.cfg 'RealmDataPath' to set a different path to the data created by uoconvert.
+             Defaults to 'realm/'
+
+10-20 Austin
+     Fixed : array{array{}} was appending as a single array as a result of a 10-17 change.
+
+10-17 Austin
+     Fixed : array += array will work properly now by merging the arrays.
+             array += xxx will place 'xxx' at the ending index of the array.
+
+09-28 Austin
+     Added : account.AddCharacter(index)
+             * If Index is 0 (.AddCharacter(0)), it will find the next available slot on the account.
+               (Otherwise pass 1-5)
+             Will create a naked, uncolored, male character named "new character" at 1, 1, 1 on Britannia.
+             Character setup will need to be done in the script that creates it.
+             Does not start "scripts/misc/oncreate.ecl"
+
+09-27 Austin
+     Added : File::FileExists( filename ) - returns 1 if a file exists, 0 if not.
+
+09-26 Austin
+     Fixed : Bug in repsys hook where highlight and name color params were backwards for player-player.
+     Fixed : move_offline_mobiles method for boats.
+
+09-23 Shinigami
+       Changed : Profiling counter Script_Cycle and Sleep_Cycle uses 64bit now
+
+09-20 Austin
+       Changed: polsys::Realms() to polsys::Realms(realm:="")
+                 If a realm name is passed, it will provide a struct for that specific realm,
+                 otherwise will work as it did before.
+
+09-17 MuadDib
+        Added: NPC::SayUC(). Same thing as Say(), cept unicode formatted.
+      Changed: NPC::Say() and SayUC() now check distances for different text types.
+         Note: DoEvent for SayUC() is currently disabled.
+
+09-17 Shinigami
+        Changed : uo::SendEvent() and Script.sendevent() will return error
+                  "Event queue is full, discarding event"
+
+09-16 Shinigami
+        Added : some Packet functions, same as original one, but with flipping Byte Order
+                Packet.GetUnicodeStringFlipped(offset, length)
+                Packet.SetUnicodeStringFlipped(offset, unicode character array, nullterminate)
+
+09-15 Austin
+       Added: ENUMERATE_ROOT_ONLY for EnumerateItemsInContainer(container, flags)
+              Will cause it to only list the contents in the container passed and not
+              the contents of any sub-containers.
+
+09-05 MuadDib
+       Added: UOConvert now adds "season 1" to the realm.cfg file for each realm during
+              conversion. Season will default to 1, if no season entry is given (aka
+              you was to lazy to run the newest uoconvert for your maps!). Seasons
+              are listed as follows:
+              0 = Spring
+              1 = Summer
+              2 = Fall
+              3 = Winter
+              4 = Desolation (Felucca)
+       Added: Realms() will now also return .season for each realm.
+       Fixed: Core not sending season information correctly when logging in or
+              changing realms if non-encrypted clients was set up in pol.cfg.
+
+09-03 MuadDib
+       Added: character.shield member. Returns an ObjRef of shield equipped.
+
+09-02 MuadDib
+       Added: Polsys::IncRevision(object). Used to increase the Revision number of an
+              object (mobile or item). It then also runs a check for resending the
+              tooltip data to client. This can be used in scripts when you change
+              CProps or other items that normaly do not update the tooltips for
+              custom tooltip hooks.
+     Changed: Internal handling of UO.EM Function execution. Should not affect
+              scripts. As always, be sure to recompile your scripts when you
+              upgrade to a new core release.
+
+09-01 MuadDib
+       Fixed: Bug causing Pre-AOS status bars to freeze clients and/or generate core
+              crashes.
+     Changed: Adjustments to increasing the revision state for stacks, items, and
+              mobiles. Rule of thumb, if you change a member like newbie, title_race,
+              and so on via script, this is not automatically updated. Names, amounts,
+              and so on that are more critical ARE increased. This is pre to a an
+              upcoming ability to increase via scripts and force tooltips to be
+              resynced with the client for custom tooltip hooks to be fired.
+
+08-31 MuadDib
+     Removed: All instances, calls, used and unused, code for the permitems.txt
+              data file. This was never fully implemented, and as such, has been
+              removed by decision of several developers.
+
+08-26 Austin
+       Fixed: POL will check to make sure the corpse and backpack items are setup
+              in an itemdesc.cfg when loading. 
+              If EnableSecureTrading is enabled in pol.cfg it will also check to 
+              make sure its container is setup.
+
+08-25 MuadDib
+       Fixed: Padding involving stats.
+       
+08-22 Austin
+       Added: npc.alignment : 0 - Neutral, 1 - Evil, 2 - Good
+
+08-19 Austin
+       Added: Three more hooks to repsys.cfg's HookList elem.
+              OnAttack Run when a mobile attacks another.
+                        - Target with the TGTOPT_HARMFUL flag set.
+                        - Mobile goes into warmode and double clicks another.
+                        
+              OnDamage Run when a mobile damages another.
+                        - ApplyDamage() or ApplyRawDamage() is used.
+
+              OnHelp   Run when a mobile helps another.
+                        - Target with TGTOPT_HELPFUL is used.
+
+08-17 Austin
+       Added: repsys.cfg
+              New elem called 'HookList' which will support syste hook scripts for the reputation system.
+              Currently name (single click) and highlight (health bar) colors are hookable.
+              Example:
+              repsys.cfg
+              HookList HookList
+              {
+                   NameColor :repsys:hookScript:NameColor
+                   HighLightColor :repsys:hookScript:HighLightColor
+              }
+              :repsys:hookScript.src
+              exported function NameColor(mobile, visible_to)
+                   return CInt(GetObjProperty(mobile, "NameColor"));
+              endfunction
+              
+              exported function HighLightColor(mobile, visible_to)
+                   return CInt(GetObjProperty(mobile, "HighLightColor"));
+              endfunction
+              
+              HighLightColor note: The client seems to only accept the following numbers
+              0 - None, 1 - Innocent, 2 - Friend, 3 - Attackable, 
+              4 - Criminal, 5 - Enemy, 6 - Murderer, 7 - Invulnerable
+              8 - Unknown (blue gump, pure black mobile)
+              
+08-14 MuadDib
+       Added: uo.em command CancelTarget( of_whom). Can be used to kill an existing cursor
+              if one exists, for a client.
+              
+08-12 Austin
+       Changed: pol.cfg IgnoreLoadErrors=1 (enabled) changes
+                  Instead of stopping the startup, the following will occur:
+                * If an item belongs in a container or on a character and neither 
+                  are present, the item will be destroyed.
+                *  If an item has an undefined objtype greather than 0x3FFF, it will not be loaded.
+
+08-11 Austin
+       Added: Datafile::ListDataFiles()
+              Returns an array of structs containing
+              .pkg - name of the package the datafile belongs to 
+              .name - name of the file
+              .descriptor - :pkg:name
+              
+07-24 MuadDib
+       Changed: Handling of non-aos expansion accounts and status bars.
+       
+07-20 Austin
+       Fixed : Spelling mistake for the method setcriminal
+       Fixed : Guilds were not saving data.
+       Changed: NPCs with the template set to 'Good' for alignment will now change highlight color
+                if set to murderer or criminal.
+
+06-29 Austin
+       Added : Operator support for += -= *= /= and %=
+               i += 5; would be the same as i := i+5;
+
+06-23 Austin
+        Added : PolSys::ListTextCommands() - Returns a dict of a dict of structs.
+                Dict 1 - Package names Dict 2 - Command levels Struct - .dir .script
+                Example:
+                  foreach package in ( commands )
+                     Print("Pkg:"+_package_iter);
+                     foreach level in ( package )
+                        Print(" CmdLvl:"+_level_iter);
+                        foreach command in ( level )
+                           Print("     "+command);
+                           SleepMS(2);
+                        endforeach
+                        SleepMS(2);
+	             endforeach
+	  	     SleepMS(2);
+	          endforeach
+
+06-22 Austin
+        Added : Attributes::GetAttributeName(alias) - Returns the real attribute name from an alias.
+        Added : Vitals::GetVitalName(alias) - Returns the real vital name from an alias.
+        Added : PolSys::GetCmdLvlName(alias/number) - Returns the real command level name from an alias.
+
+06-21 MuadDib
+        Added : Cliloc::PrintTextAboveCL() and PrintTextAbovePrivate().
+        Added : Support for Talisman layer (layer 9) in core definitions.
+        Hint : Quivers (added in ML) share layer 20 with cloaks. You can however
+               on Origin equip cloaks AND quivers. Ewwww.
+
+06-20 MuadDib
+        Added : Cliloc.em added to the list of new EM Modules. Included in this is already
+                the command SendSysMessageCL(). The new EM will have the commands
+                commented for instruction of use. If you know about clilocs, you know
+                they can be a pain and have additional arguments. Sending normal clilocs
+                and ones with arguments are both supported in the single commands.
+                Argument flag defaults to 0 in the EM for this.
+
+06-20 Austin
+        Changed : Moved guild functions to guilds.em
+
+06-18 Austin
+        Changed : Moved storage area functions to storage.em
+        Changed : Moved vital functions, ApplyDamage, ApplyRawDamage and HealDamage
+                  from uo.em to vitals.em
+
+06-17 Austin
+        Changed : Updated handling of object properties and methods. Should provide a slight
+                  speed increase.
+        Changed : Moved attribute functions from uo.em to a new attributes.em module.
+
+06-16 MuadDib
+        Changed : AddMenuItem() now has a color option. Default is 0.
+        Hint : menus.cfg uses the color of the itemdesc entry of the objtype given,
+               to get color. So if an item has no itemdesc entry, it defaults to 0.
+
+06-16 Austin
+        Removed: Skills.cfg is no longer used.
+                 Instead skill IDs will be read from uoskills.cfg and redirected to
+                 attributes.cfg. The attributes.cfg file now has support for the old entries.
+                skills.cfg entries supported now in attributes.cfg are:
+                DELAY, UNHIDES and SCRIPT
+
+06-15 Austin
+        Added : mobile.Privileges() - Returns a dictionary.
+                The key is the privilege name. The value 0/1 is if it is enabled or not.
+        Removed: Built-in text commands (you'll need to script them):
+                 .eobjcount, .i_help, .log, .los, .objcount, .priv, .privs, .set, .turn,
+                 .t_online, .unload, .unloadall, .wheretest
+
+06-15 MuadDib
+        Added : Function OpenURL(character, url_string) to OS.EM. Used to send Open Web
+                Browser packet to client.
+
+06-14 MuadDib
+        Added : AOS style status bar is now generated correctly for AOS+ clients that ALSO
+                have the UOExpansion set to AOS or higher. Only thing populated by core is
+                the statcap entry. Rest can be done via packethooks.
+        Added : UOClient.cfg entry "StatCap" in General. This is used with AOS era
+                status bars to send the statcap in the packet. Default is 225. Can use
+                packethooks to override this outgoing to client.
+
+06-14 Austin
+        Changed : All log files (pol.log, debug.log, start.log, etc.) will now be placed in pol/log/
+
+06-13 Austin
+        Changed : Config files in packages can now be in pkgname/config/cfgfile.cfg.
+                  If it is not present there, it will look in the package root (pkgname/cfgfile.cfg)
+                  pkg.cfg must still be at the root of the package.
+
+06-13 MuadDib
+        Changed : Handling of target request returns in core. Returns errors more efficiently
+                  when client already has an active target cursor.
+
+06-12 Austin
+        Added : UO::CloseTradeWindow(mobile) - Will close the trade window for the mobile and the
+                person it is trading with.
+
+06-11 Austin
+        Added : mobile.trading_with - Returns a mobile reference if a secure trade is taking place.
+        Added : Util::StrFormatTime(format_string, time_stamp).
+                Takes in the StrFTime() specifiers for the format string.
+                (http://www.cppreference.com/stddate/strftime.html)
+                If time_stamp is 0, it will use POLCore().systime.
+
+06-11 MuadDib
+        Changed : When a client already has a target cursor request, instead of core
+                  just returning that to the new requesting call, now returns an error
+                  code back to the calling cursor script.
+
+06-10 MuadDib
+        Cleanup : Removed last of stat advancement code. While this was depreciated
+                  several versions ago, please remember stat advancement must be done
+                  via the scripts.
+
+06-09 MuadDib
+        Cleanup : Cleaned out some old code.
+        Removed : Removed depreciated UO.EM Function MoveCharacterToLocation(). Use
+                  MoveObjectToLocation() now.
+        Removed : Removed depreciated UO.EM Function MoveItemToLocation(). Use
+                  MoveObjectToLocation() now.
+

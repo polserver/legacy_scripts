@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/pol-distro/!svn/ver/1033/releases/097/Distro/pkg/skills/magery
+END
+pkg.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/pol-distro/!svn/ver/1013/releases/097/Distro/pkg/skills/magery/pkg.cfg
+END
+spellStarter.src
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/pol-distro/!svn/ver/1017/releases/097/Distro/pkg/skills/magery/spellStarter.src
+END
+itemdesc.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/pol-distro/!svn/ver/1021/releases/097/Distro/pkg/skills/magery/itemdesc.cfg
+END

@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/pol-distro/!svn/ver/916/releases/097/Distro/batchFiles
+END
+POL.bat
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/batchFiles/POL.bat
+END
+RealmGen.bat
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/pol-distro/!svn/ver/916/releases/097/Distro/batchFiles/RealmGen.bat
+END
+ECompile.bat
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/batchFiles/ECompile.bat
+END
+LoopPOL.bat
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/batchFiles/LoopPOL.bat
+END
+CleanUp.bat
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/batchFiles/CleanUp.bat
+END

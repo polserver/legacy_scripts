@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/pol-distro/!svn/ver/436/releases/097/Distro/pkg/items/sysbook/config
+END
+icp.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/pol-distro/!svn/ver/436/releases/097/Distro/pkg/items/sysbook/config/icp.cfg
+END
+itemdesc.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/items/sysbook/config/itemdesc.cfg
+END
+zulubooks.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/items/sysbook/config/zulubooks.cfg
+END
+bookstorage.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/items/sysbook/config/bookstorage.cfg
+END

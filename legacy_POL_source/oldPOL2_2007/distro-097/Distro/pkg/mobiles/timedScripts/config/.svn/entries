@@ -1,0 +1,54 @@
+8
+
+dir
+1038
+https://svn.sourceforge.net/svnroot/pol-distro/releases/097/Distro/pkg/mobiles/timedScripts/config
+https://svn.sourceforge.net/svnroot/pol-distro
+
+
+
+2007-03-05T20:12:44.706941Z
+1012
+tekproxy
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+0f0f479d-2c14-0410-9819-d12ebb206e83
+
+timedScripts.cfg
+file
+
+
+
+
+2007-04-11T06:01:03.703125Z
+c539227b0d9efa0bff2acafb5b4dc043
+2007-03-05T20:12:44.706941Z
+1012
+tekproxy
+has-props
+
+icp.cfg
+file
+
+
+
+
+2007-04-11T06:01:03.718750Z
+6bbc4968598ca91f64457956179bfc72
+2006-06-25T02:51:50.211942Z
+436
+austinheilman
+has-props
+

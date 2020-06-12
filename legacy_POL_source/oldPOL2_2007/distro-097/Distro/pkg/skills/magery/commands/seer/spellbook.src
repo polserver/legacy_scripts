@@ -1,0 +1,16 @@
+// $Id: spellbook.src 1013 2007-03-05 22:46:11Z tekproxy $
+
+use uo;
+use os;
+
+program textcmd_spellbook( who )
+	var book := CreateItemInBackpack(who, "spellbook", 1);
+	
+	var i;
+	for (i := 0x1F2D; i <= 0x1F6C; i+=1 )
+		CreateItemInContainer(book, i, 1);
+		SleepMS(2);
+	endfor
+	
+	return 1;
+endprogram

@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/console
+END
+NPCCount.src
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/console/NPCCount.src
+END
+shutDown.src
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/console/shutDown.src
+END
+reloadConfig.src
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/console/reloadConfig.src
+END
+removeChars.src
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/console/removeChars.src
+END
+save.src
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/console/save.src
+END
+online.src
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/console/online.src
+END
+itemCount.src
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/console/itemCount.src
+END

@@ -1,0 +1,54 @@
+8
+
+dir
+1038
+https://svn.sourceforge.net/svnroot/pol-distro/releases/097/Distro/pkg/items/weapons/config
+https://svn.sourceforge.net/svnroot/pol-distro
+
+
+
+2006-08-25T11:54:35.254009Z
+759
+austinheilman
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+0f0f479d-2c14-0410-9819-d12ebb206e83
+
+icp.cfg
+file
+
+
+
+
+2007-04-11T06:00:27.953125Z
+fe14d125484ceacbe0f5bdc87871d2d0
+2006-08-25T03:47:07.332175Z
+744
+AustinHeilman
+has-props
+
+itemdesc.cfg
+file
+
+
+
+
+2007-04-11T06:00:27.968750Z
+74f2f468d05e4f30376f2fc588087d3f
+2006-08-25T11:54:35.254009Z
+759
+austinheilman
+has-props
+

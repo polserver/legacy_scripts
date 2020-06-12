@@ -1,0 +1,149 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/pol-distro/!svn/ver/879/releases/097/Distro/pkg/commands/building
+END
+createstack.src
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/pol-distro/!svn/ver/484/releases/097/Distro/pkg/commands/building/createstack.src
+END
+destroy.src
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/pol-distro/!svn/ver/877/releases/097/Distro/pkg/commands/building/destroy.src
+END
+destroyfloor.src
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/pol-distro/!svn/ver/484/releases/097/Distro/pkg/commands/building/destroyfloor.src
+END
+destroytype.src
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/pol-distro/!svn/ver/484/releases/097/Distro/pkg/commands/building/destroytype.src
+END
+colorrect.src
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/pol-distro/!svn/ver/484/releases/097/Distro/pkg/commands/building/colorrect.src
+END
+tile.src
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/pol-distro/!svn/ver/484/releases/097/Distro/pkg/commands/building/tile.src
+END
+los.src
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/commands/building/los.src
+END
+moveobject.src
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/pol-distro/!svn/ver/879/releases/097/Distro/pkg/commands/building/moveobject.src
+END
+lockradius.src
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/pol-distro/!svn/ver/484/releases/097/Distro/pkg/commands/building/lockradius.src
+END
+destroyradius.src
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/pol-distro/!svn/ver/484/releases/097/Distro/pkg/commands/building/destroyradius.src
+END
+unlockradius.src
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/commands/building/unlockradius.src
+END
+create.src
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/commands/building/create.src
+END
+mpx.src
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/commands/building/mpx.src
+END
+mpy.src
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/commands/building/mpy.src
+END
+mpz.src
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/commands/building/mpz.src
+END
+destroyrect.src
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/pol-distro/!svn/ver/484/releases/097/Distro/pkg/commands/building/destroyrect.src
+END
+skinner.src
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/pol-distro/!svn/ver/484/releases/097/Distro/pkg/commands/building/skinner.src
+END
+tileinfo.src
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/commands/building/tileinfo.src
+END
+rangerect.src
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/pol-distro/!svn/ver/484/releases/097/Distro/pkg/commands/building/rangerect.src
+END
+makefloor.src
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/commands/building/makefloor.src
+END
+createrect.src
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/pol-distro/!svn/ver/484/releases/097/Distro/pkg/commands/building/createrect.src
+END
+losat.src
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/commands/building/losat.src
+END
+moverect.src
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/commands/building/moverect.src
+END
+createat.src
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/commands/building/createat.src
+END

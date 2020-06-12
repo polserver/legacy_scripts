@@ -1,0 +1,57 @@
+8
+
+dir
+1038
+https://svn.sourceforge.net/svnroot/pol-distro/releases/097/Distro/pkg/packetHooks/StatHook
+https://svn.sourceforge.net/svnroot/pol-distro
+
+
+
+2007-04-01T01:55:31.783967Z
+1031
+tekproxy
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+0f0f479d-2c14-0410-9819-d12ebb206e83
+
+pkg.cfg
+file
+
+
+
+
+2007-04-11T06:01:07.078125Z
+90ecdbebd4416e8118cf0641c7424108
+2006-06-17T18:27:33.507874Z
+373
+austinheilman
+has-props
+
+config
+dir
+
+sendStats.src
+file
+
+
+
+
+2007-04-11T06:01:07.093750Z
+c3b4c5528e11f25cebafeee82cb923d5
+2007-04-01T01:55:31.783967Z
+1031
+tekproxy
+has-props
+

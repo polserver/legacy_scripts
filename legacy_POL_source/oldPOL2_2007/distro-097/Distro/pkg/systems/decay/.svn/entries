@@ -1,0 +1,86 @@
+8
+
+dir
+1038
+https://svn.sourceforge.net/svnroot/pol-distro/releases/097/Distro/pkg/systems/decay
+https://svn.sourceforge.net/svnroot/pol-distro
+
+
+
+2007-01-13T17:28:37.361258Z
+944
+austinheilman
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+0f0f479d-2c14-0410-9819-d12ebb206e83
+
+pkg.cfg
+file
+
+
+
+
+2007-04-11T06:00:45.281250Z
+6847e0428ce6983b7b583072225656dc
+2006-08-31T10:08:57.642753Z
+783
+austinheilman
+has-props
+
+initRealmDecay.src
+file
+
+
+
+
+2007-04-11T06:00:45.296875Z
+76b7f777d170796cf60b66981761f507
+2006-08-31T10:08:57.642753Z
+783
+austinheilman
+has-props
+
+include
+dir
+
+start.src
+file
+
+
+
+
+2007-04-11T06:00:45.296875Z
+8e0fd53050672778ce6d2cbbd51a944d
+2006-08-31T10:08:57.642753Z
+783
+austinheilman
+has-props
+
+config
+dir
+
+decayCycle.src
+file
+
+
+
+
+2007-04-11T06:00:45.437500Z
+ec1b4ffc958388564c53e232468b3397
+2007-01-13T17:28:37.361258Z
+944
+austinheilman
+has-props
+

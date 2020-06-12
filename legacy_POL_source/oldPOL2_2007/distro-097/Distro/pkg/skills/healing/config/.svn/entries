@@ -1,0 +1,54 @@
+8
+
+dir
+1038
+https://svn.sourceforge.net/svnroot/pol-distro/releases/097/Distro/pkg/skills/healing/config
+https://svn.sourceforge.net/svnroot/pol-distro
+
+
+
+2006-08-28T07:09:58.647816Z
+766
+AustinHeilman
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+0f0f479d-2c14-0410-9819-d12ebb206e83
+
+icp.cfg
+file
+
+
+
+
+2007-04-11T06:00:38.828125Z
+8122e7b2b3edb116a3b1584f50784949
+2006-08-28T07:09:58.647816Z
+766
+AustinHeilman
+has-props
+
+itemdesc.cfg
+file
+
+
+
+
+2007-04-11T06:00:38.843750Z
+8811095509d8544eb9e800097c53ae07
+2006-08-28T07:09:58.647816Z
+766
+AustinHeilman
+has-props
+

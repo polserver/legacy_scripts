@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/pol-distro/!svn/ver/580/releases/097/Distro/pkg/commands/developer
+END
+unloadall.src
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/commands/developer/unloadall.src
+END
+startscript.src
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/commands/developer/startscript.src
+END
+unload.src
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/commands/developer/unload.src
+END
+realms.src
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/pol-distro/!svn/ver/580/releases/097/Distro/pkg/commands/developer/realms.src
+END
+killpid.src
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/pol-distro/!svn/ver/377/releases/097/Distro/pkg/commands/developer/killpid.src
+END

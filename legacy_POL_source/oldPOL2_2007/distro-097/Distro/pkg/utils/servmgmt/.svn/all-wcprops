@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/pol-distro/!svn/ver/1020/releases/097/Distro/pkg/utils/servmgmt
+END
+pkg.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/pol-distro/!svn/ver/682/releases/097/Distro/pkg/utils/servmgmt/pkg.cfg
+END
+start.src
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/pol-distro/!svn/ver/682/releases/097/Distro/pkg/utils/servmgmt/start.src
+END

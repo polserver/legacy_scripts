@@ -1,0 +1,57 @@
+8
+
+dir
+1038
+https://svn.sourceforge.net/svnroot/pol-distro/releases/097/Distro/pkg/skills/stealing
+https://svn.sourceforge.net/svnroot/pol-distro
+
+
+
+2006-08-28T07:09:58.647816Z
+766
+AustinHeilman
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+0f0f479d-2c14-0410-9819-d12ebb206e83
+
+pkg.cfg
+file
+
+
+
+
+2007-04-11T06:00:38.546875Z
+b8bd4a1f72c42bcef3b1fbd693c61876
+2006-08-28T07:09:58.647816Z
+766
+AustinHeilman
+has-props
+
+config
+dir
+
+stealing.src
+file
+
+
+
+
+2007-04-11T06:00:38.562500Z
+42dacb416e4934e79ed9bf21f7587cd9
+2006-08-28T07:09:58.647816Z
+766
+AustinHeilman
+has-props
+

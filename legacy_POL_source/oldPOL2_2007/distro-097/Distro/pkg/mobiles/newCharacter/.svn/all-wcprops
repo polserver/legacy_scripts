@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/pol-distro/!svn/ver/787/releases/097/Distro/pkg/mobiles/newCharacter
+END
+pkg.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/mobiles/newCharacter/pkg.cfg
+END
+ondelete.src
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/mobiles/newCharacter/ondelete.src
+END
+oncreate.src
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/pol-distro/!svn/ver/787/releases/097/Distro/pkg/mobiles/newCharacter/oncreate.src
+END

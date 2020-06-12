@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/pol-distro/!svn/ver/1028/releases/097/Distro/pkg/mobiles/timedScripts
+END
+pkg.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/mobiles/timedScripts/pkg.cfg
+END
+logon.src
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/mobiles/timedScripts/logon.src
+END
+reconnect.src
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/mobiles/timedScripts/reconnect.src
+END
+timerControl.src
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/pol-distro/!svn/ver/625/releases/097/Distro/pkg/mobiles/timedScripts/timerControl.src
+END

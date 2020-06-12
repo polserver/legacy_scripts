@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/pol-distro/!svn/ver/436/releases/097/Distro/pkg/packetHooks/OpenDoor
+END
+pkg.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/packetHooks/OpenDoor/pkg.cfg
+END
+openDoor.src
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/packetHooks/OpenDoor/openDoor.src
+END

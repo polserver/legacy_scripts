@@ -1,0 +1,7 @@
+*.obj
+*.idb *.pdb
+*.ncb *.suo
+*Win32_Debug *Win32_Release
+Release
+Pergon
+MemoryLeak

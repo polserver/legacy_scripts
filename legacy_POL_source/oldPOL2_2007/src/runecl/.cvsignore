@@ -1,0 +1,6 @@
+*.obj
+*.idb *.pdb
+*.ncb *.suo
+Debug Release
+Pergon
+MemoryLeak

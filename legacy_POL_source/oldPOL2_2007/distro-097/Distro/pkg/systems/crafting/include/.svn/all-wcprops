@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/pol-distro/!svn/ver/996/releases/097/Distro/pkg/systems/crafting/include
+END
+craftGumps.inc
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svnroot/pol-distro/!svn/ver/965/releases/097/Distro/pkg/systems/crafting/include/craftGumps.inc
+END
+craftingSkill.inc
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/systems/crafting/include/craftingSkill.inc
+END
+toolWear.inc
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/pol-distro/!svn/ver/453/releases/097/Distro/pkg/systems/crafting/include/toolWear.inc
+END
+crafting.inc
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/pol-distro/!svn/ver/996/releases/097/Distro/pkg/systems/crafting/include/crafting.inc
+END
+toolWearMethod.inc
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svnroot/pol-distro/!svn/ver/453/releases/097/Distro/pkg/systems/crafting/include/toolWearMethod.inc
+END
+craftingRepair.inc
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/systems/crafting/include/craftingRepair.inc
+END

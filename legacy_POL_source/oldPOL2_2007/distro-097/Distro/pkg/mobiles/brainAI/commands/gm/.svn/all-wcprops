@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/pol-distro/!svn/ver/539/releases/097/Distro/pkg/mobiles/brainAI/commands/gm
+END
+npcsleep.src
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/mobiles/brainAI/commands/gm/npcsleep.src
+END
+sendevent.src
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/mobiles/brainAI/commands/gm/sendevent.src
+END
+massacre.src
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svnroot/pol-distro/!svn/ver/381/releases/097/Distro/pkg/mobiles/brainAI/commands/gm/massacre.src
+END
+removenpc.src
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svnroot/pol-distro/!svn/ver/502/releases/097/Distro/pkg/mobiles/brainAI/commands/gm/removenpc.src
+END
+cmassacre.src
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svnroot/pol-distro/!svn/ver/502/releases/097/Distro/pkg/mobiles/brainAI/commands/gm/cmassacre.src
+END
+createnpc.src
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svnroot/pol-distro/!svn/ver/539/releases/097/Distro/pkg/mobiles/brainAI/commands/gm/createnpc.src
+END
+npcstatus.src
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svnroot/pol-distro/!svn/ver/539/releases/097/Distro/pkg/mobiles/brainAI/commands/gm/npcstatus.src
+END
+puttosleep.src
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/mobiles/brainAI/commands/gm/puttosleep.src
+END
+npcwipe.src
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svnroot/pol-distro/!svn/ver/502/releases/097/Distro/pkg/mobiles/brainAI/commands/gm/npcwipe.src
+END
+restartnpc.src
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/mobiles/brainAI/commands/gm/restartnpc.src
+END
+resetnpcs.src
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/mobiles/brainAI/commands/gm/resetnpcs.src
+END
+attack.src
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/mobiles/brainAI/commands/gm/attack.src
+END
+makeswarm.src
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svnroot/pol-distro/!svn/ver/502/releases/097/Distro/pkg/mobiles/brainAI/commands/gm/makeswarm.src
+END

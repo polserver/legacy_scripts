@@ -1,0 +1,57 @@
+8
+
+dir
+1038
+https://svn.sourceforge.net/svnroot/pol-distro/releases/097/Distro/pkg/skills/anatomy
+https://svn.sourceforge.net/svnroot/pol-distro
+
+
+
+2007-01-18T11:23:08.866405Z
+975
+sroyalty
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+0f0f479d-2c14-0410-9819-d12ebb206e83
+
+pkg.cfg
+file
+
+
+
+
+2007-04-11T06:00:39.609375Z
+9456f3aedaebbccf9bf6d7cd7c327b40
+2007-01-17T08:39:56.213475Z
+948
+sroyalty
+has-props
+
+config
+dir
+
+anatomy.src
+file
+
+
+
+
+2007-04-11T06:00:39.625000Z
+bc8634d9f1f68141994884fd1874e1e8
+2007-01-18T11:23:08.866405Z
+975
+sroyalty
+has-props
+

@@ -1,0 +1,54 @@
+8
+
+dir
+1038
+https://svn.sourceforge.net/svnroot/pol-distro/releases/097/Distro/pkg/systems/spawnSystem/config/OLD
+https://svn.sourceforge.net/svnroot/pol-distro
+
+
+
+2006-06-17T18:27:33.507874Z
+373
+austinheilman
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+0f0f479d-2c14-0410-9819-d12ebb206e83
+
+spawngroups.cfg
+file
+
+
+
+
+2007-04-11T06:00:50.781250Z
+a9d12fb7b9ba98e9ae6f6ed78c70525d
+2006-06-17T18:27:33.507874Z
+373
+austinheilman
+has-props
+
+spawnregions.cfg
+file
+
+
+
+
+2007-04-11T06:00:50.796875Z
+f6fef804a90645316c6a3528d584be29
+2006-06-17T18:27:33.507874Z
+373
+austinheilman
+has-props
+

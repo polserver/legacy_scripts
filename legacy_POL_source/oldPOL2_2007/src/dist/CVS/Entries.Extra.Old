@@ -1,0 +1,7 @@
+/.cvsignore////*///
+/core.lst////*///
+/dist.vcproj////*///
+/makefile.vc6////*///
+/makefile.vc7////*///
+/mkdist.bat////*///
+/mkdist7.bat////*///

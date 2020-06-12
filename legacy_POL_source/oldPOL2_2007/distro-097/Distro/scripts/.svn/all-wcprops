@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svnroot/pol-distro/!svn/ver/953/releases/097/Distro/scripts
+END
+mathtest.src
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/pol-distro/!svn/ver/747/releases/097/Distro/scripts/mathtest.src
+END
+start.src
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/start.src
+END
+ecompile.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/ecompile.cfg
+END

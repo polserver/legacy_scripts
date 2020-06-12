@@ -1,0 +1,190 @@
+Development Changes - stuff that really doesn't belong in core-changes.txt
+-------------------   (or, that does belong there, just not yet)
+
+Format:
+Date, Author, Files changed, Description of change
+---
+2007-03-08 Shinigami
+    * Added pthread_exit and _endhreadex to handle thread closing as intended
+
+2007-01-01 MuadDib
+    * NOTE: In standingheight checks there is a nasty bug. Items NOT locked down
+            (unmovable), are NOT being checked correctly to block movement.
+
+2006-10-07 Shinigami
+    * FreeBSD must use stdlib.h instead of malloc.h.
+      Linux can use stdlib.h but malloc_usable_size is decleared in malloc.h only.
+      Win can use stdlib.h but _HEAPINFO is decleared in malloc.h only.
+    * FreeBSD needs Port libexecinfo to support backtrace functionality.
+    * FreeBSD 6.1 doesn't know malloc_usable_size - Counter bytes_allocated disabled.
+      Upcoming FreeBSD 7 will support it.
+    * FreeBSD doesn't know libc-version.h - Version Check disabled.
+
+2006-08-16 Austin
+    * Improved error report message for armrzone.cfg on startup.
+    * Moved the call to close the system tray to the top of the x_maininner() function in pol.cpp
+      I called it with atexit() so any time POL does an assert, exit, etc. it will remove the icon, now.
+      It still wont remove it if the user clicks the x button to close the console.. need to research
+      windows events for that. 
+      
+2006-08-10 Austin
+    * Startup data load changes:
+      1. Fixed a crash that would occur when loading storage.txt if an item was omitted.
+      2. If an item belongs in a container or on a character and neither are present and IgnoreLoadErrors
+         is enabled, the item will be removed, rather than halting POL startup.
+      3. If an item has an undefined objtype and IgnoreLoadErrors is enabled, POL will not halt on startup.
+      
+2006-06-23 MuadDib
+    * Moved more of the tooltip code to a new tooltip.h/cpp file setup for better
+      organization.
+2006-06-17 Austin
+    * BIG improvements to uoscrobj.cpp
+      Will convert the string into a token equivalent then use that part of the code.
+      This should cause a teensy speed-up as well as the elimination of a lot of redundant code.
+      
+2006-06-15 Austin
+    * bool FindNpcTemplate( const char *template_name, ConfigFile& cf, ConfigElem& elem )
+      This function is still used by stuff, so I moved it from textcmd.cpp to npctemplate.cpp
+    * Improved code for GetConfigStringDictionary() to directly use String(string)
+    * Removed core support for the 'showadv' privilege (not used anymore)
+    
+2006-06-10 MuadDib
+    Removed Totally removed the need for useskill.h in core. It was used for depreciated
+            stat gain functions.
+            
+2006-05-30 MuadDib
+    Changed In spells.cpp, added support for the scroll objtypes of SE and ML spellbook
+            types. However, in the "school" 3 entry, it is a copy of magery. This is just
+            as a placeholder, because thus far no book can be found that uses the 301+
+            spellid range on OSI.
+
+2006-05-24 Shinigami
+    Extended progverstr and buildtagstr upto 64 chars to hold Code names.
+
+2005-12-05 MuadDib
+    Changed How realms are handled with internal_MoveItem. Now you send the new realm
+            to the function (updated Container move func also) instead of oldrealm. Oldrealm
+            handling is done in the move function so as to properly replace the realm member
+            if an item is not sucessfully moved.
+    Changed How ~ItemGivenEvent treats the GivenTime Cprop in order for it to properly compare
+            it to the given_time_ member.
+    Changed Changed u8 initialization of client_lang member in the 0xBF packet handler to 
+            char initialization for compatibility and ease of reading.
+
+2005-11-26 Shinigami
+    Changed "strcmp" into "stricmp" to suppress Script Errors.
+
+2005-11-14 Austin
+    Added internal_InBoxAreaChecks(x1, y1, z1, x2, y2, x2, realm); to uoemod.h and uoemod.cpp
+          Function is responsible for adjusting coordinates to fit within the realm.
+
+2005-10-17 Austin
+    Added uoemod4.cpp
+    Moved Move* uo.em functions to here.
+    Moved internal_MoveItem() to uoemod4.cpp
+    Added internal_MoveBoat, internal_MoveCharacter, internal_MoveContainer to uoemod4.cpp
+
+2005-09-10 Austin
+    Added to pkg.cpp GetPackageConfigPath(Package* pkg, string filename)
+    Will use in the future to more easily check if a config should be read from
+    pkgdir/config/config.cfg or /pkgdir/config.cfg. Too much code would need to be
+    changed to make it work properly with cfgfile.em for 096 but for now it does help
+    reduce some redundant code elsewhere. 
+
+2005-08-26 Austin
+    Added lastx and lasty setting at the bottom of char_select() in pol.cpp
+    to fix a problem with realm switching after logging in.
+    Renamed inform_logout to inform_leftarea for better reusablility.
+    Renamed NpcPropagateLogOut to NpcPropagateLeftArea for better reusability.
+    Added distance check to inform_leftarea.
+    Added a NpcPropagateLeftArea line to uoemod2.cpp when a mobile changes realms.
+
+2005-08-25 Austin
+    Moved the pol_distance(x1, y1, x2, y2) function from npc.cpp to ufunc.cpp
+    Moved its prototype from uoemod to ufunc.h
+    Move was made so that it sits next to pol_distance(character, object) for easier
+    function overloading.
+
+2005-07-04 Shinigami
+    Memory leak inside Script-Cache (scrstore::ScriptStorage)... (is not fixed, just detected)
+    it's the same leak type than inside Read-/UnloadConfigFile() - but not critical for live shards
+
+2005-07-01 Shinigami
+    Memory leak inside Read-/UnloadConfigFile() is not really fixed!
+    Core now never loads unmodified cfg files again into memory, and this will stop huge memory usage.
+    Old, but still loaded cfg files are moved to pol/cfgrepos.cpp:oldcfgfiles.
+    We have to think over... it's a problem with script-inside references...
+
+2005-06-30 Shinigami
+    Memory leak inside BLong found (most BLong's gets destroyed on Shutdown only).
+    fixed_allocator is a little bit critical too, but the advantages (grouping smaller requests)
+    are greater than the disadvantages (blocks don't get destroyed on shutdown).
+
+2005-06-20 Shinigami
+    A lot of Memory leak detection stuff added... just create a configuration using MEMORYLEAK
+    as macro definition and recompile everything (Core compiled with these macro will show'em
+    in start/pol.log/console too). To show usefull stuff, just call PolCore().internal(1)
+    and take a look @ debug.log - just add this line to WorldSaver Cycle... it's very usefull
+    to get memory statistics and was used to detect all three memory leaks above. 
+
+2005-06-06 Shinigami
+    linux compilation with -O3 (or -finline-functions (a part of -O3)) will destruct
+    pathfinding code in some cases! server will crash... (tested with gcc 3.3.5)
+    e.g.: FindPath(5393, 838, 45, 5394, 826, 60);
+
+2003-07-27 Syzygy
+    Changed boat code to use new map format
+
+2003-06-18 Syzygy
+    SaveWorldState( flags := 0 ), flags can be SAVE_FULL or SAVE_INCREMENTAL
+    pol.cfg: ShutdownSaveType = full|incremental
+    more AssertionFailureAction options: shutdown-save-full | shutdown-save-incremental
+
+2003-06-08 Syzygy
+    Offline PCs will once again be saved.
+
+2003-05-19 Syzygy
+    Added checkpoints to Character::die(), should help catch cases where a mob death doesn't completely kill the mob
+       - the additional die() call should be removed, since the check is meant to avoid creating multiple corpses.
+    Added npc_count to uobjcnt, and report in pol.cpp at exit
+
+2003-05-18 Syzygy
+    Converted a bunch of catch(...) to catch( exception& ).
+    catching ... should be unnecessary now, since code no longer throws strings / char* etc.
+    Changed modules RArray to use vector
+
+2003-05-17 Syzygy
+    Converted all the 'throw' statements that were throwing strings to instead throw runtime_error
+       This will allow catch( std::exception& ) to catch everything thrown by the application
+
+2003-05-13 Syzygy
+    objecthash stores UObjectRef now, and there is a reaper thread that sweeps it occasionally.
+2003-05-09 Syzygy
+    Added clib/iohelp.cpp and clib/iohelp.h
+    Started the objecthash storing UObjectRef instead of UObject*
+
+2003-02-18 Racalac
+    Added "localvarmembers" debugger command in poldbg.cpp
+2003-02-14 Racalac
+    Added "pc" debugger command in poldbg.cpp. not real useful to users until we release the debugger client
+
+2003-01-12 Syzygy
+    runecl: Added '-a' option to enable assertions (but Debug build only)
+    runecl: defined INC_PASSERT=1 (debug build)
+
+2003-01-07 Syzygy
+	Set debug formats for all Release targets to PDB.  This doesn't seem to affect the size of the .exe image.
+	This is in preparation for better crash dump analysis support
+
+2003-01-01 Syzygy
+	Changed all the .c files in clib/ to .cpp files
+	New pol.cfg option: UsePolMapFile=[0,1]
+		If true, uses files in realm/main/* for most map / statics / LOS info.
+		If false, original UO data files are used.
+		uoconvert.exe generates the POL data files:
+			c:\pol> mkdir realm
+			c:\pol> mkdir realm\main
+			c:\pol> uoconvert.exe c:\uodata\
+
+
+			

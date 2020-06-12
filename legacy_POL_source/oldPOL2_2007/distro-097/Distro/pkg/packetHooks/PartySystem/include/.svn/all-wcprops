@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/pol-distro/!svn/ver/749/releases/097/Distro/pkg/packetHooks/PartySystem/include
+END
+messages.inc
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svnroot/pol-distro/!svn/ver/749/releases/097/Distro/pkg/packetHooks/PartySystem/include/messages.inc
+END
+packetInfo.inc
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/packetHooks/PartySystem/include/packetInfo.inc
+END
+config.inc
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/packetHooks/PartySystem/include/config.inc
+END

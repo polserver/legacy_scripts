@@ -1,0 +1,101 @@
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svnroot/pol-distro/!svn/ver/953/releases/097/Distro/scripts/misc
+END
+skillwin.src
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/misc/skillwin.src
+END
+ondelete.src
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/pol-distro/!svn/ver/814/releases/097/Distro/scripts/misc/ondelete.src
+END
+oncreate.src
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/misc/oncreate.src
+END
+dblclickother.src
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/misc/dblclickother.src
+END
+logoff.src
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/misc/logoff.src
+END
+logofftest.src
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svnroot/pol-distro/!svn/ver/953/releases/097/Distro/scripts/misc/logofftest.src
+END
+logon.src
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/misc/logon.src
+END
+reconnect.src
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/misc/reconnect.src
+END
+dblclickself.src
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/misc/dblclickself.src
+END
+chrdeath.src
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/misc/chrdeath.src
+END
+equiptest.src
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/pol-distro/!svn/ver/814/releases/097/Distro/scripts/misc/equiptest.src
+END
+candelete.src
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/pol-distro/!svn/ver/814/releases/097/Distro/scripts/misc/candelete.src
+END
+boat.src
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/misc/boat.src
+END
+death.src
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/misc/death.src
+END
+unequiptest.src
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/pol-distro/!svn/ver/814/releases/097/Distro/scripts/misc/unequiptest.src
+END
+help.src
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/pol-distro/!svn/ver/598/releases/097/Distro/scripts/misc/help.src
+END

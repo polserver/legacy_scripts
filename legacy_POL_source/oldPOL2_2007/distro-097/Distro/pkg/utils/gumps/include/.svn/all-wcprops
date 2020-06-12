@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/pol-distro/!svn/ver/823/releases/097/Distro/pkg/utils/gumps/include
+END
+gumps_ex.inc
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/pol-distro/!svn/ver/804/releases/097/Distro/pkg/utils/gumps/include/gumps_ex.inc
+END
+gumpprompt.inc
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/pol-distro/!svn/ver/539/releases/097/Distro/pkg/utils/gumps/include/gumpprompt.inc
+END
+gumps.inc
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/pol-distro/!svn/ver/823/releases/097/Distro/pkg/utils/gumps/include/gumps.inc
+END
+htmlgump.inc
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/pol-distro/!svn/ver/539/releases/097/Distro/pkg/utils/gumps/include/htmlgump.inc
+END
+yesno.inc
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/pol-distro/!svn/ver/539/releases/097/Distro/pkg/utils/gumps/include/yesno.inc
+END
+selectiongump.inc
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/pol-distro/!svn/ver/747/releases/097/Distro/pkg/utils/gumps/include/selectiongump.inc
+END
+requestgump.inc
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/pol-distro/!svn/ver/539/releases/097/Distro/pkg/utils/gumps/include/requestgump.inc
+END

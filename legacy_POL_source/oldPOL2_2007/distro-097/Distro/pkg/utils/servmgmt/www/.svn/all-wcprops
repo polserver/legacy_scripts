@@ -1,0 +1,89 @@
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/pol-distro/!svn/ver/892/releases/097/Distro/pkg/utils/servmgmt/www
+END
+datafiles.src
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/pol-distro/!svn/ver/892/releases/097/Distro/pkg/utils/servmgmt/www/datafiles.src
+END
+objviewer.src
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/pol-distro/!svn/ver/892/releases/097/Distro/pkg/utils/servmgmt/www/objviewer.src
+END
+sleeping_scripts.src
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svnroot/pol-distro/!svn/ver/892/releases/097/Distro/pkg/utils/servmgmt/www/sleeping_scripts.src
+END
+all_scripts.src
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/pol-distro/!svn/ver/892/releases/097/Distro/pkg/utils/servmgmt/www/all_scripts.src
+END
+scriptex.src
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/pol-distro/!svn/ver/892/releases/097/Distro/pkg/utils/servmgmt/www/scriptex.src
+END
+unloadcfg.src
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/pol-distro/!svn/ver/892/releases/097/Distro/pkg/utils/servmgmt/www/unloadcfg.src
+END
+bandwidth.src
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/pol-distro/!svn/ver/892/releases/097/Distro/pkg/utils/servmgmt/www/bandwidth.src
+END
+storage.src
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/pol-distro/!svn/ver/892/releases/097/Distro/pkg/utils/servmgmt/www/storage.src
+END
+iostats.src
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/pol-distro/!svn/ver/892/releases/097/Distro/pkg/utils/servmgmt/www/iostats.src
+END
+long_running_scripts.src
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svnroot/pol-distro/!svn/ver/892/releases/097/Distro/pkg/utils/servmgmt/www/long_running_scripts.src
+END
+unloadecl.src
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/pol-distro/!svn/ver/892/releases/097/Distro/pkg/utils/servmgmt/www/unloadecl.src
+END
+index.src
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/pol-distro/!svn/ver/892/releases/097/Distro/pkg/utils/servmgmt/www/index.src
+END
+running_scripts.src
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svnroot/pol-distro/!svn/ver/892/releases/097/Distro/pkg/utils/servmgmt/www/running_scripts.src
+END
+script_profiles.src
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svnroot/pol-distro/!svn/ver/892/releases/097/Distro/pkg/utils/servmgmt/www/script_profiles.src
+END

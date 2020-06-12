@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svnroot/pol-distro/!svn/ver/749/releases/097/Distro/pkg/packetHooks/PartySystem
+END
+pkg.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/pol-distro/!svn/ver/523/releases/097/Distro/pkg/packetHooks/PartySystem/pkg.cfg
+END
+handlePartyRemove.src
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svnroot/pol-distro/!svn/ver/749/releases/097/Distro/pkg/packetHooks/PartySystem/handlePartyRemove.src
+END
+handlePartyLoot.src
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svnroot/pol-distro/!svn/ver/523/releases/097/Distro/pkg/packetHooks/PartySystem/handlePartyLoot.src
+END
+handlePartyAccept.src
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svnroot/pol-distro/!svn/ver/523/releases/097/Distro/pkg/packetHooks/PartySystem/handlePartyAccept.src
+END
+handlePartyChat.src
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svnroot/pol-distro/!svn/ver/523/releases/097/Distro/pkg/packetHooks/PartySystem/handlePartyChat.src
+END
+logoff.src
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/pol-distro/!svn/ver/523/releases/097/Distro/pkg/packetHooks/PartySystem/logoff.src
+END
+logon.src
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/pol-distro/!svn/ver/523/releases/097/Distro/pkg/packetHooks/PartySystem/logon.src
+END
+handlePartyDecline.src
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svnroot/pol-distro/!svn/ver/749/releases/097/Distro/pkg/packetHooks/PartySystem/handlePartyDecline.src
+END
+handlePartyMessage.src
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svnroot/pol-distro/!svn/ver/523/releases/097/Distro/pkg/packetHooks/PartySystem/handlePartyMessage.src
+END
+reconnect.src
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/pol-distro/!svn/ver/523/releases/097/Distro/pkg/packetHooks/PartySystem/reconnect.src
+END
+doPlayerStatus.src
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svnroot/pol-distro/!svn/ver/749/releases/097/Distro/pkg/packetHooks/PartySystem/doPlayerStatus.src
+END
+handlePartyAdd.src
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svnroot/pol-distro/!svn/ver/749/releases/097/Distro/pkg/packetHooks/PartySystem/handlePartyAdd.src
+END
+doPartySystem.src
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svnroot/pol-distro/!svn/ver/749/releases/097/Distro/pkg/packetHooks/PartySystem/doPartySystem.src
+END

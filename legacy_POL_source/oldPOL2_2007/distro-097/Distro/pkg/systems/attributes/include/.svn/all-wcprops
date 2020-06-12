@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/pol-distro/!svn/ver/1017/releases/097/Distro/pkg/systems/attributes/include
+END
+skillCheck.inc
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svnroot/pol-distro/!svn/ver/1011/releases/097/Distro/pkg/systems/attributes/include/skillCheck.inc
+END
+stats.inc
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svnroot/pol-distro/!svn/ver/500/releases/097/Distro/pkg/systems/attributes/include/stats.inc
+END
+advanceCheck.inc
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svnroot/pol-distro/!svn/ver/1017/releases/097/Distro/pkg/systems/attributes/include/advanceCheck.inc
+END
+attributeConstants.inc
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/systems/attributes/include/attributeConstants.inc
+END
+regen.inc
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/systems/attributes/include/regen.inc
+END
+settings.inc
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/systems/attributes/include/settings.inc
+END
+skills.inc
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/pol-distro/!svn/ver/723/releases/097/Distro/pkg/systems/attributes/include/skills.inc
+END
+attributes_ex.inc
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svnroot/pol-distro/!svn/ver/569/releases/097/Distro/pkg/systems/attributes/include/attributes_ex.inc
+END
+vitals.inc
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/systems/attributes/include/vitals.inc
+END
+titles.inc
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/systems/attributes/include/titles.inc
+END
+attributes.inc
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svnroot/pol-distro/!svn/ver/380/releases/097/Distro/pkg/systems/attributes/include/attributes.inc
+END

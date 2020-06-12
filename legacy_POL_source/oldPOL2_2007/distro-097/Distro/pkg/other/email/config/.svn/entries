@@ -1,0 +1,54 @@
+8
+
+dir
+1038
+https://svn.sourceforge.net/svnroot/pol-distro/releases/097/Distro/pkg/other/email/config
+https://svn.sourceforge.net/svnroot/pol-distro
+
+
+
+2006-08-02T10:40:46.945469Z
+643
+austinheilman
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+0f0f479d-2c14-0410-9819-d12ebb206e83
+
+icp.cfg
+file
+
+
+
+
+2007-04-11T06:00:29.453125Z
+0b86e8cdbe5fda2e2722fd25fdd763ad
+2006-08-02T09:12:23.477713Z
+640
+austinheilman
+has-props
+
+settings.cfg
+file
+
+
+
+
+2007-04-11T06:00:29.468750Z
+9fa149d9efe8019fd3e75bca1fd11c46
+2006-08-02T10:40:46.945469Z
+643
+austinheilman
+has-props
+

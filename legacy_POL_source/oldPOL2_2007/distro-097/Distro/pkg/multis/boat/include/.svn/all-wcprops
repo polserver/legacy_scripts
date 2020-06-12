@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/pol-distro/!svn/ver/865/releases/097/Distro/pkg/multis/boat/include
+END
+autoPilot.inc
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/pol-distro/!svn/ver/851/releases/097/Distro/pkg/multis/boat/include/autoPilot.inc
+END
+cmdParser.inc
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/pol-distro/!svn/ver/865/releases/097/Distro/pkg/multis/boat/include/cmdParser.inc
+END

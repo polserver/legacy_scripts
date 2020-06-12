@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat/include
+END
+chatIO.inc
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat/include/chatIO.inc
+END
+functions.inc
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat/include/functions.inc
+END
+packets.inc
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat/include/packets.inc
+END
+settings.inc
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svnroot/pol-distro/!svn/ver/1037/releases/097/Distro/pkg/packetHooks/Chat/include/settings.inc
+END

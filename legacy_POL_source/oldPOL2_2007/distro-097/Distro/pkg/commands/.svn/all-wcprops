@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svnroot/pol-distro/!svn/ver/879/releases/097/Distro/pkg/commands
+END
+pkg.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/commands/pkg.cfg
+END
+ondelete.src
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/pol-distro/!svn/ver/814/releases/097/Distro/pkg/commands/ondelete.src
+END

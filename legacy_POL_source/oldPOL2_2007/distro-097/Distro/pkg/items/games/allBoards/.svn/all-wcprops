@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/pol-distro/!svn/ver/460/releases/097/Distro/pkg/items/games/allBoards
+END
+onRemove.src
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/pol-distro/!svn/ver/460/releases/097/Distro/pkg/items/games/allBoards/onRemove.src
+END
+canInsert.src
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/pol-distro/!svn/ver/460/releases/097/Distro/pkg/items/games/allBoards/canInsert.src
+END
+onDestroy.src
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/pol-distro/!svn/ver/460/releases/097/Distro/pkg/items/games/allBoards/onDestroy.src
+END

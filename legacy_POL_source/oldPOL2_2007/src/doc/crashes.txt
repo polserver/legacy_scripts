@@ -1,0 +1,15 @@
+All
+===
+Possible add an option to do full dumps instead of minidumps? I think in some of these cases the data would have helped.
+
+
+03-26
+    possible a client refers to a deleted character? or vice versa?
+    or, maybe when a character is deleted, its tasks aren't all removed from teh task scheduler?
+
+
+04-13
+    Try getting a ptr to the executor before deleting so we can see what it is
+    uoemod.cpp, line 133, don't assume the chr has a client?
+    Try having a client put up a textentry gump, then shut down the server to try to replicate this.
+    Or, put up the textentry gump, disconnect, then shut down during the logout timeout

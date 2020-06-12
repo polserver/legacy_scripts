@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/pol-distro/!svn/ver/942/releases/097/Distro/scripts/include
+END
+equipment.inc
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/include/equipment.inc
+END
+facings.inc
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svnroot/pol-distro/!svn/ver/554/releases/097/Distro/scripts/include/facings.inc
+END
+packets.inc
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/include/packets.inc
+END
+uo_extend.inc
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/pol-distro/!svn/ver/535/releases/097/Distro/scripts/include/uo_extend.inc
+END
+occupied.inc
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/include/occupied.inc
+END
+sounds.inc
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/pol-distro/!svn/ver/831/releases/097/Distro/scripts/include/sounds.inc
+END
+client.inc
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/include/client.inc
+END
+sysEvent.inc
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/scripts/include/sysEvent.inc
+END
+arrays.inc
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/pol-distro/!svn/ver/876/releases/097/Distro/scripts/include/arrays.inc
+END
+shapes.inc
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/pol-distro/!svn/ver/554/releases/097/Distro/scripts/include/shapes.inc
+END
+util_extend.inc
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/pol-distro/!svn/ver/923/releases/097/Distro/scripts/include/util_extend.inc
+END
+string.inc
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/pol-distro/!svn/ver/942/releases/097/Distro/scripts/include/string.inc
+END

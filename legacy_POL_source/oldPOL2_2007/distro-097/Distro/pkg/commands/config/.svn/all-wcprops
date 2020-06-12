@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/pol-distro/!svn/ver/655/releases/097/Distro/pkg/commands/config
+END
+golocs.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/pol-distro/!svn/ver/638/releases/097/Distro/pkg/commands/config/golocs.cfg
+END
+flip.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/commands/config/flip.cfg
+END
+itemInfo.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/pol-distro/!svn/ver/655/releases/097/Distro/pkg/commands/config/itemInfo.cfg
+END
+icp.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svnroot/pol-distro/!svn/ver/436/releases/097/Distro/pkg/commands/config/icp.cfg
+END
+info.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/pol-distro/!svn/ver/376/releases/097/Distro/pkg/commands/config/info.cfg
+END

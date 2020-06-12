@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/items/trash/trashCan
+END
+onRemove.src
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/items/trash/trashCan/onRemove.src
+END
+control.src
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/items/trash/trashCan/control.src
+END
+onInsert.src
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/items/trash/trashCan/onInsert.src
+END

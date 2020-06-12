@@ -1,0 +1,50 @@
+8
+
+dir
+1038
+https://svn.sourceforge.net/svnroot/pol-distro/releases/097/Distro/pkg/items/bulletinboard
+https://svn.sourceforge.net/svnroot/pol-distro
+
+
+
+2006-09-13T11:27:52.296405Z
+808
+austinheilman
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+0f0f479d-2c14-0410-9819-d12ebb206e83
+
+pkg.cfg
+file
+
+
+
+
+2007-04-11T06:00:14.718750Z
+c4e1d1f77d73e34235920666b7bed0c8
+2006-09-13T09:23:57.194953Z
+806
+austinheilman
+has-props
+
+include
+dir
+
+config
+dir
+
+board
+dir
+

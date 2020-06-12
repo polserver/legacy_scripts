@@ -1,0 +1,95 @@
+8
+
+dir
+1038
+https://svn.sourceforge.net/svnroot/pol-distro/releases/097/Distro/pkg/utils/control
+https://svn.sourceforge.net/svnroot/pol-distro
+
+
+
+2006-10-10T07:25:04.779176Z
+874
+austinheilman
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+0f0f479d-2c14-0410-9819-d12ebb206e83
+
+pkg.cfg
+file
+
+
+
+
+2007-04-11T06:00:04.843750Z
+7fc85add455290b116f1be2a07112526
+2006-06-25T02:15:35.722118Z
+434
+austinheilman
+has-props
+
+commands
+dir
+
+include
+dir
+
+initializer
+dir
+
+start.src
+file
+
+
+
+
+2007-04-11T06:00:04.843750Z
+44ee4149e81f90481b0aefb059a50d3c
+2006-06-25T03:50:44.166653Z
+438
+austinheilman
+has-props
+
+logon.src
+file
+
+
+
+
+2007-04-11T06:00:04.859375Z
+01337deff704839b1ff159fd9c9101ed
+2006-10-10T07:25:04.779176Z
+874
+austinheilman
+has-props
+
+config
+dir
+
+ondelete.src
+file
+
+
+
+
+2007-04-11T06:00:04.859375Z
+3f641349b404cc16cb7299de87d24f25
+2006-06-25T05:44:27.123500Z
+445
+austinheilman
+has-props
+
+docs
+dir
+

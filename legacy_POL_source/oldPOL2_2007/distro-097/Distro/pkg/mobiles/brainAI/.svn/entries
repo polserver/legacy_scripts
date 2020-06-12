@@ -1,0 +1,72 @@
+8
+
+dir
+1038
+https://svn.sourceforge.net/svnroot/pol-distro/releases/097/Distro/pkg/mobiles/brainAI
+https://svn.sourceforge.net/svnroot/pol-distro
+
+
+
+2007-04-13T04:10:01.472645Z
+1036
+AustinHeilman
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+0f0f479d-2c14-0410-9819-d12ebb206e83
+
+pkg.cfg
+file
+
+
+
+
+2007-04-11T06:00:59.312500Z
+c09d6bbbbf2738af76f183d2724ff209
+2006-08-13T20:56:04.107178Z
+697
+austinheilman
+has-props
+
+commands
+dir
+
+brain.src
+file
+
+
+
+
+2007-04-11T06:00:59.328125Z
+faec3aa3ac766584632a1db287a56f5f
+2006-10-03T10:00:50.904929Z
+862
+austinheilman
+has-props
+
+include
+dir
+
+config
+dir
+
+scripts
+dir
+
+docs
+dir
+
+bundled
+dir
+

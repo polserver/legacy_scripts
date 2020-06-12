@@ -1,0 +1,54 @@
+8
+
+dir
+1038
+https://svn.sourceforge.net/svnroot/pol-distro/releases/097/Distro/pkg/packetHooks/SkillLocks/config
+https://svn.sourceforge.net/svnroot/pol-distro
+
+
+
+2006-07-04T03:13:44.622957Z
+544
+austinheilman
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+0f0f479d-2c14-0410-9819-d12ebb206e83
+
+icp.cfg
+file
+
+
+
+
+2007-04-11T06:01:06.828125Z
+eef92e2d254ede095316635dc0c5d14a
+2006-07-04T03:13:44.622957Z
+544
+austinheilman
+has-props
+
+uopacket.cfg
+file
+
+
+
+
+2007-04-11T06:01:06.843750Z
+45dc7bbab8e3a75a23b578693275b1dc
+2006-07-04T03:13:44.622957Z
+544
+austinheilman
+has-props
+

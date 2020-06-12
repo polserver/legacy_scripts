@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/pol-distro/!svn/ver/1033/releases/097/Distro/pkg/skills/magery/spellScripts/circle3
+END
+magicLock.src
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svnroot/pol-distro/!svn/ver/1013/releases/097/Distro/pkg/skills/magery/spellScripts/circle3/magicLock.src
+END
+unlock.src
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svnroot/pol-distro/!svn/ver/1013/releases/097/Distro/pkg/skills/magery/spellScripts/circle3/unlock.src
+END
+wallOfStone.src
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svnroot/pol-distro/!svn/ver/1013/releases/097/Distro/pkg/skills/magery/spellScripts/circle3/wallOfStone.src
+END
+teleport.src
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svnroot/pol-distro/!svn/ver/1033/releases/097/Distro/pkg/skills/magery/spellScripts/circle3/teleport.src
+END
+telekinesis.src
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svnroot/pol-distro/!svn/ver/1013/releases/097/Distro/pkg/skills/magery/spellScripts/circle3/telekinesis.src
+END
+fireBall.src
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svnroot/pol-distro/!svn/ver/1013/releases/097/Distro/pkg/skills/magery/spellScripts/circle3/fireBall.src
+END
+poison.src
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svnroot/pol-distro/!svn/ver/1013/releases/097/Distro/pkg/skills/magery/spellScripts/circle3/poison.src
+END
+bless.src
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svnroot/pol-distro/!svn/ver/1016/releases/097/Distro/pkg/skills/magery/spellScripts/circle3/bless.src
+END

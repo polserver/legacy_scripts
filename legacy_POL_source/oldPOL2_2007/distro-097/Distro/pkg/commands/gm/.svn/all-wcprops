@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/pol-distro/!svn/ver/746/releases/097/Distro/pkg/commands/gm
+END
+writequip.src
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/pol-distro/!svn/ver/486/releases/097/Distro/pkg/commands/gm/writequip.src
+END
+iteminfo.src
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/pol-distro/!svn/ver/746/releases/097/Distro/pkg/commands/gm/iteminfo.src
+END
+info.src
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/pol-distro/!svn/ver/746/releases/097/Distro/pkg/commands/gm/info.src
+END
+kill.src
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/pol-distro/!svn/ver/486/releases/097/Distro/pkg/commands/gm/kill.src
+END
+movetocont.src
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/pol-distro/!svn/ver/486/releases/097/Distro/pkg/commands/gm/movetocont.src
+END
+setusescript.src
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/pol-distro/!svn/ver/486/releases/097/Distro/pkg/commands/gm/setusescript.src
+END
+ckill.src
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/pol-distro/!svn/ver/557/releases/097/Distro/pkg/commands/gm/ckill.src
+END
+ekill.src
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/pol-distro/!svn/ver/486/releases/097/Distro/pkg/commands/gm/ekill.src
+END
+sfx.src
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/commands/gm/sfx.src
+END
+strip.src
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/commands/gm/strip.src
+END
+equip.src
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/pol-distro/!svn/ver/486/releases/097/Distro/pkg/commands/gm/equip.src
+END
+goserial.src
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/commands/gm/goserial.src
+END
+lkill.src
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/pol-distro/!svn/ver/486/releases/097/Distro/pkg/commands/gm/lkill.src
+END

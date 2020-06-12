@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/pol-distro/!svn/ver/1033/releases/097/Distro/pkg/skills/tailoring
+END
+pkg.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/pol-distro/!svn/ver/1033/releases/097/Distro/pkg/skills/tailoring/pkg.cfg
+END
+useSewingKit.src
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/pol-distro/!svn/ver/1033/releases/097/Distro/pkg/skills/tailoring/useSewingKit.src
+END
+useScissors.src
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/pol-distro/!svn/ver/1033/releases/097/Distro/pkg/skills/tailoring/useScissors.src
+END

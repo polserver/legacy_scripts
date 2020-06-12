@@ -1,0 +1,8 @@
+/.cvsignore////*///
+/resource.h////*///
+/uoconvert.aps////*///
+/uoconvert.cpp////*///
+/uoconvert.dsp////*///
+/uoconvert.ico////*///
+/uoconvert.rc////*///
+/uoconvert.vcproj////*///

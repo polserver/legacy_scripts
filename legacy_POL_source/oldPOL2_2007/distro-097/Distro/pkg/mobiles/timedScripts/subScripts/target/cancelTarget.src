@@ -1,0 +1,16 @@
+/* $Id: cancelTarget.src 782 2006-08-31 00:46:58Z AustinHeilman $
+ *
+ */
+
+use uo;
+use os;
+
+program TimedScript_EndScript(params)
+	var mobile := params[1];
+
+	//SendSysMessage(mobile, "Closing target...");
+	//SendPacket(mobile, "6C000000000003000000000000000000000000");
+	CancelTarget(mobile);
+
+	return 1;
+endprogram

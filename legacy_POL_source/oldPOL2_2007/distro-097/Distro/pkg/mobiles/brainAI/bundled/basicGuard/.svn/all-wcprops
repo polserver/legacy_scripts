@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/pol-distro/!svn/ver/856/releases/097/Distro/pkg/mobiles/brainAI/bundled/basicGuard
+END
+lookAround.src
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svnroot/pol-distro/!svn/ver/631/releases/097/Distro/pkg/mobiles/brainAI/bundled/basicGuard/lookAround.src
+END
+listen.src
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svnroot/pol-distro/!svn/ver/702/releases/097/Distro/pkg/mobiles/brainAI/bundled/basicGuard/listen.src
+END
+enteredArea.src
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svnroot/pol-distro/!svn/ver/856/releases/097/Distro/pkg/mobiles/brainAI/bundled/basicGuard/enteredArea.src
+END
+init.src
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svnroot/pol-distro/!svn/ver/633/releases/097/Distro/pkg/mobiles/brainAI/bundled/basicGuard/init.src
+END
+leftArea.src
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svnroot/pol-distro/!svn/ver/631/releases/097/Distro/pkg/mobiles/brainAI/bundled/basicGuard/leftArea.src
+END
+combat.src
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svnroot/pol-distro/!svn/ver/746/releases/097/Distro/pkg/mobiles/brainAI/bundled/basicGuard/combat.src
+END
+shouldWatch.src
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svnroot/pol-distro/!svn/ver/814/releases/097/Distro/pkg/mobiles/brainAI/bundled/basicGuard/shouldWatch.src
+END
+goneCriminal.src
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svnroot/pol-distro/!svn/ver/631/releases/097/Distro/pkg/mobiles/brainAI/bundled/basicGuard/goneCriminal.src
+END
+endFight.src
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svnroot/pol-distro/!svn/ver/633/releases/097/Distro/pkg/mobiles/brainAI/bundled/basicGuard/endFight.src
+END
+sleep.src
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svnroot/pol-distro/!svn/ver/632/releases/097/Distro/pkg/mobiles/brainAI/bundled/basicGuard/sleep.src
+END

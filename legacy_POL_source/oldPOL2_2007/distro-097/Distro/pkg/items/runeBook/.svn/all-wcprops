@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/pol-distro/!svn/ver/436/releases/097/Distro/pkg/items/runeBook
+END
+pkg.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/items/runeBook/pkg.cfg
+END
+runeInsert.src
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/items/runeBook/runeInsert.src
+END
+customSpells.inc
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/items/runeBook/customSpells.inc
+END
+runebookFunctions.inc
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/items/runeBook/runebookFunctions.inc
+END
+runebook.src
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/pol-distro/!svn/ver/373/releases/097/Distro/pkg/items/runeBook/runebook.src
+END
