@@ -1,0 +1,11 @@
+/.cvsignore////*///
+/bscriptexclude.lst////*///
+/core.lst////*///
+/dist.vcproj////*///
+/libexclude.lst////*///
+/makefile.vc6////*///
+/makefile.vc7////*///
+/mkdist.bat////*///
+/mkdist7.bat////*///
+/obj.lst////*///
+/src.lst////*///

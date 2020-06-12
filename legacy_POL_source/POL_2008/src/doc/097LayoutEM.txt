@@ -1,0 +1,352 @@
+Okay I am hashing out .em files and functions that go with them for 097.
+Feel free to move things around! :-)
+-Austin
+
+
+UO.EM
+AssignRectToWeatherRegion(region, xwest, ynorth, xeast, ysouth);
+Attach(character);
+Broadcast(text, font := _DEFAULT_TEXT_FONT, color := _DEFAULT_TEXT_COLOR);
+ConsumeReagents(who, spellid);
+CreateMenu(title);
+CreateNpcFromTemplate(template, x, y, z, override_properties := 0, realm := _DEFAULT_REALM);
+Detach();
+DisableEvents(eventtype);
+DisconnectClient(character);
+EnableEvents(eventtype, range := -1);
+EnumerateItemsInContainer(container, flags := 0);
+EquipFromTemplate(character, template);
+EquipItem(mobile, item);
+EraseGlobalProperty(propname);
+EraseObjProperty(object, propname);
+GetCommandHelp(character, command);
+GetEquipmentByLayer(character, layer);
+GetGlobalProperty(propname);
+GetHarvestDifficulty(resource, x, y, tiletype, realm := _DEFAULT_REALM);
+GetMenuObjTypes(menuname);
+GetObjProperty(object, property_name);
+GetObjPropertyNames(object);
+GetRegionString(resource, x, y, propertyname, realm := _DEFAULT_REALM);
+GetSpellDifficulty(spellid);
+GrantPrivilege(character, privilege);
+HarvestResource(resource, x, y, b, n, realm := _DEFAULT_REALM); // returns b*a where 0 <= a <= n
+ListEquippedItems(who);
+ListObjectsInBox(x1,y1,z1, x2,y2,z2, realm := _DEFAULT_REALM);
+MoveObjectToLocation(object, x, y, z, realm := _DEFAULT_REALM, flags := MOVEOBJECT_NORMAL);
+OpenPaperdoll(towhom, forwhom);
+PerformAction(character, action);
+PlayLightningBoltEffect(center_object);
+PlayMovingEffect(source, target, effect, speed, loop := 0, explode := 0);
+PlayMovingEffectXYZ(srcx, srcy, srcz, dstx, dsty, dstz, effect, speed, loop := 0, explode := 0, realm := _DEFAULT_REALM);
+PlayObjectCenteredEffect(center, effect, speed, loop := 0);
+PlaySoundEffect(character, effect);
+PlaySoundEffectPrivate(character, effect, playfor);
+PlayStationaryEffect(x, y, z, effect, speed, loop := 0, explode := 0, realm := _DEFAULT_REALM);
+PrintTextAbove(above_object, text, font := _DEFAULT_TEXT_FONT, color := _DEFAULT_TEXT_COLOR);
+PrintTextAbovePrivate(above_object, text, character, font := _DEFAULT_TEXT_FONT, color := _DEFAULT_TEXT_COLOR);
+RegisterForSpeechEvents(at_object, range, flags := 0);
+RequestInput(character, item, prompt); // item is a placeholder, just pass any item
+RestartScript(npc);
+Resurrect(mobile, flags := 0); // flags: RESURRECT_*
+RevokePrivilege(character, privilege);
+SecureTradeWin(character, character2);
+SelectColor(character, item);
+SelectMenuItem2(character, menuname);
+SendBuyWindow(character, container, vendor, items, flags := 0);
+SendDialogGump(who, layout, textlines, x := 0, y := 0);
+SendEvent(npc, event);
+SendInstaResDialog(character);
+SendOpenBook(character, book);
+SendOpenSpecialContainer(character, container);
+SendQuestArrow(to_whom, x := -1, y := -1); // no params (-1x,-1y) turns the arrow off
+SendSellWindow(character, vendor, i1, i2, i3, flags := 0);
+SendSkillWindow(towhom, forwhom);
+SendStatus(character);
+SendStringAsTipWindow(character, text);
+SendSysMessage(character, text, font := _DEFAULT_TEXT_FONT, color := _DEFAULT_TEXT_COLOR);
+SendTextEntryGump(who, line1, cancel := TE_CANCEL_ENABLE, style := TE_STYLE_NORMAL, maximum := 40, line2 := "");
+SendViewContainer(character, container);
+SetGlobalProperty(propname, propval);
+SetName(object, name);
+SetObjProperty(object, property_name, property_value_string_only);
+SetRegionLightLevel(regionname, lightlevel);
+SetRegionWeatherLevel(region, type, severity, aux := 0, lightoverride := -1);
+SetScriptController(who);
+SpeakPowerWords(who, spellid);
+StartSpellEffect(who, spellid);
+SystemFindObjectBySerial(serial, sysfind_flags := 0);
+Target(by_character, options := TGTOPT_CHECK_LOS+TGTOPT_NEUTRAL);
+TargetCoordinates(by_character);
+UseItem(item, character);
+
+
+GUILDS.EM
+CreateGuild();
+DestroyGuild(guild);
+FindGuild(guildid);
+ListGuilds();
+
+
+UTIL.EM
+RandomDiceRoll(dice_string);  
+RandomFloat(below_this_float);
+RandomInt(below_this_number);
+    
+
+ATTRIBUTES.EM
+AlterAttributeTemporaryMod(character, attrname, delta_tenths);
+BaseSkillToRawSkill(baseskill);
+CheckSkill(character, skillid, difficulty, points);
+GetAttribute(character, attrname);
+GetAttributeBaseValue(character, attrname);
+GetAttributeIntrinsicMod(character, attrname);
+GetAttributeTemporaryMod(character, attrname);
+SetAttributeBaseValue(character, attrname, basevalue_tenths); // obsoletes SetRawSkill
+SetAttributeTemporaryMod(character, attrname, tempmod_tenths); // obsoletes mob.strength_mod etc
+
+
+VITALS.EM
+ApplyDamage(mobile, damage);
+ApplyRawDamage(character, hits);
+ConsumeMana(who, spellid);
+ConsumeVital(who, vital, hundredths);
+GetVital(character, vitalname);
+GetVitalMaximumValue(character, vitalname);
+GetVitalRegenRate(character, vitalname);
+HealDamage(character, hits);
+RecalcVitals(character);
+SetVital(character, vitalname, value);
+
+
+MAP.EM
+CheckLineOfSight(object1, object2);
+CheckLosAt(character, x, y, z);
+CoordinateDistance(x1, y1, x2, y2);
+Distance(obj1, obj2);
+FindPath(x1, y1, z1, x2, y2, z2, realm := _DEFAULT_REALM, flags := FP_IGNORE_MOBILES, searchskirt := 5);
+GetCoordsInLine(x1, y1, x2, y2);
+GetFacing(from_x, from_y, to_x, to_y);
+GetMapInfo(x, y, realm := _DEFAULT_REALM);
+GetStandingHeight(x, y, startz, realm := _DEFAULT_REALM);
+GetStandingLayers(x, y, flags := MAPDATA_FLAG_ALL, realm := _DEFAULT_REALM);
+GetWorldHeight(x, y, realm := _DEFAULT_REALM);
+ListStaticsAtLocation(x, y, z, flags := 0, realm := _DEFAULT_REALM);
+ListStaticsInBox(x1,y1,z1, x2,y2,z2, flags := 0, realm := _DEFAULT_REALM);
+ListStaticsNearLocation(x, y, z, range, flags := 0, realm := _DEFAULT_REALM);
+
+
+ITEMS.EM
+AddAmount(item, amount);
+ConsumeSubstance(container, objtype, amount);
+CreateItemAtLocation(x, y, z, objtype, amount := 1, realm := _DEFAULT_REALM);
+CreateItemCopyAtLocation(x, y, z, item, realm := _DEFAULT_REALM);
+CreateItemInBackpack(of_character, objtype, amount := 1);
+CreateItemInContainer(container, objtype, amount := 1);
+CreateItemInInventory(container, objtype, amount := 1);
+DestroyItem(item);
+FindObjtypeInContainer(container, objtype);
+GetObjType(object);
+GetObjtypeByName(name);
+ListItemsAtLocation(x, y, z, realm := _DEFAULT_REALM);
+ListItemsNearLocation(x, y, z, range, realm := _DEFAULT_REALM);
+ListItemsNearLocationOfType(x,y,z, range, objtype, realm := _DEFAULT_REALM);
+ListItemsNearLocationWithFlag(x,y,z, range, flags, realm := _DEFAULT_REALM);
+MoveItemToContainer(item, container, x := -1, y := -1);
+MoveItemToSecureTradeWin(item, character);
+ReleaseItem(item);
+ReserveItem(item);
+SubtractAmount(item, amount);
+
+
+MOBILES.EM
+EnumerateOnlineCharacters();
+ListGhostsNearLocation(x, y, z, range, realm := _DEFAULT_REALM);
+ListHostiles(character, range := 20, flags := 0);
+ListMobilesInLineOfSight(object, range);
+ListMobilesNearLocation(x, y, z, range, realm := _DEFAULT_REALM);
+ListMobilesNearLocationEx(x,y,z, range, flags, realm := _DEFAULT_REALM);
+
+
+MULTIS.EM
+CreateMultiAtLocation(x, y, z, objtype, flags := 0, realm := _DEFAULT_REALM);
+DestroyMulti(multi);
+GetMultiDimensions(graphic);
+ListMultisInBox(x1,y1,z1, x2,y2,z2, realm := _DEFAULT_REALM);
+TargetMultiPlacement(character, objtype, flags := 0, xoffset := 0, yoffset := 0);
+
+
+STORAGE.EM
+CreateRootItemInStorageArea(area, itemname, objtype);
+CreateStorageArea(areaname);
+DestroyRootItemInStorageArea(area, itemname);
+FindStorageArea(areaname);
+StorageAreas();
+
+
+BASIC.EM
+Bin(number) ;	
+CAsc(str);          
+CAscZ(str);        
+CChr(number);    
+CChrZ(intarray);  
+CDbl(expr);
+CInt(expr);
+CStr(expr);  
+Find(Str, Search, Start);
+Hex(number);
+Left(Str, Count);
+Len(Str_or_array);
+Lower(Str);
+Pack(expr);
+SizeOf(expr);
+SplitWords(str, delimiter := " ");
+TypeOf(expr);
+Unpack(str);
+Upper(Str);
+
+
+BASICIO.EM
+print(anything);
+
+BOAT.EM
+BoatFromItem(item);
+MoveBoat(boat, facing);
+MoveBoatRelative(boat, direction);
+MoveBoatXY(boat, x, y);
+RegisterItemWithBoat(boat, item);
+SystemFindBoatBySerial(serial);
+TurnBoat(boat, direction);
+
+
+CFGFILE.EM
+AppendConfigFileElem(filename, elemtype, elemkey, properties);
+FindConfigElem(config_file, key);
+GetConfigInt(element, property_name); 
+GetConfigIntKeys(config_file);
+GetConfigMaxIntKey(config_file);
+GetConfigReal(element, property_name);
+GetConfigString(element, property_name);
+GetConfigStringArray(element, property_name); 
+GetConfigStringDictionary(element, property_name);
+GetConfigStringKeys(config_file);
+GetElemProperty(element, property_name);
+ListConfigElemProps(element);
+LoadTusScpFile(filename);
+ReadConfigFile(filename);
+UnloadConfigFile(filename);
+
+
+DATAFILE.EM
+CreateDataFile(filespec, flags := DF_KEYTYPE_STRING);OpenDataFile(filespec); 
+OpenDataFile(filespec); 
+UnloadDataFile(filespec);
+
+FILE.EM
+AppendToFile(filename, textlines);
+LogToFile(filename, line, flags := 0);
+ReadFile(filename);
+WriteFile(filename, textcontents);
+
+
+HTTP.EM
+QueryIP();
+QueryParam(param);
+WriteHtml(html);
+WriteHtmlRaw(html);
+
+
+MATH.EM
+ACos(x);
+ASin(x);
+ATan(x);
+Abs(x);    
+Ceil(x);  
+ConstE();
+ConstPi();
+Cos(x);
+Floor(x); 
+FormatRealToString(value, precision);
+Log10(x);   
+LogE(x);   
+Pow(x,y); 
+Root(x,y);
+Sin(x);
+Sqrt(x); 
+Tan(x);
+
+
+NPC.EM
+CanMove(direction);
+GetProperty(propertyname);
+IsLegalMove(move, boundingbox);
+MakeBoundingBox(areastring);
+Move(direction); 
+RunAwayFrom(object);
+RunAwayFromLocation(x, y);
+RunToward(object);
+RunTowardLocation(x, y);
+Say(text, text_type:=SAY_TEXTTYPE_DEFAULT, do_event:=SAY_DOEVENT_DISABLE);
+Self();
+SetAnchor(centerx, centery, distance_start, percent_subtract);
+SetOpponent(character);
+SetProperty(propertyname, propertyvalue);
+SetWarMode(warmode);
+TurnAwayFrom(object);
+TurnAwayFromLocation(x, y);
+TurnToward(object);
+TurnTowardLocation(x, y);
+WalkAwayFrom(object);
+WalkAwayFromLocation(x, y);
+WalkToward(object);
+WalkTowardLocation(x, y);
+Wander();
+
+
+OS.EM
+clear_event_queue();
+create_debug_context();
+events_waiting();
+getpid();
+getprocess(pid);
+is_critical();
+set_critical(critical);
+set_debug(debug);
+set_event_queue_size(size);
+set_priority(priority);
+sleep(num_seconds);
+sleepms(num_milliseconds);
+syslog(text);
+system_rpm();
+unload_scripts(scriptname := "");
+wait_for_event(num_seconds_timeout);
+
+
+POLSYS.EM
+CreateAccount(acctname, password, enabled);
+CreatePacket(type,size);
+FindAccount(acctname);
+GetCmdLevelName(number);
+GetCmdLevelNumber(name);
+GetItemDescriptor(objtype);
+GetPackageByName(name);
+ListAccounts();
+ListenPoints();
+Packages();
+PolCore();
+ReadGameClock();
+ReadMillisecondClock();
+Realms();
+ReloadConfiguration(); // reloads pol.cfg and npcdesc.cfg
+SaveWorldState();
+SendPacket(to_whom, packet_hex_string);
+SetSysTrayPopupText(text);
+Shutdown();
+
+
+UNICODE.EM
+BroadcastUC(uc_text, langcode, font:=_DEFAULT_UCFONT, color:=_DEFAULT_UCCOLOR);
+PrintTextAbovePrivateUC(above_object, uc_text, langcode, character, font:=_DEFAULT_UCFONT, color:=_DEFAULT_UCCOLOR);
+PrintTextAboveUC(above_object, uc_text, langcode, font:=_DEFAULT_UCFONT, color:=_DEFAULT_UCCOLOR); 
+RequestInputUC(character, item, uc_prompt, langcode);
+SendSysMessageUC(character, uc_text, langcode, font:=_DEFAULT_UCFONT, color:=_DEFAULT_UCCOLOR);
+

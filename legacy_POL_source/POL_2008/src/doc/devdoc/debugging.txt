@@ -1,0 +1,95 @@
+Debugging Pol via dmp-Files (Win)
+
+  needed Software
+    - Microsoft Visual C++ .NET [2002 engl.] Version 7.0.9466
+    - this File
+
+  Where to extract this file?
+    - doesn't matter, u can choose a different path while debugging
+    - original place: harddisc F:\
+
+  How to debug?
+    - just open dmp-file via Explorer
+    - go to Properties of selected Item in Solution Explorer
+    - enter "MODPATH=F:\Spiele\PolCore\poldev\pol096\src\pol\Release" in "Command Arguments"
+      (differ if u don't choose harddisc F:\ to extract)
+      -> needed to locate debugging information (symbol files... pol.pdb)
+    - leave Properties
+    - chose "Debug / Start new Instance"
+    - save suo-file
+    - if u get error message that symbols cannot loaded, than u've made something wrong
+      or u don't use matching pol.pdb for your pol.exe
+    - chose "break"
+    - now U'll find the call stack and everything needed (like disassembly and sourcecode...
+      if VS.Net can't find sourcefile, it will ask for)
+    - happy debugging
+
+Debugging Pol via gdb (Linux)
+
+  needed Software
+    - gdb
+    - this File
+
+  Where to extract this file?
+    - doesn't matter
+
+  How to debug?
+    - just pick the pol binary from linux-folder
+    - open it via "gdb pol"
+    - check each address from stack backtrace via "l *0xaddress"
+    - happy debugging
+
+Shinigami
+
+------------------------------------------------------------------------------------------------------------------
+
+Files
+  Debugging Environment
+    http://www.welt-pergon.de/downloads/core/Debug/Pol095_20030705_fdf41e4cb5eda3e326e319c7de4ca28d.rar (~39 MB) Pol095_Final_rebuild
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20050223_1b47e64a85bdcf68003cf16dd2c2df29.rar (~40 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20050305_ce0c55b73baff788fde1cff593481d2b.rar (~41 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20050404_b42fd80e6c6828093afb7902ac3e33f0.rar (~40 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20050615_42fa35971315861d014b4dd82b2fd20e.rar (~40 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20050705_df4e7a8f6442c9380547b8b5a09cd499.rar (~55 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20050829_60441173866a7056e363e15cbc8f6e7e.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20050906_bf7db74572c41b4a5bcc931c14735415.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20050917_f44292a95cf888c2737b1f95121b6f59.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20051013_491249f1ddbf9b743a539789dbcd7a31.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20051014_3f076aa145862faea8f9ff82588f4495.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20051030_59da09dbe0dae09bce334c05847c3f72.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20051117_391fc5e1065fc13f18bb487a14503da9.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20051124_fade626468298b176c457796ec54a0cb.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20051129_cd25de011436726d130b9df14be9d702.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20051208_888c92359aee2f24bf01f4ade1abf11d.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20060118_6aa686271175bf346a25f3e4cdf31045.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20060317_b5962a1285c0b325fda5531bfcdf7b2b.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20060509_191dd4e35bce6f63902c4d8d59736607.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20060509b_79e136d2d7ed5c35f3b64b35415eb7bb.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20060524_0d73219190dee2f092c95eebf1f5b2e1.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20060530_22ec31b2dfba6e26f288d65a68c664aa.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20060602_6251686ec95d773e377bc868ab50350c.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20060609_d40cf05554e03d5e9448a8238317b7f4.rar (~69 MB) Pol096_Final
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20060702_493e70edd37b47bd2d7a8b963addd93e.rar (~49 MB) Pol096_Fix1
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20060830_199f87a7689222072ac7902b3385ff1c.rar (~49 MB) Pol096_Fix2
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20060916_0dcf3f839ffda71005c58713866e3e83.rar (~49 MB) Pol096_Fix3
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20061018_eee4a28a9e358c4599bc411c57243f02.rar (~49 MB) Pol096_Fix4
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20061029_31e919a7998a4820ba553c0499f9062f.rar (~52 MB) Pol096_Fix4b
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20070102_00ae10d6b11969863d130f996974b423.rar (~53 MB) Pol096_Fix5
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20070415_78f80b2dd8b003406483411a9373c123.rar (~52 MB) Pol096_Fix6
+    http://www.welt-pergon.de/downloads/core/Debug/Pol096_20070715_b27bc0524b77e458420e24e02b13a720.rar (~53 MB) Pol096_Fix7
+    http://www.welt-pergon.de/downloads/core/Debug/Pol097_20060702_8e804508e6db1aaa48002a3ff61688ce.rar (~50 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol097_20060728_c60ad698c6bf32b8c343f745868468e2.rar (~50 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol097_20060830_0af80b1fb961b29411a932edaac497d0.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol097_20060916_daa7ea5340f948fe363fbc4db510aa2e.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol097_20061018_0daa3aacbc0e4e8020589bef0faeeef6.rar (~49 MB)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol097_20061029_51f4a466058048fa9284dc0df446f2f7.rar (~52 MB) Pol097_RC
+    http://www.welt-pergon.de/downloads/core/Debug/Pol097_20070102_893f2c36dc8700d03fceabf6b659b06b.rar (~53 MB) Pol097_RC2
+    http://www.welt-pergon.de/downloads/core/Debug/Pol097_20070103_50df421293b4bc008bb221629a344d6a.rar (~53 MB) Pol097_RC2 re-build (smaller fix)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol097_20070104_86020ceccccbf1fe0ba48ed233d81714.rar (~53 MB) Pol097_RC2 re-build (another fix)
+    http://www.welt-pergon.de/downloads/core/Debug/Pol097_20070415_9cf59c1ce13624ddf2fe5a8d3a64b3ae.rar (~52 MB) Pol097_RC3
+    http://www.welt-pergon.de/downloads/core/Debug/Pol097_20070715_9f17724dde8297a2919ea2d208f84bdb.rar (~53 MB) Pol097_RC4
+    http://www.welt-pergon.de/downloads/core/Debug/Pol097_20070823_04783c0c4f27cfbb2793ee8748f383e0.rar (~52 MB) Pol097_RC5
+    http://www.welt-pergon.de/downloads/core/Debug/Pol097_20080226_cf5d984e79fd37f6f75cad47f99a3b7f.rar (~53 MB) Pol097
+
+  Used Archiver
+    http://www.welt-pergon.de/downloads/core/Debug/rar.zip                                              (~140KB)

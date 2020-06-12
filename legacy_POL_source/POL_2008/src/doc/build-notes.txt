@@ -1,0 +1,8 @@
+I'm tagging the release code.  Now, if you want to get the source for a particular release, you can do this:
+
+	c:\polrel\win32>cvs export -r R2003-05-09 -d 2003-05-09 src
+
+This will create a directory ./2003-05-09/ and put the source that went into that release into it.
+
+To do this spiffy tagging, I do this:
+	c:\polrel\win32>cvs rtag R2003-05-09 src

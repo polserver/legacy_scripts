@@ -1,0 +1,206 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "bscript_compiler"=.\bscript\bscript_compiler.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "bscript_executor"=.\bscript\bscript_executor.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "clib"=.\clib\clib.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "doc"=.\doc\doc.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ecompile"=.\ecompile\ecompile.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name bscript_compiler
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name clib
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name plib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "gp"=.\gp\gp.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "plib"=.\plib\plib.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "pol"=.\pol\pol.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name clib
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name bscript_executor
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name gp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name plib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "poltool"=.\poltool\poltool.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name clib
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name plib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "runecl"=.\runecl\runecl.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name bscript_executor
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name clib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "uoconvert"=.\uoconvert\uoconvert.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name clib
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name plib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "uotool"=.\uotool\uotool.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name clib
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name plib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

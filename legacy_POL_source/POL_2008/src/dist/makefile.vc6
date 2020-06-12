@@ -1,0 +1,21 @@
+dist:
+	-mkdir scripts
+	copy ..\pol\release\pol.exe .
+	copy ..\ecompile\release\ecompile.exe scripts
+	copy ..\runecl\release\runecl.exe scripts
+	copy ..\ecompile\Debug\ecompile.cfg scripts\ecompile.cfg.example
+	copy ..\doc\core-changes.txt .
+	copy \cvsdistro\pol\scripts\util.em scripts
+	copy \cvsdistro\pol\scripts\os.em scripts
+	copy \cvsdistro\pol\scripts\npc.em scripts
+	copy \cvsdistro\pol\scripts\math.em scripts
+	copy \cvsdistro\pol\scripts\boat.em scripts
+	copy \cvsdistro\pol\scripts\basicio.em scripts
+	copy \cvsdistro\pol\scripts\basic.em scripts
+	copy \cvsdistro\pol\scripts\datafile.em scripts
+	copy \cvsdistro\pol\scripts\uo.em scripts
+	copy \cvsdistro\pol\scripts\cfgfile.em scripts
+	copy \cvsdistro\pol\scripts\http.em scripts
+	copy \cvsdistro\pol\scripts\polsys.em scripts
+	copy \cvsdistro\pol\scripts\unicode.em scripts
+	pkzip25 -add -move -path=specify pol-core @core.lst

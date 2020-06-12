@@ -1,0 +1,40 @@
+If you could send us the graphic numbers of the fence corners or 
+ houses that have that problem, and world coordinates of example 
+ trouble spots to me, that would help.
+
+Ok. I will give you three examples:
+ 
+1) Fences
+Goto 1378, 1492, 10, create a NPC and then go to 1391 1494 12, the NPC will simple ignore the fence and will walk toward you. EVERY fence of the world have this problem... Including the iron gate, when the graphic of gate is, hmm... how could I say... See the pic:
+ 
++--------+  +--------+
+!        !  !********!
+!        !  !        !
+!********!  !        !
++--------!  +--------+
+ 
+The box is the graphic of both iron gate (the invisible part), ok? Now, the ****** is the draw of gate. When you put those two gates on ground, you will se a normal iron gate, closed, BUT, the Y of one is greater than the other, because one iron gate is drawn on the top of tile and the other on the botton of tile. Players can't go through the gate, but NPCs can! I think the problem is the Y or X of the tiles, NPCs are considering the diagonal as a "Ok move", but this is not true! I bet the fences have the same problem... The "L" formed by the fence have different X or Y coordinates, and then NPCs thinks that the diagonal is ok to move...
+ 
+2) House
+In multis, the problem is EXACTLY how above... To check this, put a Sandstone Patio House on ground. Enter into it. At the NW corner, you will see that the two walls doesn't have a corner, it's the same problem: they are closed, but in X/Y different, and NPCs consider the diagonal, entering into the house. (you can see the "hole" next to the ladder that takes to the 2nd flood). It is NOT a multi bug, because players cannot pass it. It's the "diagonal NPC" bug only =P
+ 
+3) The "hill" bug (sorry, I don't know how to say this in english =P)
+Put a NPC at 2445 1095 10 and you at 2448 1093 28. You are at the top of the hill, the NPC on ground... One time or other, the NPC will simple climb the hill and get you (but PC's can't do this). This coordinates are in Cove Cemantary. Here is other example: 2330 1177 -3 (indeed, this NPC would be UNDER the water... sometimes they just fall... and NPCs are very good swimmers =P). You are at 2333 1173 7. The NPC will climb the hill and get you, (it's not aways, there is the right point where they can do this).
+ 
+Now, the problem of LOS:
+ 
+Let's suppose cove (i'm near, anyway).
+You are at 2282 1210 20 (on the Cove City's Wall)
+NPC ara at 2282 1210 2 (on the Cove gate)
+ 
+NPC will attack you AND will dammage you.
+You don't need to check LOS, but you MUST check Z! A player have a height of 15 Z's. The difference between NPC.Z (20) and YOU.Z (2) is MORE THAN 15, then combat WOULD NOT HAPPEN... This will fix the bug of NPCs attacking you at a higher Z... BUT... There is a problem: archers CAN attack in different Z's... In my shard, for example, it legal to attack a PC on ground when you are at the top of a great tower (with a bow, of course). Then I think that it must exist LOS check (that kind that takes Z in consideration) to weapon.attribute="archery" and the Z check (if difference is greater than 15) to other weapons.
+ 
+And, one to the wishlist:
+We could have a easier way to know which arrow was used in attack (this way we could determine the kind of arrow (if there is more than one) and its properties (like "was poisoned?").
+ 
+Ah! More two things (hi hi hi):
+1) It's possible to declare obj.height in itemdesc.cfg??? Some objects have some bugs at this info, and this is essential to stackable system and other things...
+2) It's possible to set the facing property of objects to default = UO files? For example, the tile 2848 is a lamp post. If you don't set the facing property on the itemdesc.cfg, it defaults to 0, but this lamp post have facing property = 49 in UO files. We don't need a lamp post at itemdesc.cfg, because it's used only for decoration, created by GMs... This would fix also the bug in houses, wich have all windows casting light 0 (window casting light from W to E).
+ 
+"Just" this... Thanx... And congratulations on the good job! POL is great!

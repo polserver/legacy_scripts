@@ -17,4 +17,5 @@ can be examined. We welcome anyone who would like to attempt to do the conversio
 These files are stored here for archival and reference purposes only and may not be
 fully functional Core source code. The POL Development Team does not guarantee
 the functionality of this code and will not provide any support for those who attempt
-to use the code.
+to use the code. The POL Development Team is not responsible for any damage or
+loss of data to your system if you choose to attempt to build and use the binaries.

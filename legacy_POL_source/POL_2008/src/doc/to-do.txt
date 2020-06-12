@@ -1,0 +1,236 @@
+TO-DO before next release:
+==========================
+1. Linux: HTTP freeze http://groups.yahoo.com/group/pol-core-test/message/7138
+    (Approach: a separate thread that will watch a counter of the last time each thread passed its
+     game-lock checkpoint.  When no thread has obtained the lock for over 30 seconds, report
+     on their checkpoints.  This will tell which thread has the lock, and where it is)
+
+Other
+=====
+
+deal with NPC good/neutral/evil changing on npcdesc reload
+0-height items on multi floors are invisible (client always draws floor over the item)
+
+
+Planning
+========
+
+096 - Vestal Virgin
+    Syzygy
+        POL native mapfiles
+        Custom packet hooks
+        Look into what happens when an offline mobile is moved. (MoveCharacterToLocation)
+    Unknown
+        Full script interface to tip window? (blocking, a la gumps etc)
+        Admin login auto bumps timing-out characters (or ignores)
+    Syzygy
+        store 'gotten item' on a layer
+        Find memory leaks in ecompile
+        multi walkon scripts / registration management
+        given item contianer objtype
+
+097 - The Coregina
+    Slogan
+	"POL - Providing mature development for 7 years...
+	 Not sure what happened after that though.. now the drinkers have it... "
+
+    MuadDib
+        Remove all stat advancement code from the core. This has been depreciated for
+        a long while, but left in for some odd reason? The following is a start:
+            AdvanceStatsDueToSkillUse( USKILLID skillid )  -- COMPLETED
+            unsigned short get_str_points( USKILLID skillid );  -- COMPLETED
+            unsigned short get_int_points( USKILLID skillid );  -- COMPLETED
+            unsigned short get_dex_points( USKILLID skillid );  -- COMPLETED
+            unsigned short SkillHandlerElem::StatAdv::get_points() const  --COMPLETED
+            unsigned short get_points() const; -- COMPLETED
+            StatAdv(); and it's related functions -- COMPLETED
+            StatAdv stradv; and related -- COMPLETED
+            StatAdv intadv; and related -- COMPLETED
+            StatAdv dexadv; and related -- COMPLETED
+    MuadDib & Shinigami
+        Targeting needs to be revamped. Especially handling of "kill" packet sent to
+        client instead of killing the request in core when a new cursor request is called
+        over an existing.  -- COMPLETED
+        Target handling needs better response if it recieves a target reply for an invalid
+        sequence handler (invalid cursor ID). -- COMPLETED (I think)
+    Austin
+        Rewrite .EM support for better handling. Create and reorganize them into files such as
+        attributes.em, map.em, etc etc. -- COMPLETED
+    MuadDib
+        Remove void unload_skill_scripts(), depreciated and unused. --COMPLETED
+        Remove void load_zones(), depreciated and unused.  --COMPLETED
+    MuadDib
+        Fix error reports and instances of weapon.cfg and wepndesc.cfg in core messages. --COMPLETED
+        Fix error reports and instances of armor.cfg and armrdesc.cfg in core messages.  --COMPLETED
+    MuadDib
+        Remove MoveItem*/MoveCharacter* functions that was depreciated by the new
+        MoveObjectToLocation function in 096.  --COMPLETED
+    MuadDib
+        Check into possibility of changing send_full_statmsg and similar to be able
+        to handle AOS support. -- NEEDS DEBUGGED AND AN ISSUE FIXED
+    MuadDib
+        Check into core supporting the other resistances but not be required. AR is
+        still one of the resistances in AOS+. -- MOVED TO 098 DUE TO REASONS
+    MuadDib
+        Luck/Followers can be totally ignored in AOS statbar if core supported. Damage might
+        be considered to be included in the packet. -- IGNORED
+    Austin
+	    Allow config files to be at the root of a package or in its /config/ subdirectory.
+	    Similarly to how include files work. --COMPLETED
+    Austin
+	    Deprecate the need for skills.cfg. Keep necessary information in attributes.cfg and have
+	    uoskills.cfg point to the attributes (instead of skills.cfg) --COMPLETED
+    UnKnown
+        Multi Walkon script support. Should remember it only needs checked when first walking onto
+        a multi/component, and no release their reference for it, until they walk off it. Handle this
+        similar to regional zones for best result maybe??
+    UnKnown
+        Rework sending items to client when they are on a multi (and not a component of the multi).
+        OSI handles this laggish issue by not sending items (Mobs and their equipped items they send though)
+        until the player has walked onto the multi or one of it's components. Helps blackholing and saves
+        bandwidth.
+    MuadDib
+        Implement 0xD1 Packet from client (Logout Status)
+    UnKnown
+        Add Pushthrough=0/1 In configs for the compiled realms in UOConvert. Besides having the flag in
+        the config for each realm (default is 0 when written), it will need to be read during sending the
+        realms. To enable this, according to testing by others (should we consider this reliable?) you
+        must send the Cursor Hue Felucca packet, followed by a season, and then the Cursor Hue packet again.
+    UnKnown
+        Should we consider a Season=# for each of the realms? OSI does this similar, because Felucca is normal
+        in the map/statics, but it uses the Desolate Season. this would give admins the ability to control
+        the base season like OSI does, without having to script it in over the fact we have this hardcoded.
+        -- COMPLETE
+    MuadDib
+        It was reported a long time ago, about SetWarMode() for players not updating the client correctly.
+        Look into this possibility, and fix it, if possible via packets.  -- NOT TRUE -- COMPLETED
+    MuadDib
+        Add NPC.allignment for npcs. Return string. If it cannot be done without saving to npcs.txt, then
+        have it based off hue for faster access. -- COMPLETED -- AUSTIN
+    MuadDib
+        Check rename instances for items and mobiles (multis too?), so that they resend the 0xD6 object cache
+        for clients to update tooltips correctly.  -- COMPLETED
+    Shinigami
+        Fix? clientinfo member on linux cores.
+    Shinigami
+        Remove known Memory Leaks (cfg and ecl-file handling) if possible.
+    Shinigami
+        Fix? Issue with timeout not working under linux cores (Inactivity timeout).
+    MuadDib
+        Fix his inability to work with linux releated issues.
+    UnKnown
+        FindSubstance()'s makeinuse ability needs to add to the reserved_to_me list.
+        find_sumof_objtype_noninuse and consume noninuse, etc, need to check the
+        reserved list, and reserved if it is in the list. Defeats the purpose of
+        noninuse, BUT, it should work if the same script is the one that reserved
+        it anyway, right?
+    UnKnown
+        Custom Housing finished and fully implemented.
+    UnKnown
+        systemfindobjectbyserial no longer finds multi's serials.
+    UnKnown
+        Check insertscript not recieving existing stack info correctly via the
+        MoveItemToContainer core command.
+    UnKnown
+        Tooltip.cfg - Format based for UObj class templates for tooltips. Hardcoded entries of course,
+        unless someone knows a non-static way to add this for members etc. Doesn't need to be overloaded.
+        just the basics needed. Tooltips can expand easily enough without hurting the server as much.
+    MuadDib
+        Rewrite MenuItem() and AddMenuItem to accept and use color entry for the packet. -- COMPLETED
+    MuadDib
+        Add 3DParticle Effect for supporting new spell graphics, etc, without user relying on special
+        packet functions to make it.
+    MuadDib
+        OpenWebsite() function. -- COMPLETED
+    UnKnown
+        Cliloc SendSys/PrintAbove/PrintAbovePvt commands. No need for cliloc affix just yet :)
+        -- COMPLETED
+    UnKnown
+        Support for new gump packets.
+    Adam
+        Optimize out the unused config files required by core, and no-longer-used/needed
+        code in the spells.cpp from the old spell system.
+    MuadDib
+		Add polsys.em command IncRev() to increase revision via script. Allows scripts
+		to force updates for custom changes involving tooltip hooks. TO cover things such
+		as race, graphic, hidden, concealed, etc that we do not auto increv() in core cuz
+		no basic/standard need. -- COMPLETED VIA INCREVISION();
+    MuadDib
+		Rewrite IncRev() commands to also resend the object cache request to client.
+		Update all places in npc and items/UObject/uoscrobject for increasing revision
+		-- COMPLETED AS NEED TO BE FOR NOW.
+    Austin
+         Remove built in commands and give script access needed to replace .set, .armor and .privs
+         --COMPLETED
+
+    UnKnown
+        Color in ListStatics* - we've to add'em to realm-folder/uoconvert first.
+
+098 - BAW (Beer and Waffles)
+    UnKnown
+        Check into core supporting the other resistances but not be required. AR is
+        still one of the resistances in AOS+.
+    UnKnown
+        If all AOS+ Resistances are added to storing on armor, mobs, etc, then we might
+        want to consider a new way of "saving" them so as not to bloat all data files
+        with 4 resistances per. Maybe single entry somehow.
+    UnKnown
+        Check into possibilities of extending what could be hashed together in the
+        saved data files to compress data file size and speed up save/load times.
+    Unknown
+        HOUSING
+    Unknown
+        Implement using static include of HOARD libraries from www.hoard.org
+    Unknown
+        Optimizing up internal code, possible a bit of re-organizing.
+    Unknown
+        Combat.cfg handling rewrote to add syshook ability within like repsys.cfg
+    Unknown
+        Finish Repsys hook. Current bug, when setting mob to criminal, it causes hook to exit.
+    Unknown
+        More UOKR support. Additional gump packet for UOKR added. Will need to look into new packet
+        structures for UOKR support too. Ugh.
+    Unknown
+        Rewrite IncRev() commands to also resend the object cache request to client.
+        Update all places in npc and items/UObject/uoscrobject for increasing revision
+        -- COMPLETED AS NEED TO BE FOR NOW. Look back into this in 098 to finish up.
+    Unknown
+        Optimize out the unused config files required by core, and no-longer-used/needed
+        code in the spells.cpp from the old spell system.
+    UnKnown
+        Multi Walkon script support. Should remember it only needs checked when first walking onto
+        a multi/component, and no release their reference for it, until they walk off it. Handle this
+        similar to regional zones for best result maybe??
+    UnKnown
+        Rework sending items to client when they are on a multi (and not a component of the multi).
+        OSI handles this laggish issue by not sending items (Mobs and their equipped items they send though)
+        until the player has walked onto the multi or one of it's components. Helps blackholing and saves
+        bandwidth.
+    Unknown
+        Implement 0xD1 Packet from client (Logout Status)
+    Unknown
+        Fix? clientinfo member on linux cores.
+    Unknown
+        Remove known Memory Leaks (cfg and ecl-file handling) if possible.
+    Unknown
+        Fix? Issue with timeout not working under linux cores (Inactivity timeout).
+    Unknown
+        Fix his inability to work with linux releated issues.
+    UnKnown
+        FindSubstance()'s makeinuse ability needs to add to the reserved_to_me list.
+        find_sumof_objtype_noninuse and consume noninuse, etc, need to check the
+        reserved list, and reserved if it is in the list. Defeats the purpose of
+        noninuse, BUT, it should work if the same script is the one that reserved
+        it anyway, right?
+    UnKnown
+        Check insertscript not recieving existing stack info correctly via the
+        MoveItemToContainer core command.
+    UnKnown
+        Tooltip.cfg - Format based for UObj class templates for tooltips. Hardcoded entries of course,
+        unless someone knows a non-static way to add this for members etc. Doesn't need to be overloaded.
+        just the basics needed. Tooltips can expand easily enough without hurting the server as much.
+    Unknown
+        Add 3DParticle Effect for supporting new spell graphics, etc, without user relying on special
+        packet functions to make it.
+    UnKnown
+        Color in ListStatics* - we've to add'em to realm-folder/uoconvert first.

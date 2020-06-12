@@ -1,0 +1,14 @@
+0x11 statcap/pets count
+0x3A skill locks
+0x71 bulletin board
+0xA5 open URL
+0xAD speech.mul
+0xB1 unicode text
+0xB8 char profile
+0xBE enable/disable UOAssist
+0xBF multipurpose: close generic gump, fastwalk prevention, party system, map switch, client language, popup menus,codex, map-diffs
+0xC1 predefined localized message
+0xC2 textentry unicode
+0xC7 3d particle effect
+0xD1 logout status
+0xD4 new books

@@ -1,0 +1,11 @@
+/.cvsignore////*///
+/StdAfx.cpp////*///
+/StdAfx.h////*///
+/gendef.cpp////*///
+/gp.dsp////*///
+/gp.vcproj////*///
+/gphelp.cpp////*///
+/gphelp.h////*///
+/gtree.cpp////*///
+/tree.h////*///
+/treegen.cpp////*///

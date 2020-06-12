@@ -1,0 +1,25 @@
+#ifndef CLIB_CFGSECT_H
+#define CLIB_CFGSECT_H
+
+class ConfigFile;
+class ConfigElem;
+
+const unsigned CST_NORMAL=0;
+const unsigned CST_MANDATORY=1;
+const unsigned CST_UNIQUE=2;
+
+class ConfigSection
+{
+public:
+    ConfigSection( ConfigFile& cf, const std::string& sectname, unsigned flags = CST_MANDATORY|CST_UNIQUE );
+    ~ConfigSection();
+    bool matches( const ConfigElem& elem );
+
+private:
+    ConfigFile& _cf;
+    std::string _sectname;
+    bool _found;
+    unsigned _flags;
+};
+
+#endif

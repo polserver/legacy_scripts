@@ -1,0 +1,13 @@
+/.cvsignore////*///
+/makefile.gcc////*///
+/makefile2.gcc////*///
+/makefile3.gcc////*///
+/mk-debian////*///
+/mk-redhat////*///
+/mk-redhat-gprof////*///
+/mk-redhat-stlport////*///
+/mk-slackware////*///
+/mk-slackware-openssl////*///
+/mk.ksh////*///
+/pol.dsw////*///
+/pol.sln////*///

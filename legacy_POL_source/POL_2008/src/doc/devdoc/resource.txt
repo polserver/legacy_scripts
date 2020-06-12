@@ -1,0 +1,182 @@
+Resource System - Region Definition
+===================================
+
+The resource system divides the world into "regions," per resource type.
+Each "region" consists of many "zones."  First, an explanation of zones and
+regions.
+
+First, the world is divided into zones.  Each zone is a 32x32 tile square.
+There are therefore 192 zones across, and 128 zones across: (map not to scale)
+
+        zone (0,0)                            zone (191,0)
+        map(0,0)                              map(6143,0)
+            +-------------------------------------+
+            |                                     |
+            |                                     |
+            |                                     |
+            |                                     |
+            |                                     |
+            |                                     |
+            |                                     |
+            |                                     |
+            |                                     |
+            |                                     |
+            |                                     |
+            |                                     |
+            +-------------------------------------+
+        map(0,4095)                           map(6143,4095)
+        zone(0,127)                           zone(191,127)
+
+
+Next, for each resource type, regions are created, and zones are assigned to
+regions.  Zones are assigned in the order they appear in their config file,
+so it's possible to define a small region within a larger one.
+
+In REGIONS\LIGHT.CFG, the world is divided into time zones, and the dungeon
+area is given its own light region.  A scaled down version of the map is used:
+
+    +------------------------+
+    |                        | 
+    |                        |
+    |                        |
+    |                        |
+    |                        |
+    |                        |
+    |                        |
+    |                        |
+    +------------------------+
+
+First, TimeZone1 is read in, which defines one of the time zones.  The Zones
+are "painted" to refer to the LightRegion.
+        
+    +------------------------+          LightRegions
+    |11111                   |              1. TimeZone1
+    |11111                   |
+    |11111                   |
+    |11111                   |
+    |11111                   |
+    |11111                   |
+    |11111                   |
+    |11111                   |
+    +------------------------+
+
+Next, TimeZone2 is read in, and painted:
+    +------------------------+          LightRegions
+    |1111122222              |              1. TimeZone1
+    |1111122222              |              2. TimeZone2
+    |1111122222              |
+    |1111122222              |
+    |1111122222              |
+    |1111122222              |
+    |1111122222              |
+    |1111122222              |
+    +------------------------+
+
+Similarly, TimeZone3 and TimeZone4:
+    +------------------------+          LightRegions
+    |11111222223333344444    |              1. TimeZone1
+    |11111222223333344444    |              2. TimeZone2
+    |11111222223333344444    |              3. TimeZone3
+    |11111222223333344444    |              4. TimeZone4
+    |11111222223333344444    |
+    |11111222223333344444    |
+    |11111222223333344444    |
+    |11111222223333344444    |
+    +------------------------+
+
+Now, a region at Lord Blackthorne's castle is created, so that it can be in
+darkness.  Note how it replaces the region assignment.
+    +------------------------+          LightRegions
+    |11111222223333344444    |              1. TimeZone1
+    |11111222223333344444    |              2. TimeZone2
+    |11111222223333344444    |              3. TimeZone3
+    |11111222223333344444    |              4. TimeZone4
+    |11111225223333344444    |              5. BlackThorne
+    |11111222223333344444    |
+    |11111222223333344444    |
+    |11111222223333344444    |
+    +------------------------+
+
+Finally, the dungeons and T2A lands get a time zone all to themselves:
+    +------------------------+          LightRegions
+    |111112222233333444446666|              1. TimeZone1
+    |111112222233333444446666|              2. TimeZone2
+    |111112222233333444446666|              3. TimeZone3
+    |111112222233333444446666|              4. TimeZone4
+    |111112252233333444446666|              5. BlackThorne
+    |111112222233333444446666|              6. Dungeons
+    |111112222233333444446666|
+    |111112222233333444446666|
+    +------------------------+
+
+Now, when it comes time to define the "wood" regions, a new, clean map is
+used - region definitions for different resource types can use completely
+different layouts. 
+
+Region layouts will be defined for the following:
+    Guards
+    Light
+    Weather
+    Resource:
+       - ore
+       - wood
+       - clay
+       - fish
+    Custom region definitions, in which scripts can define any properties
+    they wish, will also be available.
+
+Also note, a region does not have to be "rectangular" in shape.  It can be
+made up of any number zones, in any configuration.  It would be possible to
+do the following, if you wished:
+    +------------------------+          LightRegions
+    |1111122222     2112     |              1. TimeZone1
+    |1111122222     2222     |              2. TimeZone2
+    |1111122222              |
+    |1111122211111111    12  |
+    |1111122211111111    21  |
+    |1111122222              |
+    |1111122222      222     |
+    |1111122222      222     |
+    +------------------------+
+
+What about finer detail than 32x32?
+===================================
+In some cases it will be necessary to have finer detail than 32x32.  The
+main example of this is guard posts in remote areas, where the guarded area
+should not extend far beyond the guard building.  This is not yet handled.
+The method of handling is envisioned as follows: a list of "zone exceptions"
+will be specified.  This will list the (x1,y1)-(x2,y2) area, and the region 
+that area should go in.  Hopefully, there will be very few of these.
+
+The zone detail would look something like this:
+        +------------------+
+        |333333333333333333|
+        |333333333333333333|
+        |333333333333333333|
+        |333333777773333333|
+        |333333777773333333|
+        |333333777773333333|
+        |333333777773333333|
+        |333333333333333333|
+        |333333333333333333|
+        +------------------+
+Only a portion of the zone is different.
+
+Resource System - Nitrogen Cycle
+================================
+When resources are harvested, resources are removed from a Regional Resource
+Pool.  This is the only time that resources are removed from a RRP.  
+
+When items are created, the normal order of operations is as follows:
+  1. Check to make sure you have raw materials
+  2. Try to create the item
+  3. Remove the raw materials
+
+Step 2, if successful, will remove the component resources from the Global
+Resource Pool.  This may cause the GRP to go negative.  Step 3 will add
+component resources to the GRP, which should cause the GRP to rise to its
+previous level.  Note that creating items is a conservative process.  There
+is also no possibility for partial return of raw materials to the GRP,
+except through failed attempts at item crafting.
+
+

@@ -1,0 +1,576 @@
+Script Executor Errors;
+C:\cvs2\src\bscript\executor.cpp(1905):        Log( "Script %s exceeded maximum call depth\n", scriptname().c_str() );
+C:\cvs2\src\bscript\executor.cpp(1906):        Log( "Return path PCs: " );
+C:\cvs2\src\bscript\executor.cpp(1911):            Log( "%d ", rc.PC );
+C:\cvs2\src\bscript\executor.cpp(1913):        Log( "\n" );
+C:\cvs2\src\bscript\executor.cpp(2055):    Log( "Script %s used undefined token %d at PC %d\n",
+C:\cvs2\src\bscript\executor.cpp(2123):                Log( "Script %s exceeded maximum call depth\n", scriptname().c_str() );
+C:\cvs2\src\bscript\executor.cpp(2124):                Log( "Return path PCs: " );
+C:\cvs2\src\bscript\executor.cpp(2129):                    Log( "%d ", rc.PC );
+C:\cvs2\src\bscript\executor.cpp(2131):                Log( "\n" );
+C:\cvs2\src\bscript\executor.cpp(2697):        Log( "Exception in %s, PC=%d: %s\n",
+C:\cvs2\src\bscript\executor.cpp(2709):        Log( "Exception in %s, PC=%d\n",
+C:\cvs2\src\bscript\executor.cpp(2742):        Log( "%d: %s\n", i, dbg_get_instruction(i).c_str() );
+C:\cvs2\src\bscript\executor.cpp(127):			cerr << "WARNING: " << scriptname() << ": Unable to find module " << fm->modulename << endl;
+C:\cvs2\src\bscript\executor.cpp(147):                        cerr << "Unable to find " << fm->modulename << "::" << func->name << endl;
+C:\cvs2\src\bscript\executor.cpp(167):                    cerr << "Fatal error: Value Stack Empty!" << endl;
+C:\cvs2\src\bscript\executor.cpp(168):                    cerr << prog_->name << ", PC=" << PC << endl;
+C:\cvs2\src\bscript\executor.cpp(628):    cerr << "Variable '" << varName << "' has not been declared." << endl;
+C:\cvs2\src\bscript\executor.cpp(705):        cerr << "Fatal error: Value Stack Empty!" << endl;
+C:\cvs2\src\bscript\executor.cpp(706):        cerr << prog_->name << ", PC=" << PC << endl;
+C:\cvs2\src\bscript\executor.cpp(808):		cerr << "variable is already initialized.." << endl; // FIXME weak error message
+C:\cvs2\src\bscript\executor.cpp(1966):		cerr << "Return without GOSUB!" << endl;
+C:\cvs2\src\bscript\executor.cpp(2178):				cerr << "Return without GOSUB!" << endl;
+C:\cvs2\src\bscript\executor.cpp(2490):                  cerr << "Operator handling not defined in Executor::innerExec for " << token << endl;
+C:\cvs2\src\bscript\executor.cpp(2501):            cerr << "Execution error in " << scriptname() << ":" << endl;
+C:\cvs2\src\bscript\executor.cpp(2502):            cerr << "Unhandled token " << token << " in Executor::innerExec" << endl;
+C:\cvs2\src\bscript\executor.cpp(2696):        cerr << "Exception in Executor::continueExec: " << ex.what() << endl;
+C:\cvs2\src\bscript\executor.cpp(2708):        cerr << "Unclassified Exception in Executor::continueExec()" << endl;
+scrdef.cpp(42):        cerr << "Error reading script descriptor '" << iname << "'" << endl;
+scrdef.cpp(51):            cerr << "Warning! " << name_ << " does not exist!" << endl;
+scrdef.cpp(64):        cerr << "Error reading script descriptor '" << iname << "'" << endl;
+scrsched.cpp(604):        cerr << "Script " << scriptname() << ": "
+textcmd.cpp(983):                    cerr << "script " << scriptname << ": setProgram failed" << endl;
+
+Logfile Informational
+C:\cvs2\src\clib\logfile.cpp(16):        Log( "Logfile opened.\n" );
+C:\cvs2\src\clib\logfile.cpp(31):    Log( "Closing logfile.\n" );
+
+
+Exceptions
+C:\cvs2\src\clib\msjexhnd.cpp(411):    Log( "%s", szBuff );
+C:\cvs2\src\clib\strexcpt.cpp(22):            Log( "Structured Exception Detected: 0x%x\n", n );
+C:\cvs2\src\clib\strexcpt.cpp(23):            Log( "ExceptionRecord:\n" );
+C:\cvs2\src\clib\strexcpt.cpp(24):            Log( "  Exception Code:    0x%lx\n", ex->ExceptionRecord->ExceptionCode );
+C:\cvs2\src\clib\strexcpt.cpp(25):            Log( "  Exception Flags:   0x%lx\n", ex->ExceptionRecord->ExceptionFlags );
+C:\cvs2\src\clib\strexcpt.cpp(26):            Log( "  Exception Record:  0x%lx\n", ex->ExceptionRecord->ExceptionRecord );
+C:\cvs2\src\clib\strexcpt.cpp(27):            Log( "  Exception Address: 0x%lx\n", ex->ExceptionRecord->ExceptionAddress );
+C:\cvs2\src\clib\strexcpt.cpp(28):            Log( "  NumberParameters:  0x%lx\n", ex->ExceptionRecord->NumberParameters );
+C:\cvs2\src\clib\strexcpt.cpp(44):                Log( "  Exception Information:" );
+C:\cvs2\src\clib\strexcpt.cpp(47):                    Log( "%s0x%08.08x", 
+C:\cvs2\src\clib\strexcpt.cpp(51):                Log( "\n" );
+C:\cvs2\src\clib\strexcpt.cpp(57):            Log( "ContextRecord:\n" );
+C:\cvs2\src\clib\strexcpt.cpp(58):            Log( "  ContextFlags: 0x%lx\n", ex->ContextRecord->ContextFlags );
+C:\cvs2\src\clib\strexcpt.cpp(68):                Log( "  CONTEXT_DEBUG_REGISTERS:\n" );
+C:\cvs2\src\clib\strexcpt.cpp(69):                Log( "       Dr0: 0x%lx\n", ex->ContextRecord->Dr0 );
+C:\cvs2\src\clib\strexcpt.cpp(70):                Log( "       Dr1: 0x%lx\n", ex->ContextRecord->Dr1 );
+C:\cvs2\src\clib\strexcpt.cpp(71):                Log( "       Dr2: 0x%lx\n", ex->ContextRecord->Dr2 );
+C:\cvs2\src\clib\strexcpt.cpp(72):                Log( "       Dr3: 0x%lx\n", ex->ContextRecord->Dr3 );
+C:\cvs2\src\clib\strexcpt.cpp(73):                Log( "       Dr6: 0x%lx\n", ex->ContextRecord->Dr6 );
+C:\cvs2\src\clib\strexcpt.cpp(74):                Log( "       Dr7: 0x%lx\n", ex->ContextRecord->Dr7 );
+C:\cvs2\src\clib\strexcpt.cpp(83):                Log( "  CONTEXT_SEGMENTS:\n" );
+C:\cvs2\src\clib\strexcpt.cpp(84):                Log( "     SegGs: 0x%lx\n", ex->ContextRecord->SegGs );
+C:\cvs2\src\clib\strexcpt.cpp(85):                Log( "     SegFs: 0x%lx\n", ex->ContextRecord->SegFs );
+C:\cvs2\src\clib\strexcpt.cpp(86):                Log( "     SegEs: 0x%lx\n", ex->ContextRecord->SegEs );
+C:\cvs2\src\clib\strexcpt.cpp(87):                Log( "     SegDs: 0x%lx\n", ex->ContextRecord->SegDs );
+C:\cvs2\src\clib\strexcpt.cpp(98):                Log( "  CONTEXT_INTEGER:\n" );
+C:\cvs2\src\clib\strexcpt.cpp(99):                Log( "       Edi: 0x%lx\n", ex->ContextRecord->Edi );
+C:\cvs2\src\clib\strexcpt.cpp(100):                Log( "       Esi: 0x%lx\n", ex->ContextRecord->Esi );
+C:\cvs2\src\clib\strexcpt.cpp(101):                Log( "       Ebx: 0x%lx\n", ex->ContextRecord->Ebx );
+C:\cvs2\src\clib\strexcpt.cpp(102):                Log( "       Edx: 0x%lx\n", ex->ContextRecord->Edx );
+C:\cvs2\src\clib\strexcpt.cpp(103):                Log( "       Ecx: 0x%lx\n", ex->ContextRecord->Ecx );
+C:\cvs2\src\clib\strexcpt.cpp(104):                Log( "       Eax: 0x%lx\n", ex->ContextRecord->Eax );
+C:\cvs2\src\clib\strexcpt.cpp(115):           Log( "  CONTEXT_CONTROL:\n" );
+C:\cvs2\src\clib\strexcpt.cpp(116):           Log( "       Ebp: 0x%lx\n", ex->ContextRecord->Ebp );
+C:\cvs2\src\clib\strexcpt.cpp(117):           Log( "       Eip: 0x%lx\n", ex->ContextRecord->Eip );
+C:\cvs2\src\clib\strexcpt.cpp(118):           Log( "     SegCs: 0x%lx\n", ex->ContextRecord->SegCs );
+C:\cvs2\src\clib\strexcpt.cpp(119):           Log( "    EFlags: 0x%lx\n", ex->ContextRecord->EFlags );
+C:\cvs2\src\clib\strexcpt.cpp(120):           Log( "       Esp: 0x%lx\n", ex->ContextRecord->Esp );
+C:\cvs2\src\clib\strexcpt.cpp(121):           Log( "     SegSs: 0x%lx\n", ex->ContextRecord->SegSs );
+C:\cvs2\src\clib\strexcpt.cpp(124):           Log( "    Stack Backtrace:\n" );
+C:\cvs2\src\clib\strexcpt.cpp(133):           Log( "    EIP        RETADDR\n" );
+C:\cvs2\src\clib\strexcpt.cpp(138):               Log( "    0x%08.08lx", eip );
+C:\cvs2\src\clib\strexcpt.cpp(148):                   Log( "[Can't read stack!]\n" );
+C:\cvs2\src\clib\strexcpt.cpp(155):                   Log( "    0x%08.08lx", *(ebp+1) );
+C:\cvs2\src\clib\strexcpt.cpp(161):                   Log( "[Can't read stack!]\n" );
+C:\cvs2\src\clib\strexcpt.cpp(169):               Log( "\n" );
+C:\cvs2\src\clib\strexcpt.cpp(191):        Log( "recursive structured exception\n" );
+C:\cvs2\src\clib\strexcpt.cpp(196):        Log( "Structured exception in %s compiled on %s at %s\n",
+C:\cvs2\src\clib\xmain.cpp(35):        cerr << "Execution aborted due to: " << msg << endl;
+C:\cvs2\src\clib\xmain.cpp(40):        cerr << "Execution aborted due to: " << str << endl;
+C:\cvs2\src\clib\xmain.cpp(45):        cerr << "Execution aborted due to: " << re.what() << endl;
+C:\cvs2\src\clib\xmain.cpp(50):        cerr << "Execution aborted due to: " << ex.what() << endl;
+C:\cvs2\src\clib\xmain.cpp(62):        cerr << "Execution aborted due to generic exception." << endl;
+
+Assertion Errors
+C:\cvs2\src\clib\passert.cpp(15):    Log( "Assertion Failed: %s, %s, line %d\n", expr, file, line );
+C:\cvs2\src\clib\passert.cpp(20):        Log( "Forcing stack backtrace.\n" );
+C:\cvs2\src\clib\passert.cpp(16):    cerr << "Assertion Failed: " << expr << ", " << file << ", line " << line << endl;
+
+Unused
+C:\cvs2\src\clib\tracebuf.cpp(13):    Log( "TraceBuffer:\n" );
+C:\cvs2\src\clib\tracebuf.cpp(17):            Log( "%s=%ld\n", tracebuffer[i].tag, tracebuffer[i].value );
+C:\cvs2\src\clib\tracebuf.cpp(22):            Log( "%s=%ld\n", tracebuffer[i].tag, tracebuffer[i].value );
+C:\cvs2\src\clib\tracebuf.cpp(24):    Log( "End of TraceBuffer.\n" );
+
+Start Script
+charactr.cpp(1389):        Log( "Blech, couldn't start hitscript %s\n", weapon->hit_script().name().c_str() );
+chrituse.cpp(26):        Log( "Character::start_script hiccup\n" );
+chrituse.cpp(27):        Log( "Trying to start script %s\n", prog->name.c_str() );
+chrituse.cpp(28):        Log( "Script %s is already running\n", script_ex->scriptname().c_str() );
+scrstore.cpp(58):            Log( "Unable to read script '%s'\n", pathname.c_str() );
+scrstore.cpp(91):            Log( "Unable to read script '%s'\n", script.c_str() );
+itemcr.cpp(139):            Log( "Unable to start control script %s for %s\n",
+pol.cpp(1320):    cout << "Running startup script." << endl;
+pol.cpp(1323):    cout << "Startup script complete." << endl;
+C:\cvs2\src\bscript\eprog2.cpp(241):            cerr << "AddToken: Can't handle " << token << endl;
+C:\cvs2\src\bscript\eprog_read.cpp(28):            cerr << "Error loading script " << fname
+C:\cvs2\src\bscript\eprog_read.cpp(36):            cerr << "Error loading script " << fname 
+C:\cvs2\src\bscript\eprog_read.cpp(44):            cerr << "Error loading script " << fname 
+C:\cvs2\src\bscript\eprog_read.cpp(59):                        cerr << "Error loading script " << fname
+C:\cvs2\src\bscript\eprog_read.cpp(69):                        cerr << "Error loading script " << fname
+C:\cvs2\src\bscript\eprog_read.cpp(78):                        cerr << "Error loading script " << fname
+C:\cvs2\src\bscript\eprog_read.cpp(87):                        cerr << "Error loading script " << fname
+C:\cvs2\src\bscript\eprog_read.cpp(96):                        cerr << "Error loading script " << fname
+C:\cvs2\src\bscript\eprog_read.cpp(105):                        cerr << "Error loading script " << fname
+C:\cvs2\src\bscript\eprog_read.cpp(112):                        cerr << "Error loading script " << fname
+C:\cvs2\src\bscript\eprog_read.cpp(136):        cerr << "Exception caught while loading script " << fname << ": " << ex.what() << endl;
+C:\cvs2\src\bscript\eprog_read.cpp(141):        cerr << "Exception caught while loading script " << fname << endl;
+C:\cvs2\src\bscript\eprog_read.cpp(350):        cerr << "Unable to open " << mname << endl;
+C:\cvs2\src\bscript\eprog_read.cpp(358):        cerr << "Bad version " << version << " in " << mname << ", expected version 2" << endl;
+
+Read File Error
+C:\cvs2\src\clib\filecont.cpp(12):        cerr << "Unable to open '" << filename << "' for reading." << endl;
+scrsched.cpp(840):		cerr << "Error reading script " << filename << endl;
+scrsched.cpp(870):		cerr << "Error reading script " << script.name() << endl;
+scrsched.cpp(912):		cerr << "Error reading script " << script.name() << endl;
+scrsched.cpp(1015):        cerr << "Error reading script " << filename << endl;
+scrsched.cpp(1032):        cerr << "Error reading script " << filename << endl;
+scrsched.cpp(1047):        cerr << "Error reading script " << script.name() << endl;
+scrstore.cpp(57):            cerr << "Unable to read script '" << pathname.c_str() << "'" << endl;
+scrstore.cpp(90):            cerr << "Unable to read script '" << script.name() << "'" << endl;
+
+Queued Data
+client.cpp(185):        Log( "Client#%lu: Unable to allocate %d bytes for queued data.  Disconnecting.\n", 
+client.cpp(213):            Log( "Client#%lu: Switching to queued data mode (1)\n", instance_ );
+client.cpp(233):            Log( "Client#%lu: Switching to queued data mode (2)\n", instance_ );
+client.cpp(284):                    Log( "Client#%lu: Leaving queued mode (%ld bytes xmitted)\n", instance_, queued_bytes_counter );
+client.cpp(214):            cerr << "Switching to queued data mode (1)" << endl;
+client.cpp(234):            cerr << "Switching to queued data mode (2)" << endl;
+
+I/O errors
+client.cpp(221):                Log( "Client#%lu: Disconnecting client due to send() error (1): %d\n" , instance_, sckerr);
+client.cpp(267):                    Log( "Client#%lu: Disconnecting client due to send() error (2): %d\n", instance_, sckerr );
+cryptengine.cpp(33):        Log( "Unknown ClientEncryptionVersion %s, using version 1.26.4\n", 
+pol.cpp(550):                Log( "Client#%lu: Too-long message length of %u\n", 
+pol.cpp(589):                        Log( "Client#%lu: Exception in message handler 0x%02.02x\n",
+pol.cpp(600):                    Log( "Client#%lu (%s, Acct %s) sent non-allowed message type %x.\n",
+pol.cpp(744):                Log( "Client#%lu: select res=%d, sckerr=%d\n", client->instance_, res, sckerr );
+cryptengine.cpp(29):        cerr << "Unknown ClientEncryptionVersion " 
+pol.cpp(112):        cerr << "WTF!  Message Handler 0x" << std::hex << msgtype << std::dec << " multiply defined!" << endl;
+
+Container Errors
+containr.cpp(368):        Log( "UContainer::remove(Item*), serial=0x%lx, item=0x%lx, item->cont=0x%lx\n",
+dropitem.cpp(721):            Log( "Can't swap trade containers: ic0=%ld,w0=%ld, ic1=%ld,w1=%ld\n",
+
+Drop Item Errors
+dropitem.cpp(227):        Log("Client (Character %s) tried to drop an item out of range.\n",client->chr->name().c_str());
+dropitem.cpp(234):        Log("Client (Character %s) tried to drop an item in a blocked location.\n",client->chr->name().c_str());
+dropitem.cpp(564):		Log( "Character %08lX tried to drop item %08lX, but had not gotten an item.\n",
+dropitem.cpp(571):		Log( "Character %08lX tried to drop item %08lX, but instead had gotten item %08lX.\n",
+dropitem.cpp(240):        cerr << "Client tried to drop item to "
+
+Equip Item Error
+eqpitem.cpp(37):		Log( "Character %08lX tried to equip item %08lx, which did not exist in gotten_items.\n",
+eqpitem.cpp(46):		Log( "Character %08lX tried to equip item %08lx, but had gotten item %08lX\n",
+
+Multi Errors
+house.cpp(234):            Log( "Destroying component %p, serial=0x%lu\n", item, item->serial );
+house.cpp(238):            Log( "Component destroyed\n" );
+house.cpp(357):                Log( "Refusing to place house at %d,%d,%d: can't stand there\n", 
+house.cpp(363):                Log( "Refusing to place house at %d,%d,%d: result Z (%d) is too far afield\n",
+multicr.cpp(40):        cerr << "Tried to create multi " << hexint(objtype) << " but no definition exists in MULTI.MUL" << endl;
+multidef.cpp(430):                cerr << "No entry for MultiID " 
+multidef.cpp(440):                cerr << "No entry for MultiID " 
+multis.cpp(26):        cerr << "Tried to create a Multi type 0x" << hex << objtype << dec << endl;
+multis.cpp(39):    cerr << "Ack! You can't double-click a multi!" << endl;
+
+Account Login
+login.cpp(83):        Log( "Incorrect password for account %s from %s\n",
+login.cpp(96):    Log( "Account %s logged in from %s\n",
+login.cpp(144):                Log( "gethostbyname(\"%s\") failed for server %s\n", 
+login.cpp(290):        Log( "Incorrect password for account %s from %s\n",
+login.cpp(307):    Log( "Account %s logged in from %s\n",
+
+
+Client Disconnect
+pol.cpp(671):                Log( "%s", OSTRINGSTREAM_STR(os).c_str() );
+pol.cpp(669):            cerr << OSTRINGSTREAM_STR(os) << endl;
+pol.cpp(829):    Log( "Client#%lu (%s): disconnected (account %s)\n", 
+pol.cpp(841):            cout << "Client disconnected from " << AddressToString( &client->ipaddr )
+
+
+Client Connect
+pol.cpp(996):            Log( "Client#%lu connected from %s (%d connections)%s\n", 
+pol.cpp(1247):            Log( "Client connected from %s\n", AddressToString( &client_addr ) );
+pol.cpp(313):    Log( "Account %s selecting character %s\n", 
+pol.cpp(986):            cout << "Client connected from " << AddressToString( &client_addr )
+login.cpp(172):        Log( "No applicable servers for client connecting from %s\n", AddressToString( &client->ipaddr ) );
+
+
+Thread Errors
+pol.cpp(1055):        Log( "Tasks Thread exits due to exception: %s\n", msg );
+pol.cpp(1060):        Log( "Tasks Thread exits due to exception: %s\n", str.c_str() );
+pol.cpp(1065):        Log( "Tasks Thread exits due to exception: %s\n", ex.what() );
+pol.cpp(1070):        Log( "Tasks Thread exits due to exception!\n" );
+pol.cpp(695):        Log( "Client#%lu i/o thread starting\n", client->instance_ );
+pol.cpp(702):        Log( "Client#%lu i/o thread past initial lock\n", client->instance_ );
+pol.cpp(809):        Log( "Client#%lu: Exception in i/o thread: %s! (checkpoint=%d)\n", 
+pol.cpp(814):        Log( "Client#%lu: Exception in i/o thread: %s! (checkpoint=%d)\n", 
+pol.cpp(819):        Log( "Client#%lu: Exception in i/o thread: %s! (checkpoint=%d)\n", 
+pol.cpp(824):        Log( "Client#%lu: Exception in i/o thread! (checkpoint=%d)\n", client->instance_, checkpoint );
+pol.cpp(898):        Log( "Client#%lu: Exception in i/o thread! (checkpoint=%d)\n", client->instance_, checkpoint );
+pol.cpp(1012):                Log( "Failed to create worker thread for Client#%lu\n", client->instance_ );
+polsem.cpp(39):        Log( "pthread_mutex_lock: res=%d, pid=%d\n", res, pid );
+polsem.cpp(53):        Log( "pthread_mutex_unlock: res=%d,pid=%d", res, pid );
+
+
+POL informational
+pol.cpp(1488):    Log( "%s compiled on %s %s running.\n", progverstr, compiledate, compiletime );
+pol.cpp(1536):        Log( "Game is active.\n" );
+
+Web Server
+polwww.cpp(33):                Log( "Package %s also provides a wwwroot, ignoring\n", pkg->desc().c_str() );
+polwww.cpp(37):                Log( "wwwroot package is %s\n", pkg->desc().c_str() );
+polwww.cpp(422):                cout << "http-param: '" << param << "', '" << http_decodestr( param ) << "'" << endl;
+polwww.cpp(781):            cout << "http: '" << tmpstr << "'" << endl;
+polwww.cpp(808):        cout << "http-cmd:   '" << cmd << "'" << endl;
+polwww.cpp(809):        cout << "http-host:  '" << host << "'" << endl;
+polwww.cpp(810):        cout << "http-url:   '" << url << "'" << endl;
+polwww.cpp(811):        cout << "http-proto: '" << proto << "'" << endl;
+polwww.cpp(833):        cout << "http-page:   '" << page << "'" << endl;
+polwww.cpp(834):        cout << "http-params: '" << query_string << "'" << endl;
+polwww.cpp(835):        cout << "http-decode: '" << http_decodestr( query_string ) << "'" << endl;
+polwww.cpp(848):                cout << "http-pw: '" << coded_unpw << "'" << endl;
+polwww.cpp(849):                cout << "http-pw-decoded: '" << unpw << "'" << endl;
+polwww.cpp(889):        cout << "Page type: " << pagetype << endl;
+polwww.cpp(910):        cout << "HTTP server: I can't handle pagetype '" << pagetype << "'" << endl;
+polwww.cpp(1016):    cout << "Listening for HTTP requests on port " << config.web_server_port << endl;
+polwww.cpp(1046):            //cout << "Accepting connection.." << endl;
+polwww.cpp(1054):            cout << "HTTP client connected from " << addrstr << endl;
+polwww.cpp(549):		cerr << "Error reading script " << page_sd.name() << endl;
+polwww.cpp(1020):        cerr << "Unable to listen on socket: " << http_socket << endl;
+
+Region Errors
+resource.cpp(217):    Log( "Resource %s: %ld\n", name().c_str(), tilecount );
+resource.cpp(222):        Log( "Region %s: %ld\n", regions_[i]->name().c_str(), rrgn->tilecount_ );
+resource.cpp(216):    cout << "Resource " << name() << ": " << tilecount << endl;
+resource.cpp(221):        cout << "Region " << regions_[i]->name() << ": " << rrgn->tilecount_ << endl;
+resource.cpp(381):        cerr << "Error reading RESOURCE.DAT: Unable to find resource type " << elem.rest() << endl;
+resource.cpp(392):        cerr << "Error reading RESOURCE.DAT: Unable to find resource type " << elem.rest() << endl;
+resource.cpp(399):        cerr << "Error reading RESOURCE.DAT: Unable to find region " << regionname << " in resource " << elem.rest() << endl;
+
+Syslog
+scrsched.cpp(309):        Log( "[%s]: %s\n", exec.scriptname().c_str(), str->data() );
+scrsched.cpp(316):        Log( "[%s]: %s\n", exec.scriptname().c_str(), strval.c_str() );
+textcmd.cpp(563):    Log( "%s/%s: %s\n", client->acct->name(), client->chr->name().c_str(), text );
+scrsched.cpp(310):        cout << "syslog [" << exec.scriptname() << "]: " << str->data() << endl;
+scrsched.cpp(317):        cout << "syslog: [" << exec.scriptname() << "]: " << strval << endl;
+
+Script Profiling
+scrsched.cpp(602):        Log( "Script %s: %ld instr cycles, %ld sleep cycles, %ld seconds\n",
+scrstore.cpp(149):        Log( "Scheduler passes: %ld\n", GET_PROFILEVAR(scheduler_passes) );
+scrstore.cpp(150):        Log( "Script passes:    %ld\n", script_passes );
+scrstore.cpp(154):        Log( "Total gameloop iterations: %ld\n", rotations );
+scrstore.cpp(157):    Log( "%-38s %12s %6s %12s %6s\n", "Script", "cycles", "invoc", "cyc/invoc", "%" );
+scrstore.cpp(161):        Log( "%-38s %12ld %6ld %12ld %6ld\n", 
+scrstore.cpp(175):        Log( "Profiling counters cleared.\n" );
+scrstore.cpp(190):    Log( "Profiling counters cleared.\n" );
+
+
+
+Invalid Packet Error
+speech.cpp(100):		Log("%s\n", buffer);
+speech.cpp(272):		Log("%s\n", buffer);
+ssopt.cpp(83):        Log( "Invalid TotalStatsAtCreation value '%s', using '65,80'\n", 
+target.cpp(46):        Log( "%s/%s used out-of-sequence target cursor\n", targetter->acct->name(), targetter->name().c_str() );
+ufunc.cpp(1062):        Log( "send_sysmessage: '%s' is too long\n", text );
+ufunc.cpp(1099):        Log( "send_sysmessage: unicode text is too long\n");
+uoemod2.cpp(1534):			Log("%s\n", buffer);
+miscmsg.cpp(65):						Log("%s\n", buffer);
+miscmsg.cpp(60):					cout << buffer << endl;
+useskill.cpp(211):    Log( "Client#%lu: (%s, acct:%s) No handler for skill %d\n",
+create.cpp(116):		cerr << "Client from " << AddressToString( &client->ipaddr ) << " tried to create a character without an account!" << endl;
+target.cpp(45):        cerr << targetter->acct->name() << "/" << targetter->name() << " used out of sequence cursor." << endl;
+uoemod2.cpp(988):        cerr << "Client (Account " << client->chr->acct->name() << ", Character " << client->chr->name() << ") used out-of-sequence gump command?" << endl;
+uoemod2.cpp(1003):        cerr << "Blech! B1 message specified too many ints!" << endl;
+uoemod2.cpp(1013):        cerr << "Blech! B1 message specified too many ints and/or strings!" << endl;
+uoemod2.cpp(1040):                cerr << "Blech! B1 message strings overflow message buffer!" << endl;
+uoemod2.cpp(1131):        cerr << "Client (Account " << client->chr->acct->name() << ", Character " << client->chr->name() << ")used out-of-sequence textentry command?" << endl;
+uoemod2.cpp(1533):			cerr << buffer << endl;
+
+Sysload
+tasks.cpp(115):        Log( "sysload=%lu (%lu)\n", last_sysload, last_sysload_nprocs );
+tasks.cpp(113):        cout << "sysload=" << last_sysload << " (" << last_sysload_nprocs << ")" << endl;
+tasks.cpp(119):    cout << "activity: " << last_script_passes_activity
+
+Misc
+ufunc.cpp(535):                Log( "Ack! update_item_to_inrange: character 0x%lx doesn't exist!\n", 
+ufunc.cpp(1487):        Log( "destroy %s: %s, orphan!\n",
+uoemod2.cpp(1716):        Log( "Unable to find book 0x%lx for character 0x%lx\n",
+uoemod2.cpp(1828):        Log( "Unable to find book 0x%lx for character 0x%lx\n",
+uoexhelp.cpp(439):            Log( "wtf, setprop w/ an error\n" );
+dice.cpp(152):        Log( "Dice String %s hurt me!\n", dicestr );
+dice.cpp(149):        cerr << "Uh, looks like I found damage of " << dicestr << " confusing." << endl;
+dice.cpp(150):        cerr << "Valid formats look like: 3D6+2, 2D8, D10, 4, 2d20-4" << endl;
+dice.cpp(151):        cerr << "No spaces please!" << endl;
+uoemod2.cpp(1475):		cout << "Resurrect Menu Choice: " << int(msg->choice) << endl;
+
+Menu
+readcfg.cpp(103):					cerr << "Entry in menu " << menu->name 
+readcfg.cpp(110):					cerr << "Entry in menu " << menu->name 
+readcfg.cpp(117):					cerr << "SubMenu in menu " << menu->name
+readcfg.cpp(124):					cerr << "Entry in menu " << menu->name
+readcfg.cpp(150):				cerr << "Unexpected property in menu " << menu->name << ": " << propname << endl;
+readcfg.cpp(173):					cout << "Unable to find SubMenu " << mi->submenu_name << endl;
+menusel.cpp(23):        Log( "%s/%s tried to use a menu, but none was active.\n",
+
+Fatal
+uobject.cpp(74):        Log( "Ouch! UObject::~UObject() with count==%d\n", ref_counted::count() );
+uobject.cpp(105):            Log( "Ouch! UObject::destroy() with count()==%d\n", ref_counted::count() );
+uoemod.cpp(2753):        Log( "Exception during world save!" );
+uobject.cpp(73):        cout << "Ouch! UObject::~UObject() with count()==" << ref_counted::count() << endl;
+uobject.cpp(104):            cout << "Ouch! UObject::destroy() with count()==" << ref_counted::count() << endl;
+uimport.cpp(1055):            cerr << "Unable to remove " << bakfile 
+uimport.cpp(1061):        cerr << "unable to rename " << datfile << " to " << bakfile << ": " << strerror( err)  << endl;
+uimport.cpp(1066):        cerr << "unable to rename " << ndtfile << " to " << datfile << ": " << strerror( err ) << endl;
+
+Config Errors
+uimport.cpp(1134):            cerr << "Unknown element type in startloc.cfg: " << elem.type() << endl;
+uimport.cpp(1152):                cerr << "Poorly formed coordinate in startloc.cfg: '"
+uimport.cpp(1164):            cerr << "STARTLOC.CFG: StartingLocation ("
+uimport.cpp(1227):                cerr << "SERVERS.CFG: Poorly formed IP ("
+useskill.cpp(91):                cerr << "Skill " << sd.name << ": '" << tmp << "' was left over after reading stat advancement data" << endl;
+useskill.cpp(92):                cerr << "    There should be no spaces in the die-string for points awarded." << endl;
+useskill.cpp(98):            cerr << "Skill " << sd.name << ": error reading points awarded die-string: " 
+useskill.cpp(105):        cerr << "Skill " << sd.name << ": stat advancement configuration of '"
+useskill.cpp(210):    cerr << "Character " << inclient->chr->name() << " (acct: " << inclient->chr->acct->name() << "): No handler for skill " << int(skillid) << endl;
+useskill.cpp(228):            cerr << "SkillId " << skillval << " is too high." << endl
+useskill.cpp(240):                cerr << "Error in package " << pkg->desc() << endl;
+useskill.cpp(242):            cerr << "Skill " << skilldefs[skillid]->name << " defined more than once" << endl;
+useskill.cpp(245):                cerr << "Package " << skilldefs[ skillid ]->pkg->desc() << " also defines the skill" << endl;
+useskill.cpp(249):                cerr << "pol/config/skills.cfg already defines the skill" << endl;
+useskill.cpp(279):            cerr << "No SKILLS.CFG defines skill " << i << endl;
+weapon.cpp(121):        cerr << "Weapon Template " << objtype << " has an illegal Speed value." << endl;
+weapon.cpp(126):        cerr << "Weapon Template " << objtype << " has an illegal MaxHp value." << endl;
+weapon.cpp(133):        cerr << "Error parsing DAMAGE string for WeaponTemplate " << objtype << endl;
+weapon.cpp(134):        cerr << "    " << errmsg << endl;
+textcmd.cpp(221):                    cerr << "Blech! Can't find '" << ot_str << "' named in equip.cfg" << endl;
+
+Signals
+C:\cvs2\src\clib\esignal.cpp(20):            std::cerr << "Ctrl-C detected.  Stopping..." << std::endl;
+C:\cvs2\src\clib\esignal.cpp(56):    std::cerr << "Ctrl-C detected.  Stopping..." << std::endl;
+polsig.cpp(18):    cout << "SIGPIPE! param=" << x << endl;
+
+Shutdown
+pol.cpp(1602):        Log( "Shutting down...\n" );
+pol.cpp(1268):    cout << "Remaining item: " << item->serial << ": " << item->name() << endl;
+pol.cpp(1286):        cout << "Remaining UObjects: " << uobject_count << endl;
+pol.cpp(1288):        cout << "Remaining Mobiles: " << ucharacter_count << endl;
+pol.cpp(1290):        cout << "Remaining Items: " << uitem_count << endl;
+pol.cpp(1292):        cout << "Remaining Multis: " << umulti_count << endl;
+pol.cpp(1294):        cout << "Unreaped orphans: " << unreaped_orphans << endl;
+pol.cpp(1296):        cout << "Remaining EChrRef objects: " << uobj_count_echrref << endl;
+pol.cpp(1298):        cout << "Remaining Executors: " << executor_count << endl;
+pol.cpp(1300):        cout << "Remaining script objectimps: " << eobject_imp_count << endl;
+pol.cpp(1604):        cout << "Writing data files...";
+pol.cpp(1611):            cout << "Done!  " << (wd_end-wd_start) << " seconds." << endl;
+
+Startup
+pol.cpp(1428):    cout << "Opening UO client data files." << endl;
+pol.cpp(1431):    cout << "Reading UO data (takes a while)...";
+pol.cpp(1433):    cout << "Done!" << endl;
+pol.cpp(1470):        cout << "Unable to initialize sockets library." << endl;
+pol.cpp(1480):			cout << "Unable to listen on socket " << config.listen_port << endl;
+pol.cpp(1508):        cout << "Running POL test suite." << endl;
+pol.cpp(1515):    cout << "Reading data files:\n";
+pol.cpp(1524):    cout << "Done! " << ms << " milliseconds."<< endl;
+pol.cpp(1532):        cout << "Initialization complete.  POL is active.  Ctrl-C to stop." << endl << endl;
+sockio.cpp(25):    cout << "Internet IP address is " << ipaddr_str << endl;
+sockio.cpp(30):    cout << "LAN IP address is " << lanaddr_str << endl;
+sockio.cpp(36):    cout << "hostname is " << hostname << endl;
+sockio.cpp(43):        cout << "address: " << adstr << endl;
+sockio.cpp(77):		cout << "Error starting Winsock 1.1: " << res << endl;
+sockio.cpp(84):        cout << "gethostname failed: " << socket_errno << endl;
+sockio.cpp(105):		cout << "Error stopping Winsock 1.1: " << res << endl;
+sockio.cpp(150):		cout << "Unable to setsockopt (TCP_NODELAY) on listening socket, res=" << res << endl;
+uimport.cpp(1209):                cout << "Skipping server " << svr->name << " because there is no Internet IP address." << endl;
+uimport.cpp(1218):                cout << "Skipping server  " << svr->name << " because there is no LAN IP address." << endl;
+ssopt.cpp(81):        cerr << "Invalid TotalStatsAtCreation value '" 
+uofile00.cpp(27):        cerr << "Unable to open UO datafile: " << filename << endl;
+uofile00.cpp(28):        cerr << "POL.CFG specifies UODataFileRoot as '" << config.uo_datafile_root << "'.  Is this correct?" << endl;
+uofile00.cpp(29):        cerr << "  The following files must be present in that directory:" << endl
+
+Internal
+uworld.cpp(213):                Log( "Item 0x%lx in zone (%d,%d) but location is (%d,%d) (zone %d,%d)\n",
+uworld.cpp(224):        Log( "item integ problem at zone (%d,%d)\n", x, y );
+
+Accounts Reading
+accounts.cpp(107):            cout << "Reloading accounts.txt...";
+accounts.cpp(115):            cout << "Done!" << endl;
+accounts.cpp(120):        cout << "Error reading accounts.txt!" << endl;
+
+Boat Errors
+boat.cpp(281):            cout << "Location " << x << "," << y << " impassable, location is off the map" << endl;
+boat.cpp(293):        if (debug_boats) cout << "[" << ax << "," << ay << "]";
+boat.cpp(301):                    cout << "Location " << ax << "," << ay << " already has a ship hull present" << endl;
+boat.cpp(340):                        cout << "Location at " << ax << "," << ay << " has a non-water static: " << hexint( srec.graphic ) << endl;
+boat.cpp(347):                    cout << "Location at " << ax << "," << ay << " has no water static" << endl;
+boat.cpp(400):                        cout << "Location at " << x << "," << y << " has a non-water static: " << hexint( srec.graphic ) << endl;
+boat.cpp(108):    cerr << "Boat component definition '" << str << "' is poorly formed." << endl;
+boat.cpp(128):            cerr << "Error occurred reading boat component " << boat_components[i].name << endl;
+boat.cpp(161):            cerr << "Error occurred reading definition for boat 0x" << hex << graphic << dec << endl;
+
+Character Errors
+charactr.cpp(97):    cerr << "Couldn't find an Armor Zone for layer "
+charactr.cpp(113):    cerr << "Couldn't find an Armor Zone named "
+charactr.cpp(138):                cerr << "ArmorZone " << az.name 
+charactr.cpp(142):                cerr << "Valid range is " << LOWEST_LAYER
+charactr.cpp(573):            cerr << "Account " << acctname << ": "
+charactr.cpp(585):            cerr << "Character '" << name() << "': "
+charactr.cpp(592):            cerr << "Account " << acctname 
+charactr.cpp(609):            cerr << "Character " << hexint(serial) << " defined more than once." << endl;
+charactr.cpp(624):        cerr << "Character '" << hexint(serial) << "' has no name!"
+charactr.cpp(1249):        cerr << "Waah! " << name() << " is dead, but taking damage?" << endl;
+charactr.cpp(1422):        cerr << "Waah! " << name() << " is dead, but healing damage?" << endl;
+charactr.cpp(1441):        cerr << "Waah! " << name() << " is dead, but being healed?" << endl;
+charactr.cpp(1511):        cerr << "uh, trying to resurrect " << name() << ", who isn't dead." << endl;
+client.cpp(104):            cerr << "didn't find online character in characters" << endl;
+create.cpp(131):        cerr << "Create Character: Invalid parameters." << endl;
+create.cpp(201):		cerr << "Create Character: Stats sum to "
+create.cpp(207):				cerr << ",";
+create.cpp(208):			cerr << ssopt.total_stats_at_creation[sidx];
+create.cpp(210):		cerr << endl;
+create.cpp(217):        cerr << "Create Character: Stats sum to " 
+create.cpp(226):        cerr << "Create Character: A stat was too small."
+create.cpp(247):        cerr << "Create Character: A skill number was out of range" << endl;
+create.cpp(256):        cerr << "Create Character: Starting skill values incorrect" << endl;
+create.cpp(392):            cerr << "script misc/oncreate: setProgram failed" << endl;
+
+POL CFG
+polcfg.cpp(121):            cout << "Reloading pol.cfg...";
+polcfg.cpp(125):            cout << "Done!" << endl;
+polcfg.cpp(131):        cout << "Error rereading pol.cfg!" << endl;
+
+
+Event Queue
+scrsched.cpp(493):            cout << "Event queue for " << exec.scriptname() << " is full, discarding event." << endl;
+scrsched.cpp(498):                cout << "NPC Serial: " << hexint( npcemod->npc.serial ) << endl;
+scrsched.cpp(501):            cout << "Event: " << ob << endl;
+
+Critical scripts
+scrsched.cpp(995):    cout << "Script " << ex.scriptname() << " running..";
+scrsched.cpp(998):        cout << ".";
+scrsched.cpp(1004):    cout << endl;
+scrsched.cpp(1067):                cout << ".." << ex.PC;
+scrsched.cpp(1071):                cout << "Script " << script.name() << " running.." << ex.PC;
+scrsched.cpp(1078):        cout << endl;
+scrsched.cpp(702):                    cerr << "Critical script " << ex->scriptname() << " has run for " << totcount << " instructions" << endl;
+
+Unload scripts
+scrstore.cpp(118):            cout << "Unloading " << nm.c_str() << endl;
+
+Show Speech Colors
+speech.cpp(87):        cout << client->chr->name() << " speaking w/ color " 
+speech.cpp(259):        cout << client->chr->name() << " speaking w/ color " 
+speech.cpp(99):		cerr << buffer << endl;
+speech.cpp(271):		cerr << buffer << endl;
+
+Syshook Errors
+syshook.cpp(123):        cout << "Unknown SystemHook " << hookname << endl;
+syshook.cpp(129):        cout << "SystemHook " << hookname << " multiply defined" << endl;
+syshook.cpp(130):        cout << "  Already found in: " << system_hooks.check_skill_hook->scriptname() << endl;
+syshook.cpp(131):        cout << "  Also defined in:  " << shs->scriptname() << endl;
+syshook.cpp(138):        cout << "Exported Function " << exfuncname << " not found in " << shs->scriptname() << endl;
+systemhookscript.cpp(41):                cout << "Exported function " << name 
+systemhookscript.cpp(63):                cout << "Exported function " << name 
+
+RPM
+tasks.cpp(142):            cout << "scpt: " << last_sppm 
+tasks.cpp(145):                cout << "(" << GET_PROFILEVAR_PER_MIN(noactivity_scheduler_passes) << ")";
+tasks.cpp(146):            cout << "  scin: " << last_sipm 
+tasks.cpp(163):            cout << "RPM: " << last_rpm 
+
+World Load
+uimport.cpp(471):	cout << "Container type " << hexint( cont_item->objtype_ )
+uimport.cpp(535):        cout << "  " << filename << ":";
+uimport.cpp(545):                cout << ".";
+uimport.cpp(578):        cout << " " << nobjects << " elements in " << ms << " ms." << std::endl;
+uimport.cpp(653):        cout << "  data/storage.txt:";
+uimport.cpp(735):        cout << "Import Results: " << import_count << " imported, " << dupe_count << " duplicates." << endl;
+uworld.cpp(118):                    cout << "Ack! Found character in world zone " << x << "," << y << endl;
+uworld.cpp(253):            cout << "Character " << chr->serial << " at " << chr->x << "," << chr->y << " is not in its zone." << endl;
+uworld.cpp(268):                    cout << "Character " << chr->serial << " in a zone, but elsewhere" << endl;
+uimport.cpp(313):        cerr << "Item element has no SERIAL property, omitting." << endl;
+uimport.cpp(320):            cerr << "Duplicate item read from datafiles (Serial=0x"
+uimport.cpp(328):        cerr << "Item (Serial 0x" << hex << serial << dec << ") has no OBJTYPE property, omitting." << endl;
+uimport.cpp(338):        cerr << "Unable to create item: objtype=" << hexint(objtype) << ", serial=0x" << hex << serial << dec << endl;
+uimport.cpp(381):                    cerr << "Item " << hexint(item->serial)
+uimport.cpp(395):                            cerr << "I'm so cool, I put it in the character's backpack!" << endl;
+uimport.cpp(401):                            cerr << "Tried to put it in the character's backpack, "
+uimport.cpp(407):                        cerr << "Tried to put it in the character's backpack, "
+uimport.cpp(415):                cerr << "Item " << hexint(item->serial)
+uimport.cpp(456):                    cerr << "Can't add Item " << hexint(item->serial)
+uimport.cpp(478):            cerr << "Item " << hexint(item->serial)
+uimport.cpp(499):        cerr << "A Multi has no SERIAL property." << endl;
+uimport.cpp(504):        cerr << "Duplicate item read from datafiles (Serial=0x"
+uimport.cpp(511):        cerr << "Multi (Serial 0x" << hex << serial << dec << ") has no OBJTYPE property, omitting." << endl;
+uimport.cpp(520):        cerr << "Unable to create multi: objtype=" << hexint(objtype) << ", serial=0x" << hex << serial << dec << endl;
+uimport.cpp(589):        cerr << "CoreVersion not found in data/pol.txt" << endl << endl;
+uimport.cpp(590):        cerr << "data.pol.txt must contain a section similar to: " << endl;
+uimport.cpp(591):        cerr << "System" << endl
+uimport.cpp(596):        cerr << "Ensure that the CoreVersion matches the version that created your data files!" << endl;
+uimport.cpp(689):        cerr << "Importing file: " << hex << objtype << dec << " is out of range." << endl;
+uimport.cpp(697):        cerr << "Unable to import item: objtype=" << objtype << endl;
+uimport.cpp(777):        cerr << "Error!" << endl
+uimport.cpp(788):        cerr << "Error!" << endl
+
+Itemdesc error
+itemdesc.cpp(76):        cerr << "itemdesc.cfg: Resource '" << rname <<"' not found\n" << endl;
+itemdesc.cpp(124):            cerr << "Itemdesc has no 'graphic' specified, and no 'objtype' is valid either." << endl;
+itemdesc.cpp(181):            cerr << "itemdesc.cfg, objtype 0x" << hex << objtype << dec
+itemdesc.cpp(193):            cerr << "Warning! objtype " << hexint( objtype )
+itemdesc.cpp(210):            cerr << "itemdesc.cfg, objtype 0x" << hex << objtype << dec
+itemdesc.cpp(522):            cerr << "Error: Objtype " << hexint(objtype) << " is already defined in ";
+itemdesc.cpp(524):                cerr << "config/itemdesc.cfg";
+itemdesc.cpp(526):                cerr << desctable[objtype]->pkg->dir() << "itemdesc.cfg";
+itemdesc.cpp(527):            cerr << endl;
+
+NPC Error
+npc.cpp(1128):            cerr << "Error reading AR for NPC: " << errmsg << endl;
+npc.cpp(1259):        cerr << "Unable to read script " << sd.name() 
+npc.cpp(1269):        cerr << "There was an error running script " << script << " for NPC "
+npc.cpp(1292):    cerr << "PC " << src_chr->name()
+npctemplates.cpp(39):    cerr << (error?"Error":"Warning")
+npctemplates.cpp(42):    cerr << "\t" << msg << endl;
+npctemplates.cpp(48):            cerr << "\tElement: " << elem->type() << " " << elem->rest();
+npctemplates.cpp(50):                cerr << ", found on line " << _fileline;
+npctemplates.cpp(51):            cerr << endl;
+npctemplates.cpp(59):        cerr << "\tElement started on line: " << _fileline << endl;
+npctmpl.cpp(25):    cerr << "Unable to translate value '" << name << "'" << endl;
+npctmpl.cpp(26):    cerr << "  Expected one of the following values:" << endl;
+npctmpl.cpp(29):        cerr << "    " << table[i].name << endl;
+textcmd.cpp(150):        cerr << "NPC Creation (" << template_name << ") Failed: " << msg << endl;
+textcmd.cpp(154):        cerr << "NPC Creation (" << template_name << ") Failed: " << str << endl;
+textcmd.cpp(158):        cerr << "NPC Creation (" << template_name << ") Failed: " << re.what() << endl;
+textcmd.cpp(162):        cerr << "NPC Creation (" << template_name << ") Failed: " << ex.what() << endl;
+
+Spell Errors
+spells.cpp(100):        cerr << "Too many internal spell handlers!" << endl;
+spells.cpp(115):        cerr << "Too many internal spell handlers!" << endl;
+spells.cpp(195):            cerr << "Error reading spell " << name_
+spells.cpp(359):        cerr << "Spell " << spellid << " is not implemented." << endl;
+spells.cpp(527):		cerr << "Spell ID " << spellid << " (" << origspell->name() << ") multiply defined" << endl;
+spells.cpp(530):            cerr << "    Spell originally defined in package '" 
+spells.cpp(535):            cerr << "    Spell originally defined in main" << endl;
+spells.cpp(539):            cerr << "    Spell redefined in package '" 
+spells.cpp(544):            cerr << "    Spell redefined in main" << endl;
+spells.cpp(565):            cerr << "Error in CIRCLES.CFG: Circle must fall between 1 and 100" << endl;
+spells.cpp(573):            cerr << "Error in CIRCLES.CFG: Circle " << index+1 << " is multiply defined." << endl;
+
+Storage Area
+storage.cpp(147):                    cerr << "Can't add Item " << hexint(item->serial)
+storage.cpp(163):                cerr << "Container type 0x" << hex << cont_item->objtype_ 
+storage.cpp(170):            cerr << "Item " << hexint(item->serial)
+storage.cpp(281):                cerr << "Storage: Got an ITEM element, but don't have a StorageArea to put it." << endl;
+storage.cpp(287):            cerr << "Unexpected element type " << elem.type() << " in storage file." << endl;
