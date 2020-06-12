@@ -1,107 +1,0 @@
-8
-
-dir
-1038
-https://svn.sourceforge.net/svnroot/pol-distro/releases/097/Distro
-https://svn.sourceforge.net/svnroot/pol-distro
-
-
-
-2007-04-14T19:02:32.739715Z
-1038
-AustinHeilman
-
-
-svn:special svn:externals svn:needs-lock
-
-
-
-
-
-
-
-
-
-
-
-0f0f479d-2c14-0410-9819-d12ebb206e83
-
-log
-dir
-
-pkg
-dir
-
-uoconvert.cfg
-file
-
-
-
-
-2007-04-11T06:01:15.359375Z
-86c074eda305e2cb650d9e97db93198a
-2006-06-17T18:27:33.507874Z
-373
-austinheilman
-has-props
-
-batchFiles
-dir
-
-config
-dir
-
-distro-todo.txt
-file
-
-
-
-
-2007-04-11T06:01:15.359375Z
-05c20b38ddabc0e54bf1596b00946311
-2007-03-08T17:41:21.687304Z
-1018
-tekproxy
-has-props
-
-regions
-dir
-
-StartHere.bat
-file
-
-
-
-
-2007-04-11T06:01:15.375000Z
-2711e5441e6618e66b9dbe4fcf8873f5
-2006-09-21T06:27:56.919666Z
-841
-austinheilman
-has-props
-
-scripts
-dir
-
-docs
-dir
-
-pol.cfg
-file
-
-
-
-
-2007-04-11T06:01:15.375000Z
-95a33eb3673d270c64d7cbbebc4ec6ef
-2006-10-25T11:20:22.354115Z
-878
-austinheilman
-has-props
-
-data
-dir
-
-MUL
-dir
-

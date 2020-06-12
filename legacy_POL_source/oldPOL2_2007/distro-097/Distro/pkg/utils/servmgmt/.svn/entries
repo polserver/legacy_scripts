@@ -1,66 +1,0 @@
-8
-
-dir
-1038
-https://svn.sourceforge.net/svnroot/pol-distro/releases/097/Distro/pkg/utils/servmgmt
-https://svn.sourceforge.net/svnroot/pol-distro
-
-
-
-2007-03-10T15:47:41.528715Z
-1020
-tekproxy
-
-
-svn:special svn:externals svn:needs-lock
-
-
-
-
-
-
-
-
-
-
-
-0f0f479d-2c14-0410-9819-d12ebb206e83
-
-pkg.cfg
-file
-
-
-
-
-2007-04-11T06:00:05.515625Z
-8dd2b6cccd9063e7752e4f7ba05a6ec2
-2006-08-11T02:55:22.670057Z
-682
-austinheilman
-has-props
-
-include
-dir
-
-start.src
-file
-
-
-
-
-2007-04-11T06:00:05.531250Z
-662a018653c1570a325762cf3cb8aa68
-2006-08-09T07:39:55.135518Z
-656
-austinheilman
-has-props
-
-www
-dir
-
-config
-dir
-
-recorder
-dir
-

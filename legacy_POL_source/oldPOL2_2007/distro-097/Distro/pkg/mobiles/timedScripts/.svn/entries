@@ -1,95 +1,0 @@
-8
-
-dir
-1038
-https://svn.sourceforge.net/svnroot/pol-distro/releases/097/Distro/pkg/mobiles/timedScripts
-https://svn.sourceforge.net/svnroot/pol-distro
-
-
-
-2007-03-25T19:06:41.839807Z
-1028
-tekproxy
-
-
-svn:special svn:externals svn:needs-lock
-
-
-
-
-
-
-
-
-
-
-
-0f0f479d-2c14-0410-9819-d12ebb206e83
-
-pkg.cfg
-file
-
-
-
-
-2007-04-11T06:01:03.812500Z
-7716c9778855f43f348c5e741dca9d85
-2006-06-17T18:27:33.507874Z
-373
-austinheilman
-has-props
-
-commands
-dir
-
-subScripts
-dir
-
-include
-dir
-
-logon.src
-file
-
-
-
-
-2007-04-11T06:01:03.812500Z
-2d644d9b4aa6ab448acc0fc51005532e
-2006-06-17T18:27:33.507874Z
-373
-austinheilman
-has-props
-
-config
-dir
-
-reconnect.src
-file
-
-
-
-
-2007-04-11T06:01:03.828125Z
-3134641fabc4b0c5560abb966c639530
-2006-06-17T18:27:33.507874Z
-373
-austinheilman
-has-props
-
-timerControl.src
-file
-
-
-
-
-2007-04-11T06:01:03.875000Z
-5d6d6e620d4cea4ba667096844262b8f
-2006-07-10T04:42:02.014329Z
-625
-austinheilman
-has-props
-
-docs
-dir
-

@@ -1,72 +1,0 @@
-8
-
-dir
-1038
-https://svn.sourceforge.net/svnroot/pol-distro/releases/097/Distro/pkg/items/containers
-https://svn.sourceforge.net/svnroot/pol-distro
-
-
-
-2007-01-19T04:22:30.782413Z
-979
-sroyalty
-
-
-svn:special svn:externals svn:needs-lock
-
-
-
-
-
-
-
-
-
-
-
-0f0f479d-2c14-0410-9819-d12ebb206e83
-
-pkg.cfg
-file
-
-
-
-
-2007-04-11T06:00:23.562500Z
-1f2928a6f292b90727159ed9405af567
-2006-06-17T18:27:33.507874Z
-373
-austinheilman
-has-props
-
-commands
-dir
-
-container
-dir
-
-include
-dir
-
-config
-dir
-
-ondelete.src
-file
-
-
-
-
-2007-04-11T06:00:23.578125Z
-25e7d35f7ac156fc5685e69db0a78fa1
-2006-09-13T20:59:46.952437Z
-812
-austinheilman
-has-props
-
-corpse
-dir
-
-bookshelf
-dir
-

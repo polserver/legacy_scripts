@@ -1,9 +1,0 @@
-/* $Id: destroy.src 744 2006-08-25 03:47:07Z AustinHeilman $
- *
- */
-
-program DestroyScript(corpse)
-	if ( corpse.CanDestroy() )
-		return 1;
-	endif
-endprogram
